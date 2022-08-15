@@ -1,0 +1,7 @@
+{:deps true
+ :builds 
+ {:storybook
+  {:target :npm-module
+   :entries [toddler.calendar-stories
+             toddler.input-stories]
+   :output-dir "public/js/stories"}}}
