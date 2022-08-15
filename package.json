@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "npx shadow-cljs -A:shadow watch storybook",
     "storybook": "start-storybook",
+    "init": "npx shadow-cljs -A:shadow compile storybook",
     "dev-stories": "concurrently --kill-others \"npm run dev\" \"npm run storybook\""
   },
   "author": "Robert Gersak",
