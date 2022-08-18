@@ -2,7 +2,7 @@
   (:require 
     [toddler.i18n.number :as number]
     [toddler.i18n.dictionary 
-     :refer [calendar]]
+     :refer [calendar dictionary]]
     [tongue.core :as tongue]))
 
 
@@ -46,4 +46,5 @@
 
 (do
   (swap! calendar assoc :en inst-strings)
+  (swap! dictionary assoc :en dict)
   (println "Added English dictionary..."))

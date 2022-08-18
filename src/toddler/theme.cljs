@@ -194,15 +194,14 @@
   {":active" {:transform "translate(0px,2px)" :box-shadow "none"}})
 
 (defn interactions-button
-  [{:keys [theme disabled] :as props}]
+  [{:keys [disabled] :as props}]
   (let [{:keys [background-color color hover]}
         (button-colors props)] 
-    (case (:name theme)
-      (cond->
-        {:color color
-         :background-color background-color
-         ":hover" (assoc hover :box-shadow "0px 2px 4px 0px #aeaeae")}
-        disabled (assoc :pointer-events "none")))))
+    (cond->
+      {:color color
+       :background-color background-color
+       ":hover" (assoc hover :box-shadow "0px 2px 4px 0px #aeaeae")}
+      disabled (assoc :pointer-events "none"))))
 
 (defmethod --themed [{} 'toddler.interactions/button] [props] 
   (merge (interactions-button props) (interactions-drop-on-active props)))

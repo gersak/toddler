@@ -313,7 +313,8 @@
     :display "flex"}
    :svg {:margin "0 5px"
          :padding-right 3}
-   :border-radius 3})
+   :border-radius 3}
+  --editable-tag)
 
 (defnc DefaultTagContent
   [{:keys [value className]}]

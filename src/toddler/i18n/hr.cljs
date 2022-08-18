@@ -2,7 +2,7 @@
   (:require 
     [toddler.i18n.number :as number]
     [toddler.i18n.dictionary 
-     :refer [calendar]]
+     :refer [calendar dictionary]]
     [tongue.core :as tongue]))
 
 (def format-number (number/number-formatter :hr))
@@ -44,4 +44,5 @@
 
 (do
   (swap! calendar assoc :hr inst-strings)
+  (swap! dictionary assoc :hr dict)
   (println "Added Croatian dictionary..."))
