@@ -4,7 +4,7 @@
     [cljs-bean.core :refer [->js]]
     ["react" :as react]
     ["react-dom" :as rdom]
-    ["simplebar-react" :as SimpleBar]
+    ["simplebar-react" :default SimpleBar]
     [helix.core 
      :refer [defnc $ provider <>
              defhook create-context]]
@@ -441,7 +441,7 @@
       (<>
         (c/children props)
         (d/div
-          {:id "eywa-popups"
+          {:id "toddler-popups"
            :ref #(reset! container %)})))))
 
 (defnc Area
@@ -492,8 +492,8 @@
                padding-right 0
                padding-bottom 0
                padding-top 0}}
-         set-state!]
-        (hooks/use-state nil)
+         set-state!] (hooks/use-state nil)
+        ;;
         dummy (hooks/use-ref nil)
         el (hooks/use-ref nil)
         target (hooks/use-context *area-element*)
@@ -504,6 +504,8 @@
         (let [computed (compute-container-props target @dummy preference)]
           (set-state! computed)
           (when (ifn? onChange) (onChange computed)))))
+    (when (nil? container-node)
+      (.error js/console "Popup doesn't know where to render. Specify popup container. I.E. instantiate toddler.elements.popup/Container"))
     (rdom/createPortal
       (provider
         {:context *dimensions*
@@ -525,7 +527,7 @@
              ;; even for small popups.... this is not goood
              ; (if (and computed (not (ok-candidate? computed)))
              (c/children props))
-          (when computed 
+          (when computed
             ($ wrapper
                {:ref #(reset! (or ref el) %)
                 :className className

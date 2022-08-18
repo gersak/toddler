@@ -313,8 +313,7 @@
     :display "flex"}
    :svg {:margin "0 5px"
          :padding-right 3}
-   :border-radius 3}
-  --editable-tag)
+   :border-radius 3})
 
 (defnc DefaultTagContent
   [{:keys [value className]}]
@@ -461,26 +460,27 @@
 (defnc DropdownArea
   [props]
   (let [[area-position set-area-position!] (hooks/use-state nil)
+        ;;
         {:keys [area] :as dropdown}
         (dropdown/use-dropdown
-         (->
-          props
-          (assoc :area-position area-position)
-          (dissoc :className)))]
+          (->
+            props
+            (assoc :area-position area-position)
+            (dissoc :className)))]
     (provider
-     {:context *dropdown*
-      :value dropdown}
-     (provider
-      {:context *dropdown-area*
-       :value [area-position set-area-position!]}
-      ($ popup/Area
-         {:ref area
-          & (select-keys props [:className])}
-         (c/children props))))))
+      {:context *dropdown*
+       :value dropdown}
+      (provider
+        {:context *dropdown-area*
+         :value [area-position set-area-position!]}
+        ($ popup/Area
+           {:ref area
+            & (select-keys props [:className])}
+           (c/children props))))))
 
 
 (defnc DropdownInput
-  [{:keys [className onSearchChange]
+  [{:keys [className onSearchChange placeholder]
     rinput :render/input
     rwrapper :render/wrapper
     rimg :render/img
@@ -495,7 +495,6 @@
                 sync-search!
                 toggle!
                 opened
-                placeholder
                 disabled
                 read-only
                 searchable?]
@@ -541,7 +540,8 @@
                 cursor
                 select!
                 close!]
-         :or {search-fn str}} (hooks/use-context *dropdown*)]
+         :or {search-fn str}
+         :as context} (hooks/use-context *dropdown*)]
     (when (and (not read-only) (not disabled) (pos? (count options)) opened)
       ($ popup/Element
          {:ref popup
@@ -575,9 +575,9 @@
          rpopup DropdownPopup}
     :as props}]
   ($ DropdownArea
-     {& props}
-     ($ rinput)
-     ($ rpopup)))
+    {& props}
+    ($ rinput {& (dissoc props :render/input :render/popup)})
+    ($ rpopup)))
 
 ;;
 

@@ -6,4 +6,5 @@ node_modules/
 .nrepl-port
 .nrepl-history
 .clj-kondo/
+.lsp/
 public/js/

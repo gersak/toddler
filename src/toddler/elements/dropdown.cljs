@@ -139,35 +139,35 @@
     (popup/use-outside-action
       opened area popup 
       #(set-opened! false))
-    (assoc props
-           :search search
-           :opened opened
-           :focus set-cursor!
-           :cursor cursor
-           :input input
-           :area area 
-           :ref-fn ref-fn
-           :discard! #(on-change nil)
-           :sync-search! #(when-not (fn? new-fn) (set-search! (search-fn value)))
-           :toggle! (fn [] (when-not disabled (.focus @input) (set-opened! not)))
-           :open! (fn [] (.focus @input) (set-opened! true))
-           :close! #(set-opened! false)
-           :select! #(on-change %)
-           :popup popup 
-           :on-change (fn [e] (set-search! (.. e -target -value)))
-           :on-key-down (fn [e]
-                          (key-down-handler e
-                            {:value value
-                             :search search
-                             :opened opened
-                             :cursor cursor
-                             :options available-options
-                             :new-fn new-fn
-                             :search-fn search-fn
-                             :on-change on-change
-                             :set-opened! set-opened!
-                             :set-search! set-search!
-                             :set-cursor! set-cursor!
-                             :position area-position 
-                             :input @input}))
-           :options available-options)))
+    {:search search
+     :opened opened
+     :focus set-cursor!
+     :cursor cursor
+     :input input
+     :area area 
+     :search-fn search-fn
+     :ref-fn ref-fn
+     :discard! #(on-change nil)
+     :sync-search! #(when-not (fn? new-fn) (set-search! (search-fn value)))
+     :toggle! (fn [] (when-not disabled (.focus @input) (set-opened! not)))
+     :open! (fn [] (.focus @input) (set-opened! true))
+     :close! #(set-opened! false)
+     :select! #(on-change %)
+     :popup popup 
+     :on-change (fn [e] (set-search! (.. e -target -value)))
+     :on-key-down (fn [e]
+                    (key-down-handler e
+                      {:value value
+                       :search search
+                       :opened opened
+                       :cursor cursor
+                       :options available-options
+                       :new-fn new-fn
+                       :search-fn search-fn
+                       :on-change on-change
+                       :set-opened! set-opened!
+                       :set-search! set-search!
+                       :set-cursor! set-cursor!
+                       :position area-position 
+                       :input @input}))
+     :options available-options}))

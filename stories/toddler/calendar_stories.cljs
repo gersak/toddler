@@ -6,6 +6,7 @@
    [helix.dom :as d]
    toddler.theme
    [toddler.interactions :as interactions]
+   [toddler.elements.popup :as popup]
    ["react" :as react]))
 
 
@@ -35,8 +36,9 @@
               (vura/date)
               vura/date->value)
              :month)}
-     ($ interactions/calendar-year-dropdown {:value (vura/year? (vura/date))
-                                             :placeholder "Click me"})))
+     ($ interactions/calendar-year-dropdown
+        {:value (vura/year? (vura/date))
+         :placeholder "Click me"})))
 
 (defn ^:export CalendarWeek
   []
@@ -76,14 +78,17 @@
 
 (defn ^:export CalendarYearDropdownTest
   []
-  ($ interactions/calendar-month-dropdown {:value (vura/date 2020 8)
-                                           :placeholder "Click me"}))
+  ($ popup/Container
+     ($ interactions/calendar-month-dropdown
+        {:value (-> (vura/date) vura/day-time-context)
+         :placeholder "Click me"})))
 
 (defn ^:export SearchTest
   []
   (let [[state set-state!] (hooks/use-state "")]
-    ($ interactions/search {:value state
-                            :on-change (fn [e] (set-state! (.-value (.-target e))))})))
+    ($ interactions/search
+       {:value state
+        :on-change (fn [e] (set-state! (.-value (.-target e))))})))
 
 (defn ^:export CheckBoxTest
   []
@@ -114,17 +119,18 @@
 
 (defn ^:export TimeStampCalendarTest
   []
-  (let [cal-ref (hooks/use-ref nil)]
-    (d/div {:style {:margin "auto",
-                    :width "20%"}}
-           ($ interactions/TimestampCalendar {#_:ref #_(reset! cal-ref %)
-                                              :on-click (fn [] (.log js/console "clicked day"))
-                                              :on-next-month (fn [] {:year 2021
-                                                                     :month 9
-                                                                     :day-in-month 17})
-                                              :on-prev-month (fn [] {:year 2023
-                                                                     :month 7
-                                                                     :day-in-month 17})}))))
+  ($ popup/Container
+     (d/div
+       {:style {:margin "auto",
+                :width "20%"}}
+       ($ interactions/TimestampCalendar
+          {:onChange (fn [] (.log js/console "clicked day"))
+           :on-next-month (fn [] {:year 2021
+                                  :month 9
+                                  :day-in-month 17})
+           :on-prev-month (fn [] {:year 2023
+                                  :month 7
+                                  :day-in-month 17})}))))
 
 (defn ^:export AvatarImage
   []
