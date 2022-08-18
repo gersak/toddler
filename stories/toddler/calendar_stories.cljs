@@ -1,15 +1,17 @@
 (ns toddler.calendar-stories
   (:require
-    [vura.core :as vura]
-    [helix.core :refer [$]]
-    toddler.theme
-    [toddler.interactions :as interactions]))
+   [vura.core :as vura]
+   [helix.core :refer [$ <>]]
+   [helix.hooks :as hooks]
+   [helix.dom :as d]
+   toddler.theme
+   [toddler.interactions :as interactions]
+   ["react" :as react]))
 
 
 
 (def ^:export default
   #js {:title "Toddler Calendar"})
-
 
 (defn ^:export CalendarDay
   []
@@ -29,7 +31,110 @@
   []
   ($ interactions/calendar-month
      {:days (vura/calendar-frame
-              (->
-                (vura/date)
-                vura/date->value)
-              :month)}))
+             (->
+              (vura/date)
+              vura/date->value)
+             :month)}
+     ($ interactions/calendar-year-dropdown {:value (vura/year? (vura/date))
+                                             :placeholder "Click me"})))
+
+(defn ^:export CalendarWeek
+  []
+  ($ interactions/calendar-week
+     {:days
+      (vura/calendar-frame
+       (->
+        (vura/date)
+        vura/date->value)
+       :week)}))
+
+(defn ^:export TimeTest
+  []
+  ($ interactions/TimestampTime {:hour (-> (vura/date) vura/time->value vura/hour?)
+                                 :minute (-> (vura/date) vura/time->value vura/minute?)}))
+
+(defn ^:export SliderTest
+  []
+  (let [[state set-state] (hooks/use-state 0)]
+    ($ interactions/slider {:min "0"
+                            :max "500"
+                            :value (str state)
+                            :onChange (fn [e] (set-state (.-value (.-target e))))})))
+
+(defn ^:export CellTest
+  []
+  ($ interactions/integer-cell {:cell/data 25}))
+
+#_(defn ^:export TimeStampInputTest
+    []
+    (let [[state set-state] (hooks/use-state (vura/date))]
+      ($ interactions/TimestampFieldInput
+         {:placeholder "" #_(vura/date)
+          :value state
+          :format "yyyy-mm-ddThh:mm:ss.SSS"
+          :onChange (fn [e] (set-state (.. e target value)))})))
+
+(defn ^:export CalendarYearDropdownTest
+  []
+  ($ interactions/calendar-month-dropdown {:value (vura/date 2020 8)
+                                           :placeholder "Click me"}))
+
+(defn ^:export SearchTest
+  []
+  (let [[state set-state!] (hooks/use-state "")]
+    ($ interactions/search {:value state
+                            :on-change (fn [e] (set-state! (.-value (.-target e))))})))
+
+(defn ^:export CheckBoxTest
+  []
+  (let [[state set-state!] (hooks/use-state false)] ($ interactions/checkbox
+                                                       {:active state
+                                                        :onClick (fn [] (set-state! (not state)))})))
+
+(defn ^:export DropDownTest
+  []
+  ($ interactions/DropdownArea
+     ($ interactions/DropdownElement {:value "dsfdgsg"})
+     ($ interactions/DropdownElement {:value "dfds"})))
+
+(defn ^:export ValuteTest
+  []
+  (let [[state set-state!] (hooks/use-state 0)]
+    ($ interactions/CurrencyField {:currency "EUR"
+                                   :amount state
+                                   :placeholder "evro"
+                                   :onChange (fn [e] (set-state! (.-value (.-target e))))})))
+
+(defn ^:export NumberInput
+  []
+  (let [[state set-state!] (hooks/use-state "")]
+    ($ interactions/InputField
+       {:value state
+        :onChange (fn [e] (set-state! (.. e -target -value)))})))
+
+(defn ^:export TimeStampCalendarTest
+  []
+  (let [cal-ref (hooks/use-ref nil)]
+    (d/div {:style {:margin "auto",
+                    :width "20%"}}
+           ($ interactions/TimestampCalendar {#_:ref #_(reset! cal-ref %)
+                                              :on-click (fn [] (.log js/console "clicked day"))
+                                              :on-next-month (fn [] {:year 2021
+                                                                     :month 9
+                                                                     :day-in-month 17})
+                                              :on-prev-month (fn [] {:year 2023
+                                                                     :month 7
+                                                                     :day-in-month 17})}))))
+
+(defn ^:export AvatarImage
+  []
+  (let [[state set-state] (hooks/use-state 100)]
+    (<>
+     ($ interactions/slider {:width "300px"
+                             :min "10"
+                             :max "500"
+                             :value (str state)
+                             :onChange (fn [e] (set-state (.-value (.-target e))))})
+     (d/br)
+     ($ interactions/avatar {:size (int state)
+                             :avatar "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1920px-Image_created_with_a_mobile_phone.png"}))))

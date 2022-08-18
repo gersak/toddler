@@ -1,0 +1,3 @@
+{:hooks
+ {:analyze-call
+  {helix.styled-components/defstyled clj-kondo.helix.placenta/defstyled}}}
