@@ -1292,6 +1292,7 @@
      {:on-clear #(set-timestamp! nil)
       :on-next-month
       (fn []
+        (println "NEXT MONTH")
         (let [{:keys [day-in-month days-in-month]} timestamp
               value (vura/context->value (assoc timestamp :day-in-month 1))
               value' (+ value (vura/days days-in-month))
@@ -1302,6 +1303,7 @@
        ;;
       :on-prev-month
       (fn []
+        (println "PREV MONTH")
         (let [{:keys [day-in-month]} timestamp
               value (vura/context->value (assoc timestamp :day-in-month 1))
               value' (- value (vura/days 1))
@@ -1310,14 +1312,17 @@
                                  :day-in-month (min day-in-month days-in-month)
                                  :selected selected))))
        ;;
-      :on-day-change #(set-timestamp!
-                       (assoc
-                        timestamp
-                        :selected (-> timestamp
-                                      (assoc :day-in-month %)
-                                      vura/context->value
-                                      vura/value->time)
-                        :day-in-month %))
+      :on-day-change
+      (fn [days-in-month]
+        (set-timestamp!
+          (assoc
+            timestamp
+            :selected (-> timestamp
+                          (assoc :day-in-month day-in-month)
+                          vura/context->value
+                          vura/value->time)
+            :day-in-month day-in-month)))
+      ;;
       :on-year-change #(set-timestamp! (assoc timestamp :year %))
       :on-month-change (fn [month]
                          (let [v (vura/utc-date-value year month)

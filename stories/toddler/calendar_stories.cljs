@@ -44,16 +44,16 @@
   []
   ($ interactions/calendar-week
      {:days
-      (vura/calendar-frame
-       (->
+      (->
         (vura/date)
-        vura/date->value)
-       :week)}))
+        vura/date->value
+        (vura/calendar-frame :week))}))
 
 (defn ^:export TimeTest
   []
-  ($ interactions/TimestampTime {:hour (-> (vura/date) vura/time->value vura/hour?)
-                                 :minute (-> (vura/date) vura/time->value vura/minute?)}))
+  ($ interactions/TimestampTime
+     {:hour (-> (vura/date) vura/time->value vura/hour?)
+      :minute (-> (vura/date) vura/time->value vura/minute?)}))
 
 (defn ^:export SliderTest
   []
@@ -123,24 +123,21 @@
      (d/div
        {:style {:margin "auto",
                 :width "20%"}}
-       ($ interactions/TimestampCalendar
-          {:onChange (fn [] (.log js/console "clicked day"))
-           :on-next-month (fn [] {:year 2021
-                                  :month 9
-                                  :day-in-month 17})
-           :on-prev-month (fn [] {:year 2023
-                                  :month 7
-                                  :day-in-month 17})}))))
+       (let []
+         ($ interactions/timestamp-calendar
+            {:onChange (fn [x] (.log js/console "clicked day"))})))))
 
 (defn ^:export AvatarImage
   []
   (let [[state set-state] (hooks/use-state 100)]
     (<>
-     ($ interactions/slider {:width "300px"
-                             :min "10"
-                             :max "500"
-                             :value (str state)
-                             :onChange (fn [e] (set-state (.-value (.-target e))))})
+     ($ interactions/slider
+        {:width "300px"
+         :min "10"
+         :max "500"
+         :value (str state)
+         :onChange (fn [e] (set-state (.-value (.-target e))))})
      (d/br)
-     ($ interactions/avatar {:size (int state)
-                             :avatar "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1920px-Image_created_with_a_mobile_phone.png"}))))
+     ($ interactions/avatar
+        {:size (int state)
+         :avatar "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1920px-Image_created_with_a_mobile_phone.png"}))))
