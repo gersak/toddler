@@ -32,8 +32,7 @@
    [toddler.elements.tooltip :as tip]
     ;;
    ["react" :as react]
-   ["simplebar-react" :default SimpleBar]
-   ["simplebar/dist/simplebar.min.css"]
+   ["simplebar-react" :as SimpleBar]
    ["@fortawesome/react-fontawesome" :refer [FontAwesomeIcon]]
    ["@fortawesome/free-solid-svg-icons"
     :refer [faCheck
@@ -52,8 +51,8 @@
   {"transition" "box-shadow 0.3s ease-in-out"}
   --themed)
 
-;; Basic components
 
+;; Basic components
 (defstyled fa FontAwesomeIcon
   {:use-select "none"
    :cursor "pointer"

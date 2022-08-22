@@ -1,6 +1,7 @@
 (ns toddler.theme
   (:require
     clojure.string
+    [toddler.head :as head]
     [helix.styled-components :as sc :refer [--themed]]
     [helix.placenta.util :refer [deep-merge]]))
 
@@ -782,3 +783,18 @@
    ".action"
    {:background-color "#929292"
     :color light-gray}})
+
+
+(def global (sc/import-resource "css/toddler.css"))
+(def simplebar (sc/import-resource "css/simplebar.css"))
+
+(head/add
+  :link
+  {:href "https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+   :rel "stylesheet"})
+
+(comment
+  (head/remove
+    :link
+    {:href "https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+     :rel "stylesheet"}))

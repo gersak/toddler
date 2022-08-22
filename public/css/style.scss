@@ -1,0 +1,69 @@
+@font-face {
+  font-family: Roboto;
+  src: url('public/fonts/Roboto-Regular.ttf') format('ttf');
+}
+
+@import "colors";
+@import "variables";
+@import "form";
+@import "eywa/animation";
+@import "eywa/icons";
+@import "eywa/uploaders";
+@import "eywa/buttons";
+@import "eywa/elements";
+@import "eywa/task";
+@import "eywa/tags";
+@import "eywa/modal";
+@import "eywa/tabs";
+@import "eywa/actions";
+@import "eywa/calendar";
+@import "eywa/scheduler";
+@import "eywa/notifications";
+@import "flex/table";
+
+
+body {
+    margin: 0;
+    background-color: #FFF;
+    font-family: 'Arial';
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Outline href */
+
+#cockpit-content {
+  position:relative;
+}
+
+a, a:active, a:focus, select, select:active, select:focus {
+  text-decoration: none;
+  outline: 0;
+  &:hover {
+    // color: darken($color-blue,20);
+    color: $color-action;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
+input, textarea {
+  &::placeholder {
+    font-weight: 300;
+    color: lighten($color,100);
+    font-style: italic;
+  }
+  &:focus {
+    outline: 0;
+    outline-offset: 0;
+    color: $color;
+  }
+}
+
+
+.disabled {
+  pointer-events: none;
+  cursor: not-allowed;
+}

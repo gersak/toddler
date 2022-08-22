@@ -105,10 +105,11 @@
 (defn ^:export ValuteTest
   []
   (let [[state set-state!] (hooks/use-state 0)]
-    ($ interactions/CurrencyField {:currency "EUR"
-                                   :amount state
-                                   :placeholder "evro"
-                                   :onChange (fn [e] (set-state! (.-value (.-target e))))})))
+    ($ interactions/CurrencyField
+       {:currency "EUR"
+        :amount state
+        :placeholder "evro"
+        :onChange (fn [e] (set-state! (.-value (.-target e))))})))
 
 (defn ^:export NumberInput
   []
@@ -131,13 +132,13 @@
   []
   (let [[state set-state] (hooks/use-state 100)]
     (<>
-     ($ interactions/slider
-        {:width "300px"
-         :min "10"
-         :max "500"
-         :value (str state)
-         :onChange (fn [e] (set-state (.-value (.-target e))))})
-     (d/br)
-     ($ interactions/avatar
-        {:size (int state)
-         :avatar "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1920px-Image_created_with_a_mobile_phone.png"}))))
+      ($ interactions/slider
+         {:width "300px"
+          :min "10"
+          :max "500"
+          :value (str state)
+          :onChange (fn [e] (set-state (.-value (.-target e))))})
+      (d/br)
+      ($ interactions/avatar
+         {:size (int state)
+          :avatar "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1920px-Image_created_with_a_mobile_phone.png"}))))

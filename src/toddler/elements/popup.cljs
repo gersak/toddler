@@ -4,7 +4,7 @@
     [cljs-bean.core :refer [->js]]
     ["react" :as react]
     ["react-dom" :as rdom]
-    ["simplebar-react" :default SimpleBar]
+    ["simplebar-react" :as SimpleBar]
     [helix.core 
      :refer [defnc $ provider <>
              defhook create-context]]

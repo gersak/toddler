@@ -4,9 +4,10 @@
   "description": "UI elements based on helix library",
   "main": "index.js",
   "scripts": {
-    "dev": "npx shadow-cljs watch storybook",
+    "dev": "npx shadow-cljs -A:shadow:cider watch storybook",
+    "dev-toddler": "npx shadow-cljs -A:shadow:cider watch dev",
     "storybook": "start-storybook",
-    "init": "npx shadow-cljs compile storybook",
+    "init": "npx shadow-cljs -A:shadow:cider compile storybook",
     "dev-stories": "concurrently --kill-others \"npm run dev\" \"npm run storybook\""
   },
   "author": "Robert Gersak",

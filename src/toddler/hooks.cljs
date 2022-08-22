@@ -40,7 +40,6 @@
       (get-in-calendar locale key))))
 
 
-
 (defn- bounding-client-rect [node]
   (let [rect (.getBoundingClientRect node)]
     {:height (.-height rect)
@@ -50,20 +49,36 @@
      :right (.-right rect)
      :bottom (.-bottom rect)}))
 
+
+(defhook use-window-dimensions
+  []
+  (hooks/use-context app/*window*))
+
+
 (defhook use-dimensions 
   "Hook returns ref that should be attached to component and
   second result dimensions of bounding client rect"
   []
-  (let [r (react/useRef nil)
+  (let [node (hooks/use-ref nil)
         [dimensions set-dimensions!] (hooks/use-state nil)]
-    ; (hooks/use-layout-effect
     (hooks/use-effect
-      [(.-current ^js r)]
-      (when (some? (.-current ^js r)) 
-        (let [new-dimensions (bounding-client-rect (.-current ^js r))]
-          (set-dimensions! new-dimensions)))
-      (fn []))
-    [r dimensions]))
+      [@node]
+      (when (some? @node) 
+        (letfn [(reset [[entry]]
+                  (let [content-rect (.-contentRect entry)]
+                    (set-dimensions!
+                      {:width (.-width content-rect)
+                       :height (.-height content-rect)
+                       :top (.-top content-rect)
+                       :left (.-left content-rect)
+                       :right (.-right content-rect)
+                       :bottom (.-bottom content-rect)
+                       :x (.-x content-rect)
+                       :y (.-y content-rect)})))]
+          (let [observer (js/ResizeObserver. reset)]
+            (.observe observer @node)
+            (fn [] (.disconnect observer))))))
+    [node dimensions]))
 
 
 (defn make-idle-service
@@ -132,6 +147,7 @@
          (async/put! @idle-channel (or v :NULL))))
      ;; Return local state and update fn
      [v u])))
+
 
 (defhook use-delayed
   ([state] (use-delayed state 500))
