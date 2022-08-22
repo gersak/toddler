@@ -3,9 +3,7 @@
     ["react-dom/client" :refer [createRoot]]
     [helix.core :refer [$ defnc]]
     [helix.hooks :as hooks]
-    [toddler.dev
-     :refer [playground
-             add-component]]
+    [toddler.dev :as dev]
     [toddler.interactions :as interactions]))
 
 
@@ -15,20 +13,26 @@
   (let [target ^js (.getElementById js/document "app")]
     (when-not @root
       (reset! root ^js (createRoot target)))
-    (.render @root ($ playground))))
+    (.render @root ($ dev/playground))))
 
 
 (defnc AutosizeInput
   []
   (let [[state set-state!] (hooks/use-state "")]
-    ($ interactions/autosize-input
-       {:placeholder "Write some text..."
-        :value state
-        :onChange (fn [e]
-                    (set-state! (.. e -target -value)))})))
+    (letfn [(on-change [e]
+              (set-state! (.. e -target -value)))]
+      ($ dev/centered-component
+         ($ interactions/autosize-input
+            {:placeholder "Write some text..."
+             :value state
+             :onChange on-change})
+         ($ interactions/input-field
+            {:name "user name"
+             :value state
+             :onChange on-change})))))
 
 
-(add-component
+(dev/add-component
   {:key ::autosize-input
    :name "AutosizeInput"
    :render AutosizeInput})

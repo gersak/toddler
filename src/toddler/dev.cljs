@@ -4,6 +4,7 @@
      :refer [defnc $ create-context <> provider]]
     [helix.hooks :as hooks]
     [helix.dom :as d]
+    [helix.children :as c]
     [helix.styled-components
      :refer [global-style defstyled --themed]]
     [toddler.theme :as theme]
@@ -86,6 +87,7 @@
    :flex-direction "column"
    ".title" {:font-family "Audiowide"
              :justify-content "center"
+             :font-size "1.5em"
              :align-items "center"
              :display "flex"
              :height 50}
@@ -106,22 +108,15 @@
   {:display "flex"})
 
 
-; (defnc EmptyContent
-;   [{:keys [className]}]
-;   (let [window (use-window-dimensions)]
-;     (d/div
-;       {:className className
-;        :style {:height (:height window)}}
-;       "Select some component")))
-
 (defnc EmptyContent
   [{:keys [className]}]
   (let [window (use-window-dimensions)]
     ($ interactions/row
        {:className className
         :position :center}
-       ($ interactions/column
-          {:position :center}
+       ($ interactions/row
+          {:position :center
+           :style #js {:height (:height window)}}
           "Select some component"))))
 
 (defstyled empty-content EmptyContent
@@ -137,22 +132,16 @@
         {nav-width :width} (hooks/use-context *navbar*)]
     ($ popup/Container
        ($ interactions/simplebar
-          {:style #js {:height (:height window)
+          {:className className
+           :style #js {:height (:height window)
                        :width (- (:width window) nav-width)}}
-          (d/div
-            {:className "wrapper"}
-            (d/div
-              {:className className}
-              (if render
-                ($ render)
-                ($ empty-content))))))))
+          (if render
+            ($ render)
+            ($ empty-content))))))
 
 
 (defstyled content Content
-  {".wrapper"
-   {:padding 20
-    :flex-grow "1"
-    :height "100%"}})
+  nil)
 
 
 (def global-css
@@ -221,3 +210,29 @@
                (if (neg? idx)
                  (conj current c)
                  (assoc current idx c)))))))
+
+
+
+;; Component wrappers
+
+(defnc CenteredComponent
+  [{:keys [className] :as props}]
+  (let [window (use-window-dimensions)
+        navbar (hooks/use-context *navbar*)]
+    (d/div
+      {:className className
+       :style {:width (- (:width window) (:width navbar))
+               :minHeight (:height navbar)}}
+      (d/div
+        {:className "track"}
+        (c/children props)))))
+
+
+(defstyled centered-component CenteredComponent
+  {:display "flex"
+   :justify-content "center"
+   :align-items "center"
+   :flex-grow "1"
+   ".track" {:display "flex"
+             :flex-direction "column"
+             :justify-content "center"}})
