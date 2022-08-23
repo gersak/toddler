@@ -1,13 +1,13 @@
 (ns toddler.theme
   (:require
-    clojure.string
-    [helix.styled-components :as sc :refer [--themed]]
-    [helix.placenta.util :refer [deep-merge]]))
+   clojure.string
+   [helix.styled-components :as sc :refer [--themed]]
+   [helix.placenta.util :refer [deep-merge]]))
 
 
 (def text "#275f82")
 
-(def green "#0dda87") 
+(def green "#0dda87")
 
 (defmethod sc/color [{} :positive] [] green)
 
@@ -123,7 +123,7 @@
   [_]
   $element-block)
 
-(letfn [(themed-action 
+(letfn [(themed-action
           [{:keys [theme context]
             _disabled :disabled}]
           (let [context (if _disabled :disabled context)
@@ -147,7 +147,7 @@
 
 (defn button-colors
   [{:keys [context disabled]}]
-  (let [context (if disabled :disabled context)] 
+  (let [context (if disabled :disabled context)]
     (case context
       ;;
       :positive
@@ -169,13 +169,13 @@
       ;;
       :fresh
       {:color gray
-       :background-color light-gray 
+       :background-color light-gray
        :hover {:color "black"
                :background-color yellow}}
       ;;
       :stale
       {:color gray
-       :background-color light-gray 
+       :background-color light-gray
        ::hover {:color "white"
                 :background-color dark-gray}}
       ;;
@@ -196,27 +196,27 @@
 (defn interactions-button
   [{:keys [disabled] :as props}]
   (let [{:keys [background-color color hover]}
-        (button-colors props)] 
+        (button-colors props)]
     (cond->
-      {:color color
-       :background-color background-color
-       ":hover" (assoc hover :box-shadow "0px 2px 4px 0px #aeaeae")}
+     {:color color
+      :background-color background-color
+      ":hover" (assoc hover :box-shadow "0px 2px 4px 0px #aeaeae")}
       disabled (assoc :pointer-events "none"))))
 
-(defmethod --themed [{} 'toddler.interactions/button] [props] 
+(defmethod --themed [{} 'toddler.interactions/button] [props]
   (merge (interactions-button props) (interactions-drop-on-active props)))
 
 
 (defmethod --themed [{} 'toddler.interactions/checkbox-button]
   [{:keys [theme $active disabled]}]
   (let [[c bc] (case (:name theme)
-                 ["white" (case $active 
-                            true green 
-                            false disabled 
-                            light-gray)])] 
+                 ["white" (case $active
+                            true green
+                            false disabled
+                            light-gray)])]
     (cond->
-      {:color c
-       :background-color bc}
+     {:color c
+      :background-color bc}
       disabled (assoc :pointer-events "none"))))
 
 
@@ -232,35 +232,35 @@
     :or {width "100%"
          height 5}}]
   (cond->
-    {:width width :height height
-     :background-color light-gray
-     "&::-webkit-slider-runnable-track"
-     {:border-radius 4}
-     "&::-moz-range-track"
-     {:border-radius 4}
-     "&::-webkit-slider-thumb"
-     {:-webkit-appearance "none"
-      :appearance "none"
-      :width twidth :height theight
-      :background gray
-      :border-radius "50%"
-      :cursor "pointer"}
-     "&::-moz-range-thumb" 
-     {:width twidth :height theight
-      :background gray
-      :cursor "pointer"}
-     ":hover::-webkit-slider-thumb"
-     {:background dark-gray}}
+   {:width width :height height
+    :background-color light-gray
+    "&::-webkit-slider-runnable-track"
+    {:border-radius 4}
+    "&::-moz-range-track"
+    {:border-radius 4}
+    "&::-webkit-slider-thumb"
+    {:-webkit-appearance "none"
+     :appearance "none"
+     :width twidth :height theight
+     :background gray
+     :border-radius "50%"
+     :cursor "pointer"}
+    "&::-moz-range-thumb"
+    {:width twidth :height theight
+     :background gray
+     :cursor "pointer"}
+    ":hover::-webkit-slider-thumb"
+    {:background dark-gray}}
     ;;
     (= orient "vertical")
     (as-> css
-      (let [hw (/ width 2)]
-        (assoc css
-               :transform (str "translate(" (* -1 hw) "px,0) rotate(270deg)")
-               :margin-top hw)))
+          (let [hw (/ width 2)]
+            (assoc css
+                   :transform (str "translate(" (* -1 hw) "px,0) rotate(270deg)")
+                   :margin-top hw)))
     #_(assoc
-        :writing-mode "bt-lr"
-        :-webkit-appearance "slider-vertical")))
+       :writing-mode "bt-lr"
+       :-webkit-appearance "slider-vertical")))
 
 
 (defmethod --themed [{} 'toddler.interactions/dropdown-option]
@@ -268,7 +268,7 @@
   (let [[c h b bh]
         (case theme
           (let [c "#00b99a"
-                h "#d7f3f3"] 
+                h "#d7f3f3"]
             [(if selected c gray) gray "white" h]))]
     {:color c
      :cursor "pointer"
@@ -284,7 +284,7 @@
 (def $dropdown-shadow
   {:background-color "white"
    :box-shadow "0px 3px 10px -3px black"
-   " .simplebar-scrollbar:before" 
+   " .simplebar-scrollbar:before"
    {:background gray
     :pointer-events "none"}})
 
@@ -293,7 +293,7 @@
 (def $with-delete-marker
   {".tbody .trow"
    {":hover"
-    {" .delete-marker" 
+    {" .delete-marker"
      {:opacity "1 !important"
       :transition "opacity .6s ease-in-out"}}
     " .delete-marker:not(.selected)" {:opacity "0"}}})
@@ -310,14 +310,14 @@
     "&:first-child:last-child" {:padding "6px 0"}}})
 
 (def $rounded-table
-  {".thead" 
+  {".thead"
    {:box-sizing "border-box"
     ".trow" {:padding-bottom 8}}
-   ".tbody" 
+   ".tbody"
    {:box-sizing "border-box"
     :border-radius 13}
    ; ".tbody:not(.empty)" {:box-shadow "1px 3px 7px 2px #00000033"}
-   ".tbody:not(.empty)" {:box-shadow "1px 4px 11px 1px #0000001f"} 
+   ".tbody:not(.empty)" {:box-shadow "1px 4px 11px 1px #0000001f"}
    ".tbody .simplebar-content-wrapper"
    {:border-radius 13}
    ".tbody .trow"
@@ -333,8 +333,8 @@
 (defmethod --themed [{} 'toddler.interactions/dropdown-popup]
   [_]
   (deep-merge
-    $dropdown-shadow
-    $dropdown))
+   $dropdown-shadow
+   $dropdown))
 
 
 (defmethod --themed [{} 'toddler.interactions/dropdown-element-decorator]
@@ -364,14 +364,20 @@
      :border-collapse "collapse"
      :border (str "1px solid " dark-teal)
      :border-radius 2
-     :font-weight 500}}})
+     :font-weight 500}
+    "&.today"
+    {:border "1px solid teal"}
+    "&.weekend"
+    {:color red}}})
 
 
 (defmethod --themed [{} 'toddler.interactions/calendar-month-header]
   [_]
   {".day-wrapper .day"
    {:color gray
-    :font-size 12}})
+    :font-size 12
+    "&.weekend"
+    {:color red}}})
 
 (defmethod --themed [{} 'toddler.interactions/calendar-month]
   [_]
@@ -396,7 +402,7 @@
 
 (defmethod --themed [{} 'toddler.interactions/default-field]
   [{_disabled :disabled}]
-  {".field-name" 
+  {".field-name"
    {:color (cond
              _disabled disabled
              :else gray)
@@ -458,52 +464,52 @@
   $dropdown-shadow)
 
 
-(defmethod --themed [{} 'toddler.interactions/user] 
+(defmethod --themed [{} 'toddler.interactions/user]
   [{:keys [disabled read-only]}]
-  (let [cursor (if (or disabled read-only) 
+  (let [cursor (if (or disabled read-only)
                  "default"
-                 "pointer")] 
+                 "pointer")]
     (cond->
-      {:color gray
-       :cursor cursor
-       :input {:cursor cursor}}
+     {:color gray
+      :cursor cursor
+      :input {:cursor cursor}}
       (or disabled read-only) (assoc :pointer-events "none"))))
 
 
 
 (defmethod --themed [{} 'toddler.interactions/group]
   [{:keys [disabled read-only]}]
-  (let [cursor (if (or disabled read-only) 
+  (let [cursor (if (or disabled read-only)
                  "default"
-                 "pointer")] 
+                 "pointer")]
     (cond->
-      {:color gray
-       :cursor cursor
-       :input {:cursor cursor}}
+     {:color gray
+      :cursor cursor
+      :input {:cursor cursor}}
       (or disabled read-only) (assoc :pointer-events "none"))))
 
 
 (defmethod --themed [{} 'toddler.interactions/user-multiselect]
   [{:keys [disabled read-only]}]
-    (let [cursor (if (or disabled read-only) 
-                   "default"
-                   "pointer")] 
-      (cond->
-        {:color gray
-         :cursor cursor
-         :input {:cursor cursor}}
-        (or disabled read-only) (assoc :pointer-events "none"))))
+  (let [cursor (if (or disabled read-only)
+                 "default"
+                 "pointer")]
+    (cond->
+     {:color gray
+      :cursor cursor
+      :input {:cursor cursor}}
+      (or disabled read-only) (assoc :pointer-events "none"))))
 
 
 (defmethod --themed [{} 'toddler.interactions/group-multiselect]
   [{:keys [disabled read-only]}]
-  (let [cursor (if (or disabled read-only) 
+  (let [cursor (if (or disabled read-only)
                  "default"
-                 "pointer")] 
+                 "pointer")]
     (cond->
-      {:color gray
-       :cursor cursor
-       :input {:cursor cursor}}
+     {:color gray
+      :cursor cursor
+      :input {:cursor cursor}}
       (or disabled read-only) (assoc :pointer-events "none"))))
 
 
@@ -513,7 +519,7 @@
 
 
 
-(defmethod --themed [{} 'toddler.interactions/table-header] 
+(defmethod --themed [{} 'toddler.interactions/table-header]
   [_]
   {:border-color dark-teal})
 
@@ -523,7 +529,7 @@
 
 (defmethod --themed [{} 'toddler.interactions/timestamp-cell]
   [{:keys [opened] :as props}]
-  (let [interactive? (interactive-cell? props)] 
+  (let [interactive? (interactive-cell? props)]
     {".decorator" {:color (if (or (not interactive?) opened) "transparent" "#adacac")
                    :user-events "none"}
      ".time" {:input {:color dark-gray}}
@@ -535,29 +541,29 @@
 (defmethod --themed [{} 'toddler.interactions/table-row] [_]
   {":hover" {:border-color dark-teal}})
 
-(defmethod --themed [{} 'toddler.interactions/table-header-cell] [_] 
+(defmethod --themed [{} 'toddler.interactions/table-header-cell] [_]
   {:color gray})
 
 
 ;; toddler.interactions.light
- (defmethod --themed [{} 'toddler.interactions.light/field-input]
-   [{:keys [readOnly]}] 
-   (cond->
-     {:color text
-      :transition "border-color 0.2s ease-in"
-      :border-bottom (str "1px solid " bleached-asphalt)
-      "&::placeholder" {:color asphalt}
-      "&:focus,&:hover" 
-      {:border-color text}}
-     readOnly (assoc :cursor "pointer")))
+(defmethod --themed [{} 'toddler.interactions.light/field-input]
+  [{:keys [readOnly]}]
+  (cond->
+   {:color text
+    :transition "border-color 0.2s ease-in"
+    :border-bottom (str "1px solid " bleached-asphalt)
+    "&::placeholder" {:color asphalt}
+    "&:focus,&:hover"
+    {:border-color text}}
+    readOnly (assoc :cursor "pointer")))
 
 
 (defmethod --themed [{} 'toddler.interactions.light/search]
   [{:keys [position]
     :or {position :right}}]
-  (let [[c bc pc] [color dark-asphalt asphalt]] 
+  (let [[c bc pc] [color dark-asphalt asphalt]]
     {:color c
-     :input 
+     :input
      {:color c
       "&::placeholder" {:color pc}
       "&:focus::placeholder" {:color c}
@@ -570,8 +576,8 @@
 
 (defmethod --themed [{} 'toddler.interactions.light/dropdown-option]
   [{:keys [selected]}]
-  {:color (if selected 
-            saturated-teal 
+  {:color (if selected
+            saturated-teal
             "#dbdbdb")
    :cursor "pointer"
    :transition "color .2s ease-in,background-color .2s ease-in"
@@ -581,42 +587,42 @@
    ":last-child" {:border-bottom "none"}})
 
 
-(letfn [(--themed-action 
+(letfn [(--themed-action
           [{:keys [context disabled]}]
           (let [context (if disabled :disabled context)]
             (cond->
-              {:color color
-               ":hover" {:color (case context
-                                  :positive pastel-green
-                                  :negative red
-                                  :fun saturated-teal
-                                  :fresh yellow
-                                  :stale light-gray
-                                  :disabled disabled
-                                  color)}
-               :cursor (if disabled "default" "pointer")}
+             {:color color
+              ":hover" {:color (case context
+                                 :positive pastel-green
+                                 :negative red
+                                 :fun saturated-teal
+                                 :fresh yellow
+                                 :stale light-gray
+                                 :disabled disabled
+                                 color)}
+              :cursor (if disabled "default" "pointer")}
               disabled (assoc
-                         :visibility "hidden"
-                         :cursor "default"
-                         :pointer-events "none"))))]
+                        :visibility "hidden"
+                        :cursor "default"
+                        :pointer-events "none"))))]
   (defmethod --themed [{} 'toddler.interactions.light/action] [props] (--themed-action props))
   (defmethod --themed [{} 'toddler.interactions.light/named-action] [props] (--themed-action props)))
 
 
-  (defmethod --themed [{} 'toddler.interactions.light/tabs] 
-    [_]
-    (let [[c ic bc bcl]
-          [color asphalt color asphalt]]
-      {:box-shadow "0px 2px 4px -4px black"
-       :border-bottom (str "1px solid " bc)
-       " .tab" 
-       {:color ic
-        "&:not(:first-child)"
-        {:border-left (str "1px solid " bcl)}
-        "&.selected, &:hover"
-        {:color c
-         :transition "color .3s ease-in"
-         :cursor "default"}}}))
+(defmethod --themed [{} 'toddler.interactions.light/tabs]
+  [_]
+  (let [[c ic bc bcl]
+        [color asphalt color asphalt]]
+    {:box-shadow "0px 2px 4px -4px black"
+     :border-bottom (str "1px solid " bc)
+     " .tab"
+     {:color ic
+      "&:not(:first-child)"
+      {:border-left (str "1px solid " bcl)}
+      "&.selected, &:hover"
+      {:color c
+       :transition "color .3s ease-in"
+       :cursor "default"}}}))
 
 (defmethod --themed [{} 'toddler.interactions.light/input-field]
   [_]
@@ -627,7 +633,7 @@
 (defmethod --themed [{} 'toddler.interactions.light/user-dropdown-input]
   [_]
   {"input::placeholder" {:color "#8fa7c4"}
-   :input {:color color}}) 
+   :input {:color color}})
 
 
 (letfn [(--editable-tag [{:keys [editable?]}]
@@ -645,7 +651,7 @@
                     :fresh ["black" yellow dark-yellow "black"]
                     :stale ["white" gray dark-gray "black"]
                     :exception ["white" "black" gray red]
-                    ["white" teal dark-teal red]))] 
+                    ["white" teal dark-teal red]))]
             {:color c
              :background-color b
              " .remove" {:color rc
@@ -656,46 +662,46 @@
   (defmethod --themed [{} 'toddler.interactions.light/user-tag]
     [props]
     (deep-merge
-      {:img {:margin-right 4}}
-      (--editable-tag props)
-      (--colored-tag props)))
+     {:img {:margin-right 4}}
+     (--editable-tag props)
+     (--colored-tag props)))
 
   (defmethod --themed [{} 'toddler.interactions.light/tag]
     [props]
     (deep-merge
-      (--editable-tag props)
-      (--colored-tag props)))
+     (--editable-tag props)
+     (--colored-tag props)))
 
   (defmethod --themed [{} 'toddler.interactions/user-tag]
     [props]
     (deep-merge
-      {:img {:margin-right 4}}
-      (--editable-tag props)
-      (--colored-tag props)))
+     {:img {:margin-right 4}}
+     (--editable-tag props)
+     (--colored-tag props)))
 
   (defmethod --themed [{} 'toddler.interactions/tag]
     [props]
     (deep-merge
-      (--editable-tag props)
-      (--colored-tag props))))
+     (--editable-tag props)
+     (--colored-tag props))))
 
 
 
-(defmethod --themed [{} 'toddler.elements.modal/close-button] [_] 
+(defmethod --themed [{} 'toddler.elements.modal/close-button] [_]
   {:color "#bfbfbf"
    "&:hover" {:color red}})
 
 
-(defmethod --themed [{} 'toddler.elements.modal/feedback-footer] [_] 
+(defmethod --themed [{} 'toddler.elements.modal/feedback-footer] [_]
   {".warning" {:color orange}
    ".error" {:color red
              :svg {:margin-right 6}}})
 
-(defmethod --themed [{} 'toddler.elements.tabs/tab-container] [_] 
+(defmethod --themed [{} 'toddler.elements.tabs/tab-container] [_]
   (let [[c ic bc bcl]
         [dark-gray "#b4b4b4" dark-gray "#b4b4b4"]]
     {:border-bottom (str "1px solid " bc)
-     " .tab" 
+     " .tab"
      {:color ic
       "&:not(:first-child)"
       {:border-left (str "1px solid " bcl)}
@@ -711,20 +717,20 @@
    :background dark-asphalt
    :opacity (if selected "1" "0.2")
    :border "2px solid #d2dfec"
-   ":hover" 
+   ":hover"
    {:opacity "1"}
-   ".negative" 
+   ".negative"
    {:border "2px solid #ffe0e7"
     :background-color red
     :opacity "0.2"
-    ":hover" 
+    ":hover"
     {:opacity "1"}}
-   ".positive" 
+   ".positive"
    {:border "2px solid #d9f7e7"
     :opacity "0.2"
     ":hover"
     {:opacity "1"}}
-   ".disabled" 
+   ".disabled"
    {:cursor "default"
     :opacity "0.2 !important"}})
 
@@ -734,37 +740,37 @@
   $dropdown-shadow)
 
 
-(defmethod --themed [{} 'toddler.elements.avatar/avatar-dropzone] 
-  [] 
+(defmethod --themed [{} 'toddler.elements.avatar/avatar-dropzone]
+  []
   {:color gray
    :label {":hover" {:color dark-gray}}})
 
 
-(defmethod --themed [{} 'toddler.elements.popup/element] 
-  [] 
+(defmethod --themed [{} 'toddler.elements.popup/element]
+  []
   $dropdown-shadow)
 
 
-(defmethod --themed [{} 'toddler.elements.drawers/drawer-action] 
+(defmethod --themed [{} 'toddler.elements.drawers/drawer-action]
   [{:keys [selected]}]
   {:color "white"
    :background dark-asphalt
    :opacity (if selected "1" "0.2")
    :border "2px solid #d2dfec"
-   ":hover" 
+   ":hover"
    {:opacity "1"}
-   ".negative" 
+   ".negative"
    {:border "2px solid #ffe0e7"
     :background-color red
     :opacity "0.2"
-    ":hover" 
+    ":hover"
     {:opacity "1"}}
-   ".positive" 
+   ".positive"
    {:border "2px solid #d9f7e7"
     :opacity "0.2"
     ":hover"
     {:opacity "1"}}
-   ".disabled" 
+   ".disabled"
    {:cursor "default"
     :opacity "0.2 !important"}})
 
@@ -775,7 +781,7 @@
    ".action:hover"
    (case context
      :negative
-     {:background-color red 
+     {:background-color red
       :color "#fff8f3"}
      {:background-color teal
       :color "#fff8f3"})

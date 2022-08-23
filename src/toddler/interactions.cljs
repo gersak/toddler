@@ -463,20 +463,20 @@
         ;;
         {:keys [area] :as dropdown}
         (dropdown/use-dropdown
-          (->
-            props
-            (assoc :area-position area-position)
-            (dissoc :className)))]
+         (->
+          props
+          (assoc :area-position area-position)
+          (dissoc :className)))]
     (provider
-      {:context *dropdown*
-       :value dropdown}
-      (provider
-        {:context *dropdown-area*
-         :value [area-position set-area-position!]}
-        ($ popup/Area
-           {:ref area
-            & (select-keys props [:className])}
-           (c/children props))))))
+     {:context *dropdown*
+      :value dropdown}
+     (provider
+      {:context *dropdown-area*
+       :value [area-position set-area-position!]}
+      ($ popup/Area
+         {:ref area
+          & (select-keys props [:className])}
+         (c/children props))))))
 
 
 (defnc DropdownInput
@@ -575,9 +575,9 @@
          rpopup DropdownPopup}
     :as props}]
   ($ DropdownArea
-    {& props}
-    ($ rinput {& (dissoc props :render/input :render/popup)})
-    ($ rpopup)))
+     {& props}
+     ($ rinput {& (dissoc props :render/input :render/popup)})
+     ($ rpopup)))
 
 ;;
 
@@ -631,10 +631,9 @@
 
 
 ;; CALENDAR
-
 (def ^:dynamic ^js *calendar-events* (create-context))
 (def ^:dynamic ^js *calendar-selected* (create-context))
-(def ^:dynamic ^js *calendar-disabled* (create-context))
+(def ^:dynamic ^js *calendar-disabled* (create-context (constantly false)))
 (def ^:dynamic ^js *calendar-control* (create-context))
 (def ^:dynamic ^js *calendar-opened* (create-context))
 (def ^:dynamic ^js *calendar-state* (create-context))
@@ -652,13 +651,26 @@
         is-disabled (hooks/use-context *calendar-disabled*)
         is-selected (hooks/use-context *calendar-selected*)
         disabled (when (ifn? is-disabled) (is-disabled props))
-        selected (when (ifn? is-selected) (is-selected props))]
+        selected (when (ifn? is-selected) (is-selected props))
+        is-today (= (select-keys
+                     (-> (vura/date) vura/day-time-context) [:day-in-month :year :month])
+                    (cond (some? value)
+                          (select-keys
+                           (-> value vura/day-time-context) [:day-in-month :year :month])))
+        is-weekend (cond (some? value)
+                         (if (-> value vura/weekend?)
+                           true false))
+        #_is-holiday #_(cond (some? value)
+                             (if (-> value vura/*holiday?*)
+                               "red" ""))]
     (d/div
      {:class className}
      (d/div
       {:class (cond-> ["day"]
                 selected (conj "selected")
                 disabled (conj "disabled")
+                is-today (conj "today")
+                is-weekend (conj "weekend")
                 (nil? value) (conj "empty"))
        :onClick (fn []
                   (when-not disabled
@@ -721,10 +733,13 @@
      {:class className}
      (map
       (fn [n]
-        (d/div
-         {:class "day-wrapper"
-          :key n}
-         (d/div {:class "day"} (get day-names n))))
+        (let [is-weekend (or (= n 6)
+                             (= n 7))]
+          (d/div
+           {:class "day-wrapper"
+            :key n}
+           (d/div {:class (cond-> ["day"]
+                            is-weekend (conj "weekend"))} (get day-names n)))))
       days))))
 
 
@@ -1313,15 +1328,15 @@
                                  :selected selected))))
        ;;
       :on-day-change
-      (fn [days-in-month]
+      (fn [day-in-month]
         (set-timestamp!
-          (assoc
-            timestamp
-            :selected (-> timestamp
-                          (assoc :day-in-month day-in-month)
-                          vura/context->value
-                          vura/value->time)
-            :day-in-month day-in-month)))
+         (assoc
+          timestamp
+          :selected (-> timestamp
+                        (assoc :day-in-month day-in-month)
+                        vura/context->value
+                        vura/value->time)
+          :day-in-month day-in-month)))
       ;;
       :on-year-change #(set-timestamp! (assoc timestamp :year %))
       :on-month-change (fn [month]
