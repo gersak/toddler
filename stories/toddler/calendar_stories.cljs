@@ -6,8 +6,7 @@
    [helix.dom :as d]
    toddler.theme
    [toddler.interactions :as interactions]
-   [toddler.elements.popup :as popup]
-   ["react" :as react]))
+   [toddler.elements.popup :as popup]))
 
 
 
@@ -138,10 +137,11 @@
 #_(defn ^:export ValuteTest
     []
     (let [[state set-state!] (hooks/use-state 0)]
-      ($ interactions/CurrencyField {:currency "EUR"
-                                     :amount state
-                                     :placeholder "evro"
-                                     :onChange (fn [e] (set-state! (.-value (.-target e))))})))
+      ($ interactions/CurrencyField
+         {:currency "EUR"
+          :amount state
+          :placeholder "evro"
+          :onChange (fn [e] (set-state! (.-value (.-target e))))})))
 
 #_(defn ^:export NumberInput
     []

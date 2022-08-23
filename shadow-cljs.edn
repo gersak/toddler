@@ -1,7 +1,18 @@
 {:deps true
+ :nrepl {:port 7312}
  :builds 
  {:storybook
   {:target :npm-module
    :entries [toddler.calendar-stories
              toddler.input-stories]
-   :output-dir "public/js/stories"}}}
+   :output-dir "public/js/stories"}
+  :dev
+  {:target :browser
+   :entries [toddler.showcase]
+   :modules {:main
+             {:entries [toddler.showcase]
+              :init-fn toddler.showcase/start!}}
+   :output-to "public/js/main.js"
+   :devtools {:http-root "public"
+              :http-port 3000
+              :preloads []}}}}

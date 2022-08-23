@@ -6,6 +6,8 @@
 
 (def ^:dynamic *user* (create-context))
 (def ^:dynamic *subscription* (create-context))
+(def ^:dynamic *window* (create-context))
+(def ^:dynamic *box* (create-context))
 
 
 (defonce signal-channel (async/chan 100))
