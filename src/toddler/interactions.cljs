@@ -1194,6 +1194,7 @@
    :align-items "center"}
   --themed)
 
+
 (defnc TimestampCalendar
   [{:keys [year month day-in-month className]}]
   (let [now (-> (vura/date) vura/time->value)
@@ -1233,6 +1234,7 @@
        {:className "content"}
        ($ calendar-month {:value day-in-month :days days}))))))
 
+
 (defstyled timestamp-calendar TimestampCalendar
   {:display "flex"
    :flex-direction "column"
@@ -1261,38 +1263,6 @@
     :justify-content "center"
     :flex-grow "1"}})
 
-(defnc TimestampPopup
-  [{:keys [year month day-in-month hour minute className]
-    rcalendar :render/calendar
-    rtime :render/time
-    rclear :render/clear
-    wrapper :render/wrapper
-    :or {rcalendar timestamp-calendar
-         rtime timestamp-time
-         rclear timestamp-clear
-         wrapper dropdown-popup}}
-   popup]
-  {:wrap [(react/forwardRef)]}
-  ($ popup/Element
-     {:ref popup
-      :className (str className " animated fadeIn faster")
-      :wrapper wrapper
-      :preference popup/cross-preference}
-     ($ rcalendar
-        {:year year
-         :month month
-         :day-in-month day-in-month})
-     (when (or rtime rclear)
-       (d/div
-        {:style
-         {:display "flex"
-          :flex-grow "1"
-          :justify-content "center"}}
-        (when rtime
-          ($ rtime
-             {:hour hour
-              :minute minute}))
-        (when rclear ($ rclear))))))
 
 
 (defhook use-timestamp-events
@@ -1305,7 +1275,6 @@
      {:on-clear #(set-timestamp! nil)
       :on-next-month
       (fn []
-        (println "NEXT MONTH")
         (let [{:keys [day-in-month days-in-month]} timestamp
               value (vura/context->value (assoc timestamp :day-in-month 1))
               value' (+ value (vura/days days-in-month))
@@ -1316,7 +1285,6 @@
        ;;
       :on-prev-month
       (fn []
-        (println "PREV MONTH")
         (let [{:keys [day-in-month]} timestamp
               value (vura/context->value (assoc timestamp :day-in-month 1))
               value' (- value (vura/days 1))
@@ -1347,10 +1315,117 @@
       :on-time-change #(set-timestamp! (merge timestamp %))})))
 
 
+(defnc TimestampCalendarElement
+  [{:keys [disabled
+           read-only
+           onChange]
+    rcalendar :render/calendar
+    value :value
+    :or {rcalendar timestamp-calendar}}]
+  (let [[{:keys [selected] :as state} set-state!] (hooks/use-state nil)
+        set-state! (hooks/use-memo
+                     [disabled read-only]
+                     (if (or disabled read-only)
+                       (fn [& _])
+                       set-state!))
+        ;;
+        disabled false
+        read-only false
+        set-state! (hooks/use-memo
+                     [disabled read-only]
+                     (if (or disabled read-only)
+                       (fn [& _])
+                       set-state!))
+        events (use-timestamp-events set-state! state)
+        selected? (hooks/use-memo
+                    [selected]
+                    (let [{:keys [day-in-month year month]} (some->
+                                                              selected
+                                                              (vura/time->value)
+                                                              (vura/day-time-context))]
+                      (fn [props]
+                        (=
+                          (select-keys
+                            props
+                            [:day-in-month :year :month])
+                          {:year year
+                           :day-in-month day-in-month
+                           :month month}))))]
+    (hooks/use-effect
+      [value]
+      ;; When value has changed... Compare it with current local state
+      ;; If it doesn't match, update local state
+      (when (not= value (when (:value state) selected))
+        (-> (if value value (vura/date))
+            vura/time->value
+            vura/day-time-context
+            (assoc :selected value)
+            set-state!)))
+    ;; When local state changes, notify upstream listener
+    ;; that new value has been selected
+    (hooks/use-effect
+      [state]
+      (when (and (fn? onChange)
+                 (not= selected value))
+        (onChange
+          (when state
+            (-> state vura/context->value vura/value->time)))))
+    ($ popup/Container
+       (provider
+         {:context *calendar-selected*
+          :value selected?}
+         (provider
+           {:context *calendar-events*
+            :value events}
+           (provider
+             {:context *calendar-disabled*
+              :value disabled}
+             ($ rcalendar {& state})))))))
+
+
+;;
+
+(defnc TimestampPopup
+  [{:keys [year month day-in-month hour minute className]
+    rcalendar :render/calendar
+    rtime :render/time
+    rclear :render/clear
+    wrapper :render/wrapper
+    :or {rcalendar timestamp-calendar
+         rtime timestamp-time
+         rclear timestamp-clear
+         wrapper dropdown-popup}}
+   popup]
+  {:wrap [(react/forwardRef)]}
+  ($ popup/Element
+    {:ref popup
+     :className (str className " animated fadeIn faster")
+     :wrapper wrapper
+     :preference popup/cross-preference}
+    ($ rcalendar
+       {:year year
+        :month month
+        :day-in-month day-in-month})
+    (when (or rtime rclear)
+      (d/div
+        {:style
+         {:display "flex"
+          :flex-grow "1"
+          :justify-content "center"}}
+        (when rtime
+          ($ rtime
+             {:hour hour
+              :minute minute}))
+        (when rclear ($ rclear))))))
+
+
+
+
+
 (comment
   (def n (vura/date)))
 
-(defnc TimestampElement
+(defnc TimestampDropdownElement
   [{:keys [value
            onChange
            disabled
@@ -1487,7 +1562,7 @@
     :as props}]
   ($ field
      {& props}
-     ($ TimestampElement
+     ($ TimestampDropdownElement
         {:value value
          :onChange onChange
          :placeholder placeholder
@@ -2156,7 +2231,7 @@
          format :datetime-full}}]
   (let [{:keys [placeholder]
          :or {placeholder "Date..."}} column]
-    ($ TimestampElement
+    ($ TimestampDropdownElement
        {:value data
         :onChange onChange
         :format format

@@ -58,14 +58,12 @@
    :render AvatarImage})
 
 
-(defnc TimestampCalendar
+(defn TimestampCalendar
   []
-  (d/div
-    {:style {:margin "auto",
-             :width "20%"}}
-    (let []
-      ($ interactions/timestamp-calendar
-         {:onChange (fn [x] (.log js/console "clicked day"))}))))
+  (let [[state set-state!] (hooks/use-state nil)]
+    ($ interactions/TimestampCalendarElement
+       {:value state
+        :onChange (fn [v] (set-state! v))})))
 
 
 
