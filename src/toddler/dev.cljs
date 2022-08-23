@@ -9,6 +9,7 @@
      :refer [global-style defstyled --themed]]
     [toddler.theme :as theme]
     [toddler.dev.theme]
+    [toddler.router.dom :as router]
     [toddler.hooks 
      :refer [use-window-dimensions
              use-dimensions]]
@@ -24,14 +25,14 @@
 
 (def ^:dynamic *components* (create-context))
 (def ^:dynamic *render* (create-context))
-(def ^:dynamic *set-rendered* (create-context))
 (def ^:dynamic *set-componets* (create-context))
 (def ^:dynamic *navbar* (create-context))
 
 
 (defnc Component
-  [{:keys [className selected? component]}]
-  (let [render! (hooks/use-context *set-rendered*)]
+  [{:keys [className component]}]
+  (let [[{:keys [rendered] :as query} set-query!] (router/use-search-params)
+        selected? (= rendered (:key component))]
     (d/div
       {:className (cond-> className
                     selected? (str " selected"))}
@@ -40,7 +41,7 @@
           :icon faChevronRight})
       (d/a
         {:className "name"
-         :onClick (fn [] (render! component))}
+         :onClick (fn [] (set-query! (assoc query :rendered (:key component))))}
         (:name component)))))
 
 
@@ -57,7 +58,6 @@
   [{:keys [className]} _ref]
   {:wrap [(react/forwardRef)]}
   (let [size (use-window-dimensions)
-        rendered (hooks/use-context *render*)
         components (hooks/use-context *components*)]
     ($ interactions/simplebar
        {:className className
@@ -76,8 +76,7 @@
              (fn [c]
                ($ component
                  {:key (:key c)
-                  :component c
-                  :selected? (= rendered c)}))
+                  :component c}))
              components))))))
 
 
@@ -127,7 +126,13 @@
 
 (defnc Content
   [{:keys [className]}]
-  (let [{:keys [render]} (hooks/use-context *render*)
+  (let [components (hooks/use-context *components*)
+        [{:keys [rendered]}] (router/use-search-params)
+        render  (some
+                  (fn [c]
+                    (when (= (:key c) rendered)
+                      (:render c)))
+                  components)
         window (use-window-dimensions)
         {nav-width :width} (hooks/use-context *navbar*)]
     ($ popup/Container
@@ -157,7 +162,6 @@
 (defnc Playground
   [{:keys [className]}]
   (let [[components set-compoments!] (hooks/use-state @component-db)
-        [rendered set-rendered!] (hooks/use-state nil)
         [navbar-ref navbar-dimensions] (use-dimensions)]
     (hooks/use-layout-effect
       :once
@@ -169,19 +173,14 @@
           (set-compoments! components)))
       (fn []
         (remove-watch component-db ::playground)))
-    ($ window/DimensionsProvider
-       (provider
-         {:context *navbar*
-          :value navbar-dimensions}
+    ($ router/BrowserRouter
+      ($ window/DimensionsProvider
          (provider
-         {:context *components*
-          :value components}
-         (provider
-           {:context *render*
-            :value rendered}
+           {:context *navbar*
+            :value navbar-dimensions}
            (provider
-             {:context *set-rendered*
-              :value set-rendered!}
+             {:context *components*
+              :value components}
              (<>
                ($ global-css)
                ($ simplebar-css)
@@ -191,7 +190,7 @@
                  (d/div
                    {:className "content"}
                    ($ header)
-                   ($ content)))))))))))
+                   ($ content))))))))))
 
 
 (defstyled playground Playground

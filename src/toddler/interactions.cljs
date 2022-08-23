@@ -539,8 +539,7 @@
                 cursor
                 select!
                 close!]
-         :or {search-fn str}
-         :as context} (hooks/use-context *dropdown*)]
+         :or {search-fn str}} (hooks/use-context *dropdown*)]
     (when (and (not read-only) (not disabled) (pos? (count options)) opened)
       ($ popup/Element
          {:ref popup
@@ -1312,7 +1311,7 @@
                                  :selected selected))))
        ;;
       :on-day-change
-      (fn [days-in-month]
+      (fn [day-in-month]
         (set-timestamp!
           (assoc
             timestamp

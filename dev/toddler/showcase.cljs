@@ -22,10 +22,6 @@
     (letfn [(on-change [e]
               (set-state! (.. e -target -value)))]
       ($ dev/centered-component
-         ($ interactions/autosize-input
-            {:placeholder "Write some text..."
-             :value state
-             :onChange on-change})
          ($ interactions/input-field
             {:name "user name"
              :value state
