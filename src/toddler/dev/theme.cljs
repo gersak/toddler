@@ -8,6 +8,7 @@
 (defmethod --themed [{} 'toddler.dev/navbar]
   [_]
   {:background "#d3e9eb"
+   :border-right "1px solid #a2ced2"
    :color theme/gray
    ".selected"
    {".icon" {:color theme/gray}

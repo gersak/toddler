@@ -61,8 +61,7 @@
         components (hooks/use-context *components*)]
     ($ interactions/simplebar
        {:className className
-        :style #js {:height (:height size)
-                    }
+        :style #js {:height (:height size)}
         :scrollableNodeProps #js {:ref _ref}
         :ref #(reset! _ref %)}
        (d/div
@@ -81,7 +80,7 @@
 
 
 (defstyled navbar Navbar
-  {:min-width 200 :max-width 400
+  {:min-width 350 :max-width 400
    :display "flex"
    :flex-direction "column"
    ".title" {:font-family "Audiowide"
