@@ -6,8 +6,7 @@
    [helix.dom :as d]
    toddler.theme
    [toddler.interactions :as interactions]
-   [toddler.elements.popup :as popup]
-   ["react" :as react]))
+   [toddler.elements.popup :as popup]))
 
 
 
