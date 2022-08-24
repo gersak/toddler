@@ -1,8 +1,8 @@
 (ns toddler.i18n.number
   (:require
-    [clojure.set]
-    [goog.i18n.NumberFormat]
-    [goog.i18n.NumberFormatSymbols]))
+   [clojure.set]
+   [goog.i18n.NumberFormat]
+   [goog.i18n.NumberFormatSymbols]))
 
 (defonce symbols
   {:af            goog.i18n.NumberFormatSymbols_af
@@ -126,21 +126,21 @@
 
 (def currency-map
   (reduce
-    (fn [cm ^js s]
-      (assoc cm 
-        (.-DEF_CURRENCY_CODE s)
-        (.-CURRENCY_PATTERN s)))
-    nil
-    (vals symbols)))
+   (fn [cm ^js s]
+     (assoc cm
+            (.-DEF_CURRENCY_CODE s)
+            (.-CURRENCY_PATTERN s)))
+   nil
+   (vals symbols)))
 
 
 (def currency-formatters
   (reduce-kv
-    (fn [cf currency pattern]
+   (fn [cf currency pattern]
       ; (.log js/console (str "Generating currency formatter: " currency))
-      (assoc cf currency (goog.i18n.NumberFormat. pattern currency)))
-    nil
-    currency-map))
+     (assoc cf currency (goog.i18n.NumberFormat. pattern currency)))
+   nil
+   currency-map))
 
 
 (defn number-formatter [locale]
@@ -149,11 +149,11 @@
   ; (.log js/console "Formater:")
   (let [^js symbols (get symbols locale)
         number-formatter-pattern
-        (goog.i18n.NumberFormat. 
-          (.-DECIMAL_PATTERN symbols)
-          nil
-          nil
-          symbols)]
+        (goog.i18n.NumberFormat.
+         (.-DECIMAL_PATTERN symbols)
+         nil
+         nil
+         symbols)]
     (fn format-number [x] (.format ^js number-formatter-pattern x))))
 
 (defn format-currency [currency value]
@@ -167,5 +167,7 @@
   (println #:toddler.i18n {:a 100 :b 200})
   (keys goog.i18n.NumberFormatSymbols)
   (.format (currency-formatters "EGP") 1092)
+  (.format (currency-formatters "USD") 1092)
+  (.format (currency-formatters "HRK") 1092)
   ((number-formatter :ar_EG) 1791)
   goog.i18n.NumberFormatSymbols_ja)

@@ -1,9 +1,9 @@
 (ns toddler.i18n
-  (:require 
-    [toddler.i18n.dictionary 
-     :refer [dictionary
-             calendar]]
-    [tongue.core :as tongue]))
+  (:require
+   [toddler.i18n.dictionary
+    :refer [dictionary
+            calendar]]
+   [tongue.core :as tongue]))
 
 
 (defonce translator (atom nil))
@@ -15,11 +15,11 @@
 
 (defn add-watcher
   []
-  (add-watch 
-    dictionary nil
-    (fn [_ _ _ new-state]
-      (println "Renewing dictionary")
-      (reset! translator (tongue/build-translate new-state))))
+  (add-watch
+   dictionary nil
+   (fn [_ _ _ new-state]
+     (println "Renewing dictionary")
+     (reset! translator (tongue/build-translate new-state))))
   (println "Added dictionary watcher...")
   true)
 
@@ -36,7 +36,8 @@
   (translate
     [this]
     [this locale]
-    [this locale options] "Translates input data by using additional opitons"))
+    [this locale options]
+    "Translates input data by using additional opitons"))
 
 
 (defprotocol Locale
