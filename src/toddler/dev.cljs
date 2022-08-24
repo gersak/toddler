@@ -1,27 +1,5 @@
 (ns toddler.dev
   (:require
-<<<<<<< Updated upstream
-    [helix.core
-     :refer [defnc $ create-context <> provider]]
-    [helix.hooks :as hooks]
-    [helix.dom :as d]
-    [helix.children :as c]
-    [helix.styled-components
-     :refer [global-style defstyled --themed]]
-    [toddler.theme :as theme]
-    [toddler.dev.theme]
-    [toddler.router.dom :as router]
-    [toddler.hooks 
-     :refer [use-window-dimensions
-             use-dimensions]]
-    [toddler.i18n.default]
-    [toddler.interactions :as interactions]
-    [toddler.elements.window :as window]
-    [toddler.elements.popup :as popup]
-    ["react" :as react]
-    ["@fortawesome/free-solid-svg-icons"
-     :refer [faChevronRight]]))
-=======
    [helix.core
     :refer [defnc $ create-context <> provider]]
    [helix.hooks :as hooks]
@@ -35,13 +13,14 @@
    [toddler.hooks
     :refer [use-window-dimensions
             use-dimensions]]
+   [toddler.i18n.default]
    [toddler.interactions :as interactions]
    [toddler.elements.window :as window]
    [toddler.elements.popup :as popup]
    ["react" :as react]
    ["@fortawesome/free-solid-svg-icons"
     :refer [faChevronRight]]))
->>>>>>> Stashed changes
+
 
 
 (defonce component-db (atom nil))
