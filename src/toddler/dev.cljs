@@ -13,6 +13,7 @@
     [toddler.hooks 
      :refer [use-window-dimensions
              use-dimensions]]
+    [toddler.i18n.default]
     [toddler.interactions :as interactions]
     [toddler.elements.window :as window]
     [toddler.elements.popup :as popup]

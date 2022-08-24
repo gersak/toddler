@@ -2,6 +2,7 @@
   (:require
     goog.object
     [clojure.set]
+    [toddler.i18n :as i18n]
     [goog.i18n.DateTimeFormat]
     [goog.i18n.DateTimeSymbols]))
 
@@ -130,9 +131,9 @@
    :fa_u_nu_latn goog.i18n.DateTimeSymbols_fa_u_nu_latn
    :ky goog.i18n.DateTimeSymbols_ky})
 
+
 (comment
   (println (clojure.string/join "\n" (map generate-binding locales))))
-
 
 
 (defn get-date-symbols
@@ -140,16 +141,56 @@
   [locale]
   (get symbols locale goog.i18n.DateTimeSymbols_eu))
 
-(defn date-formatter
-  ([locale] (date-formatter locale nil))
-  ([locale type]
-   (let [symbols (get-date-symbols locale)
-         pattern (or type 10)
-         formatter (goog.i18n.DateTimeFormat.
-                     pattern
-                     (get-date-symbols locale))]
-     formatter)))
+
+(def date-formatter
+  (memoize
+    (fn 
+      ([locale] (date-formatter locale :month-day-time-zone-short))
+      ([locale type]
+        (let [target (.indexOf
+                       [:full-date
+                        :long-date
+                        :medium-date
+                        :date
+                        :full-time
+                        :long-time
+                        :medium-time
+                        :time
+                        :full-datetime
+                        :long-datetime
+                        :medium-datetime
+                        :datetime
+                        :calendar]
+                       type)
+              pattern-idx (if (neg? target) 10 target)
+              formatter (goog.i18n.DateTimeFormat.
+                          target
+                          (get-date-symbols locale))]
+          formatter)))))
 
 
+(extend-protocol toddler.i18n/Translator
+  js/Date
+  (translate
+    ([data]
+     (i18n/translate data i18n/*locale*))
+    ([data locale]
+     (assert (keyword? locale) "Locale isn't keyword")
+     (let [formatter (date-formatter locale)]
+       (.format formatter data)))
+    ([data locale option]
+     (assert (keyword? locale) "Locale isn't keyword")
+     (let [formatter (date-formatter locale option)]
+       (.format formatter data)))))
 
-()
+
+(comment
+  (time (def hr (date-formatter :hr)))
+  (.format hr (js/Date.))
+  (i18n/translate (js/Date.) :hr :datetime)
+  (i18n/translate (js/Date.) :hr :medium-datetime)
+  (i18n/translate (js/Date.) :hr)
+  (i18n/translate (js/Date.) :fa)
+  (i18n/translate (js/Date.) :fr)
+  (i18n/translate (js/Date.) :de)
+  (i18n/translate (js/Date.)))

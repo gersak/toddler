@@ -1,12 +1,8 @@
 (ns toddler.i18n
   (:require 
-    toddler.i18n.number
-    toddler.i18n.time
     [toddler.i18n.dictionary 
      :refer [dictionary
              calendar]]
-    toddler.i18n.en
-    toddler.i18n.hr
     [tongue.core :as tongue]))
 
 
@@ -32,3 +28,16 @@
   (do
     (add-watcher)
     (reset! translator (tongue/build-translate @dictionary))))
+
+(def ^:dynamic *locale* :en)
+
+
+(defprotocol Translator
+  (translate
+    [this]
+    [this locale]
+    [this locale options] "Translates input data by using additional opitons"))
+
+
+(comment
+  (translate (js/Date.) :hr))
