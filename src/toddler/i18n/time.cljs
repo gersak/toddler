@@ -1,10 +1,10 @@
 (ns toddler.i18n.time
   (:require
-    goog.object
-    [clojure.set]
-    [toddler.i18n :as i18n]
-    [goog.i18n.DateTimeFormat]
-    [goog.i18n.DateTimeSymbols]))
+   goog.object
+   [clojure.set]
+   [toddler.i18n :as i18n]
+   [goog.i18n.DateTimeFormat]
+   [goog.i18n.DateTimeSymbols]))
 
 
 (defn generate-binding [locale]
@@ -144,29 +144,29 @@
 
 (def date-formatter
   (memoize
-    (fn 
-      ([locale] (date-formatter locale :month-day-time-zone-short))
-      ([locale type]
-        (let [target (.indexOf
-                       [:full-date
-                        :long-date
-                        :medium-date
-                        :date
-                        :full-time
-                        :long-time
-                        :medium-time
-                        :time
-                        :full-datetime
-                        :long-datetime
-                        :medium-datetime
-                        :datetime
-                        :calendar]
-                       type)
-              pattern-idx (if (neg? target) 10 target)
-              formatter (goog.i18n.DateTimeFormat.
-                          target
-                          (get-date-symbols locale))]
-          formatter)))))
+   (fn
+     ([locale] (date-formatter locale :datetime))
+     ([locale type]
+      (let [target (.indexOf
+                    [:full-date
+                     :long-date
+                     :medium-date
+                     :date
+                     :full-time
+                     :long-time
+                     :medium-time
+                     :time
+                     :full-datetime
+                     :long-datetime
+                     :medium-datetime
+                     :datetime
+                     :calendar]
+                    type)
+            pattern-idx (if (neg? target) 10 target)
+            formatter (goog.i18n.DateTimeFormat.
+                       pattern-idx
+                       (get-date-symbols locale))]
+        formatter)))))
 
 
 (extend-protocol toddler.i18n/Translator
@@ -185,12 +185,14 @@
 
 
 (comment
+  :hr :de :us :en
+  "HRK" "USD" ""
   (time (def hr (date-formatter :hr)))
   (.format hr (js/Date.))
   (i18n/translate (js/Date.) :hr :datetime)
   (i18n/translate (js/Date.) :hr :medium-datetime)
   (i18n/translate (js/Date.) :hr)
-  (i18n/translate (js/Date.) :fa)
-  (i18n/translate (js/Date.) :fr)
+  (i18n/translate (js/Date.) :fa :datetime)
+  (i18n/translate (js/Date.) :fr :full-datetime)
   (i18n/translate (js/Date.) :de)
   (i18n/translate (js/Date.)))
