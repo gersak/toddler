@@ -45,6 +45,6 @@
 
 
 (do
-  (swap! calendar assoc :en inst-strings)
-  (swap! dictionary assoc :en dict)
+  (swap! calendar update :en merge inst-strings)
+  (swap! dictionary update :en merge dict)
   (println "Added English dictionary..."))

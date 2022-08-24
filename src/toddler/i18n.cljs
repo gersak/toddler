@@ -1,5 +1,7 @@
 (ns toddler.i18n
   (:require 
+    toddler.i18n.number
+    toddler.i18n.time
     [toddler.i18n.dictionary 
      :refer [dictionary
              calendar]]
@@ -10,8 +12,10 @@
 
 (defonce translator (atom nil))
 
+
 (defn get-in-calendar [& keys]
   (get-in @calendar keys))
+
 
 (defn add-watcher
   []
@@ -22,6 +26,7 @@
       (reset! translator (tongue/build-translate new-state))))
   (println "Added dictionary watcher...")
   true)
+
 
 (defonce initialized?
   (do

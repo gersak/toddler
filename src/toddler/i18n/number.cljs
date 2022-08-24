@@ -163,6 +163,8 @@
 (.log js/console "i18n numbers formaters generated!")
 
 (comment
+  (keys symbols)
+  (println #:toddler.i18n {:a 100 :b 200})
   (keys goog.i18n.NumberFormatSymbols)
   (.format (currency-formatters "EGP") 1092)
   ((number-formatter :ar_EG) 1791)

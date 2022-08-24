@@ -43,6 +43,6 @@
 
 
 (do
-  (swap! calendar assoc :hr inst-strings)
-  (swap! dictionary assoc :hr dict)
+  (swap! calendar update :hr merge inst-strings)
+  (swap! dictionary update :hr merge dict)
   (println "Added Croatian dictionary..."))
