@@ -49,19 +49,19 @@
 
 (defn ^:export CheckBox
   []
-  (let [[state set-state!] (hooks/use-state false)] ($ interactions/checkbox
-                                                       {:active state
-                                                        :onClick (fn [] (set-state! (not state)))})))
+  (let [[state set-state!] (hooks/use-state false)]
+    ($ interactions/checkbox
+       {:active state
+        :onClick (fn [] (set-state! (not state)))})))
 
-(defn ^:export PopupCalendarWithTimer
-  []
-  ($ popup/Container
-     ($ interactions/TimestampElement
-        {:placeholder "Click here"})))
+#_(defn ^:export PopupCalendarWithTimer
+    []
+    ($ popup/Container
+       ($ interactions/TimestampElement
+          {:placeholder "Click here"})))
 
 (defn ^:export FullChangeableCalendar
   []
-  {:wrap [(react/forwardRef)]}
   (let [[{:keys [year month day-in-month]
           :as state} set-state!]
         (hooks/use-state

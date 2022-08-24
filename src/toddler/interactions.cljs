@@ -51,6 +51,10 @@
   {"transition" "box-shadow 0.3s ease-in-out"}
   --themed)
 
+(comment
+  (.log js/console "heeloooeee")
+  (.log js/console js/window))
+
 
 ;; Basic components
 (defstyled fa FontAwesomeIcon
@@ -1324,63 +1328,63 @@
     :or {rcalendar timestamp-calendar}}]
   (let [[{:keys [selected] :as state} set-state!] (hooks/use-state nil)
         set-state! (hooks/use-memo
-                     [disabled read-only]
-                     (if (or disabled read-only)
-                       (fn [& _])
-                       set-state!))
+                    [disabled read-only]
+                    (if (or disabled read-only)
+                      (fn [& _])
+                      set-state!))
         ;;
         disabled false
         read-only false
         set-state! (hooks/use-memo
-                     [disabled read-only]
-                     (if (or disabled read-only)
-                       (fn [& _])
-                       set-state!))
+                    [disabled read-only]
+                    (if (or disabled read-only)
+                      (fn [& _])
+                      set-state!))
         events (use-timestamp-events set-state! state)
         selected? (hooks/use-memo
-                    [selected]
-                    (let [{:keys [day-in-month year month]} (some->
-                                                              selected
-                                                              (vura/time->value)
-                                                              (vura/day-time-context))]
-                      (fn [props]
-                        (=
-                          (select-keys
-                            props
-                            [:day-in-month :year :month])
-                          {:year year
-                           :day-in-month day-in-month
-                           :month month}))))]
+                   [selected]
+                   (let [{:keys [day-in-month year month]} (some->
+                                                            selected
+                                                            (vura/time->value)
+                                                            (vura/day-time-context))]
+                     (fn [props]
+                       (=
+                        (select-keys
+                         props
+                         [:day-in-month :year :month])
+                        {:year year
+                         :day-in-month day-in-month
+                         :month month}))))]
     (hooks/use-effect
-      [value]
+     [value]
       ;; When value has changed... Compare it with current local state
       ;; If it doesn't match, update local state
-      (when (not= value (when (:value state) selected))
-        (-> (if value value (vura/date))
-            vura/time->value
-            vura/day-time-context
-            (assoc :selected value)
-            set-state!)))
+     (when (not= value (when (:value state) selected))
+       (-> (if value value (vura/date))
+           vura/time->value
+           vura/day-time-context
+           (assoc :selected value)
+           set-state!)))
     ;; When local state changes, notify upstream listener
     ;; that new value has been selected
     (hooks/use-effect
-      [state]
-      (when (and (fn? onChange)
-                 (not= selected value))
-        (onChange
-          (when state
-            (-> state vura/context->value vura/value->time)))))
+     [state]
+     (when (and (fn? onChange)
+                (not= selected value))
+       (onChange
+        (when state
+          (-> state vura/context->value vura/value->time)))))
     ($ popup/Container
        (provider
-         {:context *calendar-selected*
-          :value selected?}
+        {:context *calendar-selected*
+         :value selected?}
+        (provider
+         {:context *calendar-events*
+          :value events}
          (provider
-           {:context *calendar-events*
-            :value events}
-           (provider
-             {:context *calendar-disabled*
-              :value disabled}
-             ($ rcalendar {& state})))))))
+          {:context *calendar-disabled*
+           :value disabled}
+          ($ rcalendar {& state})))))))
 
 
 ;;
@@ -1398,16 +1402,16 @@
    popup]
   {:wrap [(react/forwardRef)]}
   ($ popup/Element
-    {:ref popup
-     :className (str className " animated fadeIn faster")
-     :wrapper wrapper
-     :preference popup/cross-preference}
-    ($ rcalendar
-       {:year year
-        :month month
-        :day-in-month day-in-month})
-    (when (or rtime rclear)
-      (d/div
+     {:ref popup
+      :className (str className " animated fadeIn faster")
+      :wrapper wrapper
+      :preference popup/cross-preference}
+     ($ rcalendar
+        {:year year
+         :month month
+         :day-in-month day-in-month})
+     (when (or rtime rclear)
+       (d/div
         {:style
          {:display "flex"
           :flex-grow "1"
