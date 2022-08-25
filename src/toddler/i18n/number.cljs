@@ -176,10 +176,10 @@
            is-locale (keyword? format)]
        (try
          (cond
-           is-currency (format-currency format data)
+           is-currency (.format (currency-formatters format) data)
            is-locale ((number-formatter format) data)
            :else "Unsupported input")
-         (catch Exception e "No currency or locale of such"))))))
+         (catch js/Error e "Invalid currency or locale"))))))
 
 
 (comment
