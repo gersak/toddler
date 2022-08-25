@@ -187,8 +187,8 @@
 (comment
   (time (def hr (date-formatter :hr)))
   (.format hr (js/Date.))
-  (i18n/translate (js/Date.) :hr :datetime)
-  (i18n/translate (js/Date.) :hr :medium-datetime)
+  (i18n/translate (js/Date.) :hr :calendar)
+  (i18n/translate (js/Date.) :en_US :medium-datetime)
   (i18n/translate (js/Date.) :hr)
   (i18n/translate (js/Date.) :fa :datetime)
   (i18n/translate (js/Date.) :fr :full-datetime)

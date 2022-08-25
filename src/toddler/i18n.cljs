@@ -8,6 +8,8 @@
 
 (defonce translator (atom nil))
 
+(defonce number-translator (atom nil))
+
 
 (defn get-in-calendar [& keys]
   (get-in @calendar keys))
@@ -27,7 +29,8 @@
 (defonce initialized?
   (do
     (add-watcher)
-    (reset! translator (tongue/build-translate @dictionary))))
+    (reset! translator (tongue/build-translate @dictionary))
+    #_(reset! number-translator (tongue/build-translate @dictionary))))
 
 (def ^:dynamic *locale* :en)
 
@@ -42,7 +45,7 @@
 (defprotocol NumberTranslator
   (translateNumber
     [this]
-    [this format]
+    [this locale]
     "Translates number data into desired format"))
 
 

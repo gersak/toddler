@@ -1,6 +1,9 @@
 (ns toddler.i18n.number
   (:require
+   goog.object
+   [clojure.string]
    [clojure.set]
+   [toddler.i18n :as i18n]
    [goog.i18n.NumberFormat]
    [goog.i18n.NumberFormatSymbols]))
 
@@ -161,6 +164,30 @@
     (.format f value)))
 
 (.log js/console "i18n numbers formaters generated!")
+
+(extend-protocol toddler.i18n/NumberTranslator
+  number
+  (translateNumber
+    ([data]
+     (let [formatter (number-formatter i18n/*locale*)]
+       (formatter data)))
+    ([data format]
+     (let [is-currency (string? format) #_(= (clojure.string/upper-case format) format) #_(re-matches #"/(A-Z){3}" format)
+           is-locale (keyword? format)]
+       (try
+         (cond
+           is-currency (format-currency format data)
+           is-locale ((number-formatter format) data)
+           :else "Unsupported input")
+         (catch Exception e "No currency or locale of such"))))))
+
+
+(comment
+  (i18n/translateNumber 2500 :en_US)
+  (i18n/translateNumber 25.5 "HRK")
+  (i18n/translateNumber 1000000 :hr)
+  (i18n/translateNumber 69999.99 "EUR"))
+
 
 (comment
   (keys symbols)
