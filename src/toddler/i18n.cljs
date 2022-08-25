@@ -46,5 +46,9 @@
     "Translates number data into desired format"))
 
 
+(defprotocol Locale
+  (locale [this key] "Returns locale definition for given key"))
+
+
 (comment
   (translate (js/Date.) :hr))
