@@ -20,6 +20,7 @@
 (def ^:dynamic ^js *dimensions* (create-context))
 (def ^:dynamic ^js *container* (create-context))
 (def ^:dynamic ^js *outside-action-channel* (create-context))
+(def ^:dynamic ^js *area-position* (create-context))
 
 
 (def default-preference

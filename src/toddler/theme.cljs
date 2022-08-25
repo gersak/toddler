@@ -418,7 +418,6 @@
   (case context
     {:border-color "#b3b3b3 !important"
      :background "#e5e5e5"
-     ; :background "#f9f9f9"
      :transition "all .3s ease-in-out"
      ":focus-within" {:border-color (str teal "!important")
                       :box-shadow (str "0 0 3px " teal)

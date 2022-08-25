@@ -57,8 +57,8 @@
     8 (do
         (set-opened! true)
         (when (<= (count search) 1) 
-          (set-search! "")
-          (when (fn? new-fn) (on-change nil))))
+          (when (= search "") (on-change (vec (butlast value))))
+          (set-search! "")))
     ;; TAB
     9 (do
         (set-opened! false) 
@@ -68,16 +68,16 @@
     ;; ENTER
     13 (do
          (if cursor
-           (on-change ((fnil conj []) value  cursor))
+           (on-change ((fnil conj []) value cursor))
            (let [v (.. e -target -value)
                  option (some
                           (fn [option]
                             (when (= (search-fn option) v) option))
                           options)]
-             (if (some? option)
-               (on-change ((fnil conj []) option))
-               (when (fn? new-fn)
-                 ((fnil conj []) (new-fn v))))
+             (cond
+               (some? option) (on-change ((fnil conj []) value option))
+               (fn? new-fn) (on-change ((fnil conj []) value (new-fn v)))
+               :else nil)
              (set-search! "")))
          (set-cursor! nil)
          (set-opened! false))
@@ -117,14 +117,15 @@
     :or {search-fn str}
     :as props}]
   (let [on-change (or onChange on-change identity)
-        [search set-search!] (use-idle 
-                               ; (search-fn value)
-                               nil
-                               (fn [v] 
-                                 (when (fn? new-fn) 
-                                   (let [v' (new-fn (if (= v :NULL) nil v))]
-                                     (when-not (= v' value)
-                                       (on-change v'))))))
+        [search set-search!] (hooks/use-state nil)
+        ; [search set-search!] (use-idle 
+        ;                        ; (search-fn value)
+        ;                        nil
+        ;                        (fn [v] 
+        ;                          (when (fn? new-fn) 
+        ;                            (let [v' (new-fn (if (= v :NULL) nil v))]
+        ;                              (when-not (= v' value)
+        ;                                (on-change v'))))))
         [opened set-opened!] (hooks/use-state false)
         [cursor set-cursor!] (hooks/use-state nil)
         input (hooks/use-ref nil)
