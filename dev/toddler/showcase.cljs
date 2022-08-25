@@ -89,21 +89,25 @@
         ($ interactions/number-input
            {:value (:number-input state)
             :onChange (fn [e] (set-state! (assoc state :number-input (.. e -target -value))))}))
-     ($ interactions/row "Auto-size free input"
+     ($ interactions/row 
         ($ interactions/input-field
-           {:value (:free-input state)
+           {:name "Auto-size free input"
+            :value (:free-input state)
             :onChange (fn [e] (set-state! (assoc state :free-input (.. e -target -value))))}))
-     ($ interactions/row "Auto-size text"
+     ($ interactions/row 
         ($ interactions/autosize-text
-           {:value (:auto-size-input state)
+           {:name "Auto-size text"
+            :value (:auto-size-input state)
             :onChange (fn [e] (set-state! (assoc state :auto-size-input (.. e -target -value))))}))
-     ($ interactions/row "Idle input"
+     ($ interactions/row 
         ($ interactions/idle-input
-           {:value (:idle-input state)
+           {:name "Idle input"
+            :value (:idle-input state)
             :onChange (fn [e] (set-state! (assoc state :idle-input (.. e -target -value))))}))
-     #_($ interactions/row "Mask input"
+     #_($ interactions/row 
           ($ interactions/mask-input
-             {:value (:mask-input state)
+             {:name "Mask input"
+              :value (:mask-input state)
               :onChange (fn [e] (set-state! (assoc state :mask-input (.. e -target -value))))}))
      #_($ interactions/row "Default field"
           ($ interactions/field-row "hey")
@@ -111,28 +115,44 @@
      ($ interactions/row "Checkbox field"
         ($ interactions/checkbox-field
            {:active (:check-box state)
-            :onClick (fn [] (set-state! (assoc state :check-box (not (:check-box state)))))}))
-     ($ interactions/row "Integer field"
+            :onClick (fn [] (set-state! update :check-box not))}))
+     ($ interactions/row 
         ($ interactions/integer-field
-           {:value (:integer-field state)
-            :onChange (fn [e] (set-state! (assoc state :integer-field (.. e -target -value))))}))
-     ($ interactions/row "Float field"
+           {:name "Integer field"
+            :value (:integer-field state)
+            :onChange (fn [v] (set-state! assoc :integer-field v))}))
+     ($ interactions/row 
         ($ interactions/float-field
-           {:value (:float-field state)
-            :onChange (fn [e] (set-state! (assoc state :float-field (.. e -target -value))))}))
-     ($ interactions/row "Multi-select field"
+           {:name "Float field"
+            :value (:float-field state)
+            :onChange (fn [v] (set-state! assoc :float-field v))}))
+     ($ interactions/row 
         ($ interactions/multiselect-field
-           {:value (:multiselect-field state)
-            :onRemove (fn [e] (set-state! (dissoc (state :multiselect-fied) (.. e -target -value))))
-            :onChange (fn [e] (set-state! (assoc state :multiselect-field (.. e -target -value))))}))
-     ($ interactions/row "Text area field"
+           {:name "Multi-select field"
+            :value (:multiselect-field state)
+            :new-fn identity
+            :placeholder "Add item"
+            :options ["sto" "dvijesto" "tristo"]
+            :onRemove (fn [v] (set-state! assoc :multiselect-field v))
+            :onChange (fn [v] (set-state! assoc :multiselect-field v))}))
+     ($ interactions/row 
+        ($ interactions/dropdown-field
+           {:name "Dropdown field"
+            :value (:dropdown-field state)
+            :new-fn identity
+            :placeholder "Maybe pick item"
+            :options ["sto" "dvijesto" "tristo"]
+            :onRemove (fn [v] (set-state! assoc :dropdown-field v))
+            :onChange (fn [v] (set-state! assoc :dropdown-field v))}))
+     ($ interactions/row 
         ($ interactions/textarea-field
-           {:value (:textarea-field state)
-            :onChange (fn [e] (set-state! (assoc state :textarea-field (.. e -target -value))))}))
+           {:name "Text area field"
+            :value (:textarea-field state)
+            :onChange (fn [e] (set-state! assoc :textarea-field (.. e -target -value)))}))
      #_($ interactions/row "Period input"
           ($ interactions/PeriodInput
              {:value "12.3.2022."
-              :onChange (fn [e] (set-state! (assoc state :textarea-field (.. e -target -value))))})))))
+              :onChange (fn [e] (set-state! assoc :textarea-field (.. e -target -value)))})))))
 
 (dev/add-component
  {:key ::input-types

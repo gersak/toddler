@@ -417,7 +417,6 @@
 
 
 (def ^:dynamic ^js *dropdown* (create-context))
-(def ^:dynamic ^js *dropdown-area* (create-context))
 
 (defnc DropdownElementDecorator
   [{:keys [className]}]
@@ -456,6 +455,7 @@
    :transition "color .2s ease-in-out"}
   --themed)
 
+
 (defnc DropdownArea
   [props]
   (let [[area-position set-area-position!] (hooks/use-state nil)
@@ -470,7 +470,7 @@
      {:context *dropdown*
       :value dropdown}
      (provider
-      {:context *dropdown-area*
+      {:context popup/*area-position*
        :value [area-position set-area-position!]}
       ($ popup/Area
          {:ref area
@@ -528,7 +528,7 @@
     roption :render/option
     :or {rpopup dropdown-popup
          roption dropdown-option}}]
-  (let [[area-position set-area-position!] (hooks/use-context *dropdown-area*)
+  (let [[area-position set-area-position!] (hooks/use-context popup/*area-position*)
         {:keys [options
                 popup
                 disabled
@@ -887,6 +887,9 @@
         (c/children props))))
 
 
+(str field-wrapper)
+
+
 (defnc InputField
   [{:keys [render/field render/input]
     :or {field WrappedField
@@ -1007,6 +1010,9 @@
          & (dissoc props :name :className :style)})))
 
 
+(defstyled dropdown-field DropdownField nil --themed)
+
+
 (defstyled multiselect-wrapper field-wrapper
   {:position "relative"
    :padding "4px 16px 4px 4px"
@@ -1028,20 +1034,23 @@
          rpopup DropdownPopup
          roption Tag
          search-fn str}
-    :keys [className context-fn search-fn disabled]
+    :keys [className context-fn search-fn disabled placeholder]
     :as props}]
   (let [[area-position set-area-position!] (hooks/use-state nil)
         {:keys [open!
                 remove!
                 options
+                new-fn
                 area]
          :as multiselect} (multiselect/use-multiselect
-                           (assoc props :search-fn search-fn))]
+                            (assoc props
+                                   :search-fn search-fn 
+                                   :area-position area-position))]
     (provider
      {:context *dropdown*
       :value multiselect}
      (provider
-      {:context *dropdown-area*
+      {:context popup/*area-position*
        :value [area-position set-area-position!]}
       (d/div
        {:className className}
@@ -1059,7 +1068,8 @@
           {:ref area
            :onClick #(when-not (empty? options) (open!))
            :className "dropdown"}
-          (when (not-empty options) ($ rinput))
+          (when (or (fn? new-fn) (not-empty options))
+            ($ rinput {:placeholder placeholder}))
           ($ rpopup)))))))
 
 
@@ -1070,7 +1080,7 @@
      ($ MultiselectElement
         {:render/wrapper multiselect-wrapper
          :render/popup DropdownPopup
-         :render/option Tag
+         :render/option tag
          :className "multiselect"
          & (dissoc props :name :className :style)})))
 
@@ -1101,6 +1111,7 @@
          wrapper text-area-wrapper}
     :as props} _ref]
   {:wrap [(react/forwardRef)]}
+  (println "TEXTAREA CLASSNAME: " (:className props))
   ($ field {& props}
      ($ wrapper
         ($ TextAreaElement
@@ -1117,7 +1128,8 @@
 
 
 (defstyled textarea-field TextareaField
-  {".input" {:width "100%"}})
+  nil
+  --themed)
 
 ;; TIMESTAMPS
 

@@ -81,6 +81,6 @@
                         :en "dog"
                         :de "hound"})
   (get @translations (keyword :toddler.dog.test :hr))
-  (i18n/translate :toddler.dog.test/hr)
-  (i18n/translate :toddler.dog.test :hr)
+  (time (i18n/translate :toddler.dog.test/hr))
+  (time (i18n/translate :toddler.dog.test :hr))
   (i18n/translate :toddler.dog.test :en))

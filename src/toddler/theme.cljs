@@ -418,7 +418,6 @@
   (case context
     {:border-color "#b3b3b3 !important"
      :background "#e5e5e5"
-     ; :background "#f9f9f9"
      :transition "all .3s ease-in-out"
      ":focus-within" {:border-color (str teal "!important")
                       :box-shadow (str "0 0 3px " teal)
@@ -625,11 +624,10 @@
        :transition "color .3s ease-in"
        :cursor "default"}}}))
 
-(defmethod --themed [{} 'toddler.interactions.light/input-field]
+
+(defmethod --themed [{} 'toddler.interactions/textarea-field]
   [_]
-  {:margin-top 3
-   :color text
-   ".error" {:border-color red}})
+  {:textarea {:font-family "Roboto"}})
 
 (defmethod --themed [{} 'toddler.interactions.light/user-dropdown-input]
   [_]
