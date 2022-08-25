@@ -51,10 +51,6 @@
   {"transition" "box-shadow 0.3s ease-in-out"}
   --themed)
 
-(comment
-  (.log js/console "heeloooeee")
-  (.log js/console js/window))
-
 
 ;; Basic components
 (defstyled fa FontAwesomeIcon

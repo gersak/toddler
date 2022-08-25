@@ -73,7 +73,7 @@
 
 (defn ^:export InputTypes
   []
-  (let [[state set-state!] (hooks/use-state {:number-input ""
+  (let [[state set-state!] (hooks/use-state {:number-input 0
                                              :free-input ""
                                              :check-box false
                                              :auto-size-input ""

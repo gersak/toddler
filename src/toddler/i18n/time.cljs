@@ -132,8 +132,8 @@
    :ky goog.i18n.DateTimeSymbols_ky})
 
 
-(comment
-  (println (clojure.string/join "\n" (map generate-binding locales))))
+#_(comment
+    (println (clojure.string/join "\n" (map generate-binding locales))))
 
 
 (defn get-date-symbols
@@ -185,8 +185,6 @@
 
 
 (comment
-  :hr :de :us :en
-  "HRK" "USD" ""
   (time (def hr (date-formatter :hr)))
   (.format hr (js/Date.))
   (i18n/translate (js/Date.) :hr :datetime)

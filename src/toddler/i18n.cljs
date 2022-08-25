@@ -39,6 +39,12 @@
     [this locale options]
     "Translates input data by using additional opitons"))
 
+(defprotocol NumberTranslator
+  (translateNumber
+    [this]
+    [this format]
+    "Translates number data into desired format"))
+
 
 (defprotocol Locale
   (locale [this key] "Returns locale definition for given key"))
