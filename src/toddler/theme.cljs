@@ -624,11 +624,10 @@
        :transition "color .3s ease-in"
        :cursor "default"}}}))
 
-(defmethod --themed [{} 'toddler.interactions.light/input-field]
+
+(defmethod --themed [{} 'toddler.interactions/textarea-field]
   [_]
-  {:margin-top 3
-   :color text
-   ".error" {:border-color red}})
+  {:textarea {:font-family "Roboto"}})
 
 (defmethod --themed [{} 'toddler.interactions.light/user-dropdown-input]
   [_]

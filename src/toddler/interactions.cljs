@@ -1111,6 +1111,7 @@
          wrapper text-area-wrapper}
     :as props} _ref]
   {:wrap [(react/forwardRef)]}
+  (println "TEXTAREA CLASSNAME: " (:className props))
   ($ field {& props}
      ($ wrapper
         ($ TextAreaElement
@@ -1127,7 +1128,8 @@
 
 
 (defstyled textarea-field TextareaField
-  {".input" {:width "100%"}})
+  nil
+  --themed)
 
 ;; TIMESTAMPS
 
