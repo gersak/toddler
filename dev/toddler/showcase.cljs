@@ -37,7 +37,7 @@
 
 (defnc AvatarImage
   []
-  (let [[state set-state] (hooks/use-state 100)]
+  (let [[state set-state!] (hooks/use-state 100)]
     ($ dev/centered-component
        (<>
         ($ interactions/slider
@@ -45,7 +45,7 @@
             :min "10"
             :max "500"
             :value (str state)
-            :onChange (fn [e] (set-state (.-value (.-target e))))})
+            :onChange (fn [e] (set-state! (.-value (.-target e))))})
         (d/br)
         ($ interactions/avatar
            {:size (int state)
@@ -89,22 +89,22 @@
         ($ interactions/number-input
            {:value (:number-input state)
             :onChange (fn [e] (set-state! (assoc state :number-input (.. e -target -value))))}))
-     ($ interactions/row 
+     ($ interactions/row
         ($ interactions/input-field
            {:name "Auto-size free input"
             :value (:free-input state)
             :onChange (fn [e] (set-state! (assoc state :free-input (.. e -target -value))))}))
-     ($ interactions/row 
+     ($ interactions/row
         ($ interactions/autosize-text
            {:name "Auto-size text"
             :value (:auto-size-input state)
             :onChange (fn [e] (set-state! (assoc state :auto-size-input (.. e -target -value))))}))
-     ($ interactions/row 
+     ($ interactions/row
         ($ interactions/idle-input
            {:name "Idle input"
             :value (:idle-input state)
             :onChange (fn [e] (set-state! (assoc state :idle-input (.. e -target -value))))}))
-     #_($ interactions/row 
+     #_($ interactions/row
           ($ interactions/mask-input
              {:name "Mask input"
               :value (:mask-input state)
@@ -112,21 +112,22 @@
      #_($ interactions/row "Default field"
           ($ interactions/field-row "hey")
           ($ interactions/field-row "hey"))
-     ($ interactions/row "Checkbox field"
+     ($ interactions/row
         ($ interactions/checkbox-field
-           {:active (:check-box state)
+           {:name "Checkbox field"
+            :active (:check-box state)
             :onClick (fn [] (set-state! update :check-box not))}))
-     ($ interactions/row 
+     ($ interactions/row
         ($ interactions/integer-field
            {:name "Integer field"
             :value (:integer-field state)
             :onChange (fn [v] (set-state! assoc :integer-field v))}))
-     ($ interactions/row 
+     ($ interactions/row
         ($ interactions/float-field
            {:name "Float field"
             :value (:float-field state)
             :onChange (fn [v] (set-state! assoc :float-field v))}))
-     ($ interactions/row 
+     ($ interactions/row
         ($ interactions/multiselect-field
            {:name "Multi-select field"
             :value (:multiselect-field state)
@@ -135,7 +136,7 @@
             :options ["sto" "dvijesto" "tristo"]
             :onRemove (fn [v] (set-state! assoc :multiselect-field v))
             :onChange (fn [v] (set-state! assoc :multiselect-field v))}))
-     ($ interactions/row 
+     ($ interactions/row
         ($ interactions/dropdown-field
            {:name "Dropdown field"
             :value (:dropdown-field state)
@@ -144,7 +145,7 @@
             :options ["sto" "dvijesto" "tristo"]
             :onRemove (fn [v] (set-state! assoc :dropdown-field v))
             :onChange (fn [v] (set-state! assoc :dropdown-field v))}))
-     ($ interactions/row 
+     ($ interactions/row
         ($ interactions/textarea-field
            {:name "Text area field"
             :value (:textarea-field state)

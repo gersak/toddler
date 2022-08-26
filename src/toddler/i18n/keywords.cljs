@@ -1,7 +1,7 @@
 (ns toddler.i18n.keywords
   (:require
-    [toddler.i18n :as i18n]
-    [toddler.i18n.time :as t]))
+   [toddler.i18n :as i18n]
+   [toddler.i18n.time :as t]))
 
 
 (defonce translations (atom nil))
@@ -17,11 +17,11 @@
   (swap! translations update key
          (fn [translations]
            (reduce-kv
-             (fn [r k _]
-               (cond-> r
-                 (contains? locales k) (dissoc k)))
-             translations
-             translations))))
+            (fn [r k _]
+              (cond-> r
+                (contains? locales k) (dissoc k)))
+            translations
+            translations))))
 
 
 (extend-protocol toddler.i18n/Translator
@@ -68,19 +68,22 @@
   (inc (mod 1 7))
   (mod 8 8)
   (println
-    #:toddler.test {:a 100 :b 200})
+   #:toddler.test {:a 100 :b 200})
   (namespace ::fjqoi)
   (deref translations)
-  (i18n/locale :hr :months)
-  (i18n/locale :hr :weekdays)
+  (i18n/locale :hr :months/standalone)
+  (i18n/locale :fr :months)
+  (i18n/locale :hr :weekdays/short)
   (i18n/locale :hr :weekends)
   (i18n/locale :hr :weekdays/first)
+  (i18n/locale :en_US :weekdays/first)
   (i18n/locale :hr :quarters)
   (add-translations
-    #:toddler.dog.test {:hr "pas"
-                        :en "dog"
-                        :de "hound"})
+   #:toddler.dog.test {:hr "pas"
+                       :en "dog"
+                       :de "hund"})
   (get @translations (keyword :toddler.dog.test :hr))
   (time (i18n/translate :toddler.dog.test/hr))
   (time (i18n/translate :toddler.dog.test :hr))
-  (i18n/translate :toddler.dog.test :en))
+  (i18n/translate :toddler.dog.test :en)
+  (i18n/translate :toddler.dog.test :de))

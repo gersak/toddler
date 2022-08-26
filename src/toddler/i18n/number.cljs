@@ -165,28 +165,30 @@
 
 (.log js/console "i18n numbers formaters generated!")
 
-(extend-protocol toddler.i18n/NumberTranslator
+(extend-protocol toddler.i18n/Translator
   number
-  (translateNumber
+  (translate
     ([data]
      (let [formatter (number-formatter i18n/*locale*)]
        (formatter data)))
     ([data format]
-     (let [is-currency (string? format) #_(= (clojure.string/upper-case format) format) #_(re-matches #"/(A-Z){3}" format)
+     (let [is-currency (string? format)
            is-locale (keyword? format)]
        (try
          (cond
            is-currency (.format (currency-formatters format) data)
            is-locale ((number-formatter format) data)
-           :else "Unsupported input")
-         (catch js/Error e "Invalid currency or locale"))))))
+           :else (str "Unsupported input: " format))
+         (catch js/Error e (str "Invalid currency or locale: " format)))))))
 
 
 (comment
-  (i18n/translateNumber 2500 :en_US)
-  (i18n/translateNumber 25.5 "HRK")
-  (i18n/translateNumber 1000000 :hr)
-  (i18n/translateNumber 69999.99 "EUR"))
+  (i18n/translate 2500 :en_US)
+  (i18n/translate 25.5 "HRK")
+  (i18n/translate 1000000 :hr)
+  (i18n/translate 69999.99 "EUR")
+  (i18n/translate 12345 :kk)
+  (i18n/translate 12325.39 "JPY"))
 
 
 (comment

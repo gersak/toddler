@@ -723,7 +723,7 @@
 
 (defnc CalendarMonthHeader
   [{:keys [className days]}]
-  (let [week-days (use-calendar :weekdays-short)
+  (let [week-days (use-calendar :weekdays/short)
         day-names (zipmap
                    [7 1 2 3 4 5 6]
                    week-days)]
@@ -791,7 +791,7 @@
   (let [value (or value (vura/month? (vura/date)))
         {on-month-change :on-month-change} (use-calendar-events)
         months (range 1 13)
-        month-names (use-calendar :months-long)
+        month-names (use-calendar :months/standalone)
         search-fn (zipmap months month-names)
         props' (assoc props
                       :onChange on-month-change
@@ -1043,9 +1043,9 @@
                 new-fn
                 area]
          :as multiselect} (multiselect/use-multiselect
-                            (assoc props
-                                   :search-fn search-fn 
-                                   :area-position area-position))]
+                           (assoc props
+                                  :search-fn search-fn
+                                  :area-position area-position))]
     (provider
      {:context *dropdown*
       :value multiselect}
