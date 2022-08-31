@@ -19,7 +19,6 @@
    [toddler.interactions :as interactions]
    [toddler.elements.window :as window]
    [toddler.elements.popup :as popup]
-   [toddler.elements.dropdown :as dropdown]
    ["react" :as react]
    ["@fortawesome/free-solid-svg-icons"
     :refer [faChevronRight]]
@@ -126,7 +125,7 @@
      {:className className}
      ($ interactions/DropdownArea
         {:value locale
-         :options [:hr :en :fr]
+         :options [:hr :en :fa]
          :search-fn name
          :onChange (fn [v] (set-user! assoc-in [:settings :locale] v))}
         ($ LocaleDropdown)
@@ -151,7 +150,7 @@
        ($ interactions/row
           {:position :center
            :style #js {:height (:height window)}}
-          "Select some component"))))
+          "Select a component from the list"))))
 
 (defstyled empty-content EmptyContent
   {:display "flex"

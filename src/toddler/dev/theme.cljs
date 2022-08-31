@@ -26,7 +26,7 @@
                        :border "2px solid #d3d3d3"
                        :color "#003366"
                        :width "40px"
-                       :height "40px"
+                       :height "80%"
                        :background-color "#d3d3d3"
                        :text-align "center"
                        :border-radius "50%"
@@ -37,7 +37,7 @@
                                  :border "2px solid #dfdfdf"}
                        ":active" {:transform "translateY(6px)"
                                   :background-color "#003366"
-                                  :color "#f6f6f6"
+                                  :color "#d3d3d3"
                                   :border "2px solid #003366"}}
    ".circular-button-outlined" {:font-family "Roboto"
                                 :font-weight "bold"
@@ -56,7 +56,7 @@
                                 ":hover" {:border "2px solid #003366"}
                                 ":active" {:transform "translateY(6px)"
                                            :background-color "#003366"
-                                           :color "#f6f6f6"
+                                           :color "#d3d3d3"
                                            :border "2px solid #003366"}}})
 
 

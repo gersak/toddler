@@ -17,8 +17,7 @@
   "Returns value for :locale in current user settings"
   []
   (let [[{{locale :locale
-           :or {locale :en}} :settings
-          :as user}] (use-current-user)]
+           :or {locale :en}} :settings}] (use-current-user)]
     locale))
 
 

@@ -38,18 +38,17 @@
 (defnc AvatarImage
   []
   (let [[state set-state!] (hooks/use-state 100)]
-    ($ dev/centered-component
-       (<>
-        ($ interactions/slider
-           {:width "300px"
-            :min "10"
-            :max "500"
-            :value (str state)
-            :onChange (fn [e] (set-state! (.-value (.-target e))))})
-        (d/br)
-        ($ interactions/avatar
-           {:size (int state)
-            :avatar "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1920px-Image_created_with_a_mobile_phone.png"})))))
+    (<>
+     ($ interactions/slider
+        {:width "300px"
+         :min "10"
+         :max "500"
+         :value (str state)
+         :onChange (fn [e] (set-state! (.-value (.-target e))))})
+     (d/br)
+     ($ interactions/avatar
+        {:size (int state)
+         :avatar "https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg"}))))
 
 
 (dev/add-component
@@ -160,15 +159,3 @@
   :name "Input types"
   :render InputTypes})
 
-
-(defn CalendarMotnh
-  []
-  (let [[state set-state!] (hooks/use-state nil)]
-    ($ interactions/calendar-month-dropdown
-       {:value state
-        :onChange (fn [v] (set-state! v))})))
-
-(dev/add-component
- {:key ::calendar-month
-  :name "Month Dropdown"
-  :render CalendarMotnh})
