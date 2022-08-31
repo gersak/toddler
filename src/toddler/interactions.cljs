@@ -791,7 +791,7 @@
   (let [value (or value (vura/month? (vura/date)))
         {on-month-change :on-month-change} (use-calendar-events)
         months (range 1 13)
-        month-names (use-calendar :months/standalone)
+        month-names (use-calendar :months)
         search-fn (zipmap months month-names)
         props' (assoc props
                       :onChange on-month-change

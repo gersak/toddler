@@ -88,7 +88,7 @@
      ($ interactions/row "Number input"
         ($ interactions/number-input
            {:value (:number-input state)
-            :onChange (fn [e] (set-state! (assoc state :number-input (.. e -target -value))))}))
+            :onChange (fn [e] (set-state! (assoc state :number-input (int (.. e -target -value)))))}))
      ($ interactions/row
         ($ interactions/input-field
            {:name "Auto-size free input"
@@ -159,3 +159,16 @@
  {:key ::input-types
   :name "Input types"
   :render InputTypes})
+
+
+(defn CalendarMotnh
+  []
+  (let [[state set-state!] (hooks/use-state nil)]
+    ($ interactions/calendar-month-dropdown
+       {:value state
+        :onChange (fn [v] (set-state! v))})))
+
+(dev/add-component
+ {:key ::calendar-month
+  :name "Month Dropdown"
+  :render CalendarMotnh})

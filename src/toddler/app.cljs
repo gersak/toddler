@@ -1,7 +1,7 @@
 (ns toddler.app
   (:require
-    [clojure.core.async :as async]
-    [helix.core :refer [create-context]]))
+   [clojure.core.async :as async]
+   [helix.core :refer [create-context]]))
 
 
 (def ^:dynamic *user* (create-context))

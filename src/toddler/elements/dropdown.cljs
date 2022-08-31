@@ -1,12 +1,12 @@
 (ns toddler.elements.dropdown
   (:require
-    clojure.string
-    [helix.core :refer [defhook]]
-    [helix.hooks :as hooks]
-    [toddler.hooks :refer [use-idle]]
-    [toddler.elements.popup :as popup]))
+   clojure.string
+   [helix.core :refer [defhook]]
+   [helix.hooks :as hooks]
+   [toddler.hooks :refer [use-idle]]
+   [toddler.elements.popup :as popup]))
 
-(defn get-available-options 
+(defn get-available-options
   ([search options search-fn]
    (let [options (distinct options)
          regex (when (not-empty search)
@@ -17,7 +17,7 @@
                                  options
                                  (filter predicate options)))
                              options)]
-     (if (empty? available-options) 
+     (if (empty? available-options)
        (vec options)
        (vec available-options)))))
 
@@ -50,20 +50,20 @@
     ;; BACKSPACE
     8 (do
         (set-opened! true)
-        (when (<= (count search) 1) 
+        (when (<= (count search) 1)
           (set-search! "")
           (when (fn? new-fn) (on-change nil))))
     ;; TAB
     9 (do
-        (set-opened! false) 
+        (set-opened! false)
         (if (fn? new-fn)
           (on-change (new-fn search))
           (set-search! (search-fn value))))
     ;; ENTER
     13 (do
-         (if (some? cursor) 
+         (if (some? cursor)
            (on-change cursor)
-           (when (fn? new-fn) (on-change (new-fn search))) )
+           (when (fn? new-fn) (on-change (new-fn search))))
          (set-opened! false))
     ;; ESCAPE
     27 (do
@@ -71,22 +71,22 @@
          (set-search! (search-fn value)))
     ;; KEY UP
     38 (do
-         (when-not opened 
+         (when-not opened
            (set-opened! true))
          (.preventDefault e)
          (set-cursor!
-           (if (position :top)
-             (next-option cursor options)
-             (previous-option cursor options))))
+          (if (position :top)
+            (next-option cursor options)
+            (previous-option cursor options))))
     ;; KEY DOWN
     40 (do
          (.preventDefault e)
-         (when-not opened 
+         (when-not opened
            (set-opened! true))
-         (set-cursor! 
-           (if (position :top)
-             (previous-option cursor options)
-             (next-option cursor options))))
+         (set-cursor!
+          (if (position :top)
+            (previous-option cursor options)
+            (next-option cursor options))))
     ;; ALPHA-NUMERIC
     (48 49 50 51 52 53 54 55 56 57 65 66
         67 68 69 70 71 72 73 74 75 76 77 78
@@ -95,23 +95,26 @@
     ;; EVERYTHING ELSE
     "default"))
 
+(defn maybe-focus [input]
+  (when @input (.focus @input)))
+
 (defhook use-dropdown
   [{:keys [value options on-change onChange new-fn search-fn area area-position disabled]
     :or {search-fn str}
     :as props}]
   (let [on-change (or onChange on-change identity)
         [search set-search!] (use-idle
-                               (search-fn value)
+                              (search-fn value)
                                ;; This is where I receive new idle search value
-                               (fn [v] 
+                              (fn [v]
                                  ;; I wan't to check if there is new-fn so that
                                  ;; "New" valaue can be created
-                                 (when (fn? new-fn) 
+                                (when (fn? new-fn)
                                    ;; Than I wan't to call new-fn with new search input value
-                                   (let [v' (new-fn (if (= v :NULL) nil v))]
+                                  (let [v' (new-fn (if (= v :NULL) nil v))]
                                      ;; and check if onChange should be called
-                                     (when-not (= v' value)
-                                       (on-change v'))))))
+                                    (when-not (= v' value)
+                                      (on-change v'))))))
         [opened set-opened!] (hooks/use-state false)
         [cursor set-cursor!] (hooks/use-state value)
         input (hooks/use-ref nil)
@@ -125,49 +128,49 @@
         available-options (get-available-options search options search-fn)
         [ref-fn focus] (popup/use-focusable-items direction)]
     (hooks/use-effect
-      [search]
-      (when-let [o (some #(when (= search (search-fn %)) %) options)]
-        (focus o)
-        (set-cursor! o)))
+     [search]
+     (when-let [o (some #(when (= search (search-fn %)) %) options)]
+       (focus o)
+       (set-cursor! o)))
     (hooks/use-effect
-      [value]
-      (when (not= (search-fn value) search) 
-        (set-search! (search-fn value))))
+     [value search-fn]
+     (when (not= (search-fn value) search)
+       (set-search! (search-fn value))))
     (hooks/use-effect
-      [opened]
-      (when opened (focus value)))
+     [opened]
+     (when opened (focus value)))
     (popup/use-outside-action
-      opened area popup 
-      #(set-opened! false))
+     opened area popup
+     #(set-opened! false))
     {:search search
      :opened opened
      :focus set-cursor!
      :cursor cursor
      :input input
-     :area area 
+     :area area
      :search-fn search-fn
      :ref-fn ref-fn
      :discard! #(on-change nil)
      :sync-search! #(when-not (fn? new-fn) (set-search! (search-fn value)))
-     :toggle! (fn [] (when-not disabled (.focus @input) (set-opened! not)))
-     :open! (fn [] (.focus @input) (set-opened! true))
+     :toggle! (fn [] (when-not disabled (maybe-focus input) (set-opened! not)))
+     :open! (fn [] (maybe-focus input) (set-opened! true))
      :close! #(set-opened! false)
      :select! #(on-change %)
-     :popup popup 
+     :popup popup
      :on-change (fn [e] (set-search! (.. e -target -value)))
      :on-key-down (fn [e]
                     (key-down-handler e
-                      {:value value
-                       :search search
-                       :opened opened
-                       :cursor cursor
-                       :options available-options
-                       :new-fn new-fn
-                       :search-fn search-fn
-                       :on-change on-change
-                       :set-opened! set-opened!
-                       :set-search! set-search!
-                       :set-cursor! set-cursor!
-                       :position area-position 
-                       :input @input}))
+                                      {:value value
+                                       :search search
+                                       :opened opened
+                                       :cursor cursor
+                                       :options available-options
+                                       :new-fn new-fn
+                                       :search-fn search-fn
+                                       :on-change on-change
+                                       :set-opened! set-opened!
+                                       :set-search! set-search!
+                                       :set-cursor! set-cursor!
+                                       :position area-position
+                                       :input @input}))
      :options available-options}))

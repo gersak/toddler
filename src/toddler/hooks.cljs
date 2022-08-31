@@ -10,15 +10,15 @@
 
 (defhook use-current-user
   []
-  (let [[{:keys [user]}] (hooks/use-context app/*user*)]
-    user))
+  (hooks/use-context app/*user*))
 
 
 (defhook use-current-locale
   []
-  (let [{{:strs [locale]
-          :or {locale "en"}} :settings} (use-current-user)]
-    (keyword locale)))
+  (let [[{{locale :locale
+           :or {locale :en}} :settings
+          :as user}] (use-current-user)]
+    locale))
 
 
 (defhook use-translate

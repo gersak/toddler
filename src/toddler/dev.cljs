@@ -11,15 +11,21 @@
    [toddler.dev.theme]
    [toddler.router.dom :as router]
    [toddler.hooks
-    :refer [use-window-dimensions
+    :refer [use-current-user
+            use-current-locale
+            use-window-dimensions
             use-dimensions]]
    [toddler.i18n.default]
    [toddler.interactions :as interactions]
    [toddler.elements.window :as window]
    [toddler.elements.popup :as popup]
+   [toddler.elements.dropdown :as dropdown]
    ["react" :as react]
    ["@fortawesome/free-solid-svg-icons"
-    :refer [faChevronRight]]))
+    :refer [faChevronRight]]
+   [toddler.app :as app]
+   [toddler.i18n :as i18n]
+   [clojure.string :as str]))
 
 
 
@@ -29,6 +35,7 @@
 (def ^:dynamic *render* (create-context))
 (def ^:dynamic *set-componets* (create-context))
 (def ^:dynamic *navbar* (create-context))
+(def ^:dynamic *user* (create-context))
 
 
 (defnc Component
@@ -98,14 +105,41 @@
   --themed)
 
 
+(defnc LocaleDropdown
+  []
+  (let [{:keys [toggle! opened]} (hooks/use-context interactions/*dropdown*)
+        locale (use-current-locale)
+        pressed-button (when opened
+                         {:color "#d3d3d3"
+                          :background-color "#003366"
+                          :border "2px solid #003366"})]
+    (d/button
+     {:className "circular-button"
+      :onClick toggle!
+      :style pressed-button}
+     (str/upper-case (name locale)))))
+
 (defnc Header
   [{:keys [className]}]
-  (d/div
-   {:className className}))
+  (let [[{{locale :locale} :settings} set-user!] (use-current-user)]
+    (d/div
+     {:className className}
+     ($ interactions/DropdownArea
+        {:value locale
+         :options [:hr :en :fr]
+         :search-fn name
+         :onChange (fn [v] (set-user! assoc-in [:settings :locale] v))}
+        ($ LocaleDropdown)
+        ($ interactions/DropdownPopup)))))
 
 
 (defstyled header Header
-  {:display "flex"})
+  {:display "flex"
+   :height "50px"
+   :background "#d3e9eb"
+   :flex-direction "row-reverse"
+   :padding-right "25px"}
+  --themed)
 
 
 (defnc EmptyContent
@@ -136,14 +170,14 @@
                  components)
         window (use-window-dimensions)
         {nav-width :width} (hooks/use-context *navbar*)]
-    ($ popup/Container
-       ($ interactions/simplebar
-          {:className className
-           :style #js {:height (:height window)
-                       :width (- (:width window) nav-width)}}
-          (if render
-            ($ render)
-            ($ empty-content))))))
+
+    ($ interactions/simplebar
+       {:className className
+        :style #js {:height (:height window)
+                    :width (- (:width window) nav-width)}}
+       (if render
+         ($ render)
+         ($ empty-content)))))
 
 
 (defstyled content Content
@@ -162,7 +196,8 @@
 
 (defnc Playground
   [{:keys [className]}]
-  (let [[components set-compoments!] (hooks/use-state @component-db)
+  (let [[components set-components!] (hooks/use-state @component-db)
+        [user set-user!] (hooks/use-state {:settings {:locale i18n/*locale*}})
         [navbar-ref navbar-dimensions] (use-dimensions)]
     (hooks/use-layout-effect
      :once
@@ -171,10 +206,11 @@
       component-db
       ::playground
       (fn [_ _ _ components]
-        (set-compoments! components)))
+        (set-components! components)))
      (fn []
        (remove-watch component-db ::playground)))
     ($ router/BrowserRouter
+       #_(.log js/console (:settings user))
        ($ window/DimensionsProvider
           (provider
            {:context *navbar*
@@ -182,16 +218,20 @@
            (provider
             {:context *components*
              :value components}
-            (<>
-             ($ global-css)
-             ($ simplebar-css)
-             (d/div
-              {:className className}
-              ($ navbar {:ref navbar-ref})
-              (d/div
-               {:className "content"}
-               ($ header)
-               ($ content))))))))))
+            (provider
+             {:context app/*user*
+              :value [user set-user!]}
+             ($ popup/Container
+                (<>
+                 ($ global-css)
+                 ($ simplebar-css)
+                 (d/div
+                  {:className className}
+                  ($ navbar {:ref navbar-ref})
+                  (d/div
+                   {:className "content"}
+                   ($ header)
+                   ($ content))))))))))))
 
 
 (defstyled playground Playground
