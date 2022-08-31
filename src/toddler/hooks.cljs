@@ -3,17 +3,18 @@
    [clojure.core.async :as async :refer-macros [go-loop]]
    [helix.core :refer-macros [defhook]]
    [helix.hooks :as hooks]
-   ["react" :as react]
    [toddler.app :as app]
-   [toddler.i18n :as i18n :refer [translate get-in-calendar]]))
+   [toddler.i18n :as i18n :refer [translate]]))
 
 
 (defhook use-current-user
+  "Returns value in app/*user* context"
   []
   (hooks/use-context app/*user*))
 
 
 (defhook use-current-locale
+  "Returns value for :locale in current user settings"
   []
   (let [[{{locale :locale
            :or {locale :en}} :settings
@@ -40,17 +41,9 @@
      (i18n/locale locale key))))
 
 
-(defn- bounding-client-rect [node]
-  (let [rect (.getBoundingClientRect node)]
-    {:height (.-height rect)
-     :width (.-width rect)
-     :top (.-top rect)
-     :left (.-left rect)
-     :right (.-right rect)
-     :bottom (.-bottom rect)}))
-
-
 (defhook use-window-dimensions
+  "Function will return browser window dimensions that
+  should be instantiated in app/*window* context"
   []
   (hooks/use-context app/*window*))
 
@@ -82,6 +75,11 @@
 
 
 (defn make-idle-service
+  "Creates idle service that will return idle-channel. This channel can be used
+  to async/put! values in channel.
+  
+  Service accepts period and function. When idle-channel hasn't received any data for
+  period of time, than input function is called on last recevied value."
   ([period f]
    (assert (and (number? period) (pos? period)) "Timeout period should be positive number.")
    (assert (fn? f) "Function not provided. No point if no action is taken on idle timeout.")
@@ -150,6 +148,11 @@
 
 
 (defhook use-delayed
+  "Function returns `stable` input state after timeout. Idle service
+  is created that tracks input state and when this state is not changed
+  after timeout, than return state is updated.
+  
+  Update will trigger react component rendering same as use-state"
   ([state] (use-delayed state 500))
   ([state timeout]
    (let [current-value (hooks/use-ref state)
@@ -177,6 +180,15 @@
 
 
 (defhook use-publisher
+  "Generic publisher function. Provide topic fn
+  and `use-publisher` will return [publisher publish] 
+  
+  Publisher is async channel that publishes messages, and
+  publish is function that accepts single [data] argument.
+
+  This data is published over publisher.
+  
+  `publisher` should be used with `use-listener`"
   ([topic-fn] (use-publisher topic-fn 5000))
   ([topic-fn buffer-size]
    (let [[pc set-pc] (hooks/use-state nil)
@@ -197,6 +209,7 @@
 
 
 (defhook use-listener
+  "Generic listener hook. For given publisher and topic apply handler."
   [publisher topic handler]
   (hooks/use-effect
    [publisher handler]
@@ -215,6 +228,8 @@
 
 
 (defhook use-toddler-listener
+  "Function will register handler for topic on global
+  toddler toddler.app/signal-publisher"
   [topic handler]
   (hooks/use-effect
    :once
@@ -228,7 +243,13 @@
      (fn [] (async/close! c)))))
 
 
-(defhook use-toddler-toddler-publisher []
+(defhook use-toddler-publisher
+  "Function will forward all input data to global
+  toddler.app/signal-channel. Data will be published
+  through toddler.app/signal-publisher.
+  
+  See `use-toddler-listener` for handling published signals"
+  []
   (let [publisher (hooks/use-memo
                    :once
                    (fn [data]

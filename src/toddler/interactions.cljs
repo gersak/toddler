@@ -1111,7 +1111,6 @@
          wrapper text-area-wrapper}
     :as props} _ref]
   {:wrap [(react/forwardRef)]}
-  (println "TEXTAREA CLASSNAME: " (:className props))
   ($ field {& props}
      ($ wrapper
         ($ TextAreaElement
