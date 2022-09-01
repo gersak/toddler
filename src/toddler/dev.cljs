@@ -35,6 +35,7 @@
 (def ^:dynamic *set-componets* (create-context))
 (def ^:dynamic *navbar* (create-context))
 (def ^:dynamic *user* (create-context))
+(def ^:dynamic *header* (create-context))
 
 
 (defnc Component
@@ -119,10 +120,12 @@
      (str/upper-case (name locale)))))
 
 (defnc Header
-  [{:keys [className]}]
+  [{:keys [className]} _ref]
+  {:wrap [(react/forwardRef)]}
   (let [[{{locale :locale} :settings} set-user!] (use-current-user)]
     (d/div
-     {:className className}
+     {:className className
+      :ref #(reset! _ref %)}
      ($ interactions/DropdownArea
         {:value locale
          :options [:hr :en :fa]
@@ -168,11 +171,12 @@
                      (:render c)))
                  components)
         window (use-window-dimensions)
-        {nav-width :width} (hooks/use-context *navbar*)]
-
+        {nav-width :width} (hooks/use-context *navbar*)
+        {header-height :height} (hooks/use-context *header*)]
+    (println nav-width)
     ($ interactions/simplebar
        {:className className
-        :style #js {:height (:height window)
+        :style #js {:height (- (:height window) header-height)
                     :width (- (:width window) nav-width)}}
        (if render
          ($ render)
@@ -197,7 +201,8 @@
   [{:keys [className]}]
   (let [[components set-components!] (hooks/use-state @component-db)
         [user set-user!] (hooks/use-state {:settings {:locale i18n/*locale*}})
-        [navbar-ref navbar-dimensions] (use-dimensions)]
+        [navbar-ref navbar-dimensions] (use-dimensions)
+        [header-ref header-dimensions] (use-dimensions)]
     (hooks/use-layout-effect
      :once
      (.log js/console "Adding playground watcher!")
@@ -215,22 +220,25 @@
            {:context *navbar*
             :value navbar-dimensions}
            (provider
-            {:context *components*
-             :value components}
+            {:context *header*
+             :value header-dimensions}
             (provider
-             {:context app/*user*
-              :value [user set-user!]}
-             ($ popup/Container
-                (<>
-                 ($ global-css)
-                 ($ simplebar-css)
-                 (d/div
-                  {:className className}
-                  ($ navbar {:ref navbar-ref})
+             {:context *components*
+              :value components}
+             (provider
+              {:context app/*user*
+               :value [user set-user!]}
+              ($ popup/Container
+                 (<>
+                  ($ global-css)
+                  ($ simplebar-css)
                   (d/div
-                   {:className "content"}
-                   ($ header)
-                   ($ content))))))))))))
+                   {:className className}
+                   ($ navbar {:ref navbar-ref})
+                   (d/div
+                    {:className "content"}
+                    ($ header {:ref header-ref})
+                    ($ content)))))))))))))
 
 
 (defstyled playground Playground
