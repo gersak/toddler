@@ -140,7 +140,7 @@
    :height "50px"
    :background "#d3e9eb"
    :flex-direction "row-reverse"
-   :padding-right "25px"}
+   :padding-right "15px"}
   --themed)
 
 
@@ -173,7 +173,6 @@
         window (use-window-dimensions)
         {nav-width :width} (hooks/use-context *navbar*)
         {header-height :height} (hooks/use-context *header*)]
-    (println nav-width)
     ($ interactions/simplebar
        {:className className
         :style #js {:height (- (:height window) header-height)
