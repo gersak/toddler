@@ -213,7 +213,6 @@
      (fn []
        (remove-watch component-db ::playground)))
     ($ router/BrowserRouter
-       #_(.log js/console (:settings user))
        ($ window/DimensionsProvider
           (provider
            {:context *navbar*

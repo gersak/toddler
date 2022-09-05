@@ -8,7 +8,9 @@
 (defmethod --themed [{} 'toddler.dev/navbar]
   [_]
   {:background "#d3e9eb"
-   :border-right "1px solid #a2ced2"
+   ; Adding border (even with box-sizing border-box) renders scrollbar when not needed
+   ;:border-right "1px solid #a2ced2"
+   :box-sizing "border-box"
    :color theme/gray
    ".selected"
    {".icon" {:color theme/gray}
@@ -49,7 +51,6 @@
                                 :background-color "#d3d3d3"
                                 :text-align "center"
                                 :border-radius "50%"
-                                :display "block"
                                 :transform "translateY(5px)"
                                 :cursor "pointer"
                                 :transition "all .2s ease"
