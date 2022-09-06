@@ -10,7 +10,6 @@
   {:background "#d3e9eb"
    ; Adding border (even with box-sizing border-box) renders scrollbar when not needed
    ;:border-right "1px solid #a2ced2"
-   :box-sizing "border-box"
    :color theme/gray
    ".selected"
    {".icon" {:color theme/gray}

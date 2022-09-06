@@ -5,7 +5,9 @@
    [helix.hooks :as hooks]
    [helix.dom :as d]
    [toddler.dev :as dev]
-   [toddler.interactions :as interactions]))
+   [toddler.interactions :as interactions]
+   [vura.core :as vura]
+   [toddler.elements.popup :as popup]))
 
 
 (defonce root (atom nil))
@@ -149,6 +151,11 @@
            {:name "Text area field"
             :value (:textarea-field state)
             :onChange (fn [e] (set-state! assoc :textarea-field (.. e -target -value)))}))
+
+     ($ interactions/row
+        ($ interactions/TimestampDropdownElement
+           {:name "Popup calendar"
+            :placeholder "Click to open calendar"}))
      #_($ interactions/row "Period input"
           ($ interactions/PeriodInput
              {:value "12.3.2022."
@@ -158,4 +165,16 @@
  {:key ::input-types
   :name "Input types"
   :render InputTypes})
+
+(defn ^:export PeriodInput
+  []
+  (let [[state set-state!] (hooks/use-state [(js/Date.) (js/Date. "2023-10-01T12:00:00")])]
+    ($ interactions/PeriodDropdownElement
+       {:value state
+        :onChange (fn [v] (println "Received change: " v) (set-state! v))})))
+
+(dev/add-component
+ {:key ::period-input
+  :name "Period input"
+  :render PeriodInput})
 

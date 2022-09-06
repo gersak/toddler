@@ -190,7 +190,7 @@
   (i18n/translate (js/Date.) :hr :calendar)
   (i18n/translate (js/Date.) :en_US :medium-datetime)
   (i18n/translate (js/Date.) :hr)
-  (i18n/translate (js/Date.) :fa :datetime)
+  (i18n/translate (js/Date.) :medium-datetime)
   (i18n/translate (js/Date.) :fr :full-datetime)
   (i18n/translate (js/Date.) :de)
   (i18n/translate (js/Date.)))
