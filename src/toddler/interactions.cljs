@@ -1696,7 +1696,7 @@
          :className "input"
          :readOnly true
          :value (if (or (nil? value) (every? nil? value))
-                  ""
+                  "Select period from dropdown"
                   (str
                    (if from (translate from format) " ")
                    " - "
@@ -1716,7 +1716,12 @@
     :or {upstream-start nil upstream-end nil}
     :as props}]
   (let [[[{start-value :selected :as start} {end-value :selected :as end}] set-state!]
-        (hooks/use-state [{:selected upstream-start} {:selected upstream-end}])
+        (hooks/use-state [(if (some? upstream-start)
+                            (assoc (-> upstream-start vura/time->value vura/day-time-context) :selected upstream-start)
+                            {:selected upstream-start})
+                          (if (some? upstream-end)
+                            (assoc (-> upstream-end vura/time->value vura/day-time-context) :selected upstream-end)
+                            {:selected upstream-end})])
         ;;
         set-state! (hooks/use-memo
                     [disabled read-only]
@@ -1779,16 +1784,18 @@
          rpopup period-popup}
     :as props}]
   (println "PERIOD DROPDOWN VALUE: " value)
-  (let [[state] (use-calendar-state)
+  (let [state (use-calendar-state)
         area (hooks/use-ref nil)
         [opened set-opened!] (hooks/use-state false)
         popup (hooks/use-ref nil)
         cache (hooks/use-ref value)]
     ;;
+    (println "STATE: " (use-calendar-state))
+    (println "CACHED: " @cache)
     (hooks/use-effect
      [state]
      (if state
-       (reset! cache (-> state vura/context->value vura/value->date))
+       (reset! cache state)
        (reset! cache nil)))
     ;;
     (popup/use-outside-action
@@ -1797,8 +1804,10 @@
         (set-opened! false)
         (when (and
                (ifn? onChange)
-               (not= @cache value))
-          (onChange @cache))))
+               (or (not= (:selected (nth @cache 0)) (nth value 0))
+                   (not= (:selected (nth @cache 1)) (nth value 1))))
+          (onChange [(:selected (nth @cache 0)) (:selected (nth @cache 1))]))))
+
     ($ popup/Area
        {:ref area}
        (when rfield

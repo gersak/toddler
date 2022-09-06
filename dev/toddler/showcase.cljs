@@ -168,7 +168,7 @@
 
 (defn ^:export PeriodInput
   []
-  (let [[state set-state!] (hooks/use-state [(js/Date.) (js/Date. "2023-10-01T12:00:00")])]
+  (let [[state set-state!] (hooks/use-state [nil nil #_(js/Date.) #_(js/Date. "2022-10-01T12:00:00")])]
     ($ interactions/PeriodDropdownElement
        {:value state
         :onChange (fn [v] (println "Received change: " v) (set-state! v))})))
