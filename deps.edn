@@ -5,7 +5,6 @@
   com.github.gersak/helix.placenta           {:git/url "https://github.com/gersak/helix.placenta"
                                               :sha "3e58da43af643092322a2694c559e9b68cb81db5"}
   camel-snake-kebab/camel-snake-kebab        {:mvn/version "0.4.3"}
-  tongue/tongue                              {:mvn/version "0.4.4"}
   com.github.gersak/vura                     {:mvn/version "0.5.7-SNAPSHOT"}
   lilactown/helix                            {:mvn/version "0.1.6"}}
  :aliases
