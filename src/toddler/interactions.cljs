@@ -1632,7 +1632,8 @@
             ($ rtime
                {:hour (:hour start)
                 :minute (:minute start)}))
-          (when (and (some? start) rclear) ($ rclear))))))
+          #_(when (and (some? start) rclear) ($ rclear))
+          (when rclear ($ rclear))))))
      (provider
       {:context *calendar-events*
        :value end-events}
@@ -1652,7 +1653,8 @@
             ($ rtime
                {:hour (:hour end)
                 :minute (:minute end)}))
-          (when (and (some? end) rclear) ($ rclear)))))))))
+          #_(when (and (some? end) rclear) ($ rclear))
+          (when rclear ($ rclear)))))))))
 
 
 (defnc PeriodPopup
@@ -1666,7 +1668,7 @@
       :className (str className " animated fadeIn faster")
       :wrapper wrapper
       :preference popup/cross-preference}
-     ($ PeriodElement {:className "period" & props})))
+     ($ PeriodElement {:className "period" & (dissoc props :className)})))
 
 (defstyled period-popup PeriodPopup
   {".period"
@@ -1733,9 +1735,9 @@
                    (fn [data]
                      (letfn [(->value [{:keys [year month day-in-month]}]
                                (vura/utc-date-value year month day-in-month))]
-                       (let [start (when start-value (vura/date->value start-value))
+                       (let [start (when start-value (-> start-value vura/date->value vura/midnight))
                              current (->value data)
-                             end (when end-value (vura/date->value end-value))]
+                             end (when end-value (-> end-value vura/date->value vura/midnight))]
                          (cond
                            (nil? start) (<= current end)
                            (nil? end) (>= current start)
@@ -1770,7 +1772,10 @@
       (provider
        {:context *calendar-state*
         :value [start end]}
-       (c/children props))))))
+       (provider
+        {:context *calendar-disabled*
+         :value false}
+        (c/children props)))))))
 
 
 (defnc PeriodDropdown
@@ -1783,15 +1788,12 @@
     :or {rfield PeriodInput
          rpopup period-popup}
     :as props}]
-  (println "PERIOD DROPDOWN VALUE: " value)
   (let [state (use-calendar-state)
         area (hooks/use-ref nil)
         [opened set-opened!] (hooks/use-state false)
         popup (hooks/use-ref nil)
         cache (hooks/use-ref value)]
     ;;
-    (println "STATE: " (use-calendar-state))
-    (println "CACHED: " @cache)
     (hooks/use-effect
      [state]
      (if state
