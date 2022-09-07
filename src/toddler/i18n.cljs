@@ -1,38 +1,13 @@
-(ns toddler.i18n
-  (:require
-   [toddler.i18n.dictionary
-    :refer [dictionary
-            calendar]]
-   [tongue.core :as tongue]))
+(ns toddler.i18n)
 
 
-(defonce translator (atom nil))
-
-(defonce number-translator (atom nil))
-
-
-(defn get-in-calendar [& keys]
-  (get-in @calendar keys))
-
-
-(defn add-watcher
-  []
-  (add-watch
-   dictionary nil
-   (fn [_ _ _ new-state]
-     (println "Renewing dictionary")
-     (reset! translator (tongue/build-translate new-state))))
-  (println "Added dictionary watcher...")
-  true)
-
-
-(defonce initialized?
-  (do
-    (add-watcher)
-    (reset! translator (tongue/build-translate @dictionary))
-    #_(reset! number-translator (tongue/build-translate @dictionary))))
-
-(def ^:dynamic *locale* :en)
+(def ^:dynamic *locale*
+  (let [browser-locales (.-languages js/navigator)
+        {[general] false
+         [specific] true} (group-by #(.includes % "-") browser-locales)]
+    (if-some [locale (or general specific)]
+      (keyword locale)
+      :en)))
 
 
 (defprotocol Translator
@@ -48,4 +23,4 @@
 
 
 (comment
-  (translate (js/Date.) :hr))
+  (translate (js/Date.) :hr :medium-datetime))
