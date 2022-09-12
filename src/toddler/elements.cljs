@@ -4,12 +4,11 @@
    clojure.string
    [goog.string :as gstr]
    [vura.core :as vura]
-   [cljs-bean.core :refer [->js ->clj]]
+   [cljs-bean.core :refer [->clj]]
    [helix.styled-components :refer [defstyled --themed]]
    [helix.core
     :refer [$ defnc provider
-            memo defhook
-            create-context]]
+            defhook create-context]]
    [helix.dom :as d]
    [helix.children :as c]
    [helix.hooks  :as hooks]
@@ -41,8 +40,8 @@
             FaMinus
             FaAngleRight
             FaAngleLeft
-            FaAngleDoubleLeft
-            FaAngleDoubleRight]]))
+            FaSquare
+            FaCheckSquare]]))
 
 
 (defstyled simplebar SimpleBar
@@ -2065,324 +2064,6 @@
    :input {:outline "none" :border "none"}}
   --themed)
 
-;; TABLE
-
-
-
-(defn- same-cell-data? [a b]
-  (= (:cell/data a) (:cell/data b)))
-
-
-(defn- same-cell-onChange? [a b]
-  (= (:onChange a) (:onChange b)))
-
-(defn- same-cell-style? [a b]
-  (=
-   (:style (:cell/column a))
-   (:style (:cell/column b))))
-
-(defn- same-cell? [a b]
-  (and
-   (same-cell-data? a b)
-   (same-cell-style? a b)
-   (same-cell-onChange? a b)))
-
-
-
-
-
-(defnc DropdownCell
-  [{:keys [cell/data cell/column
-           cell/disabled cell/read-only]}]
-  {:wrap [(memo same-cell?)]}
-  ($ DropdownElement
-     {:value data
-      :disabled disabled
-      :read-only read-only
-      & (dissoc column :disabled :read-only)}))
-
-(defstyled dropdown-cell DropdownCell
-  nil)
-
-
-(defnc TextCell
-  [{:keys [cell/data onChange cell/column className
-           cell/disabled cell/read-only]
-    :or {onChange identity}}]
-  {:wrap [(memo same-cell?)]}
-  (let [{:keys [placeholder style]
-         :or {placeholder "Value..."}} column]
-    ($ TextAreaElement
-       {:placeholder placeholder
-        :className className
-        :readOnly read-only
-        :disabled disabled
-        :spellCheck false
-        :auto-complete "off"
-        :style (->js style)
-        :value (or data "")
-        :onChange (fn [e]
-                    (when (ifn? onChange)
-                      (onChange (.. e -target -value))))})))
-
-
-(defstyled text-cell TextCell
-  {:line-height 12
-   :resize "none"
-   :border "none"})
-
-
-(defnc IntegerCell
-  [{:keys [cell/data onChange cell/column
-           cell/disabled cell/read-only className]
-    :or {onChange identity}}]
-  {:wrap [(memo same-cell?)]}
-  (let [{:keys [placeholder]
-         :or {placeholder "Value..."}} column
-        [cached update!] (use-idle
-                          (str data)
-                          #(try
-                             (if (or (= :NULL %) (empty? %))
-                               (onChange :NULL)
-                               (onChange (js/parseInt %)))
-                             (catch js/Error _
-                               (.error js/console (str "Couldn't parse number " %)))))]
-    (hooks/use-effect
-     [data]
-     (let [i (str data)]
-       (when-not (= cached i)
-         (update! i))))
-    ($ NumberInput
-       {:className className
-        :value cached
-        :placeholder placeholder
-        :disabled disabled
-        :read-only read-only
-        :onChange (fn [e] (update! (re-find #"[0-9]+" (.. e -target -value))))})))
-
-;;
-
-(defstyled integer-cell IntegerCell nil)
-
-;;
-
-(defnc FloatCell
-  [{:keys [cell/data onChange cell/column
-           cell/disabled cell/read-only className]
-    :or {onChange identity}}]
-  {:wrap [(memo same-cell?)]}
-  (let [{:keys [placeholder]
-         :or {placeholder "Value..."}} column
-        [cached update!] (use-idle
-                          (str data)
-                          #(try
-                             (if (or (= :NULL %) (empty? %))
-                               (onChange :NULL)
-                               (onChange (js/parseFloat %)))
-                             (catch js/Error _
-                               (.error js/console (str "Couldn't parse number " %)))))]
-    (hooks/use-effect
-     [data]
-     (let [i (str data)]
-       (when-not (= cached i)
-         (update! i))))
-    ($ NumberInput
-       {:className className
-        :value cached
-        :placeholder placeholder
-        :disabled disabled
-        :read-only read-only
-        :onChange (fn [e]
-                    (update! (re-find #"[0-9]*[\.]{0,1}[0-9]*" (.. e -target -value))))})))
-
-;;
-
-(defstyled float-cell FloatCell
-  nil)
-
-;;
-
-(defnc BooleanCell
-  [{:keys [cell/data onChange cell/disabled
-           cell/read-only className]}]
-  {:wrap [(memo same-cell?)]}
-  ($ checkbox
-     {:active data
-      :disabled disabled
-      :read-only read-only
-      :className className
-      :onClick #(onChange (not data))}))
-
-(defstyled boolean-cell BooleanCell
-  nil)
-
-
-;;
-
-(defnc TimestampCell
-  [{:keys [cell/data cell/column onChange
-           cell/disabled cell/read-only cell/format className]
-    :or {onChange identity
-         format :datetime-full}}]
-  (let [{:keys [placeholder]
-         :or {placeholder "Date..."}} column]
-    ($ TimestampDropdownElement
-       {:value data
-        :onChange onChange
-        :format format
-        :read-only read-only
-        :placeholder placeholder
-        :className className
-        :disabled disabled})))
-
-;;
-
-(defstyled timestamp-cell TimestampCell
-  {:display "flex"
-   :align-items "center"
-   ; :flex-grow "1"
-   ".decorator" {:margin-left "auto"}
-   :input {:padding 0}}
-  --themed)
-
-;;
-
-(defn --themed-cell
-  [{:keys [theme $selected?]}]
-  (case (:name theme)
-    (cond->
-     {":hover" {:background-color "#f7f7f7"}}
-      $selected? (assoc :background-color "#f7f7f7"))))
-
-
-;;
-
-(defnc UserCell
-  [{:keys [cell/data className cell/read-only cell/disabled] :as props}]
-  {:wrap [(memo same-cell-data?)]}
-  (if data
-    ($ UserElement
-       {:value (assoc data :size :small)
-        :read-only read-only
-        :disabled disabled
-        :className className
-        & (dissoc props :className)})
-    (d/div "-")))
-
-(defstyled user-cell UserCell
-  {:font-size "12"
-   :img {:height 20 :width 20}}
-  --themed)
-
-
-(defnc Pagination
-  [{:keys [data className set-pagination!]
-    {:keys [page page-size
-            next? previous?
-            page-count total-count]
-     :as pagination} :pagination}]
-  (when pagination
-    (d/div
-      {:class className}
-      (d/button
-        {:onClick #(set-pagination! {:page 0})
-         :className "start"
-         :disabled (not previous?)}
-        ($ FaAngleDoubleLeft))
-      (d/button
-        {:onClick #(set-pagination! {:page (dec page)})
-         :className "previous"
-         :disabled (not previous?)}
-        ($ FaAngleLeft))
-      (d/button
-        {:onClick #(set-pagination! {:page (inc page)})
-         :className "next"
-         :disabled (not next?)}
-        ($ FaAngleRight))
-      (d/button
-        {:onClick #(set-pagination! {:page (dec page-count)})
-         :className "end"
-         :disabled (not next?)}
-        ($ FaAngleDoubleRight))
-      (d/span
-        (goog.string/format
-          "Showing %d - %d of %d results"
-          (* page page-size)
-          (+ (* page page-size) (count data))
-          total-count))
-      (d/select
-        {:value page-size
-         :className "view-size"
-         :onChange (fn [e] (set-pagination! {:page-size (js/Number (.. e -target -value))}))}
-        (map
-          (fn [option]
-            (d/option
-              {:key option
-               :value option}
-              (str "Show " option)))
-          (range 10 60 10)))
-      (d/span (str "| Page: "))
-      ($ IdleInput
-         {:placeholder "?"
-          :className "pag"
-          :spell-check false
-          :auto-complete "off"
-          :type "number"
-          :value (inc page)
-          :on-change (fn [page]
-                       (let [page (if page page 0)
-                             np (min (max 0 (dec page)) page-count)]
-                         (set-pagination! {:page np})))}))))
-
-
-
-; (defhook use-cell-render
-;   [{:keys [render type]}]
-;   (if (some? render) render
-;       (case type
-;         "boolean" boolean-cell
-;       ; "currency" currency-cell
-;       ; "enum" enum-cell
-;         "float" float-cell
-;       ; "hashed" HashedCell
-;         "int" integer-cell
-;       ; "uuid" uuid-cell
-;         "string" text-cell
-;         "timestamp" timestamp-cell)))
-
-; (defstyled table "div"
-;   {:padding "0 14px"
-;    :input {:border "none" :outline "none"}
-;    :font-size "12"})
-
-
-; (defstyled table-row table/FRow
-;   {:border-bottom "1px solid #f1f1f1"
-;    :transition "border .3s ease-in"})
-
-; (defstyled table-header "div"
-;   {:padding "0 14px"
-;    :font-weight "600"
-;    :margin-bottom 5
-;    (str table-row)
-;    {:padding-bottom 3
-;     :border-color "transparent"
-;     :border-bottom "1px solid"
-;     :margin-bottom 5}}
-;   --themed)
-
-; (defstyled table-header-cell table/FHeader
-;   {:text-transform "uppercase"}
-;   --themed)
-
-; (defstyled table-body "div"
-;   {:padding "0 14px"})
-
-; (defstyled table-cell table/FCell
-;   {:padding "2px 0"}
-;   --themed-cell)
-
-
 
 (defnc CardAction
   [{:keys [className onClick tooltip disabled]
@@ -2465,6 +2146,77 @@
     :left -10
     :top -10
     :transition "all .1s ease-in-out"}})
+
+
+
+(defnc ChecklistField 
+  [{cname :name 
+    value :value 
+    onChange :onChange}]
+  (d/div
+    {:class "row"}
+    (d/div 
+      {:class "value"
+       :onClick #(onChange (not value))}
+      ($ (case value
+           true FaCheckSquare
+           FaSquare)
+         {:className "icon"}))
+    (d/div 
+      {:class "name"}
+      cname)))
+
+
+(defnc ChecklistElement [{:keys [value
+                                 options
+                                 multiselect?
+                                 display-fn
+                                 onChange
+                                 className] 
+                          :or {display-fn identity
+                               onChange identity
+                               value []}}]
+  (let [value' (clojure.set/intersection
+                 (set options)
+                 (if multiselect? 
+                   (set value)
+                   #{value}))] 
+    (d/div
+      {:className className}
+      (d/div
+        {:class "list"}
+        (map
+          (fn [option]
+            ($ ChecklistField
+              {:key (display-fn option)
+               :name (display-fn option)
+               :value (boolean (contains? value' option))
+               :onChange #(onChange
+                            (if (true? %)
+                              (if multiselect?
+                                ((fnil conj []) value' option) 
+                                option)
+                              (if multiselect?
+                                (vec (remove #{option} value'))
+                                nil)))}))
+          options)))))
+
+(defstyled checklist ChecklistElement
+  {:display "flex"
+   :justify-content "center"
+   ".list" 
+   {:display "flex"
+    :flex-direction "column"
+    :flex-wrap "wrap"
+    ".row" 
+    {:display "flex"
+     :align-content "center"
+     :margin-bottom 3
+     :max-width 250
+     ".value" {:display "flex" 
+               :justify-content "center" 
+               :align-items "center"
+               ".icon" {:cursor "pointer"}}}}})
 
 ;;
 

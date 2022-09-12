@@ -1,24 +1,52 @@
 (ns toddler.elements.table
   (:require
-    [helix.core :refer [defhook defnc create-context $]]
+    [vura.core :refer [round-number]]
+    [cljs-bean.core :refer [->clj]]
+    [clojure.string :as str]
+    goog.string
+    [helix.dom :as d]
+    [helix.core 
+     :refer [defhook defnc
+             create-context $
+             <> provider]]
     [helix.hooks :as hooks]
-    [toddler.elements :as toddler]))
+    [helix.children :as c]
+    [helix.placenta.util
+     :refer [deep-merge]]
+    [helix.styled-components
+     :refer [defstyled
+             --themed]]
+    [toddler.elements :as toddler]
+    [toddler.hooks
+     :refer [use-delayed
+             use-translate]]
+    [toddler.elements.input
+     :refer [TextAreaElement]]
+    [toddler.elements.popup :as popup]
+    [toddler.elements.tooltip :as tip]
+    ["react-icons/fa"
+     :refer [FaPlus
+             FaMinus
+             FaCheck
+             FaBarcode
+             FaTimes
+             FaEdit
+             FaCaretUp
+             FaCaretDown
+             FaCaretRight
+             FaAngleDoubleLeft
+             FaAngleDoubleRight
+             FaAngleLeft
+             FaAngleRight]]))
 
 
-(def ^:dynamic *element* (create-context))
-(def ^:dynamic *attribute-value* (create-context))
+(def ^:dynamic *column* (create-context))
 (def ^:dynamic *entity* (create-context))
-(def ^:dynamic *relation* (create-context))
-(def ^:dynamic *db* (create-context))
-(def ^:dynamic *ui* (create-context))
 (def ^:dynamic *columns* (create-context))
 (def ^:dynamic *actions* (create-context))
 (def ^:dynamic *row-record* (create-context))
 (def ^:dynamic *rows* (create-context))
 (def ^:dynamic *handlers* (create-context))
-(def ^:dynamic *datasource* (create-context))
-(def ^:dynamic *query* (create-context))
-(def ^:dynamic *mutation* (create-context))
 (def ^:dynamic *dispatch* (create-context))
 (def ^:dynamic *content-container* (create-context))
 (def ^:dynamic *content-container-style* (create-context))
@@ -30,81 +58,74 @@
 
 (defhook use-content-container [] (hooks/use-context *content-container*))
 (defhook use-content-container-style [] (hooks/use-context *content-container-style*))
-(defhook use-element [] (hooks/use-context *element*))
-(defhook use-attribute-value [] (hooks/use-context *attribute-value*))
+(defhook use-column [] (hooks/use-context *column*))
 (defhook use-pagination [] (hooks/use-context *pagination*))
 
 
 (defhook use-actions [] (hooks/use-context *actions*))
 (defhook use-columns [] (hooks/use-context *columns*))
 (defhook use-rows [] (hooks/use-context *rows*))
-(defhook use-row []
-  (let [rr (hooks/use-context *row-record*)
-        c (hooks/use-ref rr)]
-    (hooks/use-effect 
-      [rr]
-      (reset! c rr))
-    [rr c]))
+(defhook use-row [] (hooks/use-context *row-record*))
 
 (defhook use-handlers [] (hooks/use-context *handlers*))
 (defhook use-dispatch [] (hooks/use-context *dispatch*))
 
 
-(defnc AddRowAction
-  [{:keys [tooltip render name]
-    :or {render toddler/action}}]
-  (let [{:keys [add]} (use-handlers)]
-    ($ render 
-       {:onClick #(add) 
-        :tooltip tooltip
-        :icon faPlus}
-       name)))
+(defhook use-cell-renderer [column]
+  (let [f (hooks/use-context *cell-renderer*)]
+    (if (ifn? f) (or (f column) NotImplemented)
+      NotImplemented)))
 
 
-(defnc Actions
-  [{:keys [className]}]
-  (let [actions (use-actions)]
+(defnc Cell
+  [{{:keys [style level]
+     :as column} :column
+    :keys [className]}]
+  {:wrap [(memo #(= (:column %1) (:column %2)))]}
+  (let [render (use-cell-renderer column)
+        w (get style :width 100)]
+    ;; Field dispatcher
     (d/div
-      {:className className}
-      (map
-        (fn [{:keys [id render] 
-              :or {render toddler/Action}
-              :as action}]
-          ($ render 
-            {:key id 
-             :className "action" 
-             & (dissoc action :render)}))
-        actions))))
-
-
-(defnc Interactions
-  [{:keys [className]
-    ractions :render/actions
-    rpagination :render/pagination
-    :or {rpagination Pagination
-         ractions Actions}}
-   _ref]
-  {:wrap [(react/forwardRef)]}
-  (let [{:keys [total-count] :as pagination} (use-pagination)
-        actions (use-actions)
-        rows (use-rows)
-        showing-pagination? (and pagination (> total-count (count rows)))]
-    (when (or pagination actions)
-      (d/div
-        {:className className
-         :style {:display "flex"
-                 :justify-content
-                 (cond
-                   (and showing-pagination? (not-empty actions)) "space-between"
-                   showing-pagination? "flex-start"
-                   actions "flex-end")}
-         :ref _ref}
-        (<>
-          (when pagination ($ rpagination {:className "pagination"}))
-          (when (not-empty actions) ($ ractions {:className "actions"})))))))
+      {:class className
+       :style (merge
+                (->clj style)
+                {:display "flex"
+                 :flex (str w  \space 0 \space "auto")
+                 :min-width w
+                 :width w}) 
+       :level level}
+      (provider
+        {:context *column*
+         :value column}
+        ($ render)))))
 
 
 (declare RecordProvider)
+
+
+(defhook use-table-width
+  []
+  (let [columns (use-columns)]
+    (reduce + 0 (map (comp :width :style) columns))))
+
+
+(defnc FRow
+  [{:keys [className] :as props} _ref]
+  {:wrap [(react/forwardRef)]}
+  (let [min-width (use-table-width)] 
+    (d/div
+      {:className className
+       :style {:display "flex"
+               :flexDirection "row"
+               :justifyContent "flex-start"
+               ; :justifyContent "space-around"
+               :flex (str 1 \space 0 \space "auto")
+               :minWidth min-width}
+       :level (:level props)
+       & (cond-> 
+           (dissoc props :style :level :class :className :data)
+           _ref (assoc :ref _ref))}
+      (c/children props))))
 
 
 (defnc Row
@@ -131,7 +152,7 @@
                   {:key (or
                           (if (keyword? path) path
                             (when (not-empty path)
-                              (clojure.string/join "->" (map name path))))
+                              (str/join "->" (map name path))))
                           attribute)
                    :column column}))
               (filter :visible columns)))
@@ -140,19 +161,16 @@
 
 (defnc NotImplemented
   []
-  (let [field (use-element)] 
+  (let [field (use-column)] 
     (log/errorf "Field not implemented\n%s" (pr-str field)))
   nil)
 
-(defhook use-cell-renderer [column]
-  (let [f (hooks/use-context *cell-renderer*)]
-    (if (ifn? f) (or (f column) NotImplemented)
-      NotImplemented)))
 
 (defhook use-header-renderer [column]
   (let [f (hooks/use-context *header-renderer*)]
     (if (ifn? f) (or (f column) NotImplemented)
       NotImplemented)))
+
 
 (defnc Header
   [{{:keys [style level]
@@ -243,8 +261,6 @@
                               {:type :pagination/update
                                :pagination v})))
         rows (use-rows)]
-    (log/debugf "Rendering pagination\n%s\nRow count: %d\nTotal count positive? %s\nTotal count > rows? %s" 
-                pagination (count rows) (pos? total-count) (> total-count (count rows)))
     (d/div
       {:class className}
       (when (and pagination (pos? rows) (> total-count (count rows)))
@@ -252,22 +268,22 @@
           {:onClick #(set-pagination! {:page 0})
            :className "start"
            :disabled (not previous?)}
-          ($ toddler/fa {:icon faAngleDoubleLeft}))
+          ($ FaAngleDoubleLeft))
         (d/button
           {:onClick #(set-pagination! {:page (dec page)})
            :className "previous"
            :disabled (not previous?)}
-          ($ toddler/fa {:icon faAngleLeft}))
+          ($ FaAngleLeft))
         (d/button
           {:onClick #(set-pagination! {:page (inc page)})
            :className "next"
            :disabled (not next?)}
-          ($ toddler/fa {:icon faAngleRight}))
+          ($ FaAngleRight))
         (d/button
           {:onClick #(set-pagination! {:page (dec page-count)})
            :className "end"
            :disabled (not next?)}
-          ($ toddler/fa {:icon faAngleDoubleRight}))
+          ($ FaAngleDoubleRight))
         (d/span 
           (goog.string/format
             "Showing %d - %d of %d results" 
@@ -299,7 +315,61 @@
                           (set-pagination! {:page np})))})))))
 
 
-(defnc Table
+(defnc AddRowAction
+  [{:keys [tooltip render name]
+    :or {render toddler/action}}]
+  (let [{:keys [add]} (use-handlers)]
+    ($ render 
+       {:onClick #(add) 
+        :tooltip tooltip
+        :icon FaPlus}
+       name)))
+
+
+(defnc Actions
+  [{:keys [className]}]
+  (let [actions (use-actions)]
+    (d/div
+      {:className className}
+      (map
+        (fn [{:keys [id render] 
+              :or {render toddler/Action}
+              :as action}]
+          ($ render 
+            {:key id 
+             :className "action" 
+             & (dissoc action :render)}))
+        actions))))
+
+
+(defnc Interactions
+  [{:keys [className]
+    ractions :render/actions
+    rpagination :render/pagination
+    :or {rpagination Pagination
+         ractions Actions}}
+   _ref]
+  {:wrap [(react/forwardRef)]}
+  (let [{:keys [total-count] :as pagination} (use-pagination)
+        actions (use-actions)
+        rows (use-rows)
+        showing-pagination? (and pagination (> total-count (count rows)))]
+    (when (or pagination actions)
+      (d/div
+        {:className className
+         :style {:display "flex"
+                 :justify-content
+                 (cond
+                   (and showing-pagination? (not-empty actions)) "space-between"
+                   showing-pagination? "flex-start"
+                   actions "flex-end")}
+         :ref _ref}
+        (<>
+          (when pagination ($ rpagination {:className "pagination"}))
+          (when (not-empty actions) ($ ractions {:className "actions"})))))))
+
+
+(defnc TableLayout
   [{rrow :render/row
     rheader :render/header
     rinteractions :render/interactions
@@ -358,18 +428,13 @@
       (when @thead
         (let [rect (.getBoundingClientRect @thead)
               height (.-height rect)]
-          (log/debugf "Columns changed\nHead rect: %s\nHead height: %s" rect height)
           (set-header-height! (round-number (dec height) 1 :down)))))
     (hooks/use-effect
       [@interactions]
       (when @interactions
         (let [rect (.getBoundingClientRect @interactions)
               height (.-height rect)]
-          (log/debugf "Interactions changed\nInteractions rect: %s\nInteractions height: %s" rect height)
           (set-interactions-height! (round-number (dec height) 1 :down)))))
-    (log/debugf
-      "\nContainer width: %s\nTable width: %s\nOverflowing H? %s\nMax height? %s\nFixed height: %s"
-      container-width table-width overflowing-horizontal? max-height? fixed-height?)
     ;;
     (hooks/use-effect
       [@container]
@@ -401,10 +466,7 @@
             (map-indexed
               (fn [idx row]
                 ($ rrow
-                  {:key (or 
-                          (:euuid row)
-                          (db/row-primary-key row)
-                          idx)
+                  {:key (or (:euuid row) idx)
                    :idx idx
                    :className "trow" 
                    :data row}))
@@ -433,10 +495,7 @@
              (map-indexed
                (fn [idx row]
                  ($ rrow
-                   {:key (or 
-                           (:euuid row)
-                           (db/row-primary-key row)
-                           idx)
+                   {:key (or (:euuid row) idx)
                     :idx idx
                     :className "trow" 
                     :data row}))
@@ -470,7 +529,6 @@
                    ($ rrow
                      {:key (or 
                              (:euuid row)
-                             (db/row-primary-key row)
                              idx)
                       :idx idx
                       :className "trow" 
@@ -508,7 +566,6 @@
                    ($ rrow
                      {:key (or 
                              (:euuid row)
-                             (db/row-primary-key row)
                              idx)
                       :idx idx
                       :className "trow" 
@@ -516,198 +573,931 @@
                  rows))))))))
 
 
-(defhook use-table
-  [{:keys [db] :as props}]
-  (let [[{:keys [columns selection args path auto/refresh pagination]
-          :or {refresh true}
-          :as state} dispatch]
-        (hooks/use-reducer
-          reducer props 
-          (comp update-table-selection update-table-args))
-        [root-row rc] (use-row)
-        [entity] path
-        ;;
-        {:keys [page page-size]} pagination
-        ;;
-        {:keys [search] :as handlers} 
+
+(defstyled table-button toddler/button
+  {:display "flex"
+   :justify-content "center"
+   :align-items "center"
+   :font-size "10"
+   :height 20
+   :min-height 20
+   :padding 0
+   :margin "0px !important"})
+
+(defstyled uuid-button table-button
+  (let [size 20]
+    {:min-width size
+     :min-height size
+     :height size :width size}))
+
+(def $action-input
+  {(str \&
+        toddler/dropdown-field-wrapper 
+        \space 
+        toddler/dropdown-field-discard)
+   {:color "transparent"}
+   ;;
+   (str \& toddler/dropdown-field-wrapper ":hover")
+   {(str toddler/dropdown-field-discard) {:color "inherit"}}})
+
+(defnc ClearButton
+  [{:keys [className]}]
+  (let [dispatch (use-dispatch)
+        column (use-column)
+        row (use-row)]
+    (when row 
+      (d/span
+        {:className className
+         :onClick #(dispatch
+                     {:topic :table.cell/clear
+                      :row  row
+                      :column column})}
+        ($ FaTimes)))))
+
+
+(defstyled clear-button ClearButton
+  {:position "absolute"
+   :right 0
+   :top 6
+   :transition "color .2s ease-in-out"}
+  --themed)
+
+
+;;;;;;;;;;;
+;; CELLS ;;
+;;;;;;;;;;;
+
+
+(defhook use-cell-state
+  [el]
+  (let [{:keys [::idx] :as row} (hooks/use-context *row-record*)
+        {k :cursor} el
+        k (hooks/use-memo
+            [k]
+            (if (sequential? k) k
+              [k]))
+        dispatch (use-dispatch)
+        value (get-in row k) 
+        set-value! (hooks/use-memo
+                     [idx]
+                     (fn []
+                       (dispatch
+                         {:topic :table.element/change
+                          ::idx idx 
+                          :column el
+                          :value value})))]
+    [value set-value!]))
+
+
+
+(defnc UUIDCell
+  [{:keys [cell/data className]}]
+  (let [[visible? set-visible!] (hooks/use-state nil)
+        hidden? (use-delayed (not visible?) 300)
+        area (hooks/use-ref nil)
+        popup (hooks/use-ref nil)
+        [copied? set-copied!] (hooks/use-state false)]
+    ($ popup/Area
+       {:ref area
+        :onMouseLeave (fn [] (set-visible! false))
+        :onMouseEnter (fn [] 
+                        (set-copied! nil)
+                        (set-visible! true))}
+       ($ uuid-button
+          {:context :fun
+           :onClick (fn [] 
+                      (when-not copied?
+                        (.writeText js/navigator.clipboard (str data))
+                        (set-copied! true)))}
+          ($ FaBarcode))
+       (when visible?
+         ($ popup/Element
+            {:ref popup
+             :$copied copied?
+             :style {:visibility (if hidden? "hidden" "visible")
+                     :animationDuration ".5s"
+                     :animationDelay ".3s"}
+             :preference popup/cross-preference
+             :className (str className " animated fadeIn" 
+                             (when copied? " copied"))}
+            (d/div {:class "info-tooltip"} (str data)))))))
+
+
+(defnc HashedCell
+  [{:keys [className]}]
+  (let [{:keys [placeholder] :as element} (use-column)
+        [value set-value!] (use-cell-state element)] 
+    (d/input
+      {:className className
+       :placeholder placeholder
+       :spell-check false
+       :auto-complete "off"
+       :type "password"
+       :value (or value "") 
+       :onChange (fn [e] (set-value! (not-empty (.. e -target -value))))})))
+
+
+(defnc EnumCell
+  [{:keys [className]}]
+  (let [{:keys [placeholder options] :as column} (use-column)
+        [value set-value!] (use-cell-state column)
+        [options' om vm] 
         (hooks/use-memo
-          [entity columns args]
-          (letfn [(add
-                    ([]
-                     (dispatch {:type :table.row/add :row nil}))
-                    ([value]
-                     (dispatch {:type :table.row/add :row value})))
-                  (sync-row
-                    ([]
-                     (dispatch {:type :table.row/sync :row nil}))
-                    ([value]
-                     (dispatch {:type :table.row/sync :row value})))
-                  (remote-sync-row
-                    ([]
-                     (dispatch {:type :table.row/sync :row nil :remote? true}))
-                    ([value]
-                     (dispatch {:type :table.row/sync :row value :remote? true})))
-                  (sync
-                    ([rows]
-                     (dispatch
-                       {:type :table/sync
-                        :rows rows})))
-                  (remote-sync
-                    ([rows]
-                     (dispatch
-                       {:type :table/sync
-                        :rows rows
-                        :remote? true})))
-                  (pull
-                    ([] (db/pull db entity selection nil))
-                    ([row] (db/pull db entity row selection nil))
-                    ([row field] (get (db/pull db entity row selection nil) field)))
-                  (delete 
-                    ([row] 
-                     (dispatch
-                       {:type :table.row/delete
-                        :row row})))
-                  (restore
-                    ([row]
-                     (log/debugf "Removing row %s" (pr-str row))
-                     (dispatch
-                       {:type :table.row/restore
-                        :row row})))
-                  (discard ([] (db/discard! db)))
-                  (subordinate-table?
-                    [[_ & linked-entity]]
-                    (not-empty linked-entity))
-                  (count []
-                    (go 
-                      (let [selection (path->count-selection path)
-                            args (dissoc args :_order_by :_limit :_offset)
-                            {:keys [data]}
-                            (if (subordinate-table? path)
-                              (if (not-empty @rc)
-                                (do
-                                  (log/debugf
-                                    "Searching for eywa aggregate\nEntity: %s\nRoot row: %s\nPath: %s\nSelection:\n%s"
-                                    entity @rc path (with-out-str (pprint selection)))
-                                  (update
-                                    (async/<!
-                                      (db/eywa-aggregate
-                                        db entity 
-                                        (cond-> selection
-                                          (and (some? (second path)) (not-empty args))
-                                          (assoc-in [(second path) 0 :args] 
-                                                    (let [args2 (dissoc args :_order_by :_limit :_offset)]
-                                                      (when (not-empty args2) {:_where args2}))))
-                                        {:euuid {:_eq (:euuid @rc)}}))
-                                    :data get-in (rest path)))
-                                (do
-                                  (log/errorf "Root record not provided!\nEntity: %s\nRow: %s\nPath: %s\nSelection:\n"
-                                    entity (assoc-in @rc [(second path) 0 :args] args) path (with-out-str (pprint selection)))
-                                  {:data []}))
-                              ;;
-                              (do
-                                (log/debugf "Remote eywa aggregate\nEntity: %s\nArgs: %s\nPath: %s\nSelection:\n"
-                                            entity args path (with-out-str (pprint selection)))
-                                (async/<! (db/eywa-aggregate db entity selection args))))]
-                        (:count data))))
-                  (search
-                    ([]
-                     (go 
-                       (let [{:keys [errors data] :as response}
-                             (if (subordinate-table? path)
-                               (if (not-empty @rc)
-                                 (do
-                                   (log/debugf "Searching remote EYWA from root row.\nEntity: %s\nRoot row: %s\nPath: %s\nSelection:%s\n"
-                                     entity @rc path selection)
-                                   (update
-                                     (async/<!
-                                       (db/eywa-get 
-                                         db entity (select-keys @rc [:euuid])
-                                         (cond-> (focus-selection-euuids selection)
-                                           (and (some? (second path)) (not-empty args))
-                                           (assoc-in [(second path) 0 :args] 
-                                                     (let [args1 (select-keys args [:_order_by :_limit :_offset])
-                                                           args2 (dissoc args :_order_by :_limit :_offset)]
-                                                       (cond-> args1
-                                                         (not-empty args2) (assoc :_where args2)))))))
-                                     :data get-in (rest path)))
-                                 (do
-                                   (log/warnf
-                                     "Searching remote EYWA not possible. Root record not provided \nEntity: %s\nRoot row: %s\nPath: %s\nSelection:%s\n"
-                                     entity (assoc-in @rc [(second path) 0 :args] args) path selection)
-                                   {:data []}))
-                               ;;
-                               (do
-                                 (log/debugf 
-                                   "Searching remote EYWA\nEntity: %s\nArgs: %s\nPath: %s\nSelection:%s\n"
-                                   entity args path selection)
-                                 (async/<!
-                                   (db/eywa-search 
-                                     db entity 
-                                     (focus-selection-euuids selection) 
-                                     args))))]
-                         (if-not (empty? errors)
-                           (.error js/console "Couldn't execute search query")
-                           (dispatch 
-                             {:type :db.remote/pulled
-                              :rows data}))
-                         response))))
-                  (mutate
-                    ([] (mutate #{:diff :delete :slice}))
-                    ([ks]
-                     (go
-                       (async/<! (db/eywa-sync db ks))
-                       (let [{:keys [errors data]}
-                             (async/<! (db/eywa-search db entity selection args))]
-                         (if (not-empty errors)
-                           (.error js/console "Couldn't execute search query")
-                           (dispatch 
-                             {:type :db.remote/mutated
-                              :rows data}))))))]
-            {:dispatch dispatch
-             :discard discard
-             :count count
-             :add add
-             :remote-sync-row remote-sync-row
-             :remote-sync remote-sync
-             :sync-row sync-row
-             :sync sync
-             :pull pull
-             :delete delete
-             :restore restore
-             :search search 
-             :mutate mutate}))]
-    ;; Track root row and refresh if root row has changed
-    (hooks/use-effect
-      [root-row]
-      (dispatch 
-        {:type :root.row/update 
-         :root/row root-row}))
-    ;; Track column changes and refresh if columns have changed
-    (hooks/use-effect
-      [root-row columns page page-size]
-      (when refresh
-        (log/debugf "Refreshing table\nRoot: %s\nColumns: %s\nPagination:"
-          (pr-str root-row)
-          (pr-str columns)
-          (pr-str pagination))
-        (when pagination
-          (go 
-            (let [ocount (async/<! ((:count handlers)))]
-              (log/debugf "Updating pagination total count %d" ocount)
+          [options]
+          (let [options' (range (count options))]
+            [options'
+             (reduce
+               (fn [r idx]
+                 (assoc r idx (get options idx)))
+               nil
+               options')
+             (reduce
+               (fn [r idx]
+                 (assoc r (get-in options [idx :value]) idx))
+               nil
+               options')]))]
+    ($ toddler/DropdownElement
+       {:value (get vm value) 
+        :className className
+        :searchable? false
+        :search-fn #(get-in om [% :name])
+        :onChange #(set-value! (get-in om [% :value]))
+        :options options' 
+        :placeholder placeholder})))
+
+
+(defnc TextCell
+  [{:keys [className]}]
+  (let [{:keys [placeholder options read-only] 
+         {:keys [width]} :style
+         :as column} (use-column)
+        [value set-value!] (use-cell-state column)] 
+    ($ TextAreaElement
+       {:value value 
+        :className className
+        :read-only read-only
+        :spellCheck false
+        :auto-complete "off"
+        :style {:maxWidth width}
+        :onChange (fn [e] 
+                    (set-value! 
+                      (not-empty (.. e -target -value))))
+        :options options 
+        :placeholder placeholder})))
+
+
+(defnc TimestampCell
+  [{:keys [className]}]
+  (let [{:keys [placeholder format read-only disabled] 
+         :or {format :datetime-short}
+         :as column} (use-column)
+        [value set-value!] (use-cell-state column)] 
+    ($ toddler/TimestampCalendarElement
+       {:value value
+        :onChange (fn [v] (when-not read-only (set-value! v)))
+        :format format
+        :read-only read-only
+        :placeholder placeholder 
+        :className className
+        :disabled disabled})))
+
+
+(defn interactive-cell? [{:keys [disabled read-only]}]
+  (every? not [disabled read-only]))
+
+
+(defnc IntegerCell
+  [{:keys [className]}]
+  (let [{:keys [placeholder read-only disabled] :as column} (use-column)
+        [value set-value!] (use-cell-state column)
+        translate (use-translate)
+        [focused? set-focused!] (hooks/use-state false)]
+    ($ toddler/autosize-input
+       {:className className
+        :value (if value
+                 (if focused? 
+                   (str value) 
+                   (translate value))
+                 "")
+        :placeholder placeholder
+        :read-only read-only
+        :disabled disabled
+        :onFocus #(set-focused! true)
+        :onBlur #(set-focused! false)
+        :onChange (fn [e] 
+                    (let [number (.. e -target -value)]
+                      (when-some [value (try
+                                          (js/parseInt number)
+                                          (catch js/Error _ nil))]
+                        (set-value! value))))})))
+
+
+(defnc FloatCell
+  [{:keys [className]}]
+  (let [{:keys [placeholder read-only disabled] :as column} (use-column)
+        [value set-value!] (use-cell-state column)
+        translate (use-translate)
+        [focused? set-focused!] (hooks/use-state false)]
+    ($ toddler/autosize-input
+      {:className className
+       :value (if value
+                (if focused? 
+                  (str value) 
+                  (translate value))
+                "")
+       :placeholder placeholder
+       :read-only read-only
+       :disabled disabled
+       :onFocus #(set-focused! true)
+       :onBlur #(set-focused! false)
+       :onChange (fn [e] 
+                   (let [number (.. e -target -value)]
+                     (when-some [value (try
+                                         (js/parseFloat number)
+                                         (catch js/Error _ nil))]
+                       (set-value! value))))})))
+
+
+(defnc CurrencyCell
+  [{:keys [className]}]
+  (let [{:keys [placeholder] :as column} (use-column)
+        [value set-value!] (use-cell-state column)] 
+    ($ toddler/CurrencyElement
+       {:className className
+        :placeholder placeholder
+        :value value
+        :currency/options nil
+        :onChange set-value!})))
+
+
+
+(defnc BooleanCell
+  [{:keys [className]}]
+  (let [{:keys [read-only disabled] :as column} (use-column)
+        [value set-value!] (use-cell-state column)] 
+    (d/button
+      {:disabled disabled
+       :read-only read-only
+       :className (str className 
+                       (case value
+                         true " active"
+                         (nil false) " inactive"))
+       :onClick #(set-value! (not value))}
+      (case value
+        nil FaMinus 
+        FaCheck))))
+
+
+(defstyled uuid-cell UUIDCell
+  (assoc tip/basic ".info-tooltip" tip/basic-content)
+  --themed)
+
+
+(defstyled enum-cell EnumCell
+  {:input {:font-size 12
+           :font-weight "600"
+           :cursor "pointer"}}
+  --themed)
+
+
+(defstyled text-cell TextCell
+  {:font-size "12"
+   :border "none"
+   :outline "none"
+   :resize "none"
+   :padding 2
+   :width "100%"}
+  --themed)
+
+
+(defstyled timestamp-cell TimestampCell
+  {:display "flex"
+   :justify-content "center"
+   :input
+   {:font-size "12"
+    :border "none"
+    :outline "none"
+    :resize "none"
+    :padding 2
+    :width "100%"}}
+  ;;
+  --themed)
+
+
+(defstyled integer-cell IntegerCell
+  {:border "none"
+   :outline "none"
+   :font-size "12"
+   :width "90%"}
+  --themed)
+
+
+(defstyled float-cell FloatCell
+  {:border "none"
+   :outline "none"
+   :font-size "12"}
+  --themed)
+
+
+(defstyled currency-cell CurrencyCell
+  {:font-size "12"
+   :max-width 140
+   :display "flex"
+   :align-items "center"
+   :input {:outline "none"
+           :border "none"
+           :max-width 100}}
+  --themed)
+
+(defstyled boolean-cell BooleanCell
+  {:font-size "10"
+   :padding 8
+   :width 15
+   :height 15
+   :transition "background-color .3s ease-in-out"})
+
+
+(defnc UserCellInput
+  [props]
+  (let [{:keys [read-only disabled]} (use-column)]
+    ($ toddler/DropdownInput
+       {:render/img toddler/UserDropdownAvatar
+        & props}
+       (when (every? not [read-only disabled])
+         ($ ClearButton
+            {:className "clear"})))))
+
+
+(defstyled user-cell-input UserCellInput
+  (assoc $action-input :display "flex" :align-items "center"
+    ".clear" {:transition "color .2s ease-in-out"})
+  --themed)
+
+
+(defnc AvatarCell [{:keys [className]}]
+  (let [column (use-column)
+        [avatar] (use-cell-state column)]
+    ($ toddler/avatar
+       {:avatar avatar
+        :size :small
+        :className className})))
+
+
+(defnc UserDropdownOption
+  [{:keys [option] :as props} ref]
+  {:wrap [(react/forwardRef)]}
+  ($ toddler/dropdown-option
+    {:ref ref
+     & (dissoc props :ref)}
+    ($ toddler/avatar {:size :small & option})
+    (:name option)))
+
+
+(defnc UserDropdownPopup
+  [props]
+  ($ toddler/DropdownPopup
+    {:render/option UserDropdownOption
+     & props}))
+
+
+(defstyled user-dropdown-popup UserDropdownPopup
+  {:max-height 250})
+
+
+(defnc UserCell [props]
+  (let [{:keys [label style placeholder read-only options] :as column} (use-column)
+        [value set-value!] (use-cell-state column)]
+    ($ toddler/DropdownElement
+       {:name label
+        :value value
+        :onChange (comp set-value! not-empty)
+        :search-fn :name
+        :placeholder placeholder
+        :style (->clj style) 
+        :read-only read-only
+        :options (when-not read-only options)
+        :render/input user-cell-input
+        :render/popup user-dropdown-popup
+        & props})))
+
+
+;; ACTION CELLS
+(defnc DeleteCell
+  [{:keys [className]}]
+  (let [[row] (use-row)
+        dispatch (use-dispatch)]
+    (d/div
+      {:className className 
+       :onClick (fn [e] (.stopPropagation e)
+                  (dispatch
+                    {:topic :table.row/delete
+                     :row row}))}
+      ($ FaTimes
+         {:className "delete-marker"}))))
+
+
+(defnc ActionCell
+  [{:keys [icon]
+    :or {icon FaEdit}
+    :as props}]
+  (d/button
+    {& props}
+    ($ icon)
+    (c/children props)))
+
+
+(defnc SelectedCell
+  [{:keys [className icon]
+    :or {icon FaAngleRight}}]
+  (let [column (use-column)
+        [value _] (use-cell-state column)]
+    (d/div
+      {:className className}
+      ($ icon
+         {:className (str "selected-marker" (when value " selected"))}))))
+
+
+(defnc ExpandCell
+  [{:keys [className]}]
+  (let [column (use-column)
+        [value set-value!] (use-cell-state column)]
+    (d/div
+      {:className className 
+       :onClick (fn [e] (.stopPropagation e) (set-value! (not value)))}
+      ($ FaCaretRight
+         {:className (if value
+                       "icon expanded"
+                       "icon")}))))
+
+
+(defstyled user-cell UserCell 
+  {:input {:font-size 12}
+   ".clear" {:color "transparent"}}
+  --themed)
+
+(defstyled action-cell ActionCell
+  {:padding 5
+   :font-size "10"
+   :border-radius 3
+   :display "flex"
+   :justify-content "center"
+   :transition "box-shadow .3s ease-in,background .3s ease-in"
+   :border "2px solid transparent"
+   :align-items "center"
+   :cursor "pointer"
+   ":focus" {:outline "none"}}
+  --themed)
+
+(defstyled delete-cell DeleteCell
+  {:display "flex"
+   :justify-content "center"
+   :align-content "center"
+   :min-height 25
+   :min-width 30
+   :max-height 30
+   :font-size "12"
+   :align-items "center"
+   ; :margin-top 3
+   ".delete-marker"
+   {:cursor "pointer"
+    :margin "1px 3px"
+    :transition "color .3s ease-in"}}
+  --themed)
+
+(defstyled expand-cell ExpandCell
+  {:display "flex"
+   :flex-grow "1"
+   :justify-content "center"
+   :cursor "pointer"
+   :svg {:transition "transform .3s ease-in-out"}}
+  --themed)
+
+
+
+;;;;;;;;;;;;;;;;
+;;   HEADERS  ;;
+;;;;;;;;;;;;;;;;
+
+(defnc SortElement
+  [{{:keys [order]} :column}]
+  (case order
+    :desc
+    ($ FaCaretUp
+       {:className "sort-marker"
+        :pull "left"})
+    :asc
+    ($ FaCaretDown
+       {:className "sort-marker"
+        :pull "left"})
+    ;;
+    ($ FaCaretUp
+       {:className "sort-marker"
+        :pull "left"
+        :style #js {:opacity "0"}})))
+
+
+(defnc ColumnNameElement
+  [{{column-name :label
+     :keys [order]
+     :as column} 
+    :column}]
+  (let [{:keys [dispatch]} (use-handlers)] 
+    (d/div 
+      {:className "name"
+       :onClick (fn []
+                  (when dispatch
+                    (dispatch
+                      {:type :table.column/order
+                       :column column
+                       :value
+                       (case order
+                         nil :desc
+                         ;;
+                         :desc :asc 
+                         ;;
+                         nil)})))} 
+      column-name)))
+
+
+(defnc UserHeader
+  [{{:keys [filter] :as column} :column
+    :as header}]
+  (let [{v :_ilike
+         :or {v ""}} filter
+        {:keys [dispatch]} (use-handlers)] 
+    (d/div
+      {:className (:className header)}
+      (d/div
+        {:className "header"}
+        ($ SortElement {& header})
+        ($ ColumnNameElement {& header}))
+      (d/div
+        {:className "filter"}
+        ($ toddler/idle-input
+           {:placeholder "Filter..."
+            :className "filter"
+            :spellCheck false
+            :auto-complete "off"
+            :value (or v "")
+            :onChange (fn [value]
+                        (when dispatch
+                          (dispatch
+                            {:type :table.column/filter
+                             :column column
+                             :value (if (empty? value) nil 
+                                      {:name
+                                       {:_ilike (str \% (str/replace value #"\s+" "%") \%)}})})))})))))
+
+
+(defnc TextHeader
+  [{{:keys [filter] :as column} :column
+    :as header}]
+  (let [{v :_ilike
+         :or {v ""}} filter
+        {:keys [dispatch]} (use-handlers)] 
+    (d/div
+      {:className (:className header)}
+      (d/div
+        {:className "header"}
+        ($ SortElement {& header})
+        ($ ColumnNameElement {& header}))
+      (d/div
+        {:className "filter"}
+        ($ toddler/idle-input
+           {:placeholder "Filter..."
+            :className "filter"
+            :spellCheck false
+            :auto-complete "off"
+            :value (or v "")
+            :onChange (fn [value]
+                        (when dispatch
+                          (dispatch
+                            {:type :table.column/filter
+                             :column column
+                             :value (if (empty? value) nil 
+                                      {:_ilike value})})))})))))
+
+
+(defnc TimestampHeader
+  [{{:keys [filter attribute]} :column
+    :as header}]
+  (let [{from  :_ge
+         to :_le} filter
+        {:keys [dispatch]} (use-handlers)]
+    (d/div
+      {:className (:className header)}
+      (d/div
+        {:className "header"}
+        ($ SortElement {& header})
+        ($ ColumnNameElement {& header}))
+      ($ toddler/PeriodDropdownElement
+         {:value [from to]
+          :placeholder "Filter period..."
+          :className "filter"
+          :render/field toddler/PeriodInput
+          :onChange (fn [[from to]] 
+                      (dispatch
+                        {:type :table.column/filter
+                         :attribute attribute
+                         :value (when (or to from)
+                                  {:_le to :_ge from})}))}))))
+
+
+(def popup-menu-preference
+  [#{:bottom :center} 
+   #{:left :center} 
+   #{:right :center} 
+   #{:top :center}])
+
+
+(defnc BooleanFilter
+  [{:keys [onChange className]}]
+  (d/div
+    {:className className}
+    ($ FaCheck
+       {:className "active" 
+        :onClick #(onChange true)})
+    ($ FaCheck
+       {:className "inactive"
+        :onClick #(onChange false)})
+    ($ FaMinus
+       {:className "inactive" 
+        :onClick #(onChange nil)})))
+
+
+(defnc BooleanHeader 
+  [{{:keys [filter] :as column} :column
+    rpopup :render/popup
+    :as header
+    :or {rpopup "div"}}]
+  (let [{v :_eq} filter
+        [opened? set-opened!] (hooks/use-state nil)
+        {:keys [dispatch]} (use-handlers)
+        area (hooks/use-ref nil)
+        popup (hooks/use-ref nil)]
+    (popup/use-outside-action
+      opened? area popup
+      #(set-opened! false))
+    (letfn [(toggle [v]
+              (set-opened! false)
               (dispatch
-                {:type :pagination/update
-                 :pagination {:total-count (or ocount 0)}}))))
-        (search)))
-    ;; TODO - decide if this is necessary. Subordinate tables will conclude that
-    ;; mutations are discared on parent sync, because parent will trigger db/commit!
-    ;; Track discard
-    (use-delta-monitor
-      db 
-      (fn [_ old new]
-        (when (and (some? old) (nil? new))
-          (dispatch {:type :table/commit}))))
-    (assoc 
-      (select-keys state [:actions :columns :rows :selection
-                          :pagination :root/entity :db
-                          :table/entity]) 
-      :handlers handlers)))
+                {:type :table.column/filter
+                 :column column
+                 :value (when (some? v) {:_eq v})}))] 
+      (d/div
+        {:className (:className header)}
+        (d/div 
+          {:className "header"}
+          ($ SortElement {& header})
+          ($ ColumnNameElement {& header}))
+        ($ popup/Area
+           {:ref area}
+           (d/div
+             {:className "filter"
+              :onClick (fn [] (set-opened! true))}
+             ($ (if (some? v) FaCheck FaMinus)
+                {:className (if v "active" "inactive")}))
+           (when opened?
+             ($ popup/Element
+                {:ref popup
+                 :preference popup-menu-preference
+                 :wrapper toddler/dropdown-popup}
+                ($ rpopup {:onChange toggle}))))))))
+
+
+(defnc EnumHeader
+  [{{:keys [filter]
+     :as column} :column
+    rpopup :render/popup
+    :or {rpopup "div"}
+    :as header}]
+  (let [{v :_in} filter
+        options (map 
+                  (comp keyword :name) 
+                  (get-in column [:configuration :values]))
+        [opened? set-opened!] (hooks/use-state nil)
+        {:keys [dispatch]} (use-handlers)
+        area (hooks/use-ref nil)
+        popup (hooks/use-ref nil)]
+    (popup/use-outside-action
+      opened? area popup
+      #(set-opened! false))
+    (d/div
+      {:className (:className header)}
+      (d/div 
+        {:className "header"}
+        ($ SortElement {& header})
+        ($ ColumnNameElement {& header}))
+      ($ popup/Area
+         {:ref area
+          :onClick (fn [e]
+                     (when opened? 
+                       (.preventDefault e)))}
+         (d/div
+           {:className "filter"
+            :onClick #(set-opened! true)}
+           ($ toddler/checkbox
+              {:active (if (nil? v) nil (boolean (not-empty v)))}))
+         (when (and (not-empty options) opened?) 
+           ($ popup/Element
+              {:ref popup
+               :wrapper rpopup
+               :preference popup-menu-preference}
+              ($ toddler/checklist
+                 {:value v
+                  :multiselect? true
+                  :options options 
+                  :display-fn name
+                  :onChange #(dispatch
+                               {:type :table.column/filter
+                                :column column
+                                :value (when (not-empty %) {:_in (map keyword %)})})})))))))
+
+
+(defnc PlainHeader
+  [header]
+  (d/div
+    {:className (:className header)}
+    (d/div 
+      {:className "header"}
+      ($ SortElement {& header})
+      ($ ColumnNameElement {& header}))))
+
+
+;; Styled headers
+(def header-style
+  {:display "flex"
+   :flex-direction "column"
+   :font-size "12"
+   :height "100%"
+   :justify-content "space-between"
+   ".header" 
+   {:display "flex"
+    :flex-direction "row"
+    ".name" {:cursor "pointer" :font-weight "600"}}
+   ".filter"
+   {:margin "4px 0"}})
+
+
+(defstyled boolean-popup BooleanFilter
+  {:display "flex"
+   :flex-direction "row"
+   (str toddler/checkbox-button) {:margin "1px 2px"}})
+
+
+
+(defstyled boolean-header BooleanHeader 
+  (deep-merge 
+    header-style
+    {:align-items "center"})
+  --themed)
+
+
+(defstyled enum-popup popup/element
+  {(str toddler/checklist " .name") {:font-size "12"}})
+
+
+
+(defstyled plain-header PlainHeader 
+  header-style
+  --themed)
+
+
+(defstyled user-header UserHeader
+  (deep-merge
+    header-style
+    {".filter"
+     {:line-height 12
+      :padding 0
+      ; :flex-grow "1"
+      :justify-self "center"
+      :resize "none"
+      :border "none"
+      :width "100%"}})
+  --themed)
+
+
+(defstyled text-header TextHeader 
+  (deep-merge
+    header-style
+    {".filter"
+     {:line-height 12
+      :padding 0
+      ; :flex-grow "1"
+      :justify-self "center"
+      :resize "none"
+      :border "none"
+      :width "100%"}})
+  --themed)
+
+
+(defstyled boolean-popup BooleanFilter 
+  {:display "flex"
+   :flex-direction "row"
+   (str toddler/checkbox-button) {:margin "1px 2px"}})
+
+
+(defstyled boolean-header BooleanHeader 
+  (deep-merge 
+    header-style
+    {:align-items "center"})
+  --themed)
+
+
+(defstyled enum-popup popup/element
+  {(str toddler/checklist " .name") {:font-size "12"}})
+
+
+(defstyled enum-header EnumHeader 
+  (deep-merge
+    header-style
+    {:justify-content "flex-start"
+     :align-items "center"
+     ; ".header" {:margin-left "-1em"}
+     })
+  --themed)
+
+(defstyled timestamp-header TimestampHeader
+  (deep-merge
+    header-style
+    {:justify-content "flex-start"
+     :align-items "center"
+     ; ".header" {:margin-left "-1em"}
+     })
+  --themed)
+
+
+(defn header-resolver
+  [{:keys [type]}]
+  (case  type
+    "enum" enum-header
+    "boolean" boolean-header
+    "string" text-header 
+    "user" user-header
+    "timestamp" timestamp-header
+    plain-header))
+
+
+(defn cell-resolver
+  [{:keys [render type]}]
+  (if (some? render) render
+    (case type
+      :action/delete delete-cell
+      :action/expand expand-cell
+      "boolean" boolean-cell
+      "currency" currency-cell
+      "enum" enum-cell
+      "float" float-cell
+      "hashed" HashedCell
+      "int" integer-cell
+      "uuid" uuid-cell
+      "string" text-cell
+      "user" user-cell
+      "timestamp" timestamp-cell
+      (throw
+        (js/Error.
+          (str
+            "Unknown reneder type: '" type
+            "'. Specify either valid :type or :render attribute in column definition"))))))
+
+
+(defstyled pagination Pagination
+  {:padding "2px 3px 8px 3px"
+   :display "flex"
+   :font-size "12"
+   :align-items "center"
+   :button {:outline "none"
+            :border "none"}
+   :input 
+   {:margin-left 3
+    :border "none"
+    :outling "none"
+    :width 40}}
+  --themed)
+
+
+(defnc Table
+  [{:keys [className] :as props}]
+  (d/div
+    {:className className}
+    (provider
+      {:context *cell-renderer*
+       :value cell-resolver}
+      (provider
+        {:context *header-renderer*
+         :value header-resolver}
+        ($ TableLayout
+           {:render/interactions Interactions
+            & props})))))
+
+
+(defstyled table Table
+  {:display "flex"
+   :flex-direction "column"
+   :flex-grow "1"}
+  --themed)
+
+
+(defmulti reducer
+  (fn [_ {:keys [type]}] 
+    type))
