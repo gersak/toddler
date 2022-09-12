@@ -1,10 +1,8 @@
 (ns toddler.elements.modal
   (:require
     clojure.string
-    ["@fortawesome/react-fontawesome" :refer [FontAwesomeIcon]]
-    ["@fortawesome/free-solid-svg-icons" 
-     :refer [faTimes
-             faExclamationTriangle]]
+    ["react-icons/fa" :refer [FaTimes
+                              FaExclamationTriangle]]
     ["react" :as react]
     ["react-dom" :as rdom]
     [vura.core :refer [round-number]]
@@ -98,7 +96,7 @@
 
 (defnc CloseButton
   [props]
-  ($ FontAwesomeIcon {:icon faTimes & props}))
+  ($ FaTimes {& props}))
 
 (defstyled close-button 
   CloseButton
@@ -242,11 +240,11 @@
                 (conj "warning"))}
       (when (some? error) 
         (<>
-          ($ FontAwesomeIcon {:icon faExclamationTriangle :size "2x"})
+          ($ FaExclamationTriangle {:size "2x"})
           (d/span error)))
       (when (and (nil? error) (some? warning))
         (<>
-          ($ FontAwesomeIcon {:icon faExclamationTriangle})
+          ($ FaExclamationTriangle)
           (d/span warning))))
     (d/div
       {:className "right"}

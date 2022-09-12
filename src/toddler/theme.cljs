@@ -93,8 +93,8 @@
    "#133926"])
 
 
-;;; toddler.interactions
-(defmethod --themed [{} 'toddler.interactions/simplebar]
+;;; toddler.elements
+(defmethod --themed [{} 'toddler.elements/simplebar]
   [{:keys [$shadow-top $shadow-bottom $hidden]}]
   (let [box-shadow (cond-> []
                      $shadow-top (conj "inset 0px 11px 8px -10px #CCC")
@@ -116,11 +116,11 @@
     :border-bottom (str "1px solid " gray)}
    :margin 3})
 
-(defmethod --themed [{} 'toddler.interactions/column]
+(defmethod --themed [{} 'toddler.elements/column]
   [_]
   $element-block)
 
-(defmethod --themed [{} 'toddler.interactions/row]
+(defmethod --themed [{} 'toddler.elements/row]
   [_]
   $element-block)
 
@@ -142,8 +142,8 @@
                                   hover)}
                :cursor (if _disabled "default" "pointer")
                :pointer-events (if _disabled "none" "inherit")})))]
-  (defmethod --themed [{} 'toddler.interactions/action] [props] (themed-action props))
-  (defmethod --themed [{} 'toddler.interactions/named-action] [props] (themed-action props)))
+  (defmethod --themed [{} 'toddler.elements/action] [props] (themed-action props))
+  (defmethod --themed [{} 'toddler.elements/named-action] [props] (themed-action props)))
 
 
 (defn button-colors
@@ -204,11 +204,11 @@
       ":hover" (assoc hover :box-shadow "0px 2px 4px 0px #aeaeae")}
       disabled (assoc :pointer-events "none"))))
 
-(defmethod --themed [{} 'toddler.interactions/button] [props]
+(defmethod --themed [{} 'toddler.elements/button] [props]
   (merge (interactions-button props) (interactions-drop-on-active props)))
 
 
-(defmethod --themed [{} 'toddler.interactions/checkbox-button]
+(defmethod --themed [{} 'toddler.elements/checkbox-button]
   [{:keys [theme $active disabled]}]
   (let [[c bc] (case (:name theme)
                  ["white" (case $active
@@ -221,12 +221,12 @@
       disabled (assoc :pointer-events "none"))))
 
 
-(defmethod --themed [{} 'toddler.interactions/checkbox-field]
+(defmethod --themed [{} 'toddler.elements/checkbox-field]
   [_]
   {:color gray})
 
 
-(defmethod --themed [{} 'toddler.interactions/slider]
+(defmethod --themed [{} 'toddler.elements/slider]
   [{:keys [width height orient]
     {twidth :width theight :height
      :or {twidth 12 theight 12}} :thumb
@@ -264,7 +264,7 @@
        :-webkit-appearance "slider-vertical")))
 
 
-(defmethod --themed [{} 'toddler.interactions/dropdown-option]
+(defmethod --themed [{} 'toddler.elements/dropdown-option]
   [{:keys [theme selected]}]
   (let [[c h b bh]
         (case theme
@@ -331,23 +331,23 @@
 (def $dropdown
   {:max-height 400})
 
-(defmethod --themed [{} 'toddler.interactions/dropdown-popup]
+(defmethod --themed [{} 'toddler.elements/dropdown-popup]
   [_]
   (deep-merge
    $dropdown-shadow
    $dropdown))
 
 
-(defmethod --themed [{} 'toddler.interactions/dropdown-element-decorator]
+(defmethod --themed [{} 'toddler.elements/dropdown-element-decorator]
   [_]
   {"&.opened" {:color "transparent"}
    :cursor "default"})
 
-(defmethod --themed [{} 'toddler.interactions/dropdown-field-discard]
+(defmethod --themed [{} 'toddler.elements/dropdown-field-discard]
   [_]
   {":hover" {:color (str red "!important")}})
 
-(defmethod --themed [{} 'toddler.interactions/calendar-day]
+(defmethod --themed [{} 'toddler.elements/calendar-day]
   [_]
   {".day"
    {:color gray
@@ -372,7 +372,7 @@
     {:color red}}})
 
 
-(defmethod --themed [{} 'toddler.interactions/calendar-month-header]
+(defmethod --themed [{} 'toddler.elements/calendar-month-header]
   [_]
   {".day-wrapper .day"
    {:color gray
@@ -380,7 +380,7 @@
     "&.weekend"
     {:color red}}})
 
-(defmethod --themed [{} 'toddler.interactions/calendar-month]
+(defmethod --themed [{} 'toddler.elements/calendar-month]
   [_]
   {".week-days-header .day-wrapper .day"
    {:color gray}
@@ -401,7 +401,7 @@
      :border-radius 2
      :font-weight 500}}})
 
-(defmethod --themed [{} 'toddler.interactions/default-field]
+(defmethod --themed [{} 'toddler.elements/default-field]
   [{_disabled :disabled}]
   {".field-name"
    {:color (cond
@@ -413,7 +413,7 @@
     :font-weight "600"
     :text-transform "uppercase"}})
 
-(defmethod --themed [{} 'toddler.interactions/field-wrapper]
+(defmethod --themed [{} 'toddler.elements/field-wrapper]
   [{:keys [context]}]
   (case context
     {:border-color "#b3b3b3 !important"
@@ -426,7 +426,7 @@
      {:color gray}}))
 
 
-(defmethod --themed [{} 'toddler.interactions/search]
+(defmethod --themed [{} 'toddler.elements/search]
   [_]
   {:border-color "#b3b3b3 !important"
    :background "#eaeaea"
@@ -440,18 +440,18 @@
    "input"
    {:color gray}})
 
-(defmethod --themed [{} 'toddler.interactions/dropdown-wrapper]
+(defmethod --themed [{} 'toddler.elements/dropdown-wrapper]
   [{:keys [disabled]}]
   (when disabled
     {:pointer-events "none"}))
-(defmethod --themed [{} 'toddler.interactions/dropdown-field-wrapper] [_] {:color "#adacac"})
+(defmethod --themed [{} 'toddler.elements/dropdown-field-wrapper] [_] {:color "#adacac"})
 
-(defmethod --themed [{} 'toddler.interactions/multiselect-wrapper]
+(defmethod --themed [{} 'toddler.elements/multiselect-wrapper]
   [{:keys [opened]}]
   {:cursor (if opened "default" "pointer")})
 
 
-(defmethod --themed [{} 'toddler.interactions/timestamp-clear] [_]
+(defmethod --themed [{} 'toddler.elements/timestamp-clear] [_]
   {:background-color light-gray
    :color "white"
    :transition "background .3s ease-in-out"
@@ -460,11 +460,11 @@
    ":hover" {:background-color red}})
 
 
-(defmethod --themed [{} 'toddler.interactions/time-period-popup] [_]
+(defmethod --themed [{} 'toddler.elements/time-period-popup] [_]
   $dropdown-shadow)
 
 
-(defmethod --themed [{} 'toddler.interactions/user]
+(defmethod --themed [{} 'toddler.elements/user]
   [{:keys [disabled read-only]}]
   (let [cursor (if (or disabled read-only)
                  "default"
@@ -477,7 +477,7 @@
 
 
 
-(defmethod --themed [{} 'toddler.interactions/group]
+(defmethod --themed [{} 'toddler.elements/group]
   [{:keys [disabled read-only]}]
   (let [cursor (if (or disabled read-only)
                  "default"
@@ -489,7 +489,7 @@
       (or disabled read-only) (assoc :pointer-events "none"))))
 
 
-(defmethod --themed [{} 'toddler.interactions/user-multiselect]
+(defmethod --themed [{} 'toddler.elements/user-multiselect]
   [{:keys [disabled read-only]}]
   (let [cursor (if (or disabled read-only)
                  "default"
@@ -501,7 +501,7 @@
       (or disabled read-only) (assoc :pointer-events "none"))))
 
 
-(defmethod --themed [{} 'toddler.interactions/group-multiselect]
+(defmethod --themed [{} 'toddler.elements/group-multiselect]
   [{:keys [disabled read-only]}]
   (let [cursor (if (or disabled read-only)
                  "default"
@@ -513,13 +513,13 @@
       (or disabled read-only) (assoc :pointer-events "none"))))
 
 
-(defmethod --themed [{} 'toddler.interactions/user-cell]
+(defmethod --themed [{} 'toddler.elements/user-cell]
   [_]
   {:input {:color color}})
 
 
 
-(defmethod --themed [{} 'toddler.interactions/table-header]
+(defmethod --themed [{} 'toddler.elements/table-header]
   [_]
   {:border-color dark-teal})
 
@@ -527,7 +527,7 @@
 (defn interactive-cell? [{:keys [cell/disabled cell/read-only]}]
   (every? not [disabled read-only]))
 
-(defmethod --themed [{} 'toddler.interactions/timestamp-cell]
+(defmethod --themed [{} 'toddler.elements/timestamp-cell]
   [{:keys [opened] :as props}]
   (let [interactive? (interactive-cell? props)]
     {".decorator" {:color (if (or (not interactive?) opened) "transparent" "#adacac")
@@ -538,15 +538,15 @@
 
 
 
-(defmethod --themed [{} 'toddler.interactions/table-row] [_]
+(defmethod --themed [{} 'toddler.elements/table-row] [_]
   {":hover" {:border-color dark-teal}})
 
-(defmethod --themed [{} 'toddler.interactions/table-header-cell] [_]
+(defmethod --themed [{} 'toddler.elements/table-header-cell] [_]
   {:color gray})
 
 
-;; toddler.interactions.light
-(defmethod --themed [{} 'toddler.interactions.light/field-input]
+;; toddler.elements.light
+(defmethod --themed [{} 'toddler.elements.light/field-input]
   [{:keys [readOnly]}]
   (cond->
    {:color text
@@ -558,7 +558,7 @@
     readOnly (assoc :cursor "pointer")))
 
 
-(defmethod --themed [{} 'toddler.interactions.light/search]
+(defmethod --themed [{} 'toddler.elements.light/search]
   [{:keys [position]
     :or {position :right}}]
   (let [[c bc pc] [color dark-asphalt asphalt]]
@@ -574,7 +574,7 @@
                         "flex-end")}))
 
 
-(defmethod --themed [{} 'toddler.interactions.light/dropdown-option]
+(defmethod --themed [{} 'toddler.elements.light/dropdown-option]
   [{:keys [selected]}]
   {:color (if selected
             saturated-teal
@@ -605,11 +605,11 @@
                         :visibility "hidden"
                         :cursor "default"
                         :pointer-events "none"))))]
-  (defmethod --themed [{} 'toddler.interactions.light/action] [props] (--themed-action props))
-  (defmethod --themed [{} 'toddler.interactions.light/named-action] [props] (--themed-action props)))
+  (defmethod --themed [{} 'toddler.elements.light/action] [props] (--themed-action props))
+  (defmethod --themed [{} 'toddler.elements.light/named-action] [props] (--themed-action props)))
 
 
-(defmethod --themed [{} 'toddler.interactions.light/tabs]
+(defmethod --themed [{} 'toddler.elements.light/tabs]
   [_]
   (let [[c ic bc bcl]
         [color asphalt color asphalt]]
@@ -625,11 +625,11 @@
        :cursor "default"}}}))
 
 
-(defmethod --themed [{} 'toddler.interactions/textarea-field]
+(defmethod --themed [{} 'toddler.elements/textarea-field]
   [_]
   {:textarea {:font-family "Roboto"}})
 
-(defmethod --themed [{} 'toddler.interactions.light/user-dropdown-input]
+(defmethod --themed [{} 'toddler.elements.light/user-dropdown-input]
   [_]
   {"input::placeholder" {:color "#8fa7c4"}
    :input {:color color}})
@@ -658,27 +658,27 @@
                          :transition "color .2s ease-in"
                          :path {:cursor "pointer"}}
              " .remove:hover" {:color rch}}))]
-  (defmethod --themed [{} 'toddler.interactions.light/user-tag]
+  (defmethod --themed [{} 'toddler.elements.light/user-tag]
     [props]
     (deep-merge
      {:img {:margin-right 4}}
      (--editable-tag props)
      (--colored-tag props)))
 
-  (defmethod --themed [{} 'toddler.interactions.light/tag]
+  (defmethod --themed [{} 'toddler.elements.light/tag]
     [props]
     (deep-merge
      (--editable-tag props)
      (--colored-tag props)))
 
-  (defmethod --themed [{} 'toddler.interactions/user-tag]
+  (defmethod --themed [{} 'toddler.elements/user-tag]
     [props]
     (deep-merge
      {:img {:margin-right 4}}
      (--editable-tag props)
      (--colored-tag props)))
 
-  (defmethod --themed [{} 'toddler.interactions/tag]
+  (defmethod --themed [{} 'toddler.elements/tag]
     [props]
     (deep-merge
      (--editable-tag props)
@@ -774,7 +774,7 @@
     :opacity "0.2 !important"}})
 
 
-(defmethod --themed [{} 'toddler.interactions/card-action]
+(defmethod --themed [{} 'toddler.elements/card-action]
   [{:keys [context]}]
   {:background-color "white"
    ".action:hover"

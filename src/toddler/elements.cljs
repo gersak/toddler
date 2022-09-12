@@ -1,8 +1,7 @@
-(ns toddler.interactions_new
+(ns toddler.elements
   (:require
    clojure.set
    clojure.string
-   neyho.web.util
    [goog.string :as gstr]
    [vura.core :as vura]
    [cljs-bean.core :refer [->js ->clj]]
@@ -15,51 +14,41 @@
    [helix.children :as c]
    [helix.hooks  :as hooks]
    [helix.spring :as spring]
-   [neyho.eywa.hooks
+   [toddler.hooks
     :refer [use-translate
-            use-calendar]]
-   [neyho.eywa.context
-    :refer [http-url]]
-   [neyho.web.elements.input
+            use-calendar
+            use-idle]]
+   [toddler.elements.input
     :refer [AutosizeInput
             NumberInput
             IdleInput
             TextAreaElement
             SliderElement]]
-   [neyho.web.hooks
-    :refer [use-idle]]
-   [neyho.web.elements.mask :refer [use-mask]]
-   [neyho.web.elements.dropdown :as dropdown]
-   [neyho.web.elements.multiselect :as multiselect]
-   [neyho.web.elements.table :as table]
-   [neyho.web.elements.popup :as popup]
-   [neyho.web.elements.tooltip :as tip]
+   [toddler.elements.mask :refer [use-mask]]
+   [toddler.elements.dropdown :as dropdown]
+   [toddler.elements.multiselect :as multiselect]
+   [toddler.elements.popup :as popup]
+   [toddler.elements.tooltip :as tip]
+    ;;
    ["react" :as react]
    ["simplebar-react" :as SimpleBar]
-   ["@fortawesome/react-fontawesome" :refer [FontAwesomeIcon]]
-   ["@fortawesome/free-solid-svg-icons"
-    :refer [faCheck
-            faTimes
-            faSearch
-            faChevronDown
-            faQuoteRight
-            faMinus
-            faAngleRight
-            faAngleLeft
-            faAngleDoubleLeft
-            faAngleDoubleRight]]))
+   ["react-icons/fa"
+    :refer [FaCheck
+            FaTimes
+            FaSearch
+            FaChevronDown
+            FaQuoteRight
+            FaMinus
+            FaAngleRight
+            FaAngleLeft
+            FaAngleDoubleLeft
+            FaAngleDoubleRight]]))
 
 
 (defstyled simplebar SimpleBar
   {"transition" "box-shadow 0.3s ease-in-out"}
   --themed)
 
-;; Basic components
-
-(defstyled fa FontAwesomeIcon
-  {:use-select "none"
-   :cursor "pointer"
-   :path {:cursor "pointer"}})
 
 
 (defn --flex-position
@@ -118,7 +107,7 @@
   [{:keys [text] :as props}]
   (d/div
    {& (dissoc props :text)}
-   ($ FontAwesomeIcon {:icon faQuoteRight :pull "left"})
+   ($ FaQuoteRight)
    (d/p text)))
 
 ;;
@@ -147,7 +136,7 @@
          :onMouseEnter #(api :start {:transform "scale(1.2)" :config {:tension 2000}})
          :onMouseLeave #(api :start {:transform "scale(1)" :config {:tension 2000}})
          :& (dissoc props :tooltip :icon :icon-position)}
-        (when icon ($ fa {:icon icon :className "icon"}))
+        (when icon ($ icon))
         (c/children props)))))
 
 
@@ -250,10 +239,9 @@
 (defnc checkbox [{:keys [active] :as props}]
   ($ checkbox-button
      {:$active active & (dissoc props :active)}
-     ($ FontAwesomeIcon
-        {:icon (case active
-                 nil faMinus
-                 faCheck)})))
+     ($ (case active
+          nil FaMinus
+          FaCheck))))
 
 
 (defnc CheckboxField [{:keys [name className] :as props}]
@@ -335,13 +323,7 @@
      {:context (if disabled :stale context)
       :className className}
      ($ content {:className "content" :value value})
-     (when on-remove
-       ($ FontAwesomeIcon
-          {:icon faTimes
-           :className "remove"
-           :pull "left"
-           :size "xs"
-           :onClick (fn [] (on-remove value))})))))
+     (when on-remove FaTimes))))
 
 
 (defstyled tag Tag
@@ -419,8 +401,7 @@
   --themed)
 
 
-(def ^:dynamic *dropdown* (create-context))
-(def ^:dynamic *dropdown-area* (create-context))
+(def ^:dynamic ^js *dropdown* (create-context))
 
 (defnc DropdownElementDecorator
   [{:keys [className]}]
@@ -430,7 +411,7 @@
        {:className (str
                     className
                     (when opened " opened"))}
-       ($ FontAwesomeIcon {:icon faChevronDown :pull "left" :size "xs"})))))
+       ($ FaChevronDown)))))
 
 (defstyled dropdown-element-decorator DropdownElementDecorator
   {:position "absolute"
@@ -446,10 +427,7 @@
       (d/span
        {:className className
         :onClick discard!}
-       ($ FontAwesomeIcon
-          {:icon faTimes
-           :pull "left"
-           :size "xs"})))))
+       ($ FaTimes)))))
 
 
 (defstyled dropdown-field-discard DropdownElementDiscard
@@ -459,9 +437,11 @@
    :transition "color .2s ease-in-out"}
   --themed)
 
+
 (defnc DropdownArea
   [props]
   (let [[area-position set-area-position!] (hooks/use-state nil)
+        ;;
         {:keys [area] :as dropdown}
         (dropdown/use-dropdown
          (->
@@ -472,7 +452,7 @@
      {:context *dropdown*
       :value dropdown}
      (provider
-      {:context *dropdown-area*
+      {:context popup/*area-position*
        :value [area-position set-area-position!]}
       ($ popup/Area
          {:ref area
@@ -481,7 +461,7 @@
 
 
 (defnc DropdownInput
-  [{:keys [className onSearchChange]
+  [{:keys [className onSearchChange placeholder]
     rinput :render/input
     rwrapper :render/wrapper
     rimg :render/img
@@ -496,7 +476,6 @@
                 sync-search!
                 toggle!
                 opened
-                placeholder
                 disabled
                 read-only
                 searchable?]
@@ -531,7 +510,7 @@
     roption :render/option
     :or {rpopup dropdown-popup
          roption dropdown-option}}]
-  (let [[area-position set-area-position!] (hooks/use-context *dropdown-area*)
+  (let [[area-position set-area-position!] (hooks/use-context popup/*area-position*)
         {:keys [options
                 popup
                 disabled
@@ -577,7 +556,7 @@
     :as props}]
   ($ DropdownArea
      {& props}
-     ($ rinput)
+     ($ rinput {& (dissoc props :render/input :render/popup)})
      ($ rpopup)))
 
 ;;
@@ -632,13 +611,12 @@
 
 
 ;; CALENDAR
-
-(def ^:dynamic *calendar-events* (create-context))
-(def ^:dynamic *calendar-selected* (create-context))
-(def ^:dynamic *calendar-disabled* (create-context))
-(def ^:dynamic *calendar-control* (create-context))
-(def ^:dynamic *calendar-opened* (create-context))
-(def ^:dynamic *calendar-state* (create-context))
+(def ^:dynamic ^js *calendar-events* (create-context))
+(def ^:dynamic ^js *calendar-selected* (create-context))
+(def ^:dynamic ^js *calendar-disabled* (create-context (constantly false)))
+(def ^:dynamic ^js *calendar-control* (create-context))
+(def ^:dynamic ^js *calendar-opened* (create-context))
+(def ^:dynamic ^js *calendar-state* (create-context))
 
 
 (defhook use-calendar-events [] (hooks/use-context *calendar-events*))
@@ -653,13 +631,26 @@
         is-disabled (hooks/use-context *calendar-disabled*)
         is-selected (hooks/use-context *calendar-selected*)
         disabled (when (ifn? is-disabled) (is-disabled props))
-        selected (when (ifn? is-selected) (is-selected props))]
+        selected (when (ifn? is-selected) (is-selected props))
+        is-today (= (select-keys
+                     (-> (vura/date) vura/day-time-context) [:day-in-month :year :month])
+                    (cond (some? value)
+                          (select-keys
+                           (-> value vura/day-time-context) [:day-in-month :year :month])))
+        is-weekend (cond (some? value)
+                         (if (-> value vura/weekend?)
+                           true false))
+        #_is-holiday #_(cond (some? value)
+                             (if (-> value vura/*holiday?*)
+                               "red" ""))]
     (d/div
      {:class className}
      (d/div
       {:class (cond-> ["day"]
                 selected (conj "selected")
                 disabled (conj "disabled")
+                is-today (conj "today")
+                is-weekend (conj "weekend")
                 (nil? value) (conj "empty"))
        :onClick (fn []
                   (when-not disabled
@@ -684,7 +675,7 @@
   --themed)
 
 
-(def ^:dynamic *calendar-day* (create-context calendar-day))
+(def ^:dynamic ^js *calendar-day* (create-context calendar-day))
 
 
 (defnc CalendarWeek [{:keys [days className]}]
@@ -714,7 +705,7 @@
 
 (defnc CalendarMonthHeader
   [{:keys [className days]}]
-  (let [week-days (use-calendar :weekdays-short)
+  (let [week-days (use-calendar :weekdays/short)
         day-names (zipmap
                    [7 1 2 3 4 5 6]
                    week-days)]
@@ -722,10 +713,13 @@
      {:class className}
      (map
       (fn [n]
-        (d/div
-         {:class "day-wrapper"
-          :key n}
-         (d/div {:class "day"} (get day-names n))))
+        (let [is-weekend (or (= n 6)
+                             (= n 7))]
+          (d/div
+           {:class "day-wrapper"
+            :key n}
+           (d/div {:class (cond-> ["day"]
+                            is-weekend (conj "weekend"))} (get day-names n)))))
       days))))
 
 
@@ -779,7 +773,7 @@
   (let [value (or value (vura/month? (vura/date)))
         {on-month-change :on-month-change} (use-calendar-events)
         months (range 1 13)
-        month-names (use-calendar :months-long)
+        month-names (use-calendar :months)
         search-fn (zipmap months month-names)
         props' (assoc props
                       :onChange on-month-change
@@ -873,6 +867,9 @@
   ($ field {& props}
      ($ wrapper {:context context}
         (c/children props))))
+
+
+(str field-wrapper)
 
 
 (defnc InputField
@@ -995,6 +992,9 @@
          & (dissoc props :name :className :style)})))
 
 
+(defstyled dropdown-field DropdownField nil --themed)
+
+
 (defstyled multiselect-wrapper field-wrapper
   {:position "relative"
    :padding "4px 16px 4px 4px"
@@ -1016,20 +1016,23 @@
          rpopup DropdownPopup
          roption Tag
          search-fn str}
-    :keys [className context-fn search-fn disabled]
+    :keys [className context-fn search-fn disabled placeholder]
     :as props}]
   (let [[area-position set-area-position!] (hooks/use-state nil)
         {:keys [open!
                 remove!
                 options
+                new-fn
                 area]
          :as multiselect} (multiselect/use-multiselect
-                           (assoc props :search-fn search-fn))]
+                           (assoc props
+                                  :search-fn search-fn
+                                  :area-position area-position))]
     (provider
      {:context *dropdown*
       :value multiselect}
      (provider
-      {:context *dropdown-area*
+      {:context popup/*area-position*
        :value [area-position set-area-position!]}
       (d/div
        {:className className}
@@ -1047,7 +1050,8 @@
           {:ref area
            :onClick #(when-not (empty? options) (open!))
            :className "dropdown"}
-          (when (not-empty options) ($ rinput))
+          (when (or (fn? new-fn) (not-empty options))
+            ($ rinput {:placeholder placeholder}))
           ($ rpopup)))))))
 
 
@@ -1058,7 +1062,7 @@
      ($ MultiselectElement
         {:render/wrapper multiselect-wrapper
          :render/popup DropdownPopup
-         :render/option Tag
+         :render/option tag
          :className "multiselect"
          & (dissoc props :name :className :style)})))
 
@@ -1105,7 +1109,8 @@
 
 
 (defstyled textarea-field TextareaField
-  {".input" {:width "100%"}})
+  nil
+  --themed)
 
 ;; TIMESTAMPS
 
@@ -1166,8 +1171,8 @@
         disabled (hooks/use-context *calendar-disabled*)]
     (d/div
      {:className className}
-     ($ fa {:icon faTimes
-            :onClick (when-not disabled on-clear)}))))
+     ($ FaTimes
+        {:onClick (when-not disabled on-clear)}))))
 
 
 (defstyled timestamp-clear TimestampClear
@@ -1181,6 +1186,7 @@
    :justify-content "center"
    :align-items "center"}
   --themed)
+
 
 (defnc TimestampCalendar
   [{:keys [year month day-in-month className]}]
@@ -1202,24 +1208,22 @@
        {:className "header"}
        (d/div
         {:className "years"}
-        ($ fa
-           {:icon faAngleLeft
-            :pull "left"
-            :className "button"
-            :onClick on-prev-month})
+        ($ FaAngleLeft
+           {:onClick on-prev-month
+            :className "button"})
         ($ calendar-year-dropdown {:value year}))
        (d/div
         {:className "months"}
         ($ calendar-month-dropdown {:value month})
-        ($ fa
-           {:icon faAngleRight :pull "right"
-            :className "button"
-            :onClick on-next-month}))))
+        ($ FaAngleRight
+           {:onClick on-next-month
+            :className "button"}))))
      (d/div
       {:className "content-wrapper"}
       (d/div
        {:className "content"}
        ($ calendar-month {:value day-in-month :days days}))))))
+
 
 (defstyled timestamp-calendar TimestampCalendar
   {:display "flex"
@@ -1248,6 +1252,128 @@
     :height 150
     :justify-content "center"
     :flex-grow "1"}})
+
+
+
+(defhook use-timestamp-events
+  [set-timestamp! {:keys [day-in-month year selected] :as timestamp}]
+  (hooks/use-memo
+   [timestamp]
+   (let [timestamp (if (nil? timestamp)
+                     (-> (vura/date) vura/time->value vura/midnight vura/day-time-context)
+                     timestamp)]
+     {:on-clear #(set-timestamp! nil)
+      :on-next-month
+      (fn []
+        (let [{:keys [day-in-month days-in-month]} timestamp
+              value (vura/context->value (assoc timestamp :day-in-month 1))
+              value' (+ value (vura/days days-in-month))
+              {:keys [days-in-month] :as timestamp'} (vura/day-time-context value')]
+          (set-timestamp! (assoc timestamp'
+                                 :day-in-month (min day-in-month days-in-month)
+                                 :selected selected))))
+       ;;
+      :on-prev-month
+      (fn []
+        (let [{:keys [day-in-month]} timestamp
+              value (vura/context->value (assoc timestamp :day-in-month 1))
+              value' (- value (vura/days 1))
+              {:keys [days-in-month] :as timestamp'} (vura/day-time-context value')]
+          (set-timestamp! (assoc timestamp'
+                                 :day-in-month (min day-in-month days-in-month)
+                                 :selected selected))))
+       ;;
+      :on-day-change
+      (fn [day-in-month]
+        (set-timestamp!
+         (assoc
+          timestamp
+          :selected (-> timestamp
+                        (assoc :day-in-month day-in-month)
+                        vura/context->value
+                        vura/value->time)
+          :day-in-month day-in-month)))
+      ;;
+      :on-year-change #(set-timestamp! (assoc timestamp :year %))
+      :on-month-change (fn [month]
+                         (let [v (vura/utc-date-value year month)
+                               {last-day :days-in-month} (vura/day-context v)]
+                           (set-timestamp!
+                            (assoc timestamp
+                                   :month month
+                                   :day-in-month (min day-in-month last-day)))))
+      :on-time-change #(set-timestamp! (merge timestamp %))})))
+
+
+(defnc TimestampCalendarElement
+  [{:keys [disabled
+           read-only
+           onChange]
+    rcalendar :render/calendar
+    value :value
+    :or {rcalendar timestamp-calendar}}]
+  (let [[{:keys [selected] :as state} set-state!] (hooks/use-state nil)
+        set-state! (hooks/use-memo
+                    [disabled read-only]
+                    (if (or disabled read-only)
+                      (fn [& _])
+                      set-state!))
+        ;;
+        disabled false
+        read-only false
+        set-state! (hooks/use-memo
+                    [disabled read-only]
+                    (if (or disabled read-only)
+                      (fn [& _])
+                      set-state!))
+        events (use-timestamp-events set-state! state)
+        selected? (hooks/use-memo
+                   [selected]
+                   (let [{:keys [day-in-month year month]} (some->
+                                                            selected
+                                                            (vura/time->value)
+                                                            (vura/day-time-context))]
+                     (fn [props]
+                       (=
+                        (select-keys
+                         props
+                         [:day-in-month :year :month])
+                        {:year year
+                         :day-in-month day-in-month
+                         :month month}))))]
+    (hooks/use-effect
+     [value]
+      ;; When value has changed... Compare it with current local state
+      ;; If it doesn't match, update local state
+     (when (not= value (when (:value state) selected))
+       (-> (if value value (vura/date))
+           vura/time->value
+           vura/day-time-context
+           (assoc :selected value)
+           set-state!)))
+    ;; When local state changes, notify upstream listener
+    ;; that new value has been selected
+    (hooks/use-effect
+     [state]
+     (when (and (fn? onChange)
+                (not= selected value))
+       (onChange
+        (when state
+          (-> state vura/context->value vura/value->time)))))
+    ($ popup/Container
+       (provider
+        {:context *calendar-selected*
+         :value selected?}
+        (provider
+         {:context *calendar-events*
+          :value events}
+         (provider
+          {:context *calendar-disabled*
+           :value disabled}
+          ($ rcalendar {& state})))))))
+
+
+;;
 
 (defnc TimestampPopup
   [{:keys [year month day-in-month hour minute className]
@@ -1283,57 +1409,7 @@
         (when rclear ($ rclear))))))
 
 
-(defhook use-timestamp-events
-  [set-timestamp! {:keys [day-in-month year selected] :as timestamp}]
-  (hooks/use-memo
-   [timestamp]
-   (let [timestamp (if (nil? timestamp)
-                     (-> (vura/date) vura/time->value vura/midnight vura/day-time-context)
-                     timestamp)]
-     {:on-clear #(set-timestamp! nil)
-      :on-next-month
-      (fn []
-        (let [{:keys [day-in-month days-in-month]} timestamp
-              value (vura/context->value (assoc timestamp :day-in-month 1))
-              value' (+ value (vura/days days-in-month))
-              {:keys [days-in-month] :as timestamp'} (vura/day-time-context value')]
-          (set-timestamp! (assoc timestamp'
-                                 :day-in-month (min day-in-month days-in-month)
-                                 :selected selected))))
-       ;;
-      :on-prev-month
-      (fn []
-        (let [{:keys [day-in-month]} timestamp
-              value (vura/context->value (assoc timestamp :day-in-month 1))
-              value' (- value (vura/days 1))
-              {:keys [days-in-month] :as timestamp'} (vura/day-time-context value')]
-          (set-timestamp! (assoc timestamp'
-                                 :day-in-month (min day-in-month days-in-month)
-                                 :selected selected))))
-       ;;
-      :on-day-change #(set-timestamp!
-                       (assoc
-                        timestamp
-                        :selected (-> timestamp
-                                      (assoc :day-in-month %)
-                                      vura/context->value
-                                      vura/value->time)
-                        :day-in-month %))
-      :on-year-change #(set-timestamp! (assoc timestamp :year %))
-      :on-month-change (fn [month]
-                         (let [v (vura/utc-date-value year month)
-                               {last-day :days-in-month} (vura/day-context v)]
-                           (set-timestamp!
-                            (assoc timestamp
-                                   :month month
-                                   :day-in-month (min day-in-month last-day)))))
-      :on-time-change #(set-timestamp! (merge timestamp %))})))
-
-
-(comment
-  (def n (vura/date)))
-
-(defnc TimestampElement
+(defnc TimestampDropdownElement
   [{:keys [value
            onChange
            disabled
@@ -1470,7 +1546,7 @@
     :as props}]
   ($ field
      {& props}
-     ($ TimestampElement
+     ($ TimestampDropdownElement
         {:value value
          :onChange onChange
          :placeholder placeholder
@@ -1529,7 +1605,8 @@
             ($ rtime
                {:hour (:hour start)
                 :minute (:minute start)}))
-          (when (and (some? start) rclear) ($ rclear))))))
+          #_(when (and (some? start) rclear) ($ rclear))
+          (when rclear ($ rclear))))))
      (provider
       {:context *calendar-events*
        :value end-events}
@@ -1549,7 +1626,8 @@
             ($ rtime
                {:hour (:hour end)
                 :minute (:minute end)}))
-          (when (and (some? end) rclear) ($ rclear)))))))))
+          #_(when (and (some? end) rclear) ($ rclear))
+          (when rclear ($ rclear)))))))))
 
 
 (defnc PeriodPopup
@@ -1563,7 +1641,7 @@
       :className (str className " animated fadeIn faster")
       :wrapper wrapper
       :preference popup/cross-preference}
-     ($ PeriodElement {:className "period" & props})))
+     ($ PeriodElement {:className "period" & (dissoc props :className)})))
 
 (defstyled period-popup PeriodPopup
   {".period"
@@ -1575,13 +1653,14 @@
   [{:keys [disabled
            placeholder
            className
+           open
            opened
            format]
     [from to :as value] :value
-    :or {format :datetime-short}}]
-  (let [{:keys [open]} (use-calendar-events)
-        translate (use-translate)
+    :or {format :medium-datetime}}]
+  (let [translate (use-translate)
         input (hooks/use-ref nil)]
+    #_(println kys)
     (d/div
      {:onClick (fn []
                  (when @input (.focus @input))
@@ -1592,11 +1671,11 @@
          :className "input"
          :readOnly true
          :value (if (or (nil? value) (every? nil? value))
-                  ""
+                  "Select period from dropdown"
                   (str
-                   (if from (translate format from) " ")
-                   "-"
-                   (if to (translate format to) " ")))
+                   (if from (translate from format) " ")
+                   " - "
+                   (if to (translate to format) " ")))
          :spellCheck false
          :auto-complete "off"
          :disabled disabled
@@ -1612,7 +1691,12 @@
     :or {upstream-start nil upstream-end nil}
     :as props}]
   (let [[[{start-value :selected :as start} {end-value :selected :as end}] set-state!]
-        (hooks/use-state [{:selected upstream-start} {:selected upstream-end}])
+        (hooks/use-state [(if (some? upstream-start)
+                            (assoc (-> upstream-start vura/time->value vura/day-time-context) :selected upstream-start)
+                            {:selected upstream-start})
+                          (if (some? upstream-end)
+                            (assoc (-> upstream-end vura/time->value vura/day-time-context) :selected upstream-end)
+                            {:selected upstream-end})])
         ;;
         set-state! (hooks/use-memo
                     [disabled read-only]
@@ -1624,9 +1708,9 @@
                    (fn [data]
                      (letfn [(->value [{:keys [year month day-in-month]}]
                                (vura/utc-date-value year month day-in-month))]
-                       (let [start (when start-value (vura/date->value start-value))
+                       (let [start (when start-value (-> start-value vura/date->value vura/midnight))
                              current (->value data)
-                             end (when end-value (vura/date->value end-value))]
+                             end (when end-value (-> end-value vura/date->value vura/midnight))]
                          (cond
                            (nil? start) (<= current end)
                            (nil? end) (>= current start)
@@ -1661,7 +1745,10 @@
       (provider
        {:context *calendar-state*
         :value [start end]}
-       (c/children props))))))
+       (provider
+        {:context *calendar-disabled*
+         :value false}
+        (c/children props)))))))
 
 
 (defnc PeriodDropdown
@@ -1674,7 +1761,7 @@
     :or {rfield PeriodInput
          rpopup period-popup}
     :as props}]
-  (let [[state] (use-calendar-state)
+  (let [state (use-calendar-state)
         area (hooks/use-ref nil)
         [opened set-opened!] (hooks/use-state false)
         popup (hooks/use-ref nil)
@@ -1683,7 +1770,7 @@
     (hooks/use-effect
      [state]
      (if state
-       (reset! cache (-> state vura/context->value vura/value->date))
+       (reset! cache state)
        (reset! cache nil)))
     ;;
     (popup/use-outside-action
@@ -1692,12 +1779,14 @@
         (set-opened! false)
         (when (and
                (ifn? onChange)
-               (not= @cache value))
-          (onChange @cache))))
+               (or (not= (:selected (nth @cache 0)) (nth value 0))
+                   (not= (:selected (nth @cache 1)) (nth value 1))))
+          (onChange [(:selected (nth @cache 0)) (:selected (nth @cache 1))]))))
+
     ($ popup/Area
        {:ref area}
        (when rfield
-         ($ rfield {:opened opened  & props}))
+         ($ rfield {:open (fn [] (set-opened! not)) :opened opened  & props}))
        (when (or
               (nil? rfield)
               (and (not read-only) (not disabled) opened))
@@ -1719,18 +1808,21 @@
 ;       {:class className
 ;        :src avatar'})))
 
+
+(def ^:dynamic *avatar-root* (create-context ""))
+
+
+(defhook use-avatar-root
+  []
+  (hooks/use-context *avatar-root*))
+
 (defnc Avatar
   [{:keys [avatar className]}]
-  (let [avatar' (if avatar
+  (let [root (use-avatar-root)
+        avatar' (when avatar
                   (if (re-find #"^data:image" avatar)
                     avatar
-                    (str
-                     http-url
-                     "/eywa/avatars/" avatar))
-                  (str
-                   http-url
-                   "/eywa/avatars/"
-                   "kJlc0ONW4B5MouYez6gnBw=="))]
+                    (str root avatar)))]
     (d/img
      {:class className
       :src avatar'})))
@@ -1940,7 +2032,7 @@
   [{:keys [value icon on-change idle-timeout className onChange]
     :or {idle-timeout 500
          value ""
-         icon faSearch
+         icon FaSearch
          onChange identity}
     :as props}]
   (let [on-change (or on-change onChange identity)
@@ -1958,9 +2050,7 @@
              (dissoc props :className)
              {:value input
               :on-change (fn [e] (set-input! (.. e -target -value)))})}))
-     (d/div
-      {:class "icon"}
-      ($ FontAwesomeIcon {:icon icon})))))
+     ($ icon))))
 
 
 (defstyled search Search
@@ -2136,7 +2226,7 @@
          format :datetime-full}}]
   (let [{:keys [placeholder]
          :or {placeholder "Date..."}} column]
-    ($ TimestampElement
+    ($ TimestampDropdownElement
        {:value data
         :onChange onChange
         :format format
@@ -2193,104 +2283,104 @@
      :as pagination} :pagination}]
   (when pagination
     (d/div
-     {:class className}
-     (d/button
-      {:onClick #(set-pagination! {:page 0})
-       :className "start"
-       :disabled (not previous?)}
-      ($ fa {:icon faAngleDoubleLeft}))
-     (d/button
-      {:onClick #(set-pagination! {:page (dec page)})
-       :className "previous"
-       :disabled (not previous?)}
-      ($ fa {:icon faAngleLeft}))
-     (d/button
-      {:onClick #(set-pagination! {:page (inc page)})
-       :className "next"
-       :disabled (not next?)}
-      ($ fa {:icon faAngleRight}))
-     (d/button
-      {:onClick #(set-pagination! {:page (dec page-count)})
-       :className "end"
-       :disabled (not next?)}
-      ($ fa {:icon faAngleDoubleRight}))
-     (d/span
-      (goog.string/format
-       "Showing %d - %d of %d results"
-       (* page page-size)
-       (+ (* page page-size) (count data))
-       total-count))
-     (d/select
-      {:value page-size
-       :className "view-size"
-       :onChange (fn [e] (set-pagination! {:page-size (js/Number (.. e -target -value))}))}
-      (map
-       (fn [option]
-         (d/option
-          {:key option
-           :value option}
-          (str "Show " option)))
-       (range 10 60 10)))
-     (d/span (str "| Page: "))
-     ($ IdleInput
-        {:placeholder "?"
-         :className "pag"
-         :spell-check false
-         :auto-complete "off"
-         :type "number"
-         :value (inc page)
-         :on-change (fn [page]
-                      (let [page (if page page 0)
-                            np (min (max 0 (dec page)) page-count)]
-                        (set-pagination! {:page np})))}))))
+      {:class className}
+      (d/button
+        {:onClick #(set-pagination! {:page 0})
+         :className "start"
+         :disabled (not previous?)}
+        ($ FaAngleDoubleLeft))
+      (d/button
+        {:onClick #(set-pagination! {:page (dec page)})
+         :className "previous"
+         :disabled (not previous?)}
+        ($ FaAngleLeft))
+      (d/button
+        {:onClick #(set-pagination! {:page (inc page)})
+         :className "next"
+         :disabled (not next?)}
+        ($ FaAngleRight))
+      (d/button
+        {:onClick #(set-pagination! {:page (dec page-count)})
+         :className "end"
+         :disabled (not next?)}
+        ($ FaAngleDoubleRight))
+      (d/span
+        (goog.string/format
+          "Showing %d - %d of %d results"
+          (* page page-size)
+          (+ (* page page-size) (count data))
+          total-count))
+      (d/select
+        {:value page-size
+         :className "view-size"
+         :onChange (fn [e] (set-pagination! {:page-size (js/Number (.. e -target -value))}))}
+        (map
+          (fn [option]
+            (d/option
+              {:key option
+               :value option}
+              (str "Show " option)))
+          (range 10 60 10)))
+      (d/span (str "| Page: "))
+      ($ IdleInput
+         {:placeholder "?"
+          :className "pag"
+          :spell-check false
+          :auto-complete "off"
+          :type "number"
+          :value (inc page)
+          :on-change (fn [page]
+                       (let [page (if page page 0)
+                             np (min (max 0 (dec page)) page-count)]
+                         (set-pagination! {:page np})))}))))
 
 
 
-(defhook use-cell-render
-  [{:keys [render type]}]
-  (if (some? render) render
-      (case type
-        "boolean" boolean-cell
-      ; "currency" currency-cell
-      ; "enum" enum-cell
-        "float" float-cell
-      ; "hashed" HashedCell
-        "int" integer-cell
-      ; "uuid" uuid-cell
-        "string" text-cell
-        "timestamp" timestamp-cell)))
+; (defhook use-cell-render
+;   [{:keys [render type]}]
+;   (if (some? render) render
+;       (case type
+;         "boolean" boolean-cell
+;       ; "currency" currency-cell
+;       ; "enum" enum-cell
+;         "float" float-cell
+;       ; "hashed" HashedCell
+;         "int" integer-cell
+;       ; "uuid" uuid-cell
+;         "string" text-cell
+;         "timestamp" timestamp-cell)))
 
-(defstyled table "div"
-  {:padding "0 14px"
-   :input {:border "none" :outline "none"}
-   :font-size "12"})
+; (defstyled table "div"
+;   {:padding "0 14px"
+;    :input {:border "none" :outline "none"}
+;    :font-size "12"})
 
 
-(defstyled table-row table/FRow
-  {:border-bottom "1px solid #f1f1f1"
-   :transition "border .3s ease-in"})
+; (defstyled table-row table/FRow
+;   {:border-bottom "1px solid #f1f1f1"
+;    :transition "border .3s ease-in"})
 
-(defstyled table-header "div"
-  {:padding "0 14px"
-   :font-weight "600"
-   :margin-bottom 5
-   (str table-row)
-   {:padding-bottom 3
-    :border-color "transparent"
-    :border-bottom "1px solid"
-    :margin-bottom 5}}
-  --themed)
+; (defstyled table-header "div"
+;   {:padding "0 14px"
+;    :font-weight "600"
+;    :margin-bottom 5
+;    (str table-row)
+;    {:padding-bottom 3
+;     :border-color "transparent"
+;     :border-bottom "1px solid"
+;     :margin-bottom 5}}
+;   --themed)
 
-(defstyled table-header-cell table/FHeader
-  {:text-transform "uppercase"}
-  --themed)
+; (defstyled table-header-cell table/FHeader
+;   {:text-transform "uppercase"}
+;   --themed)
 
-(defstyled table-body "div"
-  {:padding "0 14px"})
+; (defstyled table-body "div"
+;   {:padding "0 14px"})
 
-(defstyled table-cell table/FCell
-  {:padding "2px 0"}
-  --themed-cell)
+; (defstyled table-cell table/FCell
+;   {:padding "2px 0"}
+;   --themed-cell)
 
 
 
@@ -2307,7 +2397,8 @@
       (d/div
        {:className "action"
         :onClick onClick}
-       ($ fa {:icon _icon})))))
+       ($ _icon)
+       #_($ fa {:icon _icon})))))
 
 
 (let [size 32

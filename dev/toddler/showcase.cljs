@@ -5,7 +5,7 @@
    [helix.hooks :as hooks]
    [helix.dom :as d]
    [toddler.dev :as dev]
-   [toddler.interactions :as interactions]
+   [toddler.elements :as toddler]
    [vura.core :as vura]
    [toddler.elements.popup :as popup]))
 
@@ -25,7 +25,7 @@
     (letfn [(on-change [e]
               (set-state! (.. e -target -value)))]
       ($ dev/centered-component
-         ($ interactions/input-field
+         ($ toddler/input-field
             {:name "user name"
              :value state
              :onChange on-change})))))
@@ -41,14 +41,14 @@
   []
   (let [[state set-state!] (hooks/use-state 100)]
     (<>
-     ($ interactions/slider
+     ($ toddler/slider
         {:width "300px"
          :min "10"
          :max "500"
          :value (str state)
          :onChange (fn [e] (set-state! (.-value (.-target e))))})
      (d/br)
-     ($ interactions/avatar
+     ($ toddler/avatar
         {:size (int state)
          :avatar "https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg"}))))
 
@@ -62,7 +62,7 @@
 (defn TimestampCalendar
   []
   (let [[state set-state!] (hooks/use-state nil)]
-    ($ interactions/TimestampCalendarElement
+    ($ toddler/TimestampCalendarElement
        {:value state
         :onChange (fn [v] (set-state! v))})))
 
@@ -86,50 +86,50 @@
                                              :textarea-field "I am text"
                                              :period-input 123213213})]
     (<>
-     ($ interactions/row "Number input"
-        ($ interactions/number-input
+     ($ toddler/row "Number input"
+        ($ toddler/number-input
            {:value (:number-input state)
             :onChange (fn [e] (set-state! (assoc state :number-input (int (.. e -target -value)))))}))
-     ($ interactions/row
-        ($ interactions/input-field
+     ($ toddler/row
+        ($ toddler/input-field
            {:name "Auto-size free input"
             :value (:free-input state)
             :onChange (fn [e] (set-state! (assoc state :free-input (.. e -target -value))))}))
-     ($ interactions/row
-        ($ interactions/autosize-text
+     ($ toddler/row
+        ($ toddler/autosize-text
            {:name "Auto-size text"
             :value (:auto-size-input state)
             :onChange (fn [e] (set-state! (assoc state :auto-size-input (.. e -target -value))))}))
-     ($ interactions/row
-        ($ interactions/idle-input
+     ($ toddler/row
+        ($ toddler/idle-input
            {:name "Idle input"
             :value (:idle-input state)
             :onChange (fn [e] (set-state! (assoc state :idle-input (.. e -target -value))))}))
-     #_($ interactions/row
-          ($ interactions/mask-input
+     #_($ toddler/row
+          ($ toddler/mask-input
              {:name "Mask input"
               :value (:mask-input state)
               :onChange (fn [e] (set-state! (assoc state :mask-input (.. e -target -value))))}))
-     #_($ interactions/row "Default field"
-          ($ interactions/field-row "hey")
-          ($ interactions/field-row "hey"))
-     ($ interactions/row
-        ($ interactions/checkbox-field
+     #_($ toddler/row "Default field"
+          ($ toddler/field-row "hey")
+          ($ toddler/field-row "hey"))
+     ($ toddler/row
+        ($ toddler/checkbox-field
            {:name "Checkbox field"
             :active (:check-box state)
             :onClick (fn [] (set-state! update :check-box not))}))
-     ($ interactions/row
-        ($ interactions/integer-field
+     ($ toddler/row
+        ($ toddler/integer-field
            {:name "Integer field"
             :value (:integer-field state)
             :onChange (fn [v] (set-state! assoc :integer-field v))}))
-     ($ interactions/row
-        ($ interactions/float-field
+     ($ toddler/row
+        ($ toddler/float-field
            {:name "Float field"
             :value (:float-field state)
             :onChange (fn [v] (set-state! assoc :float-field v))}))
-     ($ interactions/row
-        ($ interactions/multiselect-field
+     ($ toddler/row
+        ($ toddler/multiselect-field
            {:name "Multi-select field"
             :value (:multiselect-field state)
             :new-fn identity
@@ -137,8 +137,8 @@
             :options ["sto" "dvijesto" "tristo"]
             :onRemove (fn [v] (set-state! assoc :multiselect-field v))
             :onChange (fn [v] (set-state! assoc :multiselect-field v))}))
-     ($ interactions/row
-        ($ interactions/dropdown-field
+     ($ toddler/row
+        ($ toddler/dropdown-field
            {:name "Dropdown field"
             :value (:dropdown-field state)
             :new-fn identity
@@ -146,18 +146,18 @@
             :options ["sto" "dvijesto" "tristo"]
             :onRemove (fn [v] (set-state! assoc :dropdown-field v))
             :onChange (fn [v] (set-state! assoc :dropdown-field v))}))
-     ($ interactions/row
-        ($ interactions/textarea-field
+     ($ toddler/row
+        ($ toddler/textarea-field
            {:name "Text area field"
             :value (:textarea-field state)
             :onChange (fn [e] (set-state! assoc :textarea-field (.. e -target -value)))}))
 
-     ($ interactions/row
-        ($ interactions/TimestampDropdownElement
+     ($ toddler/row
+        ($ toddler/TimestampDropdownElement
            {:name "Popup calendar"
             :placeholder "Click to open calendar"}))
-     #_($ interactions/row "Period input"
-          ($ interactions/PeriodInput
+     #_($ toddler/row "Period input"
+          ($ toddler/PeriodInput
              {:value "12.3.2022."
               :onChange (fn [e] (set-state! assoc :textarea-field (.. e -target -value)))})))))
 
@@ -169,7 +169,7 @@
 (defn ^:export PeriodInput
   []
   (let [[state set-state!] (hooks/use-state [(js/Date.) (js/Date. "2022-10-01T12:00:00")])]
-    ($ interactions/PeriodDropdownElement
+    ($ toddler/PeriodDropdownElement
        {:value state
         :onChange (fn [v] (set-state! v))})))
 

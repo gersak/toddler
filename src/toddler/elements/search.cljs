@@ -6,9 +6,7 @@
 
 (ns toddler.elements.search
   (:require 
-    ["@fortawesome/react-fontawesome" :refer [FontAwesomeIcon]]
-    ["@fortawesome/free-solid-svg-icons" 
-     :refer [faSearch]]
+    ["react-icons/fa" :refer [FaSearch]]
     clojure.string
     [helix.core
      :refer [defnc $]]
@@ -24,7 +22,7 @@
   [{:keys [value icon on-change idle-timeout className onChange]
     :or {idle-timeout 500
          value ""
-         icon faSearch
+         icon FaSearch
          onChange identity}
     :as props}]
   (let [on-change (or on-change onChange identity)
@@ -44,4 +42,4 @@
                  :on-change (fn [e] (set-input! (.. e -target -value)))})}))
       (d/div
         {:class "icon"} 
-        ($ FontAwesomeIcon {:icon icon})))))
+        ($ icon)))))

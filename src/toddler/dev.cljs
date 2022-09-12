@@ -16,12 +16,11 @@
             use-window-dimensions
             use-dimensions]]
    [toddler.i18n.default]
-   [toddler.interactions :as interactions]
+   [toddler.elements :as toddler]
    [toddler.elements.window :as window]
    [toddler.elements.popup :as popup]
    ["react" :as react]
-   ["@fortawesome/free-solid-svg-icons"
-    :refer [faChevronRight]]
+   ["react-icons/fa" :refer [FaChevronRight] :as fa]
    [toddler.app :as app]
    [toddler.i18n :as i18n]
    [clojure.string :as str]))
@@ -38,6 +37,7 @@
 (def ^:dynamic *header* (create-context))
 
 
+
 (defnc Component
   [{:keys [className component]}]
   (let [[{:keys [rendered] :as query} set-query!] (router/use-search-params)
@@ -45,9 +45,7 @@
     (d/div
      {:className (cond-> className
                    selected? (str " selected"))}
-     ($ interactions/fa
-        {:className "icon"
-         :icon faChevronRight})
+     ($ FaChevronRight {:className "icon"})
      (d/a
       {:className "name"
        :onClick (fn [] (set-query! (assoc query :rendered (:key component))))}
@@ -68,7 +66,7 @@
   {:wrap [(react/forwardRef)]}
   (let [size (use-window-dimensions)
         components (hooks/use-context *components*)]
-    ($ interactions/simplebar
+    ($ toddler/simplebar
        {:className className
         :style #js {:height (:height size)}
         :scrollableNodeProps #js {:ref _ref}
@@ -107,7 +105,7 @@
 
 (defnc LocaleDropdown
   []
-  (let [{:keys [toggle! opened]} (hooks/use-context interactions/*dropdown*)
+  (let [{:keys [toggle! opened]} (hooks/use-context toddler/*dropdown*)
         locale (use-current-locale)
         pressed-button (when opened
                          {:color "#d3d3d3"
@@ -126,13 +124,13 @@
     (d/div
      {:className className
       :ref #(reset! _ref %)}
-     ($ interactions/DropdownArea
+     ($ toddler/DropdownArea
         {:value locale
          :options [:hr :en :fa]
          :search-fn name
          :onChange (fn [v] (set-user! assoc-in [:settings :locale] v))}
         ($ LocaleDropdown)
-        ($ interactions/DropdownPopup)))))
+        ($ toddler/DropdownPopup)))))
 
 
 (defstyled header Header
@@ -147,10 +145,10 @@
 (defnc EmptyContent
   [{:keys [className]}]
   (let [window (use-window-dimensions)]
-    ($ interactions/row
+    ($ toddler/row
        {:className className
         :position :center}
-       ($ interactions/row
+       ($ toddler/row
           {:position :center
            :style #js {:height (:height window)}}
           "Select a component from the list"))))
@@ -173,7 +171,7 @@
         window (use-window-dimensions)
         {nav-width :width} (hooks/use-context *navbar*)
         {header-height :height} (hooks/use-context *header*)]
-    ($ interactions/simplebar
+    ($ toddler/simplebar
        {:className className
         :style #js {:height (- (:height window) header-height)
                     :width (- (:width window) nav-width)}}

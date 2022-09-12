@@ -10,20 +10,16 @@
   "author": "Robert Gersak",
   "license": "ISC",
   "devDependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.32",
-    "@fortawesome/free-brands-svg-icons": "^5.15.4",
-    "@fortawesome/free-regular-svg-icons": "^5.15.1",
-    "@fortawesome/free-solid-svg-icons": "^5.15.1",
-    "@fortawesome/react-fontawesome": "^0.1.14",
-    "@storybook/react": "^6.5.10",
-    "concurrently": "^7.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.3.0",
     "react-is": "^18.2.0",
+    "react-router-dom": "^6.3.0",
     "react-spring": "^9.5.2",
     "shadow-cljs": "^2.19.9",
-    "styled-components": "^5.3.5",
-    "simplebar-react": "^2.4.1"
+    "simplebar-react": "^2.4.1",
+    "styled-components": "^5.3.5"
+  },
+  "dependencies": {
+    "react-icons": "^4.4.0"
   }
 }

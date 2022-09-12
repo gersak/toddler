@@ -9,8 +9,7 @@
     [helix.dom :as d]
     [helix.core :refer [defnc $]]
     [helix.styled-components :refer [defstyled --themed]]
-    ["@fortawesome/react-fontawesome" :refer [FontAwesomeIcon]]
-    ["@fortawesome/free-solid-svg-icons" :refer [faTimes]]))
+    ["react-icons/fa" :refer [FaTimes]]))
 
 
 (defn --editable-tag [{:keys [editable?]}]
@@ -58,9 +57,8 @@
        :className className}
       ($ content {:className "content" :value value})
       (when on-remove 
-        ($ FontAwesomeIcon
-           {:icon faTimes
-            :className "remove"
+        ($ FaTimes
+           {:className "remove"
             :pull "left"
             :size "xs"
             :onClick (fn [e] (.stopPropagation e) (on-remove value))})))))
