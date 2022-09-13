@@ -9,10 +9,18 @@
    [helix.children :as c]))
 
 
-(defn- get-window-dimensions
+(defn get-window-dimensions
   []
-  {:width (round-number (..  js/window -visualViewport -width) 1 :floor)
-   :height (round-number (.. js/window -visualViewport -height) 1 :floor)})
+  (let [w (round-number (..  js/window -visualViewport -width) 1 :floor)
+        h (round-number (.. js/window -visualViewport -height) 1 :floor)]
+    {:x 0
+     :y 0
+     :top 0
+     :bottom h
+     :left 0
+     :right w
+     :width w
+     :height h}))
 
 (defnc DimensionsProvider
   [props]

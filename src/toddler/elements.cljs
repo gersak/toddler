@@ -28,6 +28,7 @@
    [toddler.elements.multiselect :as multiselect]
    [toddler.elements.popup :as popup]
    [toddler.elements.tooltip :as tip]
+   [toddler.elements.window :refer [get-window-dimensions]]
     ;;
    ["react" :as react]
    ["simplebar-react" :as SimpleBar]
@@ -1119,7 +1120,7 @@
            className
            opened
            format]
-    :or {format :datetime-short}}]
+    :or {format :datetime}}]
   (let [{:keys [open]} (hooks/use-context *calendar-control*)
         disabled (hooks/use-context *calendar-disabled*)
         translate (use-translate)]
@@ -1129,7 +1130,7 @@
      ($ autosize-input
         {:className "input"
          :readOnly true
-         :value (when (some? value) (translate format value))
+         :value (when (some? value) (translate value format))
          :spellCheck false
          :auto-complete "off"
          :disabled disabled
@@ -1530,7 +1531,7 @@
           {:ref input
            :className "input"
            :readOnly true
-           :value (when (some? value) (translate format value))
+           :value (when (some? value) (translate value format))
            :spellCheck false
            :auto-complete "off"
            :disabled disabled
@@ -1659,7 +1660,6 @@
     :or {format :medium-datetime}}]
   (let [translate (use-translate)
         input (hooks/use-ref nil)]
-    #_(println kys)
     (d/div
      {:onClick (fn []
                  (when @input (.focus @input))
@@ -1670,11 +1670,11 @@
          :className "input"
          :readOnly true
          :value (if (or (nil? value) (every? nil? value))
-                  "Select period from dropdown"
+                  " - "
                   (str
-                   (if from (translate from format) " ")
-                   " - "
-                   (if to (translate to format) " ")))
+                    (if from (translate from format) " ")
+                    " - "
+                    (if to (translate to format) " ")))
          :spellCheck false
          :auto-complete "off"
          :disabled disabled
@@ -1954,8 +1954,8 @@
 
 
 (defnc UserDropdownAvatar
-  [{:keys [value]}]
-  ($ avatar {:size :small & value}))
+  [props]
+  ($ avatar {:size :small & props}))
 
 
 (defnc UserDropdownInput
@@ -2217,6 +2217,63 @@
                :justify-content "center" 
                :align-items "center"
                ".icon" {:cursor "pointer"}}}}})
+
+
+(def ^:dynamic *container* (create-context nil))
+(def ^:dynamic *container-dimensions* (create-context nil))
+(def ^:dynamic *container-style* (create-context nil))
+
+
+(defhook use-container [] (hooks/use-context *container*))
+(defhook use-container-style [] (hooks/use-context *container-style*))
+
+(defhook use-parent-container-dimensions
+  []
+  (if-let [dimensions (hooks/use-context *container-dimensions*)]
+    dimensions
+    ;; If there is no parent, than return window dimensions
+    (get-window-dimensions)))
+
+
+
+(defnc Container [{:keys [className style onResize] :as props}]
+  (let [container (hooks/use-ref nil)
+        [dimensions set-dimensions!] (hooks/use-state nil)]
+    (hooks/use-effect
+      [@container]
+      (when (some? @container)
+        (letfn [(reset [[entry]]
+                  (let [content-rect (.-contentRect entry)]
+                    (set-dimensions!
+                      {:width (.-width content-rect)
+                       :height (.-height content-rect)
+                       :top (.-top content-rect)
+                       :left (.-left content-rect)
+                       :right (.-right content-rect)
+                       :bottom (.-bottom content-rect)
+                       :x (.-x content-rect)
+                       :y (.-y content-rect)})))]
+          (let [observer (js/ResizeObserver. reset)]
+            (.observe observer @container)
+            ; (reset [@container])
+            (fn [] (.disconnect observer))))))
+    (.log js/console @container)
+    (println "DIMENSIONS: " dimensions)
+    (d/div
+      {:ref #(reset! container %)
+       :className className
+       :style style}
+      (provider
+        {:context *container-dimensions*
+         :value dimensions}
+        (provider
+          {:context *container*
+           :value container}
+          (provider
+            {:context *container-style*
+             :value style}
+            (c/children props)))))))
+
 
 ;;
 

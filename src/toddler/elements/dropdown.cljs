@@ -143,6 +143,7 @@
      opened area popup
      #(set-opened! false))
     {:search search
+     :value value
      :opened opened
      :focus set-cursor!
      :cursor cursor

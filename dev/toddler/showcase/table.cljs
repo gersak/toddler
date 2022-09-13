@@ -1,35 +1,54 @@
 (ns toddler.showcase.table
    (:require
       [toddler.dev :as dev]
+      [toddler.dev.context
+       :refer [*header*
+               *navbar*]]
       [toddler.elements :as toddler]
       [toddler.elements.table :as table]
+      toddler.elements.table.theme
       [vura.core :as vura]
-      [helix.core :refer [$ defnc]]
-      [helix.hooks :as hooks]))
+      [helix.core :refer [$ defnc]]))
 
 
 (def columns
    [{:cursor :euuid
      :label "UUID"
-     :type "uuid"}
+     :type "uuid"
+     :style {:width 30}}
     {:cursor :user
      :label "User"
-     :type "user"}
+     :type "user"
+     :style {:width 50}}
     {:cursor :integer
      :type "int"
-     :label "Integer"}
+     :label "Integer"
+     :style {:width 50}}
     {:cursor :text
      :type "string"
-     :label "Text"}
+     :label "Text"
+     :style {:width 150}}
     {:cursor :enum
      :label "ENUM"
-     :type "enum"}
+     :type "enum"
+     :options [{:name "Dog"
+                :value :dog}
+               {:name "Cat"
+                :value :cat}
+               {:name "Horse"
+                :value :horse}
+               {:name "Hippopotamus"
+                :value :hypo}]
+     :placeholder "Choose your fav"
+     :style {:width 50}}
     {:cursor :timestamp
      :label "Timestamp"
-     :type "timestamp"}
+     :type "timestamp"
+     :style {:width 80}}
     {:cursor :boolean
      :label "BOOL"
-     :type "boolean"}])
+     :type "boolean"
+     :style {:width 30}}])
 
 
 (defn generate-column
@@ -43,6 +62,7 @@
                           (rand-int 1000)))
                     vura/value->time))]
          (case t
+            "uuid" (random-uuid)
             "int" (rand-int 10000)
             "user" {:euuid (random-uuid)
                     :name (rand-nth
@@ -60,8 +80,9 @@
                                 "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.jUhREZmYLBkJCe7cmSdevwHaEX%26pid%3DApi&f=1"
                                 "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.w2kZvvrVVyFG0JNVzdYhbwHaEK%26pid%3DApi&f=1"
                                 "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.iBbhCR5cHpgkHsABbNeVtQHaEK%26pid%3DApi&f=1"])}
+            "enum" (:value (rand-nth (get-in columns [4 :options])))
             "timestamp" (rand-date)
-            "string" (apply str (repeatedly 200 #(rand-nth "abcdefghijklmnopqrstuvwxyz0123456789")))
+            "string" (apply str (repeatedly 240 #(rand-nth "abcdefghijklmnopqrstuvwxyz0123456789")))
             "bool" (rand-nth [true false])
             nil))))
 
@@ -87,16 +108,20 @@
    (generate-table 100))
 
 
-(def data (generate-table 1))
+(def data (generate-table 100))
 
 
 (defnc Table
    []
-   ($ table/table
-      {:rows data
-       :columns columns
-       :dispatch (fn [event]
-                    (println "Dispatching\n" event))}))
+   (let []
+      ($ toddler/Container
+         {:style {:width 600
+                  :height 500}}
+         ($ table/table
+            {:rows data
+             :columns columns
+             :dispatch (fn [event]
+                          (println "Dispatching\n" event))}))))
 
 
 (dev/add-component

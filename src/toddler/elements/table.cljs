@@ -49,19 +49,13 @@
 (def ^:dynamic *row-record* (create-context))
 (def ^:dynamic *rows* (create-context))
 (def ^:dynamic *dispatch* (create-context))
-(def ^:dynamic *content-container* (create-context))
-(def ^:dynamic *content-container-style* (create-context))
 (def ^:dynamic *cell-renderer* (create-context))
 (def ^:dynamic *header-renderer* (create-context))
 (def ^:dynamic *pagination* (create-context))
 
 
 
-(defhook use-content-container [] (hooks/use-context *content-container*))
-(defhook use-content-container-style [] (hooks/use-context *content-container-style*))
 (defhook use-pagination [] (hooks/use-context *pagination*))
-
-
 (defhook use-actions [] (hooks/use-context *actions*))
 (defhook use-columns [] (hooks/use-context *columns*))
 (defhook use-column [] (hooks/use-context *column*))
@@ -145,7 +139,7 @@
   (let [columns (use-columns)]
     (provider
       {:context *row-record*
-       :value (assoc data ::idx idx)}
+       :value (assoc data :idx idx)}
       (<>
         ($ render
            {:key idx
@@ -158,7 +152,6 @@
                               (when (not-empty cursor)
                                 (str/join "->" (map name cursor))))
                             attribute)]
-                 (println "PRINGIN CELL" _key)
                  ($ Cell
                     {:key _key
                      :column column})))
@@ -182,7 +175,6 @@
   {:wrap [(react/forwardRef)]}
   (let [render (use-header-renderer column)
         w (get style :width 100)]
-    (println "RENDERING HEADER: " render)
     (d/div
       {:class className
        :style (merge
@@ -223,14 +215,13 @@
          (fn [{a :attribute
                p :cursor
                :as column}]
-           (println "PREPARING HEADER")
            ($ rheader
              {:key (if (nil? p) a
                      (if (keyword? p) p
                        (str/join "->" (map name (not-empty p)))))
               :className "th"
               :column column}))
-         (filter :visible columns)))))
+         (remove :hidden columns)))))
 
 
 (defn init-pagination
@@ -385,9 +376,9 @@
          rinteractions Interactions}}]
   (let [rows (use-rows)
         {cmaxh :maxHeight
-         ch :height} (use-content-container-style) 
+         ch :height} (toddler/use-container-style) 
         table-width (use-table-width)
-        container (use-content-container) 
+        container (toddler/use-container) 
         interactions (hooks/use-ref nil)
         thead (hooks/use-ref nil)
         tbody (hooks/use-ref nil)
@@ -443,7 +434,7 @@
               height (.-height rect)]
           (set-interactions-height! (round-number (dec height) 1 :down)))))
     ;; FIXME - this is crashing
-    #_(hooks/use-effect
+    (hooks/use-effect
       [@container]
       (when @container
         (letfn [(reset [[entry]]
@@ -639,7 +630,7 @@
 
 (defhook use-cell-state
   [el]
-  (let [{:keys [::idx] :as row} (hooks/use-context *row-record*)
+  (let [{:keys [idx] :as row} (hooks/use-context *row-record*)
         {k :cursor} el
         k (hooks/use-memo
             [k]
@@ -652,7 +643,7 @@
                      (fn []
                        (dispatch
                          {:topic :table.element/change
-                          ::idx idx 
+                          :idx idx 
                           :column el
                           :value value})))]
     [value set-value!]))
@@ -660,12 +651,14 @@
 
 
 (defnc UUIDCell
-  [{:keys [cell/data className]}]
+  [{:keys [className]}]
   (let [[visible? set-visible!] (hooks/use-state nil)
         hidden? (use-delayed (not visible?) 300)
         area (hooks/use-ref nil)
         popup (hooks/use-ref nil)
-        [copied? set-copied!] (hooks/use-state false)]
+        [copied? set-copied!] (hooks/use-state false)
+        column (use-column)
+        [value] (use-cell-state column)]
     ($ popup/Area
        {:ref area
         :onMouseLeave (fn [] (set-visible! false))
@@ -676,7 +669,7 @@
           {:context :fun
            :onClick (fn [] 
                       (when-not copied?
-                        (.writeText js/navigator.clipboard (str data))
+                        (.writeText js/navigator.clipboard (str value))
                         (set-copied! true)))}
           ($ FaBarcode))
        (when visible?
@@ -689,7 +682,7 @@
              :preference popup/cross-preference
              :className (str className " animated fadeIn" 
                              (when copied? " copied"))}
-            (d/div {:class "info-tooltip"} (str data)))))))
+            (d/div {:class "info-tooltip"} (str value)))))))
 
 
 (defnc HashedCell
@@ -706,6 +699,7 @@
        :onChange (fn [e] (set-value! (not-empty (.. e -target -value))))})))
 
 
+;; TODO - this should be better
 (defnc EnumCell
   [{:keys [className]}]
   (let [{:keys [placeholder options] :as column} (use-column)
@@ -758,10 +752,10 @@
 (defnc TimestampCell
   [{:keys [className]}]
   (let [{:keys [placeholder format read-only disabled] 
-         :or {format :datetime-short}
+         :or {format :datetime}
          :as column} (use-column)
         [value set-value!] (use-cell-state column)] 
-    ($ toddler/TimestampCalendarElement
+    ($ toddler/TimestampDropdownElement
        {:value value
         :onChange (fn [v] (when-not read-only (set-value! v)))
         :format format
@@ -874,7 +868,7 @@
    :border "none"
    :outline "none"
    :resize "none"
-   :padding 2
+   :padding 0
    :width "100%"}
   --themed)
 
@@ -919,18 +913,23 @@
   --themed)
 
 (defstyled boolean-cell BooleanCell
-  {:font-size "10"
-   :padding 8
-   :width 15
-   :height 15
+  {:font-size 12
+   :padding 0
+   :width 20
+   :height 20
+   :display "flex"
+   :justify-content "center"
+   :align-items "center"
    :transition "background-color .3s ease-in-out"})
 
 
 (defnc UserCellInput
   [props]
-  (let [{:keys [read-only disabled]} (use-column)]
-    ($ toddler/DropdownInput
+  (let [{:keys [read-only disabled] :as column} (use-column)
+        [value] (use-cell-state column)]
+    ($ toddler/DropdownElement
        {:render/img toddler/UserDropdownAvatar
+        :value value
         & props}
        (when (every? not [read-only disabled])
          ($ ClearButton
@@ -976,7 +975,7 @@
 (defnc UserCell [props]
   (let [{:keys [label style placeholder read-only options] :as column} (use-column)
         [value set-value!] (use-cell-state column)]
-    ($ toddler/DropdownElement
+    ($ UserCellInput
        {:name label
         :value value
         :onChange (comp set-value! not-empty)
@@ -1041,7 +1040,9 @@
 
 (defstyled user-cell UserCell 
   {:input {:font-size 12}
-   ".clear" {:color "transparent"}}
+   ".clear" {:color "transparent"
+             :display "flex"
+             :align-items "center"}}
   --themed)
 
 (defstyled action-cell ActionCell
@@ -1188,7 +1189,8 @@
 
 
 (defnc TimestampHeader
-  [{{:keys [filter attribute]} :column
+  [{{:keys [filter]
+     :as column} :column
     :as header}]
   (let [{from  :_ge
          to :_le} filter
@@ -1204,12 +1206,13 @@
           :placeholder "Filter period..."
           :className "filter"
           :render/field toddler/PeriodInput
+          ;; FIXME - PeriodDropdownElement is calling onChange even
+          ;; though there were no change. This should be fixed!
           :onChange (fn [[from to]] 
                       (dispatch
                         {:type :table.column/filter
-                         :attribute attribute
-                         :value (when (or to from)
-                                  {:_le to :_ge from})}))}))))
+                         :column column
+                         :value (when (or to from) [from to])}))}))))
 
 
 (def popup-menu-preference
@@ -1384,7 +1387,7 @@
 (defstyled boolean-popup BooleanFilter 
   {:display "flex"
    :flex-direction "row"
-   (str toddler/checkbox-button) {:margin "1px 2px"}})
+ (str toddler/checkbox-button) {:margin "1px 2px"}})
 
 
 (defstyled boolean-header BooleanHeader 
@@ -1466,38 +1469,69 @@
   --themed)
 
 
+(defn column-default-style
+  [{{:keys [width] 
+     :or {width 100}
+     :as style} :style
+    type :type :as column}]
+  (assoc column :style
+         (merge 
+           style
+           {:display "flex"
+            :flex (str width \space 0 \space "auto")
+            :minWidth width
+            :width width}
+           (when (every? empty? ((juxt :justifyContent :alignItems) style))
+             (case type
+               ("boolean" "uuid") {:justifyContent "center"
+                                   :alignItems "flex-start"}
+               {:justifyContent "flex-start"
+                :alignItems "flex-start"})))))
+
+(defhook use-table-defaults
+  [{:keys [columns ] :as props}]
+  (hooks/use-memo
+    [columns]
+    (-> props
+        (update :columns
+                (fn [columns]
+                  (mapv column-default-style  columns))))))
+
+
 (defnc Table
-  [{:keys [className dispatch rows columns actions pagination]
+  [{:keys [className dispatch rows actions pagination]
     cell-resolver :cell/resolver
     header-resolver :header/resolver
     :or {cell-resolver cell-resolver
          header-resolver header-resolver}
     :as props}]
-  (d/div
-    {:className className}
-    (provider
-      {:context *actions*
-       :value actions}
+  (let [{:keys [columns]} (use-table-defaults props)]
+    (d/div
+      {:className className}
       (provider
-        {:context *pagination*
-         :value pagination}
+        {:context *actions*
+         :value actions}
         (provider
-          {:context *cell-renderer*
-           :value cell-resolver}
+          {:context *pagination*
+           :value pagination}
           (provider
-            {:context *header-renderer*
-             :value header-resolver}
+            {:context *cell-renderer*
+             :value cell-resolver}
             (provider
-              {:context *dispatch*
-               :value dispatch}
+              {:context *header-renderer*
+               :value header-resolver}
               (provider
-                {:context *columns*
-                 :value columns}
+                {:context *dispatch*
+                 :value dispatch}
                 (provider
-                  {:context *rows*
-                   :value rows}
-                  ($ TableLayout
-                     {& props}))))))))))
+                  {:context *columns*
+                   :value columns}
+                  (provider
+                    {:context *rows*
+                     :value rows}
+                    ($ TableLayout
+                       {& props})))))))))))
+
 
 
 (defstyled table Table
