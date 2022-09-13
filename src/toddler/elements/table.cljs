@@ -6,7 +6,7 @@
     goog.string
     [helix.dom :as d]
     [helix.core 
-     :refer [defhook defnc
+     :refer [defhook defnc memo
              create-context $
              <> provider]]
     [helix.hooks :as hooks]
@@ -24,6 +24,7 @@
      :refer [TextAreaElement]]
     [toddler.elements.popup :as popup]
     [toddler.elements.tooltip :as tip]
+    ["react" :as react]
     ["react-icons/fa"
      :refer [FaPlus
              FaMinus
@@ -40,13 +41,13 @@
              FaAngleRight]]))
 
 
+
 (def ^:dynamic *column* (create-context))
 (def ^:dynamic *entity* (create-context))
 (def ^:dynamic *columns* (create-context))
 (def ^:dynamic *actions* (create-context))
 (def ^:dynamic *row-record* (create-context))
 (def ^:dynamic *rows* (create-context))
-(def ^:dynamic *handlers* (create-context))
 (def ^:dynamic *dispatch* (create-context))
 (def ^:dynamic *content-container* (create-context))
 (def ^:dynamic *content-container-style* (create-context))
@@ -58,17 +59,23 @@
 
 (defhook use-content-container [] (hooks/use-context *content-container*))
 (defhook use-content-container-style [] (hooks/use-context *content-container-style*))
-(defhook use-column [] (hooks/use-context *column*))
 (defhook use-pagination [] (hooks/use-context *pagination*))
 
 
 (defhook use-actions [] (hooks/use-context *actions*))
 (defhook use-columns [] (hooks/use-context *columns*))
+(defhook use-column [] (hooks/use-context *column*))
 (defhook use-rows [] (hooks/use-context *rows*))
 (defhook use-row [] (hooks/use-context *row-record*))
 
-(defhook use-handlers [] (hooks/use-context *handlers*))
 (defhook use-dispatch [] (hooks/use-context *dispatch*))
+
+
+(defnc NotImplemented
+  []
+  (let [field (use-column)] 
+    (.error js/console (str "Field not implemented\n%s" (pr-str field))))
+  nil)
 
 
 (defhook use-cell-renderer [column]
@@ -98,9 +105,6 @@
         {:context *column*
          :value column}
         ($ render)))))
-
-
-(declare RecordProvider)
 
 
 (defhook use-table-width
@@ -139,31 +143,27 @@
                 (= idx1 idx2)
                 (= data1 data2))))]}
   (let [columns (use-columns)]
-    ($ RecordProvider
-       {:row (assoc data :idx idx)}
-       (<>
-         ($ render
-            {:key idx
-             :className (str className (if (even? idx) " even" " odd"))
-             & (dissoc props :className)}
-            (map
-              (fn [{:keys [attribute path] :as column}]
-                ($ Cell
-                  {:key (or
-                          (if (keyword? path) path
-                            (when (not-empty path)
-                              (str/join "->" (map name path))))
-                          attribute)
-                   :column column}))
-              (filter :visible columns)))
-         (c/children props)))))
-
-
-(defnc NotImplemented
-  []
-  (let [field (use-column)] 
-    (log/errorf "Field not implemented\n%s" (pr-str field)))
-  nil)
+    (provider
+      {:context *row-record*
+       :value (assoc data ::idx idx)}
+      (<>
+        ($ render
+           {:key idx
+            :className (str className (if (even? idx) " even" " odd"))
+            & (dissoc props :className)}
+           (map
+             (fn [{:keys [attribute cursor] :as column}]
+               (let [_key (or
+                            (if (keyword? cursor) cursor
+                              (when (not-empty cursor)
+                                (str/join "->" (map name cursor))))
+                            attribute)]
+                 (println "PRINGIN CELL" _key)
+                 ($ Cell
+                    {:key _key
+                     :column column})))
+             (remove :hidden columns)))
+        (c/children props)))))
 
 
 (defhook use-header-renderer [column]
@@ -182,7 +182,7 @@
   {:wrap [(react/forwardRef)]}
   (let [render (use-header-renderer column)
         w (get style :width 100)]
-    ;; Field dispatcher
+    (println "RENDERING HEADER: " render)
     (d/div
       {:class className
        :style (merge
@@ -200,6 +200,12 @@
             :onChange identity})))))
 
 
+(defn same-header-row [a b]
+  (=
+   (select-keys a [:className :render/row :render/header])
+   (select-keys b [:className :render/row :render/header])))
+
+
 (defnc HeaderRow
   [{:keys [className]
     rrender :render/row
@@ -215,8 +221,9 @@
         & (when _ref {:ref _ref})}
        (map 
          (fn [{a :attribute
-               p :path
+               p :cursor
                :as column}]
+           (println "PREPARING HEADER")
            ($ rheader
              {:key (if (nil? p) a
                      (if (keyword? p) p
@@ -318,9 +325,9 @@
 (defnc AddRowAction
   [{:keys [tooltip render name]
     :or {render toddler/action}}]
-  (let [{:keys [add]} (use-handlers)]
+  (let [dispatch (use-dispatch)]
     ($ render 
-       {:onClick #(add) 
+       {:onClick #(dispatch {:topic :table.row/add})
         :tooltip tooltip
         :icon FaPlus}
        name)))
@@ -435,8 +442,8 @@
         (let [rect (.getBoundingClientRect @interactions)
               height (.-height rect)]
           (set-interactions-height! (round-number (dec height) 1 :down)))))
-    ;;
-    (hooks/use-effect
+    ;; FIXME - this is crashing
+    #_(hooks/use-effect
       [@container]
       (when @container
         (letfn [(reset [[entry]]
@@ -573,7 +580,6 @@
                  rows))))))))
 
 
-
 (defstyled table-button toddler/button
   {:display "flex"
    :justify-content "center"
@@ -584,11 +590,13 @@
    :padding 0
    :margin "0px !important"})
 
+
 (defstyled uuid-button table-button
   (let [size 20]
     {:min-width size
      :min-height size
      :height size :width size}))
+
 
 (def $action-input
   {(str \&
@@ -600,6 +608,7 @@
    (str \& toddler/dropdown-field-wrapper ":hover")
    {(str toddler/dropdown-field-discard) {:color "inherit"}}})
 
+
 (defnc ClearButton
   [{:keys [className]}]
   (let [dispatch (use-dispatch)
@@ -610,7 +619,7 @@
         {:className className
          :onClick #(dispatch
                      {:topic :table.cell/clear
-                      :row  row
+                      :row row
                       :column column})}
         ($ FaTimes)))))
 
@@ -843,9 +852,9 @@
                          true " active"
                          (nil false) " inactive"))
        :onClick #(set-value! (not value))}
-      (case value
-        nil FaMinus 
-        FaCheck))))
+      ($ (case value
+           nil FaMinus 
+           FaCheck)))))
 
 
 (defstyled uuid-cell UUIDCell
@@ -1101,7 +1110,7 @@
      :keys [order]
      :as column} 
     :column}]
-  (let [{:keys [dispatch]} (use-handlers)] 
+  (let [dispatch (use-dispatch)] 
     (d/div 
       {:className "name"
        :onClick (fn []
@@ -1124,7 +1133,7 @@
     :as header}]
   (let [{v :_ilike
          :or {v ""}} filter
-        {:keys [dispatch]} (use-handlers)] 
+        dispatch use-dispatch] 
     (d/div
       {:className (:className header)}
       (d/div
@@ -1154,7 +1163,7 @@
     :as header}]
   (let [{v :_ilike
          :or {v ""}} filter
-        {:keys [dispatch]} (use-handlers)] 
+        dispatch (use-dispatch)] 
     (d/div
       {:className (:className header)}
       (d/div
@@ -1183,7 +1192,7 @@
     :as header}]
   (let [{from  :_ge
          to :_le} filter
-        {:keys [dispatch]} (use-handlers)]
+        dispatch (use-dispatch)]
     (d/div
       {:className (:className header)}
       (d/div
@@ -1232,7 +1241,7 @@
     :or {rpopup "div"}}]
   (let [{v :_eq} filter
         [opened? set-opened!] (hooks/use-state nil)
-        {:keys [dispatch]} (use-handlers)
+        dispatch (use-dispatch) 
         area (hooks/use-ref nil)
         popup (hooks/use-ref nil)]
     (popup/use-outside-action
@@ -1276,7 +1285,7 @@
                   (comp keyword :name) 
                   (get-in column [:configuration :values]))
         [opened? set-opened!] (hooks/use-state nil)
-        {:keys [dispatch]} (use-handlers)
+        dispatch (use-dispatch) 
         area (hooks/use-ref nil)
         popup (hooks/use-ref nil)]
     (popup/use-outside-action
@@ -1337,25 +1346,6 @@
     ".name" {:cursor "pointer" :font-weight "600"}}
    ".filter"
    {:margin "4px 0"}})
-
-
-(defstyled boolean-popup BooleanFilter
-  {:display "flex"
-   :flex-direction "row"
-   (str toddler/checkbox-button) {:margin "1px 2px"}})
-
-
-
-(defstyled boolean-header BooleanHeader 
-  (deep-merge 
-    header-style
-    {:align-items "center"})
-  --themed)
-
-
-(defstyled enum-popup popup/element
-  {(str toddler/checklist " .name") {:font-size "12"}})
-
 
 
 (defstyled plain-header PlainHeader 
@@ -1477,18 +1467,37 @@
 
 
 (defnc Table
-  [{:keys [className] :as props}]
+  [{:keys [className dispatch rows columns actions pagination]
+    cell-resolver :cell/resolver
+    header-resolver :header/resolver
+    :or {cell-resolver cell-resolver
+         header-resolver header-resolver}
+    :as props}]
   (d/div
     {:className className}
     (provider
-      {:context *cell-renderer*
-       :value cell-resolver}
+      {:context *actions*
+       :value actions}
       (provider
-        {:context *header-renderer*
-         :value header-resolver}
-        ($ TableLayout
-           {:render/interactions Interactions
-            & props})))))
+        {:context *pagination*
+         :value pagination}
+        (provider
+          {:context *cell-renderer*
+           :value cell-resolver}
+          (provider
+            {:context *header-renderer*
+             :value header-resolver}
+            (provider
+              {:context *dispatch*
+               :value dispatch}
+              (provider
+                {:context *columns*
+                 :value columns}
+                (provider
+                  {:context *rows*
+                   :value rows}
+                  ($ TableLayout
+                     {& props}))))))))))
 
 
 (defstyled table Table
@@ -1496,8 +1505,3 @@
    :flex-direction "column"
    :flex-grow "1"}
   --themed)
-
-
-(defmulti reducer
-  (fn [_ {:keys [type]}] 
-    type))

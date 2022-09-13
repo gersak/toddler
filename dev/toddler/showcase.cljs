@@ -6,8 +6,7 @@
    [helix.dom :as d]
    [toddler.dev :as dev]
    [toddler.elements :as toddler]
-   [vura.core :as vura]
-   [toddler.elements.popup :as popup]))
+   toddler.showcase.table))
 
 
 (defonce root (atom nil))
@@ -59,7 +58,7 @@
   :render AvatarImage})
 
 
-(defn TimestampCalendar
+(defnc TimestampCalendar
   []
   (let [[state set-state!] (hooks/use-state nil)]
     ($ toddler/TimestampCalendarElement
@@ -72,7 +71,7 @@
   :name "Timestamp Calendar"
   :render TimestampCalendar})
 
-(defn ^:export InputTypes
+(defnc InputTypes
   []
   (let [[state set-state!] (hooks/use-state {:number-input 0
                                              :free-input ""
@@ -161,20 +160,22 @@
              {:value "12.3.2022."
               :onChange (fn [e] (set-state! assoc :textarea-field (.. e -target -value)))})))))
 
+
 (dev/add-component
  {:key ::input-types
   :name "Input types"
   :render InputTypes})
 
-(defn ^:export PeriodInput
+
+(defnc PeriodInput
   []
   (let [[state set-state!] (hooks/use-state [(js/Date.) (js/Date. "2022-10-01T12:00:00")])]
     ($ toddler/PeriodDropdownElement
        {:value state
         :onChange (fn [v] (set-state! v))})))
 
+
 (dev/add-component
  {:key ::period-input
   :name "Period input"
   :render PeriodInput})
-
