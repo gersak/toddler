@@ -111,17 +111,30 @@
 (def data (generate-table 100))
 
 
+; (defnc Table
+;    []
+;    (let [{:keys [width height]} (toddler/use-parent-container-dimensions)]
+;       (println "TABL: " [width height])
+;       ($ toddler/Container
+;          {:style {:width (- width 10)
+;                   :height (- height 10)}
+;           :display "flex"
+;           :justifyContent "center"
+;           :align-items "center"}
+;          ($ table/table
+;             {:rows data
+;              :columns columns
+;              :dispatch (fn [event]
+;                           (println "Dispatching\n" event))}))))
+
+
 (defnc Table
    []
-   (let []
-      ($ toddler/Container
-         {:style {:width 600
-                  :height 500}}
-         ($ table/table
-            {:rows data
-             :columns columns
-             :dispatch (fn [event]
-                          (println "Dispatching\n" event))}))))
+   ($ table/table
+      {:rows data
+       :columns columns
+       :dispatch (fn [event]
+                    (println "Dispatching\n" event))}))
 
 
 (dev/add-component

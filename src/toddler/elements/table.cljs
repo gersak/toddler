@@ -376,7 +376,7 @@
          rinteractions Interactions}}]
   (let [rows (use-rows)
         {cmaxh :maxHeight
-         ch :height} (toddler/use-container-style) 
+         ch :height} (toddler/use-parent-container-dimensions) 
         table-width (use-table-width)
         container (toddler/use-container) 
         interactions (hooks/use-ref nil)

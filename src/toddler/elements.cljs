@@ -2,19 +2,21 @@
   (:require
    clojure.set
    clojure.string
+   [clojure.core.async :as async]
    [goog.string :as gstr]
    [vura.core :as vura]
    [cljs-bean.core :refer [->clj]]
    [helix.styled-components :refer [defstyled --themed]]
    [helix.core
-    :refer [$ defnc provider
+    :refer [$ defnc fnc provider
             defhook create-context]]
    [helix.dom :as d]
    [helix.children :as c]
    [helix.hooks  :as hooks]
    [helix.spring :as spring]
    [toddler.hooks
-    :refer [use-translate
+    :refer [make-idle-service
+            use-translate
             use-calendar
             use-idle]]
    [toddler.elements.input
@@ -28,7 +30,6 @@
    [toddler.elements.multiselect :as multiselect]
    [toddler.elements.popup :as popup]
    [toddler.elements.tooltip :as tip]
-   [toddler.elements.window :refer [get-window-dimensions]]
     ;;
    ["react" :as react]
    ["simplebar-react" :as SimpleBar]
@@ -2229,14 +2230,57 @@
 
 (defhook use-parent-container-dimensions
   []
-  (if-let [dimensions (hooks/use-context *container-dimensions*)]
-    dimensions
-    ;; If there is no parent, than return window dimensions
-    (get-window-dimensions)))
+  (hooks/use-context *container-dimensions*))
 
 
+(defn get-window-dimensions
+  []
+  (let [w (vura/round-number (..  js/window -visualViewport -width) 1 :floor)
+        h (vura/round-number (.. js/window -visualViewport -height) 1 :floor)]
+    {:x 0
+     :y 0
+     :top 0
+     :bottom h
+     :left 0
+     :right w
+     :width w
+     :height h}))
 
-(defnc Container [{:keys [className style onResize] :as props}]
+
+(defnc WindowContainer
+  [props]
+  (let [[state set-state!] (hooks/use-state (get-window-dimensions))
+        resize-idle-service (hooks/use-ref
+                              (make-idle-service
+                                600
+                                #(set-state! (get-window-dimensions))))]
+    (hooks/use-effect
+      [state]
+      (async/go
+        (async/<! (async/timeout 300))
+        (when (not= state (get-window-dimensions))
+          (async/put! @resize-idle-service :resized))))
+    (letfn [(track-window-size []
+              (async/put! @resize-idle-service :resized))]
+      (hooks/use-effect
+        :once
+        (.addEventListener js/window "resize" track-window-size)
+        #(do
+           (async/close! @resize-idle-service)
+           (.removeEventListener js/window "resize" track-window-size)))
+      (provider
+        {:value state
+         :context *container-dimensions*}
+        (c/children props)))))
+
+
+(defn wrap-window [component]
+  (fnc [props]
+    ($ WindowContainer
+       ($ component {& props}))))
+
+
+(defnc Container [{:keys [className style] :as props}]
   (let [container (hooks/use-ref nil)
         [dimensions set-dimensions!] (hooks/use-state nil)]
     (hooks/use-effect
@@ -2257,8 +2301,7 @@
             (.observe observer @container)
             ; (reset [@container])
             (fn [] (.disconnect observer))))))
-    (.log js/console @container)
-    (println "DIMENSIONS: " dimensions)
+    ; (.log js/console @container)
     (d/div
       {:ref #(reset! container %)
        :className className
@@ -2273,6 +2316,15 @@
             {:context *container-style*
              :value style}
             (c/children props)))))))
+
+
+(defn wrap-container
+  ([component]
+   (fnc Container [props]
+     ($ Container ($ component {& props}))))
+  ([component cprops]
+   (fnc [props]
+     ($ Container {& cprops} ($ component {& props})))))
 
 
 ;;
