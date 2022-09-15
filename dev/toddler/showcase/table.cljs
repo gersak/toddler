@@ -1,33 +1,31 @@
 (ns toddler.showcase.table
    (:require
       [toddler.dev :as dev]
-      [toddler.dev.context
-       :refer [*header*
-               *navbar*]]
       [toddler.elements :as toddler]
       [toddler.elements.table :as table]
       toddler.elements.table.theme
       [vura.core :as vura]
-      [helix.core :refer [$ defnc]]))
+      [helix.core :refer [$ defnc]]
+      [helix.dom :as d]))
 
 
 (def columns
    [{:cursor :euuid
      :label "UUID"
      :type "uuid"
-     :style {:width 30}}
+     :style {:width 50}}
     {:cursor :user
      :label "User"
      :type "user"
-     :style {:width 50}}
+     :style {:width 100}}
     {:cursor :integer
      :type "int"
      :label "Integer"
-     :style {:width 50}}
+     :style {:width 100}}
     {:cursor :text
      :type "string"
      :label "Text"
-     :style {:width 150}}
+     :style {:width 250}}
     {:cursor :enum
      :label "ENUM"
      :type "enum"
@@ -40,15 +38,15 @@
                {:name "Hippopotamus"
                 :value :hypo}]
      :placeholder "Choose your fav"
-     :style {:width 50}}
+     :style {:width 100}}
     {:cursor :timestamp
      :label "Timestamp"
      :type "timestamp"
-     :style {:width 80}}
+     :style {:width 120}}
     {:cursor :boolean
      :label "BOOL"
      :type "boolean"
-     :style {:width 30}}])
+     :style {:width 50}}])
 
 
 (defn generate-column
@@ -59,7 +57,8 @@
                  (->
                     now
                     (+ (* (rand-nth [1 -1])
-                          (rand-int 1000)))
+                          (vura/hours (rand-int 1000)))
+                       (vura/minutes (rand-int 60)))
                     vura/value->time))]
          (case t
             "uuid" (random-uuid)
@@ -82,7 +81,7 @@
                                 "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.iBbhCR5cHpgkHsABbNeVtQHaEK%26pid%3DApi&f=1"])}
             "enum" (:value (rand-nth (get-in columns [4 :options])))
             "timestamp" (rand-date)
-            "string" (apply str (repeatedly 240 #(rand-nth "abcdefghijklmnopqrstuvwxyz0123456789")))
+            "string" (apply str (repeatedly 20 #(rand-nth "abcdefghijklmnopqrstuvwxyz0123456789")))
             "bool" (rand-nth [true false])
             nil))))
 
@@ -108,36 +107,43 @@
    (generate-table 100))
 
 
-(def data (generate-table 100))
-
-
-; (defnc Table
-;    []
-;    (let [{:keys [width height]} (toddler/use-parent-container-dimensions)]
-;       (println "TABL: " [width height])
-;       ($ toddler/Container
-;          {:style {:width (- width 10)
-;                   :height (- height 10)}
-;           :display "flex"
-;           :justifyContent "center"
-;           :align-items "center"}
-;          ($ table/table
-;             {:rows data
-;              :columns columns
-;              :dispatch (fn [event]
-;                           (println "Dispatching\n" event))}))))
+(def data (generate-table 200))
 
 
 (defnc Table
    []
-   ($ table/table
-      {:rows data
-       :columns columns
-       :dispatch (fn [event]
-                    (println "Dispatching\n" event))}))
+   (let [{:keys [width height] :as dimensions} (toddler/use-container-dimensions)]
+      (println "SHOWCASE TABLE: " dimensions)
+      (d/div
+         {:style {:width "100%" :height "100%"
+                  :display "flex"
+                  :justifyContent "center"
+                  :alignItems "center"}}
+         ($ toddler/Container
+            {:style {:width (- width 30)
+                     :height (- height 30)}
+             :display "flex"
+             :justifyContent "center"
+             :align-items "center"}
+            ($ table/table
+               {:rows data
+                :columns columns
+                :dispatch (fn [event]
+                             (println "Dispatching\n" event))})))))
 
 
 (dev/add-component
-   {:key ::period-input
+   {:key ::table
     :name "Table"
     :render Table})
+
+
+(defnc TableGrid
+   []
+   (let []))
+
+
+(dev/add-component
+   {:key ::tables
+    :name "Multiple Tables"
+    :render TableGrid})

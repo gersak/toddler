@@ -40,7 +40,7 @@
                            :cursor "default"
                            :pointer-events "none")))))]
 
-  (defmethod --themed [{} 'neyho.eywa.datasource/action] [props]
+  (defmethod --themed [{} 'neyho.eywa.table/action] [props]
     (--themed-action props))
   (defmethod --themed [{} 'toddler.elements.table/action] [props]
     (--themed-action props)))
@@ -55,12 +55,23 @@
   (defmethod --themed [{} 'toddler.elements.table/enum-cell] 
     [_]
     (assoc $themed-cell
+           :margin-top 2
            "&.opened" {:input {:color saturated-teal}}
            "input,textarea" {:color color}))
-  (defmethod --themed [{} 'toddler.elements.table/text-cell] [_] $themed-cell)
-  (defmethod --themed [{} 'toddler.elements.table/timestamp-cell] [_] $themed-cell)
-  (defmethod --themed [{} 'toddler.elements.table/integer-cell] [_] $themed-cell)
+  (defmethod --themed [{} 'toddler.elements.table/text-cell] [_]
+    (assoc $themed-cell :margin-top 3))
+
+  (defmethod --themed [{} 'toddler.elements.table/timestamp-cell] [_]
+    (assoc $themed-cell :margin-top 2))
+
+  (defmethod --themed [{} 'toddler.elements.table/integer-cell] [_]
+    (assoc $themed-cell :margin-top 2))
+
+  (defmethod --themed [{} 'toddler.elements.table/boolean-cell] [_]
+    (assoc $themed-cell :margin-top 2))
+
   (defmethod --themed [{} 'toddler.elements.table/currency-cell] [_] $themed-cell)
+  
   (defmethod --themed [{} 'toddler.elements.table/user-cell]  [_]
     {:input {:color color}
      "&:hover .clear" {:color gray

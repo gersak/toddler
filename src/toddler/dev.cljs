@@ -18,6 +18,7 @@
      :refer [use-current-user
              use-current-locale
              use-window-dimensions
+             use-layout-dimensions
              use-dimensions]]
     [toddler.i18n.default]
     [toddler.elements :as toddler]
@@ -62,14 +63,14 @@
   [{:keys [className]} _ref]
   {:wrap [(react/forwardRef)]}
   (let [components (hooks/use-context *components*)
-        {:keys [height]} (toddler/use-parent-container-dimensions)]
+        {:keys [height]} (toddler/use-container-dimensions)]
     ($ toddler/simplebar
        {:className className
         :style #js {:height height
                     :maxWidth 500
                     :minWidth 300}
         :scrollableNodeProps #js {:ref _ref}
-        :ref #(when _ref (reset! _ref %))}
+        :ref _ref}
        (d/div
          {:className "title"}
          "TODDLER")
@@ -122,7 +123,7 @@
   (let [[{{locale :locale} :settings} set-user!] (use-current-user)]
     (d/div
       {:className className
-       :ref #(when _ref (reset! _ref %))}
+       :ref _ref}
       ($ toddler/DropdownArea
          {:value locale
           :options [:hr :en :fa]
@@ -160,6 +161,7 @@
 
 (defnc Content
   [{:keys [className]}]
+  {:wrap [(react/forwardRef)]}
   (let [components (hooks/use-context *components*)
         [{:keys [rendered]}] (router/use-search-params)
         render  (some
@@ -167,10 +169,15 @@
                     (when (= (:key c) rendered)
                       (:render c)))
                   components)
-        {:keys [height]} (toddler/use-parent-container-dimensions)]
+        {:keys [width height] :as window} (toddler/use-container-dimensions)
+        {{nav-width :width} :navbar
+         {head-height :height} :header :as layout} 
+          (toddler/use-layout)]
     (if render
       ($ toddler/Container
-         {:style {:height (- height 50)}}
+         {:style {:height (- height head-height)
+                  :width (- width nav-width)}
+          :className (str className " render-zone")}
          ($ render))
       ($ empty-content))))
 
@@ -194,7 +201,9 @@
   {:wrap [(toddler/wrap-window)]}
   (let [[components set-components!] (hooks/use-state @component-db)
         [user set-user!] (hooks/use-state {:settings {:locale i18n/*locale*}})
-        {:keys [height]} (toddler/use-parent-container-dimensions)]
+        [{_navbar :navbar
+          _header :header
+          _content :content} layout] (use-layout-dimensions [:navbar :header :content])]
     (hooks/use-layout-effect
       :once
       (.log js/console "Adding playground watcher!")
@@ -212,19 +221,18 @@
          (provider
            {:context app/*user*
             :value [user set-user!]}
-           ($ popup/Container
-              ($ global-css)
-              ($ simplebar-css)
-              (d/div
-                {:className className}
-                ($ navbar)
-                ($ toddler/Container
-                   {:style {:flexGrow "1"
-                            :maxHeight height}}
-                   (d/div
-                     {:className "content"}
-                     ($ header)
-                     ($ content))))))))))
+           (provider
+             {:context toddler/*layout*
+              :value layout}
+             ($ global-css)
+             ($ simplebar-css)
+             (d/div
+               {:className className}
+               ($ navbar {:ref _navbar})
+               (d/div
+                 {:className "content"}
+                 ($ header {:ref _header})
+                 ($ content {:ref _content})))))))))
 
 
 (defstyled playground Playground

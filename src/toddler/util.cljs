@@ -346,7 +346,9 @@
 (defn bounding-client-rect 
   ([node] 
    (let [rect (.getBoundingClientRect node)]
-     {:height (.-height rect)
+     {:x (.-x rect)
+      :y (.-y rect)
+      :height (.-height rect)
       :width (.-width rect)
       :top (.-top rect)
       :left (.-left rect)

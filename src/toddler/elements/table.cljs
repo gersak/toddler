@@ -16,6 +16,7 @@
     [helix.styled-components
      :refer [defstyled
              --themed]]
+    [helix.spring :as spring]
     [toddler.elements :as toddler]
     [toddler.hooks
      :refer [use-delayed
@@ -370,35 +371,27 @@
 (defnc TableLayout
   [{rrow :render/row
     rheader :render/header
-    rinteractions :render/interactions
     :or {rrow Row
-         rheader HeaderRow
-         rinteractions Interactions}}]
+         rheader HeaderRow}}]
   (let [rows (use-rows)
-        {cmaxh :maxHeight
-         ch :height} (toddler/use-parent-container-dimensions) 
+        {container-width :width
+         container-height :height} (toddler/use-container-dimensions) 
         table-width (use-table-width)
         container (toddler/use-container) 
-        interactions (hooks/use-ref nil)
         thead (hooks/use-ref nil)
         tbody (hooks/use-ref nil)
         body-scroll (hooks/use-ref nil)
         header-scroll (hooks/use-ref nil)
         [header-height set-header-height!] (hooks/use-state 0)
-        [interactions-height set-interactions-height!] (hooks/use-state 0)
         ;;
         columns (use-columns)
-        ;;
-        [{container-width :width}
-         set-table-style!] (hooks/use-state nil)
         ;;
         scroll (hooks/use-ref nil)
         overflowing-horizontal? (neg? (- container-width table-width))
         not-overflowing-horizontal? (not overflowing-horizontal?)
-        fixed-height? (some? ch)
-        no-fixed-height? (not fixed-height?)
-        max-height? (some? cmaxh)
-        no-max-height? (not max-height?)]
+        style {:minWidth table-width}]
+    (when (nil? container)
+      (.error js/console "Wrap toddler/Table in container"))
     (hooks/use-effect
       [@body-scroll @header-scroll]
       (letfn [(sync-body-scroll [e]
@@ -426,149 +419,64 @@
       (when @thead
         (let [rect (.getBoundingClientRect @thead)
               height (.-height rect)]
-          (set-header-height! (round-number (dec height) 1 :down)))))
-    (hooks/use-effect
-      [@interactions]
-      (when @interactions
-        (let [rect (.getBoundingClientRect @interactions)
-              height (.-height rect)]
-          (set-interactions-height! (round-number (dec height) 1 :down)))))
-    ;; FIXME - this is crashing
-    (hooks/use-effect
-      [@container]
-      (when @container
-        (letfn [(reset [[entry]]
-                  (let [content-rect (.-contentRect entry)]
-                    (set-table-style!
-                      {:width (.-width content-rect)
-                       :height (.-height content-rect)})))]
-          (let [observer (js/ResizeObserver. reset)]
-            (.observe observer @container)
-            (fn [] (.disconnect observer))))))
-    (cond
-      ;;
-      (and not-overflowing-horizontal? no-max-height? no-fixed-height?)
-      (<>
-        ($ rinteractions 
-           {:className "interactions"
-            :ref #(reset! interactions %)})
-        (d/div
-          {:className "thead"}
-          (d/div
-            {:ref #(reset! thead %)}
-            ($ rheader {:className "trow"})))
-        (d/div
-          {:className "tbody"}
-          (d/div
-            {:ref #(reset! tbody %)}
-            (map-indexed
-              (fn [idx row]
-                ($ rrow
-                  {:key (or (:euuid row) idx)
-                   :idx idx
-                   :className "trow" 
-                   :data row}))
-              rows))))
-      ;;
-      (and not-overflowing-horizontal? (or max-height? fixed-height?))
-      (<>
-        ($ rinteractions 
-           {:className "interactions"
-            :ref #(reset! interactions %)})
-        (d/div
-          {:className "thead"}
-          (d/div
-            {:ref #(reset! thead %) 
-             :style {:minWidth table-width}}
-            ($ rheader 
-               {:className "trow"})))
-        ($ toddler/simplebar
-           {:scrollableNodeProps #js {:ref #(reset! body-scroll %)}
-            :className (str "tbody" (when (empty? rows) " empty"))
-            :style #js {:height (when ch (- ch interactions-height header-height 10))
-                        :maxHeight (when cmaxh (- cmaxh interactions-height header-height 10))}}
-           (d/div
-             {:style {:minWidth table-width}
-              :ref #(reset! tbody %)}
-             (map-indexed
-               (fn [idx row]
-                 ($ rrow
-                   {:key (or (:euuid row) idx)
-                    :idx idx
-                    :className "trow" 
-                    :data row}))
-               rows))))
-      ;;
-      (and overflowing-horizontal? no-max-height? no-fixed-height?)
-      (let [final-width container-width]
+          (when (not= header-height height)
+            (set-header-height! (round-number (dec height) 1 :down))))))
+    (when (and container-height container-width)
+      (if not-overflowing-horizontal?
         (<>
-          ($ rinteractions 
-             {:className "interactions"
-              :ref #(reset! interactions %)})
-          ($ toddler/simplebar
-             {:scrollableNodeProps #js {:ref #(reset! header-scroll %)}
-              :className "thead"
-              :$hidden (boolean (not-empty rows))
-              :style #js {:minWidth final-width}}
-             (d/div
-               {:ref #(reset! thead %) 
-                :style {:minWidth table-width}}
-               ($ rheader 
-                  {:className "trow"})))
+          (d/div
+            {:className "thead"}
+            (spring/div
+              {:ref #(reset! thead %) 
+               :style style}
+              ($ rheader 
+                 {:className "trow"})))
           ($ toddler/simplebar
              {:scrollableNodeProps #js {:ref #(reset! body-scroll %)}
               :className (str "tbody" (when (empty? rows) " empty"))
-              :style #js {:minWidth final-width}}
-             (d/div
-               {:style {:minWidth table-width}
+              :style #js {:maxHeight (- container-height header-height 10)}}
+             (spring/div
+               {:style style 
                 :ref #(reset! tbody %)}
                (map-indexed
                  (fn [idx row]
                    ($ rrow
-                     {:key (or 
-                             (:euuid row)
-                             idx)
+                     {:key (or (:euuid row) idx)
                       :idx idx
                       :className "trow" 
                       :data row}))
-                 rows)))))
-      ;;
-      (and overflowing-horizontal? (or max-height? fixed-height?))
-      (let [final-width container-width]
-        (<>
-          ($ rinteractions 
-             {:className "interactions"
-              :ref #(reset! interactions %)})
-          ($ toddler/simplebar
-             {:scrollableNodeProps #js {:ref #(reset! header-scroll %)}
-              :className "thead"
-              :$hidden (boolean (not-empty rows))
-              :style #js {:minWidth final-width
-                          :maxHeight 100}}
-             (d/div
-               {:ref #(reset! thead %) 
-                :style {:minWidth table-width}}
-               ($ rheader 
-                  {:className "trow"})))
-          ($ toddler/simplebar
-             {:scrollableNodeProps #js {:ref #(reset! body-scroll %)}
-              :className (str "tbody" (when (empty? rows) " empty"))
-              :style #js {:minWidth final-width 
-                          :height (when ch (- ch interactions-height header-height 10))
-                          :maxHeight (when cmaxh (- cmaxh interactions-height header-height 10))}}
-             (d/div
-               {:style {:minWidth table-width}
-                :ref #(reset! tbody %)}
-               (map-indexed
-                 (fn [idx row]
-                   ($ rrow
-                     {:key (or 
-                             (:euuid row)
-                             idx)
-                      :idx idx
-                      :className "trow" 
-                      :data row}))
-                 rows))))))))
+                 rows))))
+        (let [final-width container-width]
+          (<>
+            ($ toddler/simplebar
+               {:scrollableNodeProps #js {:ref #(reset! header-scroll %)}
+                :className "thead"
+                :$hidden (boolean (not-empty rows))
+                :style #js {:minWidth final-width
+                            :maxHeight 100}}
+               (spring/div
+                 {:ref #(reset! thead %) 
+                  :style style}
+                 ($ rheader 
+                    {:className "trow"})))
+            ($ toddler/simplebar
+               {:scrollableNodeProps #js {:ref #(reset! body-scroll %)}
+                :className (str "tbody" (when (empty? rows) " empty"))
+                :style #js {:minWidth final-width 
+                            :maxHeight (- container-height header-height 10)}}
+               (spring/div
+                 {:style style 
+                  :ref #(reset! tbody %)}
+                 (map-indexed
+                   (fn [idx row]
+                     ($ rrow
+                       {:key (or 
+                               (:euuid row)
+                               idx)
+                        :idx idx
+                        :className "trow" 
+                        :data row}))
+                   rows)))))))))
 
 
 (defstyled table-button toddler/button
@@ -920,7 +828,8 @@
    :display "flex"
    :justify-content "center"
    :align-items "center"
-   :transition "background-color .3s ease-in-out"})
+   :transition "background-color .3s ease-in-out"}
+  --themed)
 
 
 (defnc UserCellInput
@@ -1505,9 +1414,14 @@
     :or {cell-resolver cell-resolver
          header-resolver header-resolver}
     :as props}]
-  (let [{:keys [columns]} (use-table-defaults props)]
-    (d/div
-      {:className className}
+  (let [{:keys [columns]} (use-table-defaults props)
+        [style] (spring/use-spring
+                  {:from {:opacity 0}
+                   :to {:opacity 1}
+                   :delay 200})]
+    (spring/div
+      {:className className
+       :style style}
       (provider
         {:context *actions*
          :value actions}
