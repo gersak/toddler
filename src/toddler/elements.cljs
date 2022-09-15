@@ -5,7 +5,7 @@
    [clojure.core.async :as async]
    [goog.string :as gstr]
    [vura.core :as vura]
-   [cljs-bean.core :refer [->clj]]
+   [cljs-bean.core :refer [->clj ->js]]
    [helix.styled-components :refer [defstyled --themed]]
    [helix.core
     :refer [$ defnc fnc provider
@@ -64,44 +64,48 @@
      ".wrapper" {:justify-content jc}}))
 
 ;; Datepicker
-(defnc Column
-  [{:keys [label style className] :as props}]
-  (spring/div
-   {:className className
-    :style style}
-   (when label
-     (d/div
-      {:className "label"}
-      (d/label label)))
-   (c/children props)))
-
-(defstyled column Column
+(defstyled column "div"
   {:display "flex"
    :flex-direction "column"
+   :border-sizing "border-box"
    :flex-grow "1"}
   --themed
   --flex-position)
 
+(defnc Column
+  [{:keys [label style className] :as props}]
+  ($ column
+    {:className className
+     :style (->js style)}
+    (when label
+      (d/div
+        {:className "label"}
+        (d/label label)))
+    (c/children props)))
+
 ;;
 
-(defnc Row
-  [{:keys [label className style] :as props}]
-  (spring/div
-   {:className className
-    :style style}
-   (when label
-     (d/div
-      {:className "label"}
-      (d/label label)))
-   (c/children props)))
-
-(defstyled row Row
+(defstyled row "div"
   {:display "flex"
    :flex-direction "row"
+   :border-sizing "border-box"
    :align-items "center"
    :flex-grow "1"}
   --themed
   --flex-position)
+
+(defnc Row
+  [{:keys [label className style position] :as props}]
+  (println "STYLE: " style)
+  ($ row
+    {:className className
+     :style (->js style)
+     :position position}
+    (when label
+      (d/div
+        {:className "label"}
+        (d/label label)))
+    (c/children props)))
 
 ;;
 
@@ -2233,8 +2237,6 @@
 (defhook use-window [] (hooks/use-context app/*window*))
 
 (defhook use-container [] (hooks/use-context *container*))
-(defhook use-container-style [] (hooks/use-context *container-style*))
-
 (defhook use-container-dimensions
   []
   (hooks/use-context *container-dimensions*))
@@ -2255,52 +2257,6 @@
 
 
 (def ^:dynamic *window-resizing* (create-context))
-
-
-; (defnc Container
-;   [{:keys [className style] :as props}]
-;   (let [container (hooks/use-ref nil)
-;         observer (hooks/use-ref nil)
-;         [dimensions set-dimensions!] (hooks/use-state nil)]
-;     (hooks/use-effect
-;       :always
-;       (when (and
-;               (some? @container)
-;               (nil? @observer))
-;         (.log js/console "Attaching observer: " @container)
-;         (letfn [(resized [[entry]]
-;                   (let [content-rect (.-contentRect entry)
-;                         dimensions {:width (.-width content-rect)
-;                                     :height (.-height content-rect)
-;                                     :top (.-top content-rect)
-;                                     :left (.-left content-rect)
-;                                     :right (.-right content-rect)
-;                                     :bottom (.-bottom content-rect)
-;                                     :x (.-x content-rect)
-;                                     :y (.-y content-rect)}]
-;                     (set-dimensions! dimensions)))]
-;           (reset! observer (js/ResizeObserver. resized))
-;           (.observe @observer @container))))
-;     (hooks/use-effect
-;       :once
-;       (fn []
-;         (when @observer (.disconnect @observer))))
-;     ; (.log js/console @container)
-;     (d/div
-;       {:ref #(reset! container %)
-;        :className className
-;        :style style}
-;       (provider
-;         {:context *container-dimensions*
-;          :value dimensions}
-;         (provider
-;           {:context *container*
-;            :value container}
-;           (provider
-;             {:context *container-style*
-;              :value style}
-;             (c/children props)))))))
-
 
 
 (defnc Container

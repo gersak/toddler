@@ -179,7 +179,7 @@
         content-height (- (:height window) (get-in layout [:header :height]))
         content-width (- (:width window) (get-in layout [:navbar :width]))]
     (if render
-      (d/div
+      ($ toddler/Container
         {:style
          {:height content-height
           :width content-width}

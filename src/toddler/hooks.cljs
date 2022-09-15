@@ -58,7 +58,10 @@
       (hooks/use-effect
         :always
         (when (and (some? @node) (nil? dimensions))
-          (letfn [(reset [[entry]]
+          (letfn [(reset [[entry & others]]
+                    (.log js/console entry "Resized")
+                    (doseq [o others]
+                      (.log js/console o "Also resized!"))
                     (let [content-rect (.-contentRect entry)]
                       (set-dimensions!
                         {:width (.-width content-rect)
@@ -70,8 +73,7 @@
                          :x (.-x content-rect)
                          :y (.-y content-rect)})))]
             (reset! observer (js/ResizeObserver. reset))
-            (.observe @observer @node)
-            )))
+            (.observe @observer @node))))
       (hooks/use-effect
         :once
         (fn [] (when @observer (.disconnect @observer))))

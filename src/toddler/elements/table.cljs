@@ -414,23 +414,30 @@
               (.removeEventListener @body-scroll "scroll" sync-body-scroll))
             (when @header-scroll
               (.removeEventListener @header-scroll "scroll" sync-header-scroll))))))
-    (println "CON: " [container-width container-height header-height])
+    (println "CON: " [container-width container-height])
+    (println "TAB: " [header-height table-height])
+    (.log js/console @thead)
     (when (and container-height container-width)
       (if not-overflowing-horizontal?
         (<>
           (d/div
-            {:className "thead"}
+            {:key :thead/wrapper
+             :className "thead"}
             (spring/div
-              {:ref #(reset! thead %) 
+              {:key :thead
+               :ref #(reset! thead %) 
                :style style}
               ($ rheader 
-                 {:className "trow"})))
+                 {:key :thead/row
+                  :className "trow"})))
           ($ toddler/simplebar
-             {:scrollableNodeProps #js {:ref #(reset! body-scroll %)}
+             {:key :tbody/simplebar
+              :scrollableNodeProps #js {:ref #(reset! body-scroll %)}
               :className (str "tbody" (when (empty? rows) " empty"))
               :style #js {:maxHeight table-height}}
              (spring/div
-               {:style style 
+               {:key :tbody
+                :style style 
                 :ref #(reset! tbody %)}
                (map-indexed
                  (fn [idx row]
@@ -443,23 +450,28 @@
         (let [final-width container-width]
           (<>
             ($ toddler/simplebar
-               {:scrollableNodeProps #js {:ref #(reset! header-scroll %)}
+               {:key :thead/simplebar
+                :scrollableNodeProps #js {:ref #(reset! header-scroll %)}
                 :className "thead"
                 :$hidden (boolean (not-empty rows))
                 :style #js {:minWidth final-width
                             :maxHeight 100}}
                (spring/div
-                 {:ref #(reset! thead %) 
+                 {:key :thead
+                  :ref #(reset! thead %) 
                   :style style}
                  ($ rheader 
-                    {:className "trow"})))
+                    {:key :thead/row
+                     :className "trow"})))
             ($ toddler/simplebar
-               {:scrollableNodeProps #js {:ref #(reset! body-scroll %)}
+               {:key :tbody/simplebar
+                :scrollableNodeProps #js {:ref #(reset! body-scroll %)}
                 :className (str "tbody" (when (empty? rows) " empty"))
                 :style #js {:minWidth final-width 
                             :maxHeight table-height}}
                (spring/div
-                 {:style style 
+                 {:key :tbody
+                  :style style 
                   :ref #(reset! tbody %)}
                  (map-indexed
                    (fn [idx row]
