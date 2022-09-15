@@ -3,6 +3,7 @@
       [toddler.dev :as dev]
       [toddler.elements :as toddler]
       [toddler.elements.table :as table]
+      [toddler.hooks :refer [use-dimensions]]
       toddler.elements.table.theme
       [vura.core :as vura]
       [helix.core :refer [$ defnc]]
@@ -107,29 +108,32 @@
    (generate-table 100))
 
 
-(def data (generate-table 200))
+(def data (generate-table 50))
 
 
 (defnc Table
    []
-   (let [{:keys [width height] :as dimensions} (toddler/use-container-dimensions)]
-      (println "SHOWCASE TABLE: " dimensions)
-      (d/div
-         {:style {:width "100%" :height "100%"
-                  :display "flex"
-                  :justifyContent "center"
-                  :alignItems "center"}}
-         ($ toddler/Container
-            {:style {:width (- width 30)
-                     :height (- height 30)}
-             :display "flex"
-             :justifyContent "center"
-             :align-items "center"}
-            ($ table/table
-               {:rows data
-                :columns columns
-                :dispatch (fn [event]
-                             (println "Dispatching\n" event))})))))
+   (d/div
+      {:style
+       {:width "100%" :height "100%" ;:width width :height height
+        :display "flex"
+        :padding 30
+        :box-sizing "border-box"
+        :justifyContent "center"
+        :alignItems "center"}}
+      ($ toddler/Container
+         {:style
+          {:display "flex"
+           :flex-grow "1"
+           :width "100%"
+           :height "100%"
+           :justifyContent "center"
+           :align-items "center"}}
+         ($ table/table
+            {:rows data
+             :columns columns
+             :dispatch (fn [event]
+                          (println "Dispatching\n" event))}))))
 
 
 (dev/add-component

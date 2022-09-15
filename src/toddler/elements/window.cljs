@@ -4,7 +4,7 @@
    [vura.core :refer [round-number]]
    [toddler.app :as app]
    [toddler.hooks :refer [make-idle-service]]
-   [helix.core :refer [defnc provider]]
+   [helix.core :refer [defnc provider fnc $]]
    [helix.hooks :as hooks]
    [helix.children :as c]))
 
@@ -27,12 +27,12 @@
   (let [[state set-state!] (hooks/use-state (get-window-dimensions))
         resize-idle-service (hooks/use-ref
                              (make-idle-service
-                              600
+                              10
                               #(set-state! (get-window-dimensions))))]
     (hooks/use-effect
      [state]
      (async/go
-       (async/<! (async/timeout 300))
+       (async/<! (async/timeout 30))
        (when (not= state (get-window-dimensions))
          (async/put! @resize-idle-service :resized))))
     (letfn [(track-window-size []
@@ -47,3 +47,12 @@
        {:value state
         :context app/*window*}
        (c/children props)))))
+
+
+(defn dimension-provider
+  ([component]
+   (fnc dimensions-provider [props]
+     ($ DimensionsProvider ($ component {& props}))))
+  ([component cprops]
+   (fnc dimensions-provider[props]
+     ($ DimensionsProvider {& cprops} ($ component {& props})))))

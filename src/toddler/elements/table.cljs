@@ -20,6 +20,7 @@
     [toddler.elements :as toddler]
     [toddler.hooks
      :refer [use-delayed
+             use-dimensions
              use-translate]]
     [toddler.elements.input
      :refer [TextAreaElement]]
@@ -378,13 +379,12 @@
          container-height :height} (toddler/use-container-dimensions) 
         table-width (use-table-width)
         container (toddler/use-container) 
-        thead (hooks/use-ref nil)
         tbody (hooks/use-ref nil)
         body-scroll (hooks/use-ref nil)
         header-scroll (hooks/use-ref nil)
-        [header-height set-header-height!] (hooks/use-state 0)
+        [thead {header-height :height}] (use-dimensions)
         ;;
-        columns (use-columns)
+        table-height (round-number (- container-height header-height) 1 :down)
         ;;
         scroll (hooks/use-ref nil)
         overflowing-horizontal? (neg? (- container-width table-width))
@@ -414,13 +414,7 @@
               (.removeEventListener @body-scroll "scroll" sync-body-scroll))
             (when @header-scroll
               (.removeEventListener @header-scroll "scroll" sync-header-scroll))))))
-    (hooks/use-effect
-      [@thead columns]
-      (when @thead
-        (let [rect (.getBoundingClientRect @thead)
-              height (.-height rect)]
-          (when (not= header-height height)
-            (set-header-height! (round-number (dec height) 1 :down))))))
+    (println "CON: " [container-width container-height header-height])
     (when (and container-height container-width)
       (if not-overflowing-horizontal?
         (<>
@@ -434,7 +428,7 @@
           ($ toddler/simplebar
              {:scrollableNodeProps #js {:ref #(reset! body-scroll %)}
               :className (str "tbody" (when (empty? rows) " empty"))
-              :style #js {:maxHeight (- container-height header-height 10)}}
+              :style #js {:maxHeight table-height}}
              (spring/div
                {:style style 
                 :ref #(reset! tbody %)}
@@ -463,7 +457,7 @@
                {:scrollableNodeProps #js {:ref #(reset! body-scroll %)}
                 :className (str "tbody" (when (empty? rows) " empty"))
                 :style #js {:minWidth final-width 
-                            :maxHeight (- container-height header-height 10)}}
+                            :maxHeight table-height}}
                (spring/div
                  {:style style 
                   :ref #(reset! tbody %)}

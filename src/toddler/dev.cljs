@@ -1,7 +1,8 @@
 (ns toddler.dev
   (:require
+    [cljs-bean.core :refer [->clj ->js]]
     [helix.core
-     :refer [defnc $ <> provider]]
+     :refer [defnc $ provider]]
     [helix.hooks :as hooks]
     [helix.dom :as d]
     [helix.children :as c]
@@ -10,15 +11,12 @@
     [toddler.theme :as theme]
     [toddler.dev.theme]
     [toddler.dev.context
-     :refer [*components*
-             *navbar*
-             *header*]]
+     :refer [*components*]]
     [toddler.router.dom :as router]
     [toddler.hooks
      :refer [use-current-user
              use-current-locale
              use-window-dimensions
-             use-layout-dimensions
              use-dimensions]]
     [toddler.i18n.default]
     [toddler.elements :as toddler]
@@ -63,12 +61,12 @@
   [{:keys [className]} _ref]
   {:wrap [(react/forwardRef)]}
   (let [components (hooks/use-context *components*)
-        {:keys [height]} (toddler/use-container-dimensions)]
+        {:keys [height]} (use-window-dimensions)]
     ($ toddler/simplebar
        {:className className
-        :style #js {:height height
-                    :maxWidth 500
-                    :minWidth 300}
+        :style #js {:height height 
+                    :minWidth 300
+                    :maxWidth 500}
         :scrollableNodeProps #js {:ref _ref}
         :ref _ref}
        (d/div
@@ -120,10 +118,16 @@
 (defnc Header
   [{:keys [className]} _ref]
   {:wrap [(react/forwardRef)]}
-  (let [[{{locale :locale} :settings} set-user!] (use-current-user)]
+  (let [[{{locale :locale} :settings} set-user!] (use-current-user)
+        window (use-window-dimensions)
+        layout (toddler/use-layout)
+        header-height 50
+        header-width (- (:width window) (get-in layout [:navbar :width]))]
     (d/div
       {:className className
-       :ref _ref}
+       :ref _ref 
+       :style {:height header-height
+               :width header-width}}
       ($ toddler/DropdownArea
          {:value locale
           :options [:hr :en :fa]
@@ -138,7 +142,8 @@
    :height "50px"
    :background "#d3e9eb"
    :flex-direction "row-reverse"
-   :padding-right "15px"}
+   :padding-right "15px"
+   :box-sizing "border-box"}
   --themed)
 
 
@@ -169,16 +174,17 @@
                     (when (= (:key c) rendered)
                       (:render c)))
                   components)
-        {:keys [width height] :as window} (toddler/use-container-dimensions)
-        {{nav-width :width} :navbar
-         {head-height :height} :header :as layout} 
-          (toddler/use-layout)]
+        window (use-window-dimensions)
+        layout (toddler/use-layout)
+        content-height (- (:height window) (get-in layout [:header :height]))
+        content-width (- (:width window) (get-in layout [:navbar :width]))]
     (if render
-      ($ toddler/Container
-         {:style {:height (- height head-height)
-                  :width (- width nav-width)}
-          :className (str className " render-zone")}
-         ($ render))
+      (d/div
+        {:style
+         {:height content-height
+          :width content-width}
+         :className (str className " render-zone")}
+        ($ render))
       ($ empty-content))))
 
 
@@ -198,13 +204,13 @@
 
 (defnc Playground
   [{:keys [className]}]
-  {:wrap [(toddler/wrap-window)]}
   (let [[components set-components!] (hooks/use-state @component-db)
         [user set-user!] (hooks/use-state {:settings {:locale i18n/*locale*}})
+        window (use-window-dimensions)
         [{_navbar :navbar
           _header :header
-          _content :content} layout] (use-layout-dimensions [:navbar :header :content])]
-    (hooks/use-layout-effect
+          _content :content} layout] (use-dimensions [:navbar :header :content])]
+    (hooks/use-effect
       :once
       (.log js/console "Adding playground watcher!")
       (add-watch
@@ -222,17 +228,29 @@
            {:context app/*user*
             :value [user set-user!]}
            (provider
-             {:context toddler/*layout*
+             {:context app/*layout*
               :value layout}
-             ($ global-css)
-             ($ simplebar-css)
-             (d/div
-               {:className className}
-               ($ navbar {:ref _navbar})
-               (d/div
-                 {:className "content"}
-                 ($ header {:ref _header})
-                 ($ content {:ref _content})))))))))
+             ($ popup/Container
+                ($ global-css)
+                ($ simplebar-css)
+                ($ window/DimensionsProvider
+                   (d/div
+                     {:className className}
+                     ($ navbar {:ref _navbar})
+                     (let [header-height 50
+                           header-width (- (:width window) (get-in layout [:navigation :width]))
+                           content-height (- (:height window) (get-in layout [:header :height]))
+                           content-width (- (:width window) (get-in layout [:navigation :width]))]
+                       (d/div
+                         {:className "content"}
+                         ($ header
+                            {:ref _header
+                             :style {:width header-width 
+                                     :height header-height}})
+                         ($ content
+                            {:ref _content
+                             :style {:height content-height 
+                                     :width content-width}}))))))))))))
 
 
 (defstyled playground Playground
@@ -259,7 +277,7 @@
 (defnc CenteredComponent
   [{:keys [className] :as props}]
   (let [window (use-window-dimensions)
-        navbar (hooks/use-context *navbar*)]
+        {:keys [navbar]} (toddler/use-layout)]
     (d/div
       {:className className
        :style {:width (- (:width window) (:width navbar))

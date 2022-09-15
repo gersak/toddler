@@ -51,72 +51,72 @@
 (defhook use-dimensions
   "Hook returns ref that should be attached to component and
   second result dimensions of bounding client rect"
-  []
-  (let [node (hooks/use-ref nil)
-        observer (hooks/use-ref nil)
-        [dimensions set-dimensions!] (hooks/use-state nil)]
-    (hooks/use-effect
-      :always
-      (when (and (some? @node) (nil? dimensions))
-        (letfn [(reset [[entry]]
-                  (let [content-rect (.-contentRect entry)]
-                    (set-dimensions!
-                      {:width (.-width content-rect)
-                       :height (.-height content-rect)
-                       :top (.-top content-rect)
-                       :left (.-left content-rect)
-                       :right (.-right content-rect)
-                       :bottom (.-bottom content-rect)
-                       :x (.-x content-rect)
-                       :y (.-y content-rect)})))]
-          (reset! observer (js/ResizeObserver. reset))
-          (.observe @observer @node)
-          )))
-    (hooks/use-effect
-      :once
-      (fn [] (when @observer (.disconnect @observer))))
-    [node dimensions]))
-
-
-(defhook use-layout-dimensions
-  [ks]
-  (let [nodes (hooks/use-ref nil)
-        refs (hooks/use-memo
-               [ks]
-               (reduce
-                 (fn [r k]
-                   (assoc r k (fn [node] (swap! nodes assoc k node))))
-                 nil
-                 ks))
-        observers (hooks/use-ref nil)
-        [dimensions set-dimensions!] (hooks/use-state nil)]
-    (hooks/use-effect
-      :always
-      (doseq [k ks
-              :let [observer (get @observers k)
-                    node (get @nodes k)]
-              :when (and node (nil? observer))]
-        (letfn [(reset [[entry]]
-                  (let [content-rect (.-contentRect entry)]
-                    (set-dimensions! assoc k
-                                     {:width (.-width content-rect)
-                                      :height (.-height content-rect)
-                                      :top (.-top content-rect)
-                                      :left (.-left content-rect)
-                                      :right (.-right content-rect)
-                                      :bottom (.-bottom content-rect)
-                                      :x (.-x content-rect)
-                                      :y (.-y content-rect)})))]
-          (swap! observers assoc k (js/ResizeObserver. reset))
-          (.observe (get @observers k) node))))
-    (hooks/use-effect
-      :once
-      (fn []
+  ([]
+    (let [node (hooks/use-ref nil)
+          observer (hooks/use-ref nil)
+          [dimensions set-dimensions!] (hooks/use-state nil)]
+      (hooks/use-effect
+        :always
+        (when (and (some? @node) (nil? dimensions))
+          (letfn [(reset [[entry]]
+                    (let [content-rect (.-contentRect entry)]
+                      (set-dimensions!
+                        {:width (.-width content-rect)
+                         :height (.-height content-rect)
+                         :top (.-top content-rect)
+                         :left (.-left content-rect)
+                         :right (.-right content-rect)
+                         :bottom (.-bottom content-rect)
+                         :x (.-x content-rect)
+                         :y (.-y content-rect)})))]
+            (reset! observer (js/ResizeObserver. reset))
+            (.observe @observer @node)
+            )))
+      (hooks/use-effect
+        :once
+        (fn [] (when @observer (.disconnect @observer))))
+      [node dimensions]))
+  ([ks]
+    (let [nodes (hooks/use-ref nil)
+          refs (hooks/use-memo
+                 [ks]
+                 (reduce
+                   (fn [r k]
+                     (assoc r k (fn [node] (swap! nodes assoc k node))))
+                   nil
+                   ks))
+          observers (hooks/use-ref nil)
+          [dimensions set-dimensions!] (hooks/use-state nil)]
+      (hooks/use-effect
+        :always
         (doseq [k ks
-                :let [observer (get @observers k)]
-                :when observer]
-          (.disconnect observer))))
-    [refs dimensions]))
+                :let [observer (get @observers k)
+                      node (get @nodes k)]
+                :when (and node (nil? observer))]
+          (letfn [(reset [[entry]]
+                    (let [content-rect (.-contentRect entry)]
+                      (set-dimensions! assoc k
+                                       {:width (.-width content-rect)
+                                        :height (.-height content-rect)
+                                        :top (.-top content-rect)
+                                        :left (.-left content-rect)
+                                        :right (.-right content-rect)
+                                        :bottom (.-bottom content-rect)
+                                        :x (.-x content-rect)
+                                        :y (.-y content-rect)})))]
+            (swap! observers assoc k (js/ResizeObserver. reset))
+            (.observe (get @observers k) node))))
+      (hooks/use-effect
+        :once
+        (fn []
+          (doseq [k ks
+                  :let [observer (get @observers k)]
+                  :when observer]
+            (.disconnect observer))))
+      [refs dimensions])))
+
+
+
 
 
 (defn make-idle-service
