@@ -26,27 +26,27 @@
   [props]
   (let [[state set-state!] (hooks/use-state (get-window-dimensions))
         resize-idle-service (hooks/use-ref
-                             (make-idle-service
-                              10
-                              #(set-state! (get-window-dimensions))))]
+                              (make-idle-service
+                                10
+                                #(set-state! (get-window-dimensions))))]
     (hooks/use-effect
-     [state]
-     (async/go
-       (async/<! (async/timeout 30))
-       (when (not= state (get-window-dimensions))
-         (async/put! @resize-idle-service :resized))))
+      [state]
+      (async/go
+        (async/<! (async/timeout 30))
+        (when (not= state (get-window-dimensions))
+          (async/put! @resize-idle-service :resized))))
     (letfn [(track-window-size []
               (async/put! @resize-idle-service :resized))]
       (hooks/use-effect
-       :once
-       (.addEventListener js/window "resize" track-window-size)
-       #(do
-          (async/close! @resize-idle-service)
-          (.removeEventListener js/window "resize" track-window-size)))
+        :once
+        (.addEventListener js/window "resize" track-window-size)
+        #(do
+           (async/close! @resize-idle-service)
+           (.removeEventListener js/window "resize" track-window-size)))
       (provider
-       {:value state
-        :context app/*window*}
-       (c/children props)))))
+        {:value state
+         :context app/*window*}
+        (c/children props)))))
 
 
 (defn dimension-provider

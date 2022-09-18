@@ -17,6 +17,7 @@
    [toddler.app :as app]
    [toddler.hooks
     :refer [make-idle-service
+            use-dimensions
             use-translate
             use-calendar
             use-idle]]
@@ -63,42 +64,53 @@
     {:justify-content jc
      ".wrapper" {:justify-content jc}}))
 
+
+(def ^:dynamic *container* (create-context nil))
+(def ^:dynamic *container-dimensions* (create-context nil))
+(def ^:dynamic *container-style* (create-context nil))
+
+(defhook use-layout
+  ([] (hooks/use-context app/*layout*))
+  ([k] (get (hooks/use-context app/*layout*) k)))
+
+
+(defhook use-window [] (hooks/use-context app/*window*))
+
+(defhook use-container [] (hooks/use-context *container*))
+(defhook use-container-dimensions [] (hooks/use-context *container-dimensions*))
+
+
+(defnc Container
+  [{:keys [className style] :as props}]
+  (let [[container dimensions] (use-dimensions)]
+    (d/div
+      {:ref #(reset! container %)
+       :className className
+       :style style}
+      (provider
+        {:context *container-dimensions*
+         :value dimensions}
+        (provider
+          {:context *container*
+           :value container}
+          (c/children props))))))
+
+
 ;; Datepicker
 (defstyled column "div"
   {:display "flex"
    :flex-direction "column"
-   :border-sizing "border-box"
+   ; :border-sizing "border-box"
    :flex-grow "1"}
   --themed
   --flex-position)
 
 (defnc Column
-  [{:keys [label style className] :as props}]
+  [{:keys [label style className position] :as props} _ref]
+  {:wrap [(react/forwardRef)]}
   ($ column
-    {:className className
-     :style (->js style)}
-    (when label
-      (d/div
-        {:className "label"}
-        (d/label label)))
-    (c/children props)))
-
-;;
-
-(defstyled row "div"
-  {:display "flex"
-   :flex-direction "row"
-   :border-sizing "border-box"
-   :align-items "center"
-   :flex-grow "1"}
-  --themed
-  --flex-position)
-
-(defnc Row
-  [{:keys [label className style position] :as props}]
-  (println "STYLE: " style)
-  ($ row
-    {:className className
+    {:ref _ref
+     :className className
      :style (->js style)
      :position position}
     (when label
@@ -106,6 +118,72 @@
         {:className "label"}
         (d/label label)))
     (c/children props)))
+
+; (defnc Column
+;   [{:keys [label style className position] :as props}]
+;   (let [[container dimensions] (use-dimensions)]
+;     (println "Column dimensiosn: " dimensions)
+;     ($ column
+;        {:ref #(reset! container %)
+;         :className className
+;         :style (->js style)
+;         :position position}
+;        (when label
+;          (d/div
+;            {:className "label"}
+;            (d/label label)))
+;        (provider
+;          {:context *container-dimensions*
+;           :value dimensions}
+;          (provider
+;            {:context *container*
+;             :value container}
+;            (c/children props))))))
+
+
+(defstyled row "div"
+  {:display "flex"
+   :flex-direction "row"
+   ; :border-sizing "border-box"
+   :align-items "center"
+   :flex-grow "1"}
+  --themed
+  --flex-position)
+
+
+(defnc Row
+  [{:keys [label className style position] :as props} _ref]
+  {:wrap [(react/forwardRef)]}
+  ($ row
+    {:ref _ref
+     :className className
+     :style (->js style)
+     :position position}
+    (when label
+      (d/div
+        {:className "label"}
+        (d/label label)))
+    (c/children props)))
+
+; (defnc Row
+;   [{:keys [label className style position] :as props}]
+;   (let [[container dimensions] (use-dimensions)]
+;     ($ row
+;        {:ref #(reset! container %)
+;         :className className
+;         :style (->js style)
+;         :position position}
+;        (when label
+;          (d/div
+;            {:className "label"}
+;            (d/label label)))
+;        (provider
+;          {:context *container-dimensions*
+;           :value dimensions}
+;          (provider
+;            {:context *container*
+;             :value container}
+;            (c/children props))))))
 
 ;;
 
@@ -2225,22 +2303,6 @@
                ".icon" {:cursor "pointer"}}}}})
 
 
-(def ^:dynamic *container* (create-context nil))
-(def ^:dynamic *container-dimensions* (create-context nil))
-(def ^:dynamic *container-style* (create-context nil))
-
-(defhook use-layout
-  ([] (hooks/use-context app/*layout*))
-  ([k] (get (hooks/use-context app/*layout*) k)))
-
-
-(defhook use-window [] (hooks/use-context app/*window*))
-
-(defhook use-container [] (hooks/use-context *container*))
-(defhook use-container-dimensions
-  []
-  (hooks/use-context *container-dimensions*))
-
 
 (defn get-window-dimensions
   []
@@ -2259,49 +2321,51 @@
 (def ^:dynamic *window-resizing* (create-context))
 
 
-(defnc Container
-  [{:keys [className style] :as props}]
-  (let [container (hooks/use-ref nil)
-        [dimensions set-dimensions!] (hooks/use-state nil)
-        observer (hooks/use-ref nil)
-        resize-idle-service (hooks/use-ref
-                              (make-idle-service
-                                30
-                                (fn reset [entries]
-                                  (let [[_ entry] (reverse entries)
-                                        content-rect (.-contentRect entry)
-                                        dimensions {:width (.-width content-rect)
-                                                    :height (.-height content-rect)
-                                                    :top (.-top content-rect)
-                                                    :left (.-left content-rect)
-                                                    :right (.-right content-rect)
-                                                    :bottom (.-bottom content-rect)
-                                                    :x (.-x content-rect)
-                                                    :y (.-y content-rect)}]
-                                    (set-dimensions! dimensions)))))]
-    (hooks/use-effect
-      :always
-      (when (and (some? @container) (nil? @observer))
-        (letfn [(resized [[entry]]
-                  (async/put! @resize-idle-service entry))]
-          (reset! observer (js/ResizeObserver. resized))
-          (.observe @observer @container))))
-    (hooks/use-effect
-      :once
-      (fn []
-        (when @observer (.disconnect @observer))))
-    ; (.log js/console @container)
-    (d/div
-      {:ref #(reset! container %)
-       :className className
-       :style style}
-      (provider
-        {:context *container-dimensions*
-         :value dimensions}
-        (provider
-          {:context *container*
-           :value container}
-          (c/children props))))))
+
+
+; (defnc Container
+;   [{:keys [className style] :as props}]
+;   (let [container (hooks/use-ref nil)
+;         [dimensions set-dimensions!] (hooks/use-state nil)
+;         observer (hooks/use-ref nil)
+;         resize-idle-service (hooks/use-ref
+;                               (make-idle-service
+;                                 30
+;                                 (fn reset [entries]
+;                                   (let [[_ entry] (reverse entries)
+;                                         content-rect (.-contentRect entry)
+;                                         dimensions {:width (.-width content-rect)
+;                                                     :height (.-height content-rect)
+;                                                     :top (.-top content-rect)
+;                                                     :left (.-left content-rect)
+;                                                     :right (.-right content-rect)
+;                                                     :bottom (.-bottom content-rect)
+;                                                     :x (.-x content-rect)
+;                                                     :y (.-y content-rect)}]
+;                                     (set-dimensions! dimensions)))))]
+;     (hooks/use-effect
+;       :always
+;       (when (and (some? @container) (nil? @observer))
+;         (letfn [(resized [[entry]]
+;                   (async/put! @resize-idle-service entry))]
+;           (reset! observer (js/ResizeObserver. resized))
+;           (.observe @observer @container))))
+;     (hooks/use-effect
+;       :once
+;       (fn []
+;         (when @observer (.disconnect @observer))))
+;     ; (.log js/console @container)
+;     (d/div
+;       {:ref #(reset! container %)
+;        :className className
+;        :style style}
+;       (provider
+;         {:context *container-dimensions*
+;          :value dimensions}
+;         (provider
+;           {:context *container*
+;            :value container}
+;           (c/children props))))))
 
 
 (defn wrap-container

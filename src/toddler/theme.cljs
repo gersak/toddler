@@ -114,7 +114,7 @@
     :font-size "14"
     :color gray
     :border-bottom (str "1px solid " gray)}
-   :margin 3})
+   :padding 3})
 
 (defmethod --themed [{} 'toddler.elements/column]
   [_]

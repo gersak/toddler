@@ -3,6 +3,7 @@
       [toddler.dev :as dev]
       [toddler.elements :as toddler]
       [toddler.elements.table :as table]
+      [toddler.grid :as grid]
       toddler.elements.table.theme
       [vura.core :as vura]
       [helix.core :refer [$ defnc]]
@@ -151,48 +152,81 @@
     :name "Table"
     :render Table})
 
+(let [large [{:i "top" :x 0 :y 0 :w 10 :h 1}
+             {:i "bottom-left" :x 0 :y 1 :w 5 :h 1}
+             {:i "bottom-right" :x 5 :y 1 :w 5 :h 1}]
+      small [{:i "top" :x 0 :y 0 :w 1 :h 1}
+             {:i "bottom-left" :x 0 :y 1 :w 1 :h 1}
+             {:i "bottom-right" :x 0 :y 2 :w 1 :h 1}]
+      layouts {:md large
+               :lg large
+               :sm small
+               :xs small}
+      grid-columns {:lg 10 :md 10 :sm 1 :xs 1}]
+   (defnc TableGrid
+      []
+      (let [{:keys [height width]} (toddler/use-container-dimensions)]
+         ; (println "DIMS: " dims)
+         ; (println "HH: " half-height)
+         ; (println "HW: " half-width)
+         ($ toddler/simplebar
+            {:style #js {:height height
+                         :width width
+                         :boxSizing "border-box"}}
+            ($ grid/GridLayout
+               {:width width
+                :row-height (/ height 2)
+                :columns grid-columns
+                :layouts layouts}
+               ($ table/table
+                  {:key "top"
+                   :rows data
+                   :columns columns
+                   :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))})
+               ($ table/table
+                  {:key "bottom-left"
+                   :rows data
+                   :columns columns
+                   :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))})
+               ($ table/table
+                  {:key "bottom-right"
+                   :rows data
+                   :columns columns
+                   :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))}))))))
 
-
-(defnc TableGrid
-   []
-   (let [{:keys [height width]} (toddler/use-container-dimensions)
-         half-height (/ height 2)
-         half-width (/ width 2)]
-      (println "HH: " half-height)
-      (println "HW: " half-width)
-      ($ toddler/simplebar
-         {:style #js {:width width :height height}}
-       ($ toddler/Column
-          {:style {:height height}}
-          ($ toddler/Row
-             {:style {:padding 10
-                      :height half-height}}
-             ($ TableContainer
-                ($ table/table
-                   {:rows data
-                    :columns columns
-                    :dispatch (fn [event]
-                                 (println "Dispatching\n" event))})))
-          ($ toddler/Row
-             {:style (cond->
-                        {:padding 10
-                         :maxWidth width
-                         :height half-height}
-                        (< half-width 500) (assoc :flexWrap "wrap"))}
-             ($ TableContainer
-                {:style {:width half-width}}
-                ($ table/table
-                   {:rows data
-                    :columns columns
-                    :dispatch (fn [event]
-                                 (println "Dispatching\n" event))}))
-             ($ TableContainer
-                {:style {:width half-width}}
-                ($ table/table
-                   {:rows data
-                    :columns columns
-                    :dispatch (fn [event]
-                                 (println "Dispatching\n" event))})))))))
+; (defnc TableGrid
+;    []
+;    (let [{:keys [height width] :as dims} (toddler/use-container-dimensions)
+;          half-height (/ height 2)
+;          half-width (/ width 2)]
+;       ; (println "DIMS: " dims)
+;       ; (println "HH: " half-height)
+;       ; (println "HW: " half-width)
+;       ($ toddler/Column
+;          {:style {:height height
+;                   :width width
+;                   :boxSizing "border-box"}}
+;          ($ toddler/Row
+;             {:style {:padding 10}}
+;             ($ table/table
+;                {:rows data
+;                 :columns columns
+;                 :dispatch (fn [event]
+;                              (println "Dispatching\n" event))}))
+;          ($ toddler/Row
+;             {:style (cond->
+;                        {:padding 10}
+;                        (< half-width 500) (assoc :flexWrap "wrap"))}
+;             ($ table/table
+;                {:rows data
+;                 :columns columns
+;                 :dispatch (fn [event]
+;                              (println "Dispatching\n" event))})
+;             ($ table/table
+;                {:rows data
+;                 :columns columns
+;                 :dispatch (fn [event]
+;                              (println "Dispatching\n" event))})))))
 
 
 (dev/add-component
