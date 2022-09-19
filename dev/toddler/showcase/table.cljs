@@ -169,6 +169,7 @@
          ; (println "DIMS: " dims)
          ; (println "HH: " half-height)
          ; (println "HW: " half-width)
+         (println "RENDERING CONTENT")
          ($ toddler/simplebar
             {:style #js {:height height
                          :width width
@@ -193,40 +194,6 @@
                    :rows data
                    :columns columns
                    :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))}))))))
-
-; (defnc TableGrid
-;    []
-;    (let [{:keys [height width] :as dims} (toddler/use-container-dimensions)
-;          half-height (/ height 2)
-;          half-width (/ width 2)]
-;       ; (println "DIMS: " dims)
-;       ; (println "HH: " half-height)
-;       ; (println "HW: " half-width)
-;       ($ toddler/Column
-;          {:style {:height height
-;                   :width width
-;                   :boxSizing "border-box"}}
-;          ($ toddler/Row
-;             {:style {:padding 10}}
-;             ($ table/table
-;                {:rows data
-;                 :columns columns
-;                 :dispatch (fn [event]
-;                              (println "Dispatching\n" event))}))
-;          ($ toddler/Row
-;             {:style (cond->
-;                        {:padding 10}
-;                        (< half-width 500) (assoc :flexWrap "wrap"))}
-;             ($ table/table
-;                {:rows data
-;                 :columns columns
-;                 :dispatch (fn [event]
-;                              (println "Dispatching\n" event))})
-;             ($ table/table
-;                {:rows data
-;                 :columns columns
-;                 :dispatch (fn [event]
-;                              (println "Dispatching\n" event))})))))
 
 
 (dev/add-component

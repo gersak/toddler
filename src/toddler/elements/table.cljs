@@ -21,7 +21,6 @@
     [toddler.hooks
      :refer [use-delayed
              use-dimensions
-             use-on-parent-resized
              use-translate]]
     [toddler.elements.input
      :refer [TextAreaElement]]
@@ -107,7 +106,7 @@
 (defhook use-table-width
   []
   (let [columns (use-columns)]
-    (reduce + 0 (map (comp :width :style) columns))))
+    (reduce + 0 (map #(get-in % [:style :width] 100) columns))))
 
 
 (defnc FRow
@@ -376,8 +375,9 @@
     :keys [className]
     :or {rrow Row
          rheader HeaderRow}}]
-  (let [[table {container-width :width
-                container-height :height}] (use-dimensions) 
+  (println "RENDERING TABLE")
+  (let [{container-width :width
+         container-height :height} (toddler/use-container-dimensions)
         rows (use-rows)
         ; [{container-width :width
         ;   container-height :height} set-container!] (hooks/use-state nil) 
@@ -393,15 +393,6 @@
         style {:minWidth table-width}]
     (when (nil? container)
       (.error js/console "Wrap toddler/Table in container"))
-    ; (use-on-parent-resized
-    ;   table
-    ;   (fn [dimensions parent]
-    ;     (.log js/console parent)
-    ;     (.log js/console @table)
-    ;     (println "RECEIVED TABLE PARENT DIMENSIONS: " dimensions)
-    ;     (when (some? dimensions)
-    ;       (set-container! dimensions))))
-    (println "TH: " [header-height table-height])
     (hooks/use-effect
       [@body-scroll @header-scroll]
       (letfn [(sync-body-scroll [e]
@@ -424,46 +415,46 @@
               (.removeEventListener @body-scroll "scroll" sync-body-scroll))
             (when @header-scroll
               (.removeEventListener @header-scroll "scroll" sync-header-scroll))))))
-    (d/div
-      {:key :table
-       :className className
-       :style {:height "100%"
-               :width "100%"}
-       :ref #(reset! table %)}
-      ($ toddler/simplebar
-         {:key :thead/simplebar
-          :scrollableNodeProps #js {:ref #(reset! header-scroll %)}
-          :className "thead"
-          :$hidden (boolean (not-empty rows))
-          :style #js {:minWidth container-width
-                      :maxHeight 100}}
-         (spring/div
-           {:key :thead
-            :ref #(reset! thead %) 
-            :style style}
-           ($ rheader 
-              {:key :thead/row
-               :className "trow"})))
-      ($ toddler/simplebar
-         {:key :tbody/simplebar
-          :scrollableNodeProps #js {:ref #(reset! body-scroll %)}
-          :className (str "tbody" (when (empty? rows) " empty"))
-          :style #js {:minWidth container-width
-                      :maxHeight table-height}}
-         (spring/div
-           {:key :tbody
-            :style style 
-            :ref #(reset! tbody %)}
-           (map-indexed
-             (fn [idx row]
-               ($ rrow
-                 {:key (or 
-                         (:euuid row)
-                         idx)
-                  :idx idx
-                  :className "trow" 
-                  :data row}))
-             rows))))))
+    (when (and container-width container-height)
+      (d/div
+        {:key :table
+         :className className
+         :style {:height container-height
+                 :width container-width}}
+        ($ toddler/simplebar
+           {:key :thead/simplebar
+            :scrollableNodeProps #js {:ref #(reset! header-scroll %)}
+            :className "thead"
+            :$hidden (boolean (not-empty rows))
+            :style #js {:minWidth container-width
+                        :maxHeight 100}}
+           (spring/div
+             {:key :thead
+              :ref #(reset! thead %) 
+              :style style}
+             ($ rheader 
+                {:key :thead/row
+                 :className "trow"})))
+        ($ toddler/simplebar
+           {:key :tbody/simplebar
+            :scrollableNodeProps #js {:ref #(reset! body-scroll %)}
+            :className (str "tbody" (when (empty? rows) " empty"))
+            :style #js {:minWidth container-width
+                        :maxHeight table-height}}
+           (spring/div
+             {:key :tbody
+              :style style 
+              :ref #(reset! tbody %)}
+             (map-indexed
+               (fn [idx row]
+                 ($ rrow
+                   {:key (or 
+                           (:euuid row)
+                           idx)
+                    :idx idx
+                    :className "trow" 
+                    :data row}))
+               rows)))))))
 
 
 (defstyled table-button toddler/button
@@ -1388,7 +1379,6 @@
   [{:keys [columns ] :as props}]
   (hooks/use-memo
     [columns]
-    (println "COLUMNS: " columns)
     (-> props
         (update :columns
                 (fn [columns]

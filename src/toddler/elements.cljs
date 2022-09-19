@@ -9,7 +9,7 @@
    [helix.styled-components :refer [defstyled --themed]]
    [helix.core
     :refer [$ defnc fnc provider
-            defhook create-context]]
+            defhook create-context memo]]
    [helix.dom :as d]
    [helix.children :as c]
    [helix.hooks  :as hooks]
@@ -80,20 +80,25 @@
 (defhook use-container-dimensions [] (hooks/use-context *container-dimensions*))
 
 
-(defnc Container
-  [{:keys [className style] :as props}]
-  (let [[container dimensions] (use-dimensions)]
-    (d/div
-      {:ref #(reset! container %)
-       :className className
-       :style style}
-      (provider
-        {:context *container-dimensions*
-         :value dimensions}
+(letfn [(same? [a b]
+          (println "CHECKING CONTAINER")
+          (= (select-keys a [:style :className])
+             (select-keys b [:style :className])))]
+  (defnc Container
+    [{:keys [className style] :as props}]
+    {:wrap [(memo same?)]}
+    (let [[container dimensions] (use-dimensions)]
+      (d/div
+        {:ref #(reset! container %)
+         :className className
+         :style style}
         (provider
-          {:context *container*
-           :value container}
-          (c/children props))))))
+          {:context *container-dimensions*
+           :value dimensions}
+          (provider
+            {:context *container*
+             :value container}
+            (c/children props)))))))
 
 
 ;; Datepicker

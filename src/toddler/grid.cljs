@@ -1,7 +1,8 @@
 (ns toddler.grid
   (:require
     [vura.core :refer [round-number]]
-    [helix.core :refer [defnc defhook $]]
+    [toddler.elements :refer [*container-dimensions*]]
+    [helix.core :refer [defnc defhook $ provider]]
     [helix.hooks :as hooks]
     [helix.children :as c]
     [helix.dom :as d]))
@@ -14,7 +15,7 @@
      :sm 768
      :xs 480
      :xxs 0})
-  
+
   (def width 300))
 
 
@@ -24,20 +25,27 @@
 
 
 (defnc GridItem
-  [{:keys [x y width height min-w min-h max-w max-h className]
-    :or {min-w 0 min-h 0}
+  [{:keys [x y width height className]
+    [dx dy] :margin
+    :or {dx 10 dy 10}
     :as props}]
-  (d/div
-    {:className className
-     :style {:position "absolute"
-             :transform (str "translate("x"px," y "px)")
-             :width width
-             :height height
-             :minHeight min-h
-             :maxHeight max-h
-             :minWidth min-w
-             :maxWidth max-w}}
-    (c/children props)))
+  (let [{:keys [x y width height]
+         :as container-dimensions}
+        (hooks/use-memo
+          [x y width height]
+          (zipmap
+            [:x :y :width :height]
+            [(+ x dx) (+ y dy) (- width (* 2 dx)) (- height (* 2 dy))]))]
+    (provider
+      {:context *container-dimensions*
+       :value container-dimensions}
+      (d/div
+        {:className className
+         :style {:position "absolute"
+                 :transform (str "translate(" x "px," y "px)")
+                 :width width
+                 :height height}}
+        (c/children props)))))
 
 
 
@@ -121,18 +129,22 @@
     :as props}]
   (let [{:keys [layout height]} (use-grid-data
                                   {:width width
+                                   :margin margin
                                    :columns columns
                                    :breakpoints breakpoints
-                                   :margin margin
                                    :padding padding
                                    :layouts layouts
                                    :row-height row-height})]
-    (d/div
-      {:style {:width width
-               :height height
-               :position "relative"}}
-      (map
-        (fn [component]
-          (let [k (.-key component)]
-            ($ GridItem {:key k & (get layout k)} component)))
-        (c/children props)))))
+    (when layout
+      (println "Rendering layout")
+      (d/div
+        {:style {:width width
+                 :height height
+                 :position "relative"}}
+        (map
+          (fn [component]
+            (let [k (.-key component)]
+              ($ GridItem
+                 {:key k :margin margin & (get layout k)}
+                 component)))
+          (c/children props))))))
