@@ -105,9 +105,9 @@
                  [layout]
                  (apply max
                         (map
-                          (fn [{:keys [y h]}]
-                            (+ (* y row-height) (* h row-height)))
-                          layout)))]
+                          (fn [{:keys [y height]}]
+                            (+ y height))
+                          (vals layout))))]
     {:width width
      :height height
      :layout layout}))
@@ -121,7 +121,7 @@
   (defnc GridLayout
     [{:keys [width breakpoints 
              row-height margin padding
-             columns layouts]
+             columns layouts className]
       :or {breakpoints {:lg 1200
                         :md 996
                         :sm 768
@@ -148,9 +148,11 @@
                                      :row-height row-height})]
       (when layout
         (d/div
-          {:style {:width width
-                   :height height
-                   :position "relative"}}
+          {:className (str "toddler-grid")
+           :style
+           {:width width
+            :height height
+            :position "relative"}}
           (map
             (fn [component]
               (let [k (.-key component)]

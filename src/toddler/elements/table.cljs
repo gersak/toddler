@@ -390,6 +390,7 @@
         table-height (round-number (- container-height header-height) 1 :down)
         scroll (hooks/use-ref nil)
         style {:minWidth table-width}]
+    (println "CONTAINER: " container-dimensions)
     (when (nil? container-dimensions)
       (.error js/console "Wrap toddler/Table in container"))
     (hooks/use-effect
