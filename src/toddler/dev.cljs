@@ -217,7 +217,6 @@
         [{_navbar :navbar
           _header :header
           _content :content} layout] (use-dimensions [:navbar :header :content])]
-    (println "RENDERING PLAYGROUND")
     (hooks/use-effect
       :once
       (.log js/console "Adding playground watcher!")
@@ -238,27 +237,27 @@
            (provider
              {:context app/*layout*
               :value layout}
-             (<>
-               ($ global-css)
-               ($ simplebar-css)
-               ($ window/DimensionsProvider
-                  (d/div
-                    {:className className}
-                    ($ navbar {:ref _navbar})
-                    (let [header-height 50
-                          header-width (- (:width window) (get-in layout [:navigation :width]))
-                          content-height (- (:height window) (get-in layout [:header :height]))
-                          content-width (- (:width window) (get-in layout [:navigation :width]))]
-                      (d/div
-                        {:className "content"}
-                        ($ header
-                           {:ref _header
-                            :style {:width header-width 
-                                    :height header-height}})
-                        ($ content
-                           {:ref _content
-                            :style {:height content-height 
-                                    :width content-width}}))))))))))))
+             ($ popup/Container
+                ($ global-css)
+                ($ simplebar-css)
+                ($ window/DimensionsProvider
+                   (d/div
+                     {:className className}
+                     ($ navbar {:ref _navbar})
+                     (let [header-height 50
+                           header-width (- (:width window) (get-in layout [:navigation :width]))
+                           content-height (- (:height window) (get-in layout [:header :height]))
+                           content-width (- (:width window) (get-in layout [:navigation :width]))]
+                       (d/div
+                         {:className "content"}
+                         ($ header
+                            {:ref _header
+                             :style {:width header-width 
+                                     :height header-height}})
+                         ($ content
+                            {:ref _content
+                             :style {:height content-height 
+                                     :width content-width}}))))))))))))
 
 
 (defstyled playground Playground

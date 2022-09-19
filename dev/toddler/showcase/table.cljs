@@ -170,7 +170,6 @@
             {:style #js {:height height
                          :width width
                          :boxSizing "border-box"}}
-            (println "SENDING WIDTH: " width)
             ($ grid/GridLayout
                {:width width
                 :row-height (/ height 2)

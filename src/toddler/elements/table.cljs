@@ -375,7 +375,6 @@
     :keys [className]
     :or {rrow Row
          rheader HeaderRow}}]
-  (println "RENDERING TABLE")
   (let [{container-width :width
          container-height :height
          :as container-dimensions} (toddler/use-container-dimensions)

@@ -3,6 +3,7 @@
     [vura.core :refer [round-number]]
     [toddler.elements :refer [*container-dimensions*]]
     [helix.core :refer [defnc defhook $ provider memo]]
+    [helix.styled-components :refer [defstyled]]
     [helix.hooks :as hooks]
     [helix.children :as c]
     [helix.dom :as d]))
@@ -47,6 +48,9 @@
                  :height height}}
         (c/children props)))))
 
+
+(defstyled grid-item GridItem
+  {:transition "transform .2s ease-in"})
 
 
 (defhook use-grid-data
@@ -143,7 +147,6 @@
                                      :layouts layouts
                                      :row-height row-height})]
       (when layout
-        (println "Rendering layout")
         (d/div
           {:style {:width width
                    :height height
@@ -151,7 +154,7 @@
           (map
             (fn [component]
               (let [k (.-key component)]
-                ($ GridItem
+                ($ grid-item
                    {:key k :margin margin & (get layout k)}
                    component)))
             (c/children props)))))))
