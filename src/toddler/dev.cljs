@@ -177,16 +177,21 @@
         window (use-window-dimensions)
         layout (toddler/use-layout)
         content-height (- (:height window) (get-in layout [:header :height]))
-        content-width (- (:width window) (get-in layout [:navbar :width]))]
-    (println "RENDERING PLAYGROUND CONTENT: " window layout)
-    (println "RENDERING PLAYGROUND CONTENT WH: " content-height content-width)
+        content-width (- (:width window) (get-in layout [:navbar :width]))
+        content-dimensions (hooks/use-memo
+                             [content-height content-width]
+                             {:width content-width
+                              :height content-height})]
     (if render
-      ($ toddler/Container
-        {:style
-         {:height content-height
-          :width content-width}
-         :className (str className " render-zone")}
-        ($ render))
+      (provider
+        {:context toddler/*container-dimensions*
+         :value content-dimensions}
+        (d/div
+          {:style
+           {:height content-height
+            :width content-width}
+           :className (str className " render-zone")}
+          ($ render)))
       ($ empty-content))))
 
 

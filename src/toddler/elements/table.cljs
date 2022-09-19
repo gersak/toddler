@@ -377,12 +377,12 @@
          rheader HeaderRow}}]
   (println "RENDERING TABLE")
   (let [{container-width :width
-         container-height :height} (toddler/use-container-dimensions)
+         container-height :height
+         :as container-dimensions} (toddler/use-container-dimensions)
         rows (use-rows)
         ; [{container-width :width
         ;   container-height :height} set-container!] (hooks/use-state nil) 
         table-width (use-table-width)
-        container (toddler/use-container) 
         tbody (hooks/use-ref nil)
         body-scroll (hooks/use-ref nil)
         header-scroll (hooks/use-ref nil)
@@ -391,7 +391,7 @@
         table-height (round-number (- container-height header-height) 1 :down)
         scroll (hooks/use-ref nil)
         style {:minWidth table-width}]
-    (when (nil? container)
+    (when (nil? container-dimensions)
       (.error js/console "Wrap toddler/Table in container"))
     (hooks/use-effect
       [@body-scroll @header-scroll]

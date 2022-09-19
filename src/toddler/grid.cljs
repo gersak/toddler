@@ -2,7 +2,7 @@
   (:require
     [vura.core :refer [round-number]]
     [toddler.elements :refer [*container-dimensions*]]
-    [helix.core :refer [defnc defhook $ provider]]
+    [helix.core :refer [defnc defhook $ provider memo]]
     [helix.hooks :as hooks]
     [helix.children :as c]
     [helix.dom :as d]))
@@ -108,43 +108,50 @@
      :height height
      :layout layout}))
 
-(defnc GridLayout
-  [{:keys [width breakpoints 
-           row-height margin padding
-           columns layouts]
-    :or {breakpoints {:lg 1200
-                      :md 996
-                      :sm 768
-                      :xs 480
-                      :xxs 0}
-         columns {:lg 12
-                  :md 10
-                  :sm 6
-                  :xs 4
-                  :xxs 2}
-         margin [10 10]
-         padding margin 
-         width 1200
-         row-height 30}
-    :as props}]
-  (let [{:keys [layout height]} (use-grid-data
-                                  {:width width
-                                   :margin margin
-                                   :columns columns
-                                   :breakpoints breakpoints
-                                   :padding padding
-                                   :layouts layouts
-                                   :row-height row-height})]
-    (when layout
-      (println "Rendering layout")
-      (d/div
-        {:style {:width width
-                 :height height
-                 :position "relative"}}
-        (map
-          (fn [component]
-            (let [k (.-key component)]
-              ($ GridItem
-                 {:key k :margin margin & (get layout k)}
-                 component)))
-          (c/children props))))))
+(letfn [(same? [a b]
+          (let [ks [:width :breakpoints :row-height :margin :padding :columns :layouts]
+                before (select-keys a ks)
+                after (select-keys b ks)
+                result (= before after)]
+            result))]
+  (defnc GridLayout
+    [{:keys [width breakpoints 
+             row-height margin padding
+             columns layouts]
+      :or {breakpoints {:lg 1200
+                        :md 996
+                        :sm 768
+                        :xs 480
+                        :xxs 0}
+           columns {:lg 12
+                    :md 10
+                    :sm 6
+                    :xs 4
+                    :xxs 2}
+           margin [10 10]
+           padding margin 
+           width 1200
+           row-height 30}
+      :as props}]
+    {:wrap [(memo same?)]}
+    (let [{:keys [layout height]} (use-grid-data
+                                    {:width width
+                                     :margin margin
+                                     :columns columns
+                                     :breakpoints breakpoints
+                                     :padding padding
+                                     :layouts layouts
+                                     :row-height row-height})]
+      (when layout
+        (println "Rendering layout")
+        (d/div
+          {:style {:width width
+                   :height height
+                   :position "relative"}}
+          (map
+            (fn [component]
+              (let [k (.-key component)]
+                ($ GridItem
+                   {:key k :margin margin & (get layout k)}
+                   component)))
+            (c/children props)))))))

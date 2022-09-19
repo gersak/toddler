@@ -2,6 +2,7 @@
   (:require
    clojure.set
    clojure.string
+   [clojure.data :refer [diff]]
    [clojure.core.async :as async]
    [goog.string :as gstr]
    [vura.core :as vura]
@@ -81,9 +82,11 @@
 
 
 (letfn [(same? [a b]
-          (println "CHECKING CONTAINER")
-          (= (select-keys a [:style :className])
-             (select-keys b [:style :className])))]
+          (let [ks [:style :className]
+                before (select-keys a ks)
+                after (select-keys b ks)
+                result (= before after)]
+            result))]
   (defnc Container
     [{:keys [className style] :as props}]
     {:wrap [(memo same?)]}
@@ -124,27 +127,6 @@
         (d/label label)))
     (c/children props)))
 
-; (defnc Column
-;   [{:keys [label style className position] :as props}]
-;   (let [[container dimensions] (use-dimensions)]
-;     (println "Column dimensiosn: " dimensions)
-;     ($ column
-;        {:ref #(reset! container %)
-;         :className className
-;         :style (->js style)
-;         :position position}
-;        (when label
-;          (d/div
-;            {:className "label"}
-;            (d/label label)))
-;        (provider
-;          {:context *container-dimensions*
-;           :value dimensions}
-;          (provider
-;            {:context *container*
-;             :value container}
-;            (c/children props))))))
-
 
 (defstyled row "div"
   {:display "flex"
@@ -169,26 +151,6 @@
         {:className "label"}
         (d/label label)))
     (c/children props)))
-
-; (defnc Row
-;   [{:keys [label className style position] :as props}]
-;   (let [[container dimensions] (use-dimensions)]
-;     ($ row
-;        {:ref #(reset! container %)
-;         :className className
-;         :style (->js style)
-;         :position position}
-;        (when label
-;          (d/div
-;            {:className "label"}
-;            (d/label label)))
-;        (provider
-;          {:context *container-dimensions*
-;           :value dimensions}
-;          (provider
-;            {:context *container*
-;             :value container}
-;            (c/children props))))))
 
 ;;
 
