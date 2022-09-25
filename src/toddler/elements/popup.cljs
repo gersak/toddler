@@ -15,6 +15,7 @@
     [helix.styled-components :refer [defstyled --themed]]
     [toddler.util :as util]))
 
+(.log js/console "Loading toddler.elements.popup")
 
 (def ^:dynamic ^js *area-element* (create-context))
 (def ^:dynamic ^js *dimensions* (create-context))
@@ -70,7 +71,7 @@
    #{:top :center}])
 
 
-(def ^:dynamic *offset* 6)
+(def ^:dynamic ^js *offset* 6)
 
 (defmulti compute-candidate (fn [{:keys [position]}] position))
 
@@ -376,27 +377,16 @@
          (padding-data el))))))
 
 ;; DROPDOWN CONTAINER
-; (defn --themed-dropdown-container
-;   [{:keys [theme position]}]
-;   (cond->
-;     (case theme
-;       {:box-shadow "1px 2px 2px 0px #8888"
-;        :border "1px solid #999999"
-;        :border-radius 5
-;        :background "white"})
-;     (:bottom position) (assoc :margin-top 4)
-;     (:top position) (assoc :margin-bottom 4)))
-
-(defstyled dropdown-container
-  "div"
-  {:max-height 600
-   :min-width 50
-   :padding "2px 0"
-   :overflow "auto"
-   ".dropdown-content"
-   {:display "flex"
-    :flex-direction "column"}}
-  --themed)
+; (defstyled dropdown-container
+;   "div"
+;   {:max-height 600
+;    :min-width 50
+;    :padding "2px 0"
+;    :overflow "auto"
+;    ".dropdown-content"
+;    {:display "flex"
+;     :flex-direction "column"}}
+;   --themed)
 
 
 (defhook use-focusable-items
@@ -470,6 +460,7 @@
    :padding 7}
   --themed)
 
+(.log js/console "Loaded toddler.elements.popup!")
 
 (defnc Element
   [{:keys [preference style className offset wrapper onChange items]

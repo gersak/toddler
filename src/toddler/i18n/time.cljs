@@ -184,6 +184,9 @@
        (.format formatter data)))))
 
 
+(.log js/console "Loaded toddler.i18n.time")
+
+
 (comment
   (time (def hr (date-formatter :hr)))
   (.format hr (js/Date.))

@@ -4,6 +4,8 @@
    [helix.core :refer [create-context]]))
 
 
+(.log js/console "Loading toddler.app")
+
 (def ^:dynamic *user* (create-context))
 (def ^:dynamic *subscription* (create-context))
 (def ^:dynamic *window* (create-context))

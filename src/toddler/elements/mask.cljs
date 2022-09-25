@@ -113,3 +113,6 @@
     (d/div
       {:class "eywa-mask-field"}
       (d/input {& props'}))))
+
+
+(.log js/console "Loaded toddler.elements.mask")
