@@ -163,7 +163,7 @@
           [dimensions set-dimensions!] (hooks/use-state nil)
           resize-idle-service (hooks/use-ref
                                 (make-idle-service
-                                  20
+                                  50
                                   (fn handle [entries]
                                     (let [[_ entry] (reverse entries)
                                           content-rect (.-contentRect entry)

@@ -1,10 +1,11 @@
 (ns toddler.showcase
   (:require
-   ["react-dom/client" :refer [createRoot]]
-   [toddler.dev :as dev]
-   [helix.core :refer [$]]
-   toddler.showcase.inputs
-   toddler.showcase.table))
+    ["react-dom/client" :refer [createRoot]]
+    [helix.core :refer [defnc $]]
+    [helix.dom :as d]
+    [toddler.dev :as dev]
+    toddler.showcase.inputs
+    toddler.showcase.table))
 
 
 (defonce root (atom nil))
@@ -13,7 +14,7 @@
   (let [target ^js (.getElementById js/document "app")]
     (when-not @root
       (reset! root ^js (createRoot target)))
-    (.render @root ($ dev/playground))))
+    #_(.render ^js @root ($ Hello))
+    (.render ^js @root ($ dev/Playground))))
 
-
-
+; (start!)

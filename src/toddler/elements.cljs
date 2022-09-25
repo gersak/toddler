@@ -66,9 +66,9 @@
      ".wrapper" {:justify-content jc}}))
 
 
-(def ^:dynamic *container* (create-context nil))
-(def ^:dynamic *container-dimensions* (create-context nil))
-(def ^:dynamic *container-style* (create-context nil))
+(def ^:dynamic ^js *container* (create-context nil))
+(def ^:dynamic ^js *container-dimensions* (create-context nil))
+(def ^:dynamic ^js *container-style* (create-context nil))
 
 (defhook use-layout
   ([] (hooks/use-context app/*layout*))

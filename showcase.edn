@@ -1,0 +1,8 @@
+{:main toddler.showcase
+ :optimizations :none
+ :target :bundle
+ :bundle-cmd {:none ["npx" "webpack" "./public/js/main.js" "-o" "public/js" "--mode=development"]
+              :default ["npx" "webpack" "./public/js/main.js" "-o" "public/js"]}
+ :output-dir "public/js"
+ :output-to "public/js/main.js"
+ :closure-defines {cljs.core/*global* "window"}}

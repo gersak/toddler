@@ -1,8 +1,11 @@
 (ns toddler.util
-  (:require-macros [cljs.core.async.macros :as async])
   (:require 
     goog.object
-    [cljs.core.async :as async]))
+    clojure.string
+    [clojure.core.async :as async]))
+
+
+(set! *warn-on-infer* true)
 
 
 (defn get-event-target-value

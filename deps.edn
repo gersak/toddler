@@ -1,7 +1,9 @@
 {;; REPL
  :paths ["src" "stories" "dev"]
  :deps
- {cljs-bean/cljs-bean                        {:mvn/version "1.7.0"}
+ {org.clojure/clojurescript                  {:mvn/version "1.11.54"}
+  org.clojure/core.async                     {:mvn/version "1.5.648"}
+  cljs-bean/cljs-bean                        {:mvn/version "1.7.0"}
   com.github.gersak/helix.placenta           {:git/url "https://github.com/gersak/helix.placenta"
                                               :sha "3e58da43af643092322a2694c559e9b68cb81db5"}
   camel-snake-kebab/camel-snake-kebab        {:mvn/version "0.4.3"}

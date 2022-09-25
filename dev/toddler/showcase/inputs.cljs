@@ -4,8 +4,7 @@
    [helix.hooks :as hooks]
    [helix.dom :as d]
    [toddler.dev :as dev]
-   [toddler.elements :as toddler]
-   toddler.showcase.table))
+   [toddler.elements :as toddler]))
 
 
 (defnc AutosizeInput

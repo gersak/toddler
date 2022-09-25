@@ -4,11 +4,11 @@
    [helix.core :refer [create-context]]))
 
 
-(def ^:dynamic *user* (create-context))
-(def ^:dynamic *subscription* (create-context))
-(def ^:dynamic *window* (create-context))
-(def ^:dynamic *layout* (create-context))
-(def ^:dynamic *box* (create-context))
+(def ^:dynamic ^js *user* (create-context))
+(def ^:dynamic ^js *subscription* (create-context))
+(def ^:dynamic ^js *window* (create-context))
+(def ^:dynamic ^js *layout* (create-context))
+(def ^:dynamic ^js *box* (create-context))
 
 
 (defonce signal-channel (async/chan 100))

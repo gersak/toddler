@@ -23,7 +23,7 @@
     [toddler.elements.window :as window]
     [toddler.elements.popup :as popup]
     ["react" :as react]
-    ["react-icons/fa" :refer [FaChevronRight] :as fa]
+    ["react-icons/fa" :refer [FaChevronRight]]
     [toddler.app :as app]
     [toddler.i18n :as i18n]
     [clojure.string :as str]))

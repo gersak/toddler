@@ -44,16 +44,16 @@
 
 
 
-(def ^:dynamic *column* (create-context))
-(def ^:dynamic *entity* (create-context))
-(def ^:dynamic *columns* (create-context))
-(def ^:dynamic *actions* (create-context))
-(def ^:dynamic *row-record* (create-context))
-(def ^:dynamic *rows* (create-context))
-(def ^:dynamic *dispatch* (create-context))
-(def ^:dynamic *cell-renderer* (create-context))
-(def ^:dynamic *header-renderer* (create-context))
-(def ^:dynamic *pagination* (create-context))
+(def ^:dynamic ^js *column* (create-context))
+(def ^:dynamic ^js *entity* (create-context))
+(def ^:dynamic ^js *columns* (create-context))
+(def ^:dynamic ^js *actions* (create-context))
+(def ^:dynamic ^js *row-record* (create-context))
+(def ^:dynamic ^js *rows* (create-context))
+(def ^:dynamic ^js *dispatch* (create-context))
+(def ^:dynamic ^js *cell-renderer* (create-context))
+(def ^:dynamic ^js *header-renderer* (create-context))
+(def ^:dynamic ^js *pagination* (create-context))
 
 
 
@@ -390,7 +390,6 @@
         table-height (round-number (- container-height header-height) 1 :down)
         scroll (hooks/use-ref nil)
         style {:minWidth table-width}]
-    (println "CONTAINER: " container-dimensions)
     (when (nil? container-dimensions)
       (.error js/console "Wrap toddler/Table in container"))
     (hooks/use-effect
