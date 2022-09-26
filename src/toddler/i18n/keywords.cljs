@@ -63,6 +63,8 @@
         :weekdays/first (inc (.-FIRSTDAYOFWEEK symbols))))))
 
 
+(.log js/console "Loaded toddler.i18n.keywords")
+
 
 (comment
   (inc (mod 1 7))

@@ -13,6 +13,7 @@
     [toddler.elements.popup
      :as popup]))
 
+(.log js/console "Loading Multiselect")
 
 (defn get-available-options 
   ([search value options search-fn]

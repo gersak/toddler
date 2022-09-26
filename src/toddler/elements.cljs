@@ -49,10 +49,12 @@
             FaCheckSquare]]))
 
 
+(.log js/console "Loading toddler elements")
+
+
 (defstyled simplebar SimpleBar
   {"transition" "box-shadow 0.3s ease-in-out"}
   --themed)
-
 
 
 (defn --flex-position
@@ -1283,7 +1285,7 @@
    :padding 7
    :width 230
    :height 190
-   (str popup/dropdown-container) {:overflow "hidden"}
+   ; (str popup/dropdown-container) {:overflow "hidden"}
    ".header-wrapper" {:display "flex" :justify-content "center" :flex-grow "1"}
    ".header"
    {:display "flex"

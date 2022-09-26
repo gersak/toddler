@@ -359,4 +359,6 @@
       :onFocus onFocus
       :onChange onChange})))
 
+
+(.log js/console "Loaded toddler.elements.input")
 ; (def slider-element (om/factory SliderElement))

@@ -9,7 +9,7 @@
 (def ^:dynamic ^js *window* (create-context))
 (def ^:dynamic ^js *layout* (create-context))
 (def ^:dynamic ^js *box* (create-context))
-
+(.log js/console "Loading toddler.app")
 
 (defonce signal-channel (async/chan 100))
 (defonce signal-publisher (async/pub signal-channel :topic))

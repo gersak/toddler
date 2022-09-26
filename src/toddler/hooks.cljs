@@ -8,6 +8,8 @@
    [toddler.i18n :as i18n :refer [translate]]))
 
 
+(.log js/console "Loading toddler.hooks")
+
 (defhook use-current-user
   "Returns value in app/*user* context"
   []

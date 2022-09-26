@@ -175,3 +175,6 @@
                                        :position area-position
                                        :input @input}))
      :options available-options}))
+
+
+(.log js/console "Loaded toddler.elements.dropdown")

@@ -32,7 +32,7 @@
 
 (defonce component-db (atom nil))
 
-
+(.log js/console "Processing toddler/dev.cljs")
 
 (defnc Component
   [{:keys [className component]}]
