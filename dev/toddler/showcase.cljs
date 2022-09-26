@@ -20,4 +20,4 @@
     (.render ^js @root ($ dev/playground))))
 
 
-; (start!)
+(start!)

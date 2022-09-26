@@ -17,8 +17,4 @@
    :js-options {:js-provider :import}
    :modules {:showcase
              {:entries [toddler.showcase]
-              ; :init-fn toddler.showcase/start!
-              }}
-   :devtools {:http-root "public"
-              :http-port 3000
-              :preloads []}}}}
+              :exports {default toddler.showcase/start!}}}}}}

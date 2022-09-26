@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "npx shadow-cljs -A:shadow:cider watch dev",
     "release": "npx shadow-cljs -A:shadow:cider release dev",
-    "webpack": "npx shadow-cljs -A:shadow compile webpack && npx webpack --config webpack.config.js",
+    "webpack": "npx shadow-cljs -A:shadow release webpack && npx webpack --config webpack.config.js",
     "check": "npx shadow-cljs -A:shadow check dev",
     "init": "npx shadow-cljs -A:shadow:cider compile storybook"
   },

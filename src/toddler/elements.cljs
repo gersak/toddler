@@ -52,7 +52,7 @@
 (.log js/console "Loading toddler elements")
 
 
-(defstyled simplebar SimpleBar
+(defstyled simplebar SimpleBar/default
   {"transition" "box-shadow 0.3s ease-in-out"}
   --themed)
 
