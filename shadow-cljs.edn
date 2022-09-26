@@ -17,4 +17,12 @@
    :js-options {:js-provider :import}
    :modules {:showcase
              {:entries [toddler.showcase]
-              :exports {default toddler.showcase/start!}}}}}}
+              :exports {default toddler.showcase/start!}
+              :init-fn toddler.showcase/start!}}}
+  :showcase
+  {:target :browser
+   :output-to "public/js/main.js"
+   :infer-externs :all
+   :modules {:showcase
+             {:entries [toddler.showcase]
+              :init-fn toddler.showcase/start!}}}}}

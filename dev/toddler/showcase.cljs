@@ -1,23 +1,26 @@
-(ns toddler.showcase
-  (:require
-   ["react-dom/client" :refer [createRoot]]
-   [toddler.dev :as dev]
-   [helix.core :refer [$]]
-   toddler.showcase.inputs
-   toddler.showcase.table))
+(ns toddler.showcase)
+
+; (ns toddler.showcase
+;   #_(:require
+;    ["react-dom/client" :refer [createRoot]]
+;    [toddler.dev :as dev]
+;    ; ["./icons" :as icon]
+;    [helix.core :refer [$]]
+;    toddler.showcase.inputs
+;    toddler.showcase.table))
 
 
 (.log js/console "Loaded showcase!")
+(defn start! [] "hell")
 
-(defonce root (atom nil))
+; (.log js/console icon/FaTimes)
 
-(defn ^:dev/after-load start! []
-  (.log js/console "Starting Toddler showcase!")
-  (let [target ^js (.getElementById js/document "app")]
-    (when-not @root
-      (reset! root ^js (createRoot target)))
-    (.log js/console "Rendering playground")
-    (.render ^js @root ($ dev/playground))))
+; (defonce root (atom nil))
 
-
-(start!)
+; (defn ^:dev/after-load start! []
+;   (.log js/console "Starting Toddler showcase!")
+;   (let [target ^js (.getElementById js/document "app")]
+;     (when-not @root
+;       (reset! root ^js (createRoot target)))
+;     (.log js/console "Rendering playground")
+;     (.render @root ($ dev/playground))))
