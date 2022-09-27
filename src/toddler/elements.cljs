@@ -2,8 +2,8 @@
   (:require
    clojure.set
    clojure.string
-   [clojure.data :refer [diff]]
-   [clojure.core.async :as async]
+   ; [clojure.data :refer [diff]]
+   ; [clojure.core.async :as async]
    [goog.string :as gstr]
    [vura.core :as vura]
    [cljs-bean.core :refer [->clj ->js]]
@@ -36,17 +36,7 @@
     ;;
    ["react" :as react]
    ["simplebar-react" :as SimpleBar]
-   ["react-icons/fa"
-    :refer [FaCheck
-            FaTimes
-            FaSearch
-            FaChevronDown
-            FaQuoteRight
-            FaMinus
-            FaAngleRight
-            FaAngleLeft
-            FaSquare
-            FaCheckSquare]]))
+   ["/toddler/icons$default" :as icon]))
 
 
 (.log js/console "Loading toddler elements")
@@ -160,7 +150,7 @@
   [{:keys [text] :as props}]
   (d/div
    {& (dissoc props :text)}
-   ($ FaQuoteRight)
+   ($ icon/info)
    (d/p text)))
 
 ;;
@@ -291,10 +281,10 @@
 
 (defnc checkbox [{:keys [active] :as props}]
   ($ checkbox-button
-     {:$active active & (dissoc props :active)}
-     ($ (case active
-          nil FaMinus
-          FaCheck))))
+    {:$active active & (dissoc props :active)}
+    ($ (case active
+         nil icon/checkboxDefault
+         icon/checkbox))))
 
 
 (defnc CheckboxField [{:keys [name className] :as props}]
@@ -376,7 +366,7 @@
      {:context (if disabled :stale context)
       :className className}
      ($ content {:className "content" :value value})
-     (when on-remove FaTimes))))
+     (when on-remove icon/clear))))
 
 
 (defstyled tag Tag
@@ -464,7 +454,7 @@
        {:className (str
                     className
                     (when opened " opened"))}
-       ($ FaChevronDown)))))
+       ($ icon/dropdownDecorator)))))
 
 (defstyled dropdown-element-decorator DropdownElementDecorator
   {:position "absolute"
@@ -480,7 +470,7 @@
       (d/span
        {:className className
         :onClick discard!}
-       ($ FaTimes)))))
+       ($ icon/clear)))))
 
 
 (defstyled dropdown-field-discard DropdownElementDiscard
@@ -1224,7 +1214,7 @@
         disabled (hooks/use-context *calendar-disabled*)]
     (d/div
      {:className className}
-     ($ FaTimes
+     ($ icon/clear
         {:onClick (when-not disabled on-clear)}))))
 
 
@@ -1261,14 +1251,14 @@
        {:className "header"}
        (d/div
         {:className "years"}
-        ($ FaAngleLeft
+        ($ icon/previous
            {:onClick on-prev-month
             :className "button"})
         ($ calendar-year-dropdown {:value year}))
        (d/div
         {:className "months"}
         ($ calendar-month-dropdown {:value month})
-        ($ FaAngleRight
+        ($ icon/next
            {:onClick on-next-month
             :className "button"}))))
      (d/div
@@ -2084,7 +2074,7 @@
   [{:keys [value icon on-change idle-timeout className onChange]
     :or {idle-timeout 500
          value ""
-         icon FaSearch
+         icon icon/search
          onChange identity}
     :as props}]
   (let [on-change (or on-change onChange identity)
@@ -2212,8 +2202,8 @@
       {:class "value"
        :onClick #(onChange (not value))}
       ($ (case value
-           true FaCheckSquare
-           FaSquare)
+           true icon/checklistSelected
+           icon/checklistEmpty)
          {:className "icon"}))
     (d/div 
       {:class "name"}

@@ -27,20 +27,7 @@
     [toddler.elements.popup :as popup]
     [toddler.elements.tooltip :as tip]
     ["react" :as react]
-    ["react-icons/fa"
-     :refer [FaPlus
-             FaMinus
-             FaCheck
-             FaBarcode
-             FaTimes
-             FaEdit
-             FaCaretUp
-             FaCaretDown
-             FaCaretRight
-             FaAngleDoubleLeft
-             FaAngleDoubleRight
-             FaAngleLeft
-             FaAngleRight]]))
+    ["/toddler/icons$default" :as icon]))
 
 
 
@@ -268,22 +255,22 @@
           {:onClick #(set-pagination! {:page 0})
            :className "start"
            :disabled (not previous?)}
-          ($ FaAngleDoubleLeft))
+          ($ icon/paginationFarPrevious))
         (d/button
           {:onClick #(set-pagination! {:page (dec page)})
            :className "previous"
            :disabled (not previous?)}
-          ($ FaAngleLeft))
+          ($ icon/paginationPrevious))
         (d/button
           {:onClick #(set-pagination! {:page (inc page)})
            :className "next"
            :disabled (not next?)}
-          ($ FaAngleRight))
+          ($ icon/paginationNext))
         (d/button
           {:onClick #(set-pagination! {:page (dec page-count)})
            :className "end"
            :disabled (not next?)}
-          ($ FaAngleDoubleRight))
+          ($ icon/paginationFarNext))
         (d/span 
           (goog.string/format
             "Showing %d - %d of %d results" 
@@ -322,7 +309,7 @@
     ($ render 
        {:onClick #(dispatch {:topic :table.row/add})
         :tooltip tooltip
-        :icon FaPlus}
+        :icon icon/add}
        name)))
 
 
@@ -497,7 +484,7 @@
                      {:topic :table.cell/clear
                       :row row
                       :column column})}
-        ($ FaTimes)))))
+        ($ icon/clear)))))
 
 
 (defstyled clear-button ClearButton
@@ -556,7 +543,7 @@
                       (when-not copied?
                         (.writeText js/navigator.clipboard (str value))
                         (set-copied! true)))}
-          ($ FaBarcode))
+          ($ icon/uuid))
        (when visible?
          ($ popup/Element
             {:ref popup
@@ -732,8 +719,8 @@
                          (nil false) " inactive"))
        :onClick #(set-value! (not value))}
       ($ (case value
-           nil FaMinus 
-           FaCheck)))))
+           nil icon/checkbox
+           icon/checkboxDefault)))))
 
 
 (defstyled uuid-cell UUIDCell
@@ -886,13 +873,13 @@
                   (dispatch
                     {:topic :table.row/delete
                      :row row}))}
-      ($ FaTimes
+      ($ icon/clear
          {:className "delete-marker"}))))
 
 
 (defnc ActionCell
   [{:keys [icon]
-    :or {icon FaEdit}
+    :or {icon icon/edit}
     :as props}]
   (d/button
     {& props}
@@ -902,7 +889,7 @@
 
 (defnc SelectedCell
   [{:keys [className icon]
-    :or {icon FaAngleRight}}]
+    :or {icon icon/selectedRow}}]
   (let [column (use-column)
         [value _] (use-cell-state column)]
     (d/div
@@ -918,7 +905,7 @@
     (d/div
       {:className className 
        :onClick (fn [e] (.stopPropagation e) (set-value! (not value)))}
-      ($ FaCaretRight
+      ($ icon/expand
          {:className (if value
                        "icon expanded"
                        "icon")}))))
@@ -978,15 +965,15 @@
   [{{:keys [order]} :column}]
   (case order
     :desc
-    ($ FaCaretUp
+    ($ icon/sortDesc
        {:className "sort-marker"
         :pull "left"})
     :asc
-    ($ FaCaretDown
+    ($ icon/sortAsc
        {:className "sort-marker"
         :pull "left"})
     ;;
-    ($ FaCaretUp
+    ($ icon/sortDesc 
        {:className "sort-marker"
         :pull "left"
         :style #js {:opacity "0"}})))
@@ -1112,13 +1099,13 @@
   [{:keys [onChange className]}]
   (d/div
     {:className className}
-    ($ FaCheck
+    ($ icon/checkbox
        {:className "active" 
         :onClick #(onChange true)})
-    ($ FaCheck
+    ($ icon/checkbox
        {:className "inactive"
         :onClick #(onChange false)})
-    ($ FaMinus
+    ($ icon/checkboxDefault
        {:className "inactive" 
         :onClick #(onChange nil)})))
 
@@ -1153,7 +1140,7 @@
            (d/div
              {:className "filter"
               :onClick (fn [] (set-opened! true))}
-             ($ (if (some? v) FaCheck FaMinus)
+             ($ (if (some? v) icon/checkbox icon/checkboxDefault)
                 {:className (if v "active" "inactive")}))
            (when opened?
              ($ popup/Element

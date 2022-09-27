@@ -6,7 +6,7 @@
 
 (ns toddler.elements.search
   (:require 
-    ["react-icons/fa" :refer [FaSearch]]
+    ["/toddler/icons$default" :as icon]
     clojure.string
     [helix.core
      :refer [defnc $]]
@@ -22,7 +22,7 @@
   [{:keys [value icon on-change idle-timeout className onChange]
     :or {idle-timeout 500
          value ""
-         icon FaSearch
+         icon icon/search
          onChange identity}
     :as props}]
   (let [on-change (or on-change onChange identity)

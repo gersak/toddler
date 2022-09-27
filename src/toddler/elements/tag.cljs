@@ -9,31 +9,12 @@
     [helix.dom :as d]
     [helix.core :refer [defnc $]]
     [helix.styled-components :refer [defstyled --themed]]
-    ["react-icons/fa" :refer [FaTimes]]))
+    ["/toddler/icons$default" :as icon]))
 
 
 (defn --editable-tag [{:keys [editable?]}]
   (when-not editable?
     {:user-select "none"}))
-
-; (defn --colored-tag
-;   [{:keys [theme context]}]
-;   (let [[c b rc rch]
-;         (case theme
-;           (case context
-;             :positive ["white" default/green default/dark-green "black"]
-;             :negative ["white" default/red default/dark-red "black"]
-;             :fun ["white" default/saturated-teal default/dark-teal "black"]
-;             :fresh ["black" default/yellow default/dark-yellow "black"]
-;             :stale ["white" default/gray default/dark-gray "black"]
-;             ["white" default/teal default/dark-teal default/red]))] 
-;     {:color c
-;      :background-color b
-;      " .remove" {:color rc
-;                  :cursor "pointer"
-;                  :transition "color .2s ease-in"
-;                  :path {:cursor "pointer"}}
-;      " .remove:hover" {:color rch}}))
 
 
 (defnc DefaultContent
@@ -57,7 +38,7 @@
        :className className}
       ($ content {:className "content" :value value})
       (when on-remove 
-        ($ FaTimes
+        ($ icon/clear
            {:className "remove"
             :pull "left"
             :size "xs"

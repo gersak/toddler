@@ -1,8 +1,7 @@
 (ns toddler.elements.modal
   (:require
     clojure.string
-    ["react-icons/fa" :refer [FaTimes
-                              FaExclamationTriangle]]
+    ["/toddler/icons$default" :as icon]
     ["react" :as react]
     ["react-dom" :as rdom]
     [vura.core :refer [round-number]]
@@ -96,7 +95,7 @@
 
 (defnc CloseButton
   [props]
-  ($ FaTimes {& props}))
+  ($ icon/clear {& props}))
 
 (defstyled close-button 
   CloseButton
@@ -240,11 +239,11 @@
                 (conj "warning"))}
       (when (some? error) 
         (<>
-          ($ FaExclamationTriangle {:size "2x"})
+          ($ icon/warning {:size "2x"})
           (d/span error)))
       (when (and (nil? error) (some? warning))
         (<>
-          ($ FaExclamationTriangle)
+          ($ icon/warning)
           (d/span warning))))
     (d/div
       {:className "right"}

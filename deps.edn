@@ -1,5 +1,5 @@
 {;; REPL
- :paths ["src" "stories" "dev"]
+ :paths ["src" "showcase"]
  :deps
  {org.clojure/clojurescript                  {:mvn/version "1.11.54"}
   org.clojure/core.async                     {:mvn/version "1.5.648"}

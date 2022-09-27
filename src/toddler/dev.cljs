@@ -1,8 +1,8 @@
 (ns toddler.dev
   (:require
-    [cljs-bean.core :refer [->clj ->js]]
+    ; [cljs-bean.core :refer [->clj ->js]]
     [helix.core
-     :refer [defnc $ provider <>]]
+     :refer [defnc $ provider]]
     [helix.hooks :as hooks]
     [helix.dom :as d]
     [helix.children :as c]
@@ -23,7 +23,7 @@
     [toddler.elements.window :as window]
     [toddler.elements.popup :as popup]
     ["react" :as react]
-    ["react-icons/fa" :refer [FaChevronRight]]
+    ["/toddler/icons$default" :as icon]
     [toddler.app :as app]
     [toddler.i18n :as i18n]
     [clojure.string :as str]))
@@ -41,7 +41,7 @@
     (d/div
       {:className (cond-> className
                     selected? (str " selected"))}
-      ($ FaChevronRight {:className "icon"})
+      ($ icon/selectedRow {:className "icon"})
       (d/a
         {:className "name"
          :onClick (fn [] (set-query! (assoc query :rendered (:key component))))}
