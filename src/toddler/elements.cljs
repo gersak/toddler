@@ -573,10 +573,8 @@
                       (when (some? position) (set-area-position! position)))
           :className (str className " animated fadeIn faster")
           :wrapper rpopup}
-         (.log js/console "Rendering option: " roption)
          (map
           (fn [option]
-            (.log js/console "option: " option)
             ($ roption
                {:key (search-fn option)
                 :ref (ref-fn option)

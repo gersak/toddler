@@ -162,7 +162,6 @@
             formatter ^js (goog.i18n.DateTimeFormat.
                             pattern-idx
                             (get-date-symbols locale))]
-        (.log js/console "Returning formater: " formatter)
         formatter)))))
 
 
@@ -170,15 +169,12 @@
   js/Date
   (translate
     ([data]
-     (.log js/console "Translating Date: " data)
      (i18n/translate data i18n/*locale*))
     ([data locale]
-     (.log js/console "Translating Date: " data)
      (assert (keyword? locale) "Locale isn't keyword")
      (let [formatter ^js (date-formatter locale)]
        (.format formatter data)))
     ([data locale option]
-     (.log js/console "Translating Date: " data)
      (assert (keyword? locale) "Locale isn't keyword")
      (let [formatter ^js (date-formatter locale option)]
        (.format formatter data)))))

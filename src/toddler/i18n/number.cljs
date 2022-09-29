@@ -140,16 +140,12 @@
 (def currency-formatters
   (reduce-kv
    (fn [cf currency pattern]
-      ; (.log js/console (str "Generating currency formatter: " currency))
      (assoc cf currency (goog.i18n.NumberFormat. pattern currency)))
    nil
    currency-map))
 
 
 (defn number-formatter [locale]
-  ; (.log js/console "Creating number formater from symbols")
-  ; (.log js/console (get symbols locale))
-  ; (.log js/console "Formater:")
   (let [^js symbols (get symbols locale)
         number-formatter-pattern
         (goog.i18n.NumberFormat.
