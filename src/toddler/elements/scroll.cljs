@@ -1,9 +1,10 @@
 (ns toddler.elements.scroll
   (:require
-    ["simplebar-react" :as SimpleBar]))
+    ["simplebar-react" :as simplebar]))
+
 
 
 (def SimpleBar
-  (if (= js/undefined SimpleBar/default)
-    SimpleBar
-    SimpleBar/default))
+  (if (== js/undefined simplebar/default)
+    simplebar 
+    simplebar/default))
