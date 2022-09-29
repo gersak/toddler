@@ -7,5 +7,6 @@ node_modules/
 .nrepl-history
 .clj-kondo/
 .lsp/
-public/js/
+dev/js/
+release/js/
 .calva/

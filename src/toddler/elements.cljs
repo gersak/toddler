@@ -1,48 +1,48 @@
 (ns toddler.elements
   (:require
-   clojure.set
-   clojure.string
-   ; [clojure.data :refer [diff]]
-   ; [clojure.core.async :as async]
-   [goog.string :as gstr]
-   [vura.core :as vura]
-   [cljs-bean.core :refer [->clj ->js]]
-   [helix.styled-components :refer [defstyled --themed]]
-   [helix.core
-    :refer [$ defnc fnc provider
-            defhook create-context memo]]
-   [helix.dom :as d]
-   [helix.children :as c]
-   [helix.hooks  :as hooks]
-   [helix.spring :as spring]
-   [toddler.app :as app]
-   [toddler.hooks
-    :refer [make-idle-service
-            use-dimensions
-            use-translate
-            use-calendar
-            use-idle]]
-   [toddler.elements.input
-    :refer [AutosizeInput
-            NumberInput
-            IdleInput
-            TextAreaElement
-            SliderElement]]
-   [toddler.elements.mask :refer [use-mask]]
-   [toddler.elements.dropdown :as dropdown]
-   [toddler.elements.multiselect :as multiselect]
-   [toddler.elements.popup :as popup]
-   [toddler.elements.tooltip :as tip]
-    ;;
-   ["react" :as react]
-   ["simplebar-react" :as SimpleBar]
-   ["/toddler/icons$default" :as icon]))
+    clojure.set
+    clojure.string
+    ; [clojure.data :refer [diff]]
+    ; [clojure.core.async :as async]
+    [goog.string :as gstr]
+    [goog.string.format]
+    [vura.core :as vura]
+    [cljs-bean.core :refer [->clj ->js]]
+    [helix.styled-components :refer [defstyled --themed]]
+    [helix.core
+     :refer [$ defnc fnc provider
+             defhook create-context memo]]
+    [helix.dom :as d]
+    [helix.children :as c]
+    [helix.hooks  :as hooks]
+    [helix.spring :as spring]
+    [toddler.app :as app]
+    [toddler.hooks
+     :refer [#_make-idle-service
+             use-dimensions
+             use-translate
+             use-calendar
+             use-idle]]
+    [toddler.elements.input
+     :refer [AutosizeInput
+             NumberInput
+             IdleInput
+             TextAreaElement
+             SliderElement]]
+    [toddler.elements.mask :refer [use-mask]]
+    [toddler.elements.dropdown :as dropdown]
+    [toddler.elements.multiselect :as multiselect]
+    [toddler.elements.popup :as popup]
+    [toddler.elements.tooltip :as tip]
+    [toddler.elements.scroll :refer [SimpleBar]]
+    ["react" :as react]
+    ["toddler-icons$default" :as icon]))
 
 
 (.log js/console "Loading toddler elements")
 
 
-(defstyled simplebar SimpleBar/default
+(defstyled simplebar SimpleBar
   {"transition" "box-shadow 0.3s ease-in-out"}
   --themed)
 
@@ -573,8 +573,10 @@
                       (when (some? position) (set-area-position! position)))
           :className (str className " animated fadeIn faster")
           :wrapper rpopup}
+         (.log js/console "Rendering option: " roption)
          (map
           (fn [option]
+            (.log js/console "option: " option)
             ($ roption
                {:key (search-fn option)
                 :ref (ref-fn option)
@@ -681,7 +683,7 @@
                           (select-keys
                            (-> value vura/day-time-context) [:day-in-month :year :month])))
         is-weekend (cond (some? value)
-                         (if (-> value vura/weekend?)
+                         (if (vura/weekend? value)
                            true false))
         #_is-holiday #_(cond (some? value)
                              (if (-> value vura/*holiday?*)
@@ -750,20 +752,21 @@
   [{:keys [className days]}]
   (let [week-days (use-calendar :weekdays/short)
         day-names (zipmap
-                   [7 1 2 3 4 5 6]
-                   week-days)]
+                    [7 1 2 3 4 5 6]
+                    week-days)]
     (d/div
-     {:class className}
-     (map
-      (fn [n]
-        (let [is-weekend (or (= n 6)
-                             (= n 7))]
-          (d/div
-           {:class "day-wrapper"
-            :key n}
-           (d/div {:class (cond-> ["day"]
-                            is-weekend (conj "weekend"))} (get day-names n)))))
-      days))))
+      {:class className}
+      (map
+        (fn [n]
+          (let [is-weekend (vura/*weekend-days* n)]
+            (d/div
+              {:class "day-wrapper"
+               :key n}
+              (d/div
+                {:class (cond-> ["day"]
+                          is-weekend (conj "weekend"))}
+                (get day-names n)))))
+        days))))
 
 
 (defstyled calendar-month-header CalendarMonthHeader
@@ -795,11 +798,11 @@
         month-header (hooks/use-context *calendar-month-header*)
         calendar-week (hooks/use-context *calendar-week*)]
     (d/div
-     {:class className}
-     ($ month-header {:days (range 1 8)})
-     (map
-      #($ calendar-week {:key (key %) :week (key %) :days (val %)})
-      weeks))))
+      {:class className}
+      ($ month-header {:days (range 1 8)})
+      (map
+        #($ calendar-week {:key (key %) :week (key %) :days (val %)})
+        weeks))))
 
 
 (defstyled calendar-month CalendarMonth
@@ -1824,7 +1827,6 @@
                (or (not= (:selected (nth @cache 0)) (nth value 0))
                    (not= (:selected (nth @cache 1)) (nth value 1))))
           (onChange [(:selected (nth @cache 0)) (:selected (nth @cache 1))]))))
-
     ($ popup/Area
        {:ref area}
        (when rfield

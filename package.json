@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx shadow-cljs -A:shadow:cider watch dev",
-    "webpack": "npx shadow-cljs -A:shadow release webpack && npx webpack --config webpack.config.js",
+    "release": "npx shadow-cljs -A:shadow release webpack",
+    "webpack": "npm run release && npx webpack --config webpack.config.js",
     "check": "npx shadow-cljs -A:shadow check dev",
     "init": "npx shadow-cljs -A:shadow:cider compile storybook"
   },
@@ -20,7 +21,6 @@
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^4.4.0",
     "react-is": "^18.2.0",
     "react-router-dom": "^6.3.0",
     "react-spring": "^9.5.2",

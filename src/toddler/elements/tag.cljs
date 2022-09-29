@@ -9,7 +9,7 @@
     [helix.dom :as d]
     [helix.core :refer [defnc $]]
     [helix.styled-components :refer [defstyled --themed]]
-    ["/toddler/icons$default" :as icon]))
+    ["toddler-icons$default" :as icon]))
 
 
 (defn --editable-tag [{:keys [editable?]}]

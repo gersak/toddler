@@ -23,7 +23,7 @@
     [toddler.elements.window :as window]
     [toddler.elements.popup :as popup]
     ["react" :as react]
-    ["/toddler/icons$default" :as icon]
+    ["toddler-icons$default" :as icon]
     [toddler.app :as app]
     [toddler.i18n :as i18n]
     [clojure.string :as str]))

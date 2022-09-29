@@ -27,7 +27,7 @@
     [toddler.elements.popup :as popup]
     [toddler.elements.tooltip :as tip]
     ["react" :as react]
-    ["/toddler/icons$default" :as icon]))
+    ["toddler-icons$default" :as icon]))
 
 
 

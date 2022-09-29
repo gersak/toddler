@@ -4,7 +4,8 @@
    [toddler.dev :as dev]
    [helix.core :refer [$]]
    toddler.showcase.inputs
-   toddler.showcase.table))
+   toddler.showcase.table
+   ["toddler-icons$default" :as icon]))
 
 
 (.log js/console "Loaded showcase!")

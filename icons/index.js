@@ -1,7 +1,7 @@
 import {FaTimes, FaCheck, FaSearch, FaChevronDown, FaQuoteLeft, FaMinus,
         FaAngleRight, FaAngleLeft, FaSquare, FaCheckSquare, FaPlus, FaBarcode,
         FaEdit, FaCaretUp, FaCaretDown, FaCaretRight, FaAngleDoubleLeft,
-        FaAngleDoubleRight, FaAngleLeft, FaExclamationTriangle} from 'react-icons/fa';
+        FaAngleDoubleRight, FaExclamationTriangle} from 'react-icons/fa';
 
 
 let icons = {

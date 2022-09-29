@@ -132,10 +132,6 @@
    :ky goog.i18n.DateTimeSymbols_ky})
 
 
-#_(comment
-    (println (clojure.string/join "\n" (map generate-binding locales))))
-
-
 (defn get-date-symbols
   "Supported localizations"
   [locale]
@@ -163,9 +159,10 @@
                      :calendar]
                     type)
             pattern-idx (if (neg? target) 10 target)
-            formatter (goog.i18n.DateTimeFormat.
-                       pattern-idx
-                       (get-date-symbols locale))]
+            formatter ^js (goog.i18n.DateTimeFormat.
+                            pattern-idx
+                            (get-date-symbols locale))]
+        (.log js/console "Returning formater: " formatter)
         formatter)))))
 
 
@@ -173,14 +170,17 @@
   js/Date
   (translate
     ([data]
+     (.log js/console "Translating Date: " data)
      (i18n/translate data i18n/*locale*))
     ([data locale]
+     (.log js/console "Translating Date: " data)
      (assert (keyword? locale) "Locale isn't keyword")
-     (let [formatter (date-formatter locale)]
+     (let [formatter ^js (date-formatter locale)]
        (.format formatter data)))
     ([data locale option]
+     (.log js/console "Translating Date: " data)
      (assert (keyword? locale) "Locale isn't keyword")
-     (let [formatter (date-formatter locale option)]
+     (let [formatter ^js (date-formatter locale option)]
        (.format formatter data)))))
 
 

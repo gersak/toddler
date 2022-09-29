@@ -6,7 +6,7 @@
 
 (ns toddler.elements.search
   (:require 
-    ["/toddler/icons$default" :as icon]
+    ["toddler-icons$default" :as icon]
     clojure.string
     [helix.core
      :refer [defnc $]]

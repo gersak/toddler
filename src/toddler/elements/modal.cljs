@@ -1,7 +1,7 @@
 (ns toddler.elements.modal
   (:require
     clojure.string
-    ["/toddler/icons$default" :as icon]
+    ["toddler-icons$default" :as icon]
     ["react" :as react]
     ["react-dom" :as rdom]
     [vura.core :refer [round-number]]

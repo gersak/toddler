@@ -30,8 +30,8 @@
         translate (hooks/use-memo
                    [locale]
                    (fn
-                     ([data] (translate data locale))
-                     ([data options] (translate data locale options))))]
+                     ([data] (.log js/console "Translating: " data) (translate data locale))
+                     ([data options] (.log js/console "Translating: " data options) (translate data locale options))))]
     translate))
 
 

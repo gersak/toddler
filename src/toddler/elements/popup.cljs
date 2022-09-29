@@ -4,7 +4,6 @@
     [cljs-bean.core :refer [->js]]
     ["react" :as react]
     ["react-dom" :as rdom]
-    ["simplebar-react" :as SimpleBar]
     [helix.core 
      :refer [defnc $ provider <>
              defhook create-context]]
@@ -13,6 +12,7 @@
     [helix.children :as c]
     [vura.core :refer [round-number]]
     [helix.styled-components :refer [defstyled --themed]]
+    [toddler.elements.scroll :refer [SimpleBar]]
     [toddler.util :as util]))
 
 (.log js/console "Loading toddler.elements.popup")
