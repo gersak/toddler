@@ -6,7 +6,6 @@
 
 (ns toddler.elements.search
   (:require 
-    ["toddler-icons$default" :as icon]
     clojure.string
     [helix.core
      :refer [defnc $]]
@@ -22,7 +21,6 @@
   [{:keys [value icon on-change idle-timeout className onChange]
     :or {idle-timeout 500
          value ""
-         icon icon/search
          onChange identity}
     :as props}]
   (let [on-change (or on-change onChange identity)
@@ -40,6 +38,7 @@
                 (dissoc props :className)
                 {:value input
                  :on-change (fn [e] (set-input! (.. e -target -value)))})}))
-      (d/div
-        {:class "icon"} 
-        ($ icon)))))
+      (when icon
+        (d/div
+          {:class "icon"} 
+          ($ icon))))))

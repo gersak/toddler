@@ -9,7 +9,10 @@
     [helix.styled-components
      :refer [global-style defstyled --themed]]
     [toddler.theme :as theme]
-    [toddler.dev.theme]
+    [toddler.dev.themes.default]
+    [toddler.themes.default]
+    ; [toddler.dev.default-theme]
+    ; [toddler.dev.strong-theme]
     [toddler.dev.context
      :refer [*components*]]
     [toddler.router.dom :as router]

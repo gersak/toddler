@@ -1,10 +1,13 @@
 (ns toddler.elements.dropdown
   (:require
    clojure.string
-   [helix.core :refer [defhook]]
+   [helix.core :refer [defhook defnc create-context $ provider]]
    [helix.hooks :as hooks]
+   [helix.dom :as d]
+   [helix.children :as c]
    [toddler.hooks :refer [use-idle]]
-   [toddler.elements.popup :as popup]))
+   [toddler.elements.popup :as popup]
+   ["toddler-icons$default" :as icon]))
 
 (defn get-available-options
   ([search options search-fn]
@@ -176,5 +179,143 @@
                                        :input @input}))
      :options available-options}))
 
+(def ^:dynamic ^js *dropdown* (create-context))
 
-(.log js/console "Loaded toddler.elements.dropdown")
+(defnc Decorator
+  [{:keys [className] :as props}]
+  (let [{:keys [options opened disabled]} (hooks/use-context *dropdown*)]
+    (when (and (not disabled) (pos? (count options)))
+      (d/span
+       {:className (str
+                    className
+                    (when opened " opened"))}
+       (when icon/dropdownDecorator
+         ($ icon/dropdownDecorator))))))
+
+
+(defnc Discard
+  [{:keys [className] :as props}]
+  (let [{:keys [value discard!]} (hooks/use-context *dropdown*)]
+    (when (some? value)
+      (d/span
+       {:className className
+        :onClick discard!}
+       (c/children props)))))
+
+
+(defnc Area
+  [props]
+  (let [[area-position set-area-position!] (hooks/use-state nil)
+        ;;
+        {:keys [area] :as dropdown}
+        (use-dropdown
+         (->
+          props
+          (assoc :area-position area-position)
+          (dissoc :className)))]
+    (provider
+     {:context *dropdown*
+      :value dropdown}
+     (provider
+      {:context popup/*area-position*
+       :value [area-position set-area-position!]}
+      ($ popup/Area
+         {:ref area
+          & (select-keys props [:className])}
+         (c/children props))))))
+
+
+(defnc Input
+  [{:keys [className onSearchChange placeholder]
+    rinput :render/input
+    rwrapper :render/wrapper
+    rimg :render/img
+    :as props}]
+  (let [{:keys [input
+                value
+                search
+                on-change
+                on-key-down
+                sync-search!
+                toggle!
+                opened
+                disabled
+                read-only
+                searchable?]
+         :or {searchable? true}} (hooks/use-context *dropdown*)]
+    (hooks/use-effect
+      [search]
+      (when (ifn? onSearchChange)
+        (onSearchChange search)))
+    ($ rwrapper
+       {:onClick toggle!
+        :className (cond-> className
+                     opened (str " opened"))
+        & (select-keys props [:context :disabled])}
+       (when rimg ($ rimg {& value}))
+       ($ rinput
+          {:ref input
+           :className "input"
+           :value search
+           :read-only (or read-only (not searchable?))
+           :disabled disabled
+           :spellCheck false
+           :auto-complete "off"
+           :placeholder placeholder
+           :onChange on-change
+           :onBlur sync-search!
+           :onKeyDown on-key-down})
+       (c/children props))))
+
+
+
+(defnc Popup
+  [{:keys [className]
+    rpopup :render/popup
+    roption :render/option}]
+  (let [[area-position set-area-position!] (hooks/use-context popup/*area-position*)
+        {:keys [options
+                popup
+                disabled
+                opened
+                read-only
+                search-fn
+                ref-fn
+                cursor
+                select!
+                close!]
+         :or {search-fn str}} (hooks/use-context *dropdown*)]
+    (when (and (not read-only) (not disabled) (pos? (count options)) opened)
+      ($ popup/Element
+         {:ref popup
+          :items options
+          :onChange (fn [{:keys [position]}]
+                      (when (some? position) (set-area-position! position)))
+          :className (str className " animated fadeIn faster")
+          :wrapper rpopup}
+         (map
+           (fn [option]
+             ($ roption
+               {:key (search-fn option)
+                :ref (ref-fn option)
+                :option option
+                :selected (= option cursor)
+                :onMouseDown (fn []
+                               (select! option)
+                               (close!))
+                & (cond-> nil
+                    (nil? option) (assoc :style #js {:color "transparent"}))}
+               (if (nil? option) "nil" (search-fn option))))
+           (if (:top area-position)
+             (reverse options)
+             options))))))
+
+
+(defnc Element
+  [{rinput :render/input
+    rpopup :render/popup
+    :as props}]
+  ($ Area
+    {& props}
+    ($ rinput {& (dissoc props :render/input :render/popup)})
+    ($ rpopup)))

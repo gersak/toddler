@@ -5,13 +5,14 @@
    [helix.core :refer [$]]
    toddler.showcase.inputs
    toddler.showcase.table
-   ["toddler-icons$default" :as icon]))
+   toddler.showcase.ui))
 
 
 (.log js/console "Loaded showcase!")
 
 
 (defonce root (atom nil))
+
 
 (defn ^:dev/after-load start! []
   (.log js/console "Starting Toddler showcase!")

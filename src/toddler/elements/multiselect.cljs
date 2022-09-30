@@ -6,14 +6,17 @@
 
 (ns toddler.elements.multiselect
   (:require
-    [helix.core :refer [defhook]]
+    [helix.core :refer [$ defhook defnc provider]]
     [helix.hooks :as hooks]
+    [helix.dom :as d]
+    [helix.children :as c]
     clojure.string
     [toddler.hooks :refer [use-idle]]
+    [toddler.elements.dropdown
+     :refer [*dropdown*]]
     [toddler.elements.popup
-     :as popup]))
-
-(.log js/console "Loading Multiselect")
+     :as popup]
+    ["toddler-icons$default" :as icon]))
 
 (defn get-available-options 
   ([search value options search-fn]
@@ -195,3 +198,79 @@
                              :position area-position 
                              :input @input}))
            :options available-options)))
+
+
+(defnc Element
+  [{rinput :render/input
+    rpopup :render/popup
+    roption :render/option
+    :keys [className context-fn search-fn disabled placeholder]
+    :or {search-fn str}
+    :as props}]
+  (let [[area-position set-area-position!] (hooks/use-state nil)
+        {:keys [open!
+                remove!
+                options
+                new-fn
+                area]
+         :as multiselect} (use-multiselect
+                            (assoc props
+                                   :search-fn search-fn
+                                   :area-position area-position))]
+    (provider
+      {:context *dropdown*
+       :value multiselect}
+      (provider
+        {:context popup/*area-position*
+         :value [area-position set-area-position!]}
+        (d/div
+          {:className className}
+          (map
+            (fn [option]
+              ($ roption
+                {:key (search-fn option)
+                 :value option
+                 :onRemove #(remove! option)
+                 :context (if disabled :stale
+                            (when (fn? context-fn)
+                              (context-fn option)))}))
+            (:value props))
+          ($ popup/Area
+             {:ref area
+              :onClick #(when-not (empty? options) (open!))
+              :className "dropdown"}
+             (when (or (fn? new-fn) (not-empty options))
+               ($ rinput {:placeholder placeholder}))
+             ($ rpopup)))))))
+
+
+
+
+
+(defnc DefaultOption
+  [{:keys [value className]}]
+  (d/div {:className className} value))
+
+
+(defnc Option
+  [{:keys [value
+           context
+           on-remove
+           onRemove
+           disabled
+           className
+           render/content]
+    :or {content DefaultOption}}]
+  (let [on-remove (some #(when (fn? %) %) [onRemove on-remove])]
+    (d/div
+      {:context (if disabled :stale context)
+       :className className}
+      ($ content {:className "content" :value value})
+      (when on-remove
+        ($ icon/clear
+           {:className "remove"
+            :onClick (fn [e]
+                       (.stopPropagation e)
+                       (on-remove value))})))))
+
+

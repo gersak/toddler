@@ -1,21 +1,27 @@
-(ns toddler.dev.theme
+(ns toddler.dev.themes.default
   (:require
-   [helix.styled-components :refer [--themed]]
-   [toddler.theme :as theme]
-   [toddler.head :as head]))
+    [helix.styled-components :refer [--themed]]
+    [toddler.themes.default
+     :refer [color]
+     :rename {color default}]
+    [toddler.head :as head]))
+
+
+(def color
+  (merge
+    #:navbar {:background "#d3e9eb"
+              :color "#2c2c2c"}))
 
 
 (defmethod --themed [{} 'toddler.dev/navbar]
   [_]
-  {:background "#d3e9eb"
-   ; Adding border (even with box-sizing border-box) renders scrollbar when not needed
-   ;:border-right "1px solid #a2ced2"
-   :color theme/gray
+  {:background (color :navbar/background) 
+   :color (color :navbar/color)
    ".selected"
-   {".icon" {:color theme/gray}
-    ".name" {:color theme/dark-gray
+   {".icon" {:color (default :gray)}
+    ".name" {:color (default :gray/dark)
              :font-weight "600"}}
-   ".name:hover" {:color theme/dark-gray
+   ".name:hover" {:color (default :gray/dar)
                   :font-weight "600"
                   :text-decoration "none"}})
 
@@ -60,8 +66,7 @@
                                            :border "2px solid #003366"}}})
 
 
-
 (head/add
- :link
- {:href "https://fonts.googleapis.com/css2?family=Audiowide&display=swap"
-  :rel "stylesheet"})
+  :link
+  {:href "https://fonts.googleapis.com/css2?family=Audiowide&display=swap"
+   :rel "stylesheet"})

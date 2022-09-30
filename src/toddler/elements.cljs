@@ -173,14 +173,14 @@
        {:message tooltip
         :disabled (or (empty? tooltip) disabled)}
        (spring/div
-        {:style style
-         :onMouseDown (fn [] (api :start {:transform "scale(0.6)" :config {:tension 2000}}))
-         :onMouseUp (fn [] (api :start {:transform "scale(1)" :config {:delay 200 :tension 2000}}))
-         :onMouseEnter #(api :start {:transform "scale(1.2)" :config {:tension 2000}})
-         :onMouseLeave #(api :start {:transform "scale(1)" :config {:tension 2000}})
-         :& (dissoc props :tooltip :icon :icon-position)}
-        (when icon ($ icon))
-        (c/children props)))))
+         {:style style
+          :onMouseDown (fn [] (api :start {:transform "scale(0.6)" :config {:tension 2000}}))
+          :onMouseUp (fn [] (api :start {:transform "scale(1)" :config {:delay 200 :tension 2000}}))
+          :onMouseEnter #(api :start {:transform "scale(1.2)" :config {:tension 2000}})
+          :onMouseLeave #(api :start {:transform "scale(1)" :config {:tension 2000}})
+          :& (dissoc props :tooltip :icon :icon-position)}
+         (when icon ($ icon))
+         (c/children props)))))
 
 
 (def $action
@@ -270,7 +270,7 @@
    :height 20
    :border-radius 3
    :border-color "transparent"
-   :padding 9
+   :padding 0
    :display "flex"
    :justify-content "center"
    :outline "none"
@@ -280,6 +280,7 @@
 
 
 (defnc checkbox [{:keys [active] :as props}]
+  ($ icon/checkboxDefault)
   ($ checkbox-button
     {:$active active & (dissoc props :active)}
     ($ (case active
@@ -348,9 +349,11 @@
          :padding-right 3}
    :border-radius 3})
 
+
 (defnc DefaultTagContent
   [{:keys [value className]}]
   (d/div {:className className} value))
+
 
 (defnc Tag
   [{:keys [value
@@ -366,12 +369,18 @@
      {:context (if disabled :stale context)
       :className className}
      ($ content {:className "content" :value value})
-     (when on-remove icon/clear))))
+     (when on-remove
+       ($ icon/clear
+          {:className "remove"
+           :onClick (fn [e]
+                      (.stopPropagation e)
+                      (on-remove value))})))))
 
 
 (defstyled tag Tag
   $tag
   --themed)
+
 
 (defstyled slider SliderElement
   {:-webkit-appearance "none"
@@ -417,7 +426,6 @@
 (defstyled mask-input Mask
   {:outline "none"
    :border "none"})
-
 
 
 (defstyled dropdown-option
@@ -1019,8 +1027,7 @@
 (defnc DropdownFieldInput
   [props]
   ($ DropdownInput
-     {:render/decorator DropdownElementDecorator
-      :render/wrapper dropdown-field-wrapper
+     {:render/wrapper dropdown-field-wrapper
       & props}
      ($ dropdown-element-decorator {:className "decorator"})))
 
@@ -1157,7 +1164,6 @@
   --themed)
 
 ;; TIMESTAMPS
-
 (defnc TimestampInput
   [{:keys [value
            placeholder
@@ -1858,6 +1864,7 @@
   []
   (hooks/use-context *avatar-root*))
 
+
 (defnc Avatar
   [{:keys [avatar className]}]
   (let [root (use-avatar-root)
@@ -2073,9 +2080,7 @@
 (defnc Search
   [{:keys [value icon on-change idle-timeout className onChange]
     :or {idle-timeout 500
-         value ""
-         icon icon/search
-         onChange identity}
+         value ""}
     :as props}]
   (let [on-change (or on-change onChange identity)
         [input set-input!] (use-idle "" #(on-change %) idle-timeout)]
@@ -2092,7 +2097,7 @@
              (dissoc props :className)
              {:value input
               :on-change (fn [e] (set-input! (.. e -target -value)))})}))
-     ($ icon))))
+     (when icon ($ icon)))))
 
 
 (defstyled search Search
