@@ -1,9 +1,27 @@
 (ns toddler.elements.date
   (:require
+    ["react" :as react]
+    [goog.string :as gstr]
+    [goog.string.format]
     [vura.core :as vura]
     [helix.core :refer [$ defnc defhook create-context provider]]
-    [helix.dom :as d]))
+    [helix.hooks :as hooks]
+    [helix.dom :as d]
+    [helix.styled-components :refer [defstyled]]
+    [helix.children :as c]
+    [toddler.hooks
+     :refer [use-calendar
+             use-translate]]
+    [toddler.elements.mask :refer [use-mask]]
+    [toddler.elements.dropdown :as dropdown]
+    [toddler.elements.popup :as popup]
+    [toddler.elements.input :refer [AutosizeInput]]
+    ["toddler-icons$default" :as icon]))
 
+
+(defstyled autosize-input AutosizeInput
+  {:outline "none"
+   :border "none"})
 
 ;; CALENDAR
 (def ^:dynamic ^js *calendar-events* (create-context))
@@ -57,23 +75,21 @@
 (def ^:dynamic ^js *calendar-day* (create-context))
 
 
-(defnc CalendarWeek [{:keys [days className]}]
-  (let [days (group-by :day days)
-        calendar-day (hooks/use-context *calendar-day*)]
+(defnc CalendarWeek
+  [{:keys [days className]
+    calendar-day :render/day}]
+  (let [days (group-by :day days)]
     (d/div
-     {:class className}
-     (d/div
-      {:class "week-days"}
-      ($ calendar-day {:key 1 :day 1 & (get-in days [1 0] {})})
-      ($ calendar-day {:key 2 :day 2 & (get-in days [2 0] {})})
-      ($ calendar-day {:key 3 :day 3 & (get-in days [3 0] {})})
-      ($ calendar-day {:key 4 :day 4 & (get-in days [4 0] {})})
-      ($ calendar-day {:key 5 :day 5 & (get-in days [5 0] {})})
-      ($ calendar-day {:key 6 :day 6 & (get-in days [6 0] {})})
-      ($ calendar-day {:key 7 :day 7 & (get-in days [7 0] {})})))))
-
-
-(def ^:dynamic *calendar-week* (create-context))
+      {:class className}
+      (d/div
+        {:class "week-days"}
+        ($ calendar-day {:key 1 :day 1 & (get-in days [1 0] {})})
+        ($ calendar-day {:key 2 :day 2 & (get-in days [2 0] {})})
+        ($ calendar-day {:key 3 :day 3 & (get-in days [3 0] {})})
+        ($ calendar-day {:key 4 :day 4 & (get-in days [4 0] {})})
+        ($ calendar-day {:key 5 :day 5 & (get-in days [5 0] {})})
+        ($ calendar-day {:key 6 :day 6 & (get-in days [6 0] {})})
+        ($ calendar-day {:key 7 :day 7 & (get-in days [7 0] {})})))))
 
 
 (defnc CalendarMonthHeader
@@ -97,14 +113,11 @@
         days))))
 
 
-(def ^:dynamic *calendar-month-header* (create-context))
-
-
 (defnc CalendarMonth
-  [{:keys [className days]}]
-  (let [weeks (sort-by key (group-by :week days))
-        month-header (hooks/use-context *calendar-month-header*)
-        calendar-week (hooks/use-context *calendar-week*)]
+  [{:keys [className days]
+    month-header :render/header
+    calendar-week :render/week}]
+  (let [weeks (sort-by key (group-by :week days))]
     (d/div
       {:class className}
       ($ month-header {:days (range 1 8)})
@@ -115,7 +128,10 @@
 
 (defnc CalendarMonthDropdown
   [{:keys [value placeholder className]
-    :or {placeholder "-"}
+    rinput :render/input
+    rpopup :render/popup
+    :or {placeholder "-"
+         rinput AutosizeInput}
     :as props}]
   (let [value (or value (vura/month? (vura/date)))
         {on-month-change :on-month-change} (use-calendar-events)
@@ -128,14 +144,18 @@
                       :options months
                       :position-preference popup/central-preference
                       :value value)]
-    ($ DropdownElement
+    ($ dropdown/Element
        {:placeholder placeholder
         :className className
+        :render/input rinput
+        :render/popup rpopup
         & props'})))
 
 
 (defnc CalendarYearDropdown
   [{:keys [value placeholder className]
+    rinput :render/input
+    rpopup :render/popup
     :or {placeholder "-"}
     :as props}]
   (let [value (or value (vura/year? (vura/date)))
@@ -148,9 +168,11 @@
                       (let [year (vura/year? (vura/date))]
                         (range (- year 5) (+ year 5))))]
     ;;
-    ($ DropdownElement
+    ($ dropdown/Element
        {:placeholder placeholder
         :className className
+        :render/input rinput
+        :render/popup rpopup
         & props'})))
 
 
@@ -197,9 +219,10 @@
     (d/div
       {:className className}
       (d/input
-        {:spellCheck false
+        {:className "time"
+         :spellCheck false
          :auto-complete "off"
-         & (dissoc props' :constraints :delimiters :mask)}))))
+         & (dissoc props' :className :constraints :delimiters :mask)}))))
 
 
 
@@ -210,45 +233,48 @@
     (d/div
      {:className className
       :onClick (when-not disabled on-clear)}
-     (c/children props))))
+     ($ icon/clear
+        {:onClick (when-not disabled on-clear)}))))
 
 
 (defnc TimestampCalendar
   [{:keys [year month day-in-month className
-           render/previous render/next]}]
+           render/year-dropdown
+           render/month-dropdown]
+    calendar-month :render/month}]
   (let [now (-> (vura/date) vura/time->value)
         year (or year (vura/year? now))
         month (or month (vura/month? now))
         day-in-month (or day-in-month (vura/day-in-month? now))
         days (hooks/use-memo
-              [year month]
-              (vura/calendar-frame
-               (vura/date->value (vura/date year month))
-               :month))
-        {:keys [on-next-month on-prev-month]} (use-calendar-events)]
+               [year month]
+               (vura/calendar-frame
+                 (vura/date->value (vura/date year month))
+                 :month))
+        {:keys [on-next-month on-prev-month] :as evnts} (use-calendar-events)]
     (d/div
-     {:className className}
-     (d/div
-      {:className "header-wrapper"}
+      {:className className}
       (d/div
-       {:className "header"}
-       (d/div
-        {:className "years"}
-        ($ previous
-           {:onClick on-prev-month
-            :className "button"})
-        ($ calendar-year-dropdown {:value year}))
-       (d/div
-        {:className "months"}
-        ($ calendar-month-dropdown {:value month})
-        ($ next
-           {:onClick on-next-month
-            :className "button"}))))
-     (d/div
-      {:className "content-wrapper"}
+        {:className "header-wrapper"}
+        (d/div
+          {:className "header"}
+          (d/div
+            {:className "years"}
+            ($ icon/previous
+               {:onClick on-prev-month
+                :className "button"})
+            ($ year-dropdown {:value year}))
+          (d/div
+            {:className "months"}
+            ($ month-dropdown {:value month})
+            ($ icon/next
+               {:onClick on-next-month
+                :className "button"}))))
       (d/div
-       {:className "content"}
-       ($ calendar-month {:value day-in-month :days days}))))))
+        {:className "content-wrapper"}
+        (d/div
+          {:className "content"}
+          ($ calendar-month {:value day-in-month :days days}))))))
 
 
 
@@ -307,17 +333,10 @@
            read-only
            onChange]
     rcalendar :render/calendar
-    value :value
-    :or {rcalendar timestamp-calendar}}]
+    :or {disabled false
+         read-only false}
+    value :value}]
   (let [[{:keys [selected] :as state} set-state!] (hooks/use-state nil)
-        set-state! (hooks/use-memo
-                    [disabled read-only]
-                    (if (or disabled read-only)
-                      (fn [& _])
-                      set-state!))
-        ;;
-        disabled false
-        read-only false
         set-state! (hooks/use-memo
                     [disabled read-only]
                     (if (or disabled read-only)
@@ -400,23 +419,15 @@
         (when rclear ($ rclear))))))
 
 
-(defnc TimestampDropdownElement
+(defnc TimestampDropdown
   [{:keys [value
            onChange
            disabled
            read-only]
     rfield :render/field
     rpopup :render/popup
-    :or {rfield TimestampInput
-         rpopup TimestampPopup}
     :as props}]
-  (let [[{:keys [year month day-in-month]
-          :as state} set-state!]
-        (hooks/use-state
-          (some->
-            value
-            vura/time->value
-            vura/day-time-context))
+  (let [[{:keys [selected] :as state} set-state!] (hooks/use-state nil)
         ;;
         [opened set-opened!] (hooks/use-state false)
         popup (hooks/use-ref nil)
@@ -429,15 +440,19 @@
                        (fn [& _])
                        set-state!))
         selected? (hooks/use-memo
-                    [year day-in-month month]
-                    (fn [props]
-                      (=
-                        (select-keys
-                          props
-                          [:day-in-month :year :month])
-                        {:year year
-                         :day-in-month day-in-month
-                         :month month})))
+                    [selected]
+                    (let [{:keys [day-in-month year month]} (some->
+                                                              selected
+                                                              (vura/time->value)
+                                                              (vura/day-time-context))]
+                      (fn [props]
+                        (=
+                          (select-keys
+                            props
+                            [:day-in-month :year :month])
+                          {:year year
+                           :day-in-month day-in-month
+                           :month month}))))
         events (use-timestamp-events set-state! state)
         cache (hooks/use-ref state)]
     ;; TODO - timestamp should be a little more complex than this
@@ -501,3 +516,204 @@
                  ($ rfield {:opened opened & props})
                  (when (and (not read-only) (not disabled) opened)
                    ($ rpopup {:ref popup & state}))))))))))
+
+
+(defnc PeriodInput
+  [{:keys [disabled
+           placeholder
+           className
+           open
+           opened
+           format]
+    [from to :as value] :value
+    :or {format :medium-datetime}}]
+  (let [translate (use-translate)
+        input (hooks/use-ref nil)]
+    (d/div
+     {:onClick (fn []
+                 (when @input (.focus @input))
+                 (open))
+      :className (str className (when opened (str " opened")))}
+     ($ autosize-input
+        {:ref input
+         :className "input"
+         :readOnly true
+         :value (if (or (nil? value) (every? nil? value))
+                  " - "
+                  (str
+                    (if from (translate from format) " ")
+                    " - "
+                    (if to (translate to format) " ")))
+         :spellCheck false
+         :auto-complete "off"
+         :disabled disabled
+         :placeholder placeholder}))))
+
+
+(defnc PeriodElement
+  [{:keys [className]
+    rcalendar :render/calendar
+    rtime :render/time
+    rclear :render/clear}]
+  {:wrap [(react/forwardRef)]}
+  (let [{start-events :start
+         end-events :end} (use-calendar-events)
+        [start end] (use-calendar-state)]
+    (d/div
+     {:className className}
+     (provider
+      {:context *calendar-events*
+       :value start-events}
+      (d/div
+       {:className "start"}
+       ($ rcalendar
+          {:year (:year start)
+           :month (:month start)
+           :day-in-month (:day-in-month start)})
+       (when (or rtime rclear)
+         (d/div
+          {:style
+           {:display "flex"
+            :flex-grow "1"
+            :justify-content "center"}}
+          (when rtime
+            ($ rtime
+               {:hour (:hour start)
+                :minute (:minute start)}))
+          #_(when (and (some? start) rclear) ($ rclear))
+          (when rclear ($ rclear))))))
+     (provider
+      {:context *calendar-events*
+       :value end-events}
+      (d/div
+       {:className "end"}
+       ($ rcalendar
+          {:year (:year end)
+           :month (:month end)
+           :day-in-month (:day-in-month end)})
+       (when (or rtime rclear)
+         (d/div
+          {:style
+           {:display "flex"
+            :flex-grow "1"
+            :justify-content "center"}}
+          (when rtime
+            ($ rtime
+               {:hour (:hour end)
+                :minute (:minute end)}))
+          #_(when (and (some? end) rclear) ($ rclear))
+          (when rclear ($ rclear)))))))))
+
+
+(defnc PeriodElementProvider
+  [{:keys [disabled
+           read-only
+           onChange]
+    [upstream-start upstream-end] :value
+    :or {upstream-start nil upstream-end nil}
+    :as props}]
+  (let [[[{start-value :selected :as start} {end-value :selected :as end}] set-state!]
+        (hooks/use-state [(if (some? upstream-start)
+                            (assoc (-> upstream-start vura/time->value vura/day-time-context) :selected upstream-start)
+                            {:selected upstream-start})
+                          (if (some? upstream-end)
+                            (assoc (-> upstream-end vura/time->value vura/day-time-context) :selected upstream-end)
+                            {:selected upstream-end})])
+        ;;
+        set-state! (hooks/use-memo
+                    [disabled read-only]
+                    (if (or disabled read-only)
+                      (fn [& _])
+                      set-state!))
+        selected? (hooks/use-memo
+                   [start-value end-value]
+                   (fn [data]
+                     (letfn [(->value [{:keys [year month day-in-month]}]
+                               (vura/utc-date-value year month day-in-month))]
+                       (let [start (when start-value (-> start-value vura/date->value vura/midnight))
+                             current (->value data)
+                             end (when end-value (-> end-value vura/date->value vura/midnight))]
+                         (cond
+                           (nil? start) (<= current end)
+                           (nil? end) (>= current start)
+                           :else
+                           (or
+                            (= start current)
+                            (= end current)
+                            (<= start current end)))))))
+        [set-start! set-end!] (hooks/use-memo
+                               :once
+                               [(fn [value]
+                                  (set-state! assoc 0 value))
+                                (fn [value]
+                                  (set-state! assoc 1 value))])
+        start-events (use-timestamp-events set-start! start)
+        end-events (use-timestamp-events set-end! end)]
+    (hooks/use-effect
+     [start-value end-value]
+     (onChange [start-value end-value]))
+    (hooks/use-effect
+     [upstream-start upstream-end]
+     (when (= [nil nil] [upstream-start upstream-end])
+       (set-state! [nil nil])))
+    ;;
+    (provider
+     {:context *calendar-selected*
+      :value selected?}
+     (provider
+      {:context *calendar-events*
+       :value {:start start-events
+               :end end-events}}
+      (provider
+       {:context *calendar-state*
+        :value [start end]}
+       (provider
+        {:context *calendar-disabled*
+         :value false}
+        (c/children props)))))))
+
+
+(defnc PeriodDropdown
+  [{:keys [disabled
+           value
+           read-only
+           onChange]
+    rfield :render/field
+    rpopup :render/popup
+    :as props}]
+  (let [state (use-calendar-state)
+        area (hooks/use-ref nil)
+        [opened set-opened!] (hooks/use-state false)
+        popup (hooks/use-ref nil)
+        cache (hooks/use-ref value)]
+    ;;
+    (hooks/use-effect
+     [state]
+     (if state
+       (reset! cache state)
+       (reset! cache nil)))
+    ;;
+    (popup/use-outside-action
+     opened area popup
+     #(do
+        (set-opened! false)
+        (when (and
+               (ifn? onChange)
+               (or (not= (:selected (nth @cache 0)) (nth value 0))
+                   (not= (:selected (nth @cache 1)) (nth value 1))))
+          (onChange [(:selected (nth @cache 0)) (:selected (nth @cache 1))]))))
+    ($ popup/Area
+       {:ref area}
+       (when rfield
+         ($ rfield {:open (fn [] (set-opened! not)) :opened opened  & props}))
+       (when (or
+              (nil? rfield)
+              (and (not read-only) (not disabled) opened))
+         ($ rpopup {:ref popup :value state})))))
+
+
+(defnc PeriodDropdownElement
+  [props]
+  ($ PeriodElementProvider
+     {& props}
+     ($ PeriodDropdown {& props})))

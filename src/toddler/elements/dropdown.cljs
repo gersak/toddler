@@ -7,6 +7,7 @@
    [helix.children :as c]
    [toddler.hooks :refer [use-idle]]
    [toddler.elements.popup :as popup]
+   [toddler.elements.input :refer [AutosizeInput]]
    ["toddler-icons$default" :as icon]))
 
 (defn get-available-options
@@ -230,6 +231,8 @@
     rinput :render/input
     rwrapper :render/wrapper
     rimg :render/img
+    :or {rwrapper "div"
+         rinput AutosizeInput}
     :as props}]
   (let [{:keys [input
                 value

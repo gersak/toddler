@@ -35,6 +35,7 @@
     [toddler.elements.popup :as popup]
     [toddler.elements.tooltip :as tip]
     [toddler.elements.scroll :refer [SimpleBar]]
+    [toddler.elements.date :as date]
     [toddler.ui.provider :as ui.provider]
     ["react" :as react]
     ["toddler-icons$default" :as icon]))
@@ -365,6 +366,278 @@
     :min-height 30}})
 
 
+
+
+
+
+
+
+(defnc VanillaDropdownInput
+  [props]
+  ($ dropdown/Input
+    {:render/input autosize-input
+     & props}))
+
+
+(defnc CalendarMonthDropdown
+  [props]
+  ($ date/CalendarMonthDropdown
+    {& props
+     :render/input VanillaDropdownInput
+     :render/popup DropdownPopup}))
+
+
+(defstyled calendar-month-dropdown CalendarMonthDropdown
+  {:margin "5px 0"
+   :cursor "pointer"
+   :input {:cursor "pointer"
+           :color (color :red)}})
+
+
+(defnc CalendarYearDropdown
+  [props]
+  ($ date/CalendarYearDropdown
+    {& props
+     :render/input VanillaDropdownInput
+     :render/popup DropdownPopup}))
+
+
+(defstyled calendar-year-dropdown CalendarYearDropdown
+  {:margin "5px 0"
+   :cursor "pointer"
+   :input {:cursor "pointer"
+           :color (color :red)}})
+
+
+(defstyled calendar-day date/CalendarDay
+  {:border-collapse "collapse"
+   :border "1px solid transparent"
+   ".day"
+   {:text-align "center"
+    :font-size "10"
+    :user-select "none"
+    :padding 3
+    :width 20
+    :border-collapse "collapse"
+    :border "1px solid transparent"
+    :cursor "pointer"
+    ".empty" {:cursor "default"}
+    "&.disabled, &:hover.disabled"
+    {:background-color "white"
+     :color (color :disabled)
+     :border-color "transparent"
+     :cursor "default"}
+    ;;
+    ":hover:not(.empty),&.selected"
+    {:color "white"
+     :background-color (color :teal/saturated)
+     :border-collapse "collapse"
+     :border (str "1px solid " (color :teal/dark))
+     :border-radius 2
+     :font-weight 500}
+    "&.today"
+    {:border "1px solid (color :teal)"}
+    "&.weekend"
+    {:color (color :red)}}
+   :color (color :gray)
+   :font-size 12})
+
+
+(defnc CalendarWeek
+  [props]
+  ($ date/CalendarWeek
+    {:render/day calendar-day
+     & props}))
+
+
+(defstyled calendar-week CalendarWeek
+  {".week-days"
+   {:display "flex"
+    :flex-direction "row"}})
+
+
+(defstyled calendar-month-header date/CalendarMonthHeader
+  {:display "flex"
+   :flex-direction "row"
+   :border-radius 3
+   :cursor "default"
+   ".day-wrapper"
+   {:border-collapse "collapse"
+    :border "1px solid transparent"
+    ".day"
+    {:text-align "center"
+     :font-weight "500"
+     :font-size "12"
+     :border-collapse "collapse"
+     :user-select "none"
+     :padding 3
+     :width 20
+     :border "1px solid transparent"}}
+   ".day-wrapper .day"
+   {:color (color :gray)
+    :font-size 12
+    "&.weekend"
+    {:color (color :red)}}})
+
+
+(defnc CalendarMonth
+  [props]
+  ($ date/CalendarMonth
+    {:render/header calendar-month-header
+     :render/week calendar-week
+     & props}))
+
+
+(defstyled calendar-month CalendarMonth
+  {:display "flex"
+   :flex-direction "column"
+   :width 220
+   ".week-days-header .day-wrapper .day"
+   {:color (color :gray)}
+   ".week-row .week-days .day-wrapper .day"
+   {:color (color :gray)
+    ;;
+    "&.disabled, &:hover.disabled"
+    {:background-color "white"
+     :color (color :disabled)
+     :border-color "transparent"
+     :cursor "default"}
+    ;;
+    ":hover:not(.empty),&.selected"
+    {:color "white"
+     :background-color (color :teal/saturated)
+     :border-collapse "collapse"
+     :border (str "1px solid " (color :teal/dark))
+     :border-radius 2
+     :font-weight 500}}})
+
+
+
+(defnc TimestampCalendar
+  [props]
+  (println "TIMSTAMP CALENDAR: "
+    (pr-str props))
+  ($ date/TimestampCalendar
+    {:render/year-dropdown calendar-year-dropdown
+     :render/month-dropdown calendar-month-dropdown
+     :render/month calendar-month
+     & props}))
+
+
+(defstyled timestamp-calendar TimestampCalendar
+  {:display "flex"
+   :flex-direction "column"
+   :border-radius 3
+   :padding 7
+   :width 230
+   :height 190
+   ; (str popup/dropdown-container) {:overflow "hidden"}
+   ".header-wrapper" {:display "flex" :justify-content "center" :flex-grow "1"}
+   ".header"
+   {:display "flex"
+    :justify-content "space-between"
+    :width 200
+    :height 38
+    ".years"
+    {:position "relative"
+     :display "flex"
+     :align-items "center"}
+    ".months"
+    {:position "relative"
+     :display "flex"
+     :align-items "center"}}
+   ".content-wrapper"
+   {:display "flex"
+    :height 150
+    :justify-content "center"
+    :flex-grow "1"}})
+
+
+(defstyled timestamp-time date/TimestampTime
+  {:display "flex"
+   :justify-content "center"
+   :align-items "center"
+   :input {:max-width 40}
+   :font-size "12"
+   :margin "3px 0 5px 0"
+   :justify-self "center"
+   ".time" {:outline "none"
+            :border "none"}})
+
+
+(defstyled timestamp-clear date/TimestampClear
+  {:width 15
+   :height 15
+   :padding 4
+   :display "flex"
+   :justify-self "flex-end"
+   :justify-content "center"
+   :align-items "center"
+   :background-color (color :gray/light)
+   :color "white"
+   :transition "background .3s ease-in-out"
+   :border-radius 20
+   :cursor "pointer"
+   ":hover" {:background-color (color :red)}})
+
+
+(defnc TimestampPopup
+  [props _ref]
+  {:wrap [react/forwardRef]}
+  ($ date/TimestampPopup
+    {:ref _ref
+     :render/calendar timestamp-calendar
+     :render/time timestamp-time
+     :render/clear timestamp-clear
+     :render/wrapper dropdown-popup
+     & props}))
+
+
+(defnc TimestampFieldInput
+  [{:keys [placeholder value format]
+    :or {format :datetime-full}
+    :as props}]
+  (let [{:keys [open]} (hooks/use-context date/*calendar-control*)
+        disabled (hooks/use-context date/*calendar-disabled*)
+        translate (use-translate)
+        input (hooks/use-ref nil)]
+    ($ dropdown-field-wrapper
+       {:onClick (fn []
+                   (when @input (.focus @input))
+                   (open))
+        :className (str (:className props)
+                        (when (:opened props) " opened")
+                        (when disabled " disabled"))}
+       ($ autosize-input
+          {:ref input
+           :className "input"
+           :readOnly true
+           :value (when (some? value) (translate value format))
+           :spellCheck false
+           :auto-complete "off"
+           :disabled disabled
+           :placeholder placeholder}))))
+
+
+(defnc TimestampField
+  [{:keys [value placeholder disabled
+           read-only onChange format]
+    :or {format :datetime-full}
+    :as props}]
+  ($ default-field
+    {& props}
+    ($ date/TimestampDropdown
+       {:value value
+        :onChange onChange
+        :placeholder placeholder
+        :disabled disabled
+        :read-only read-only
+        :format format
+        :className "data"
+        :render/popup TimestampPopup
+        :render/field TimestampFieldInput})))
+
+
 (def components
   (merge
     #:field {:text textarea-field
@@ -372,7 +645,8 @@
              :integer integer-field 
              :float float-field
              :dropdown DropdownField
-             :multiselect multiselect-field}))
+             :multiselect multiselect-field
+             :timestamp TimestampField}))
 
 
 (defnc Provider [props]

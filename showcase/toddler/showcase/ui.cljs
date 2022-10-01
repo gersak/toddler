@@ -89,9 +89,11 @@
             :onChange (fn [e] (set-state! assoc :textarea-field (.. e -target -value)))}))
 
      ($ toddler/row
-        ($ toddler/TimestampDropdownElement
-           {:name "Popup calendar"
-            :placeholder "Click to open calendar"}))
+        ($ ui/timestamp-field
+           {:name "Timestamp"
+            :value (:timestamp-field state)
+            :placeholder "Click to open calendar"
+            :onChange #(set-state! assoc :timestamp-field %)}))
      #_($ toddler/row "Period input"
           ($ toddler/PeriodInput
              {:value "12.3.2022."

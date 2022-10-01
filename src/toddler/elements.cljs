@@ -744,6 +744,7 @@
       ($ calendar-day {:key 6 :day 6 & (get-in days [6 0] {})})
       ($ calendar-day {:key 7 :day 7 & (get-in days [7 0] {})})))))
 
+
 (defstyled calendar-week CalendarWeek
   {".week-days"
    {:display "flex"
@@ -1220,9 +1221,9 @@
   (let [{:keys [on-clear]} (use-calendar-events)
         disabled (hooks/use-context *calendar-disabled*)]
     (d/div
-     {:className className}
-     ($ icon/clear
-        {:onClick (when-not disabled on-clear)}))))
+      {:className className}
+      ($ icon/clear
+         {:onClick (when-not disabled on-clear)}))))
 
 
 (defstyled timestamp-clear TimestampClear
@@ -1435,7 +1436,7 @@
          rtime timestamp-time
          rclear timestamp-clear
          wrapper dropdown-popup}}
-   popup]
+     popup]
   {:wrap [(react/forwardRef)]}
   ($ popup/Element
      {:ref popup
@@ -1688,7 +1689,7 @@
   {:wrap [(react/forwardRef)]}
   ($ popup/Element
      {:ref popup
-      :className (str className " animated fadeIn faster")
+      :className className 
       :wrapper wrapper
       :preference popup/cross-preference}
      ($ PeriodElement {:className "period" & (dissoc props :className)})))
