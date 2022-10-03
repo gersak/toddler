@@ -76,9 +76,7 @@
         ($ ui/period-field
            {:name "Period input"
             :value (:period-field state)
-            :onChange (fn [v]
-                         (.log js/console "Setting period: " v)
-                         (set-state! assoc :period-field v))})))))
+            :onChange (fn [v] (set-state! assoc :period-field v))})))))
 
 
 (defn Default

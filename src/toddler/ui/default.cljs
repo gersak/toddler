@@ -662,7 +662,7 @@
            :read-only read-only
            :format format
            :className "data"
-           :render/popup PeriodPopup
+           :render/popup period-popup
            :render/field PeriodFieldInput}))))
 
 
