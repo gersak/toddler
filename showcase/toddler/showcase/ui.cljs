@@ -23,33 +23,11 @@
                                              :textarea-field "I am text"
                                              :period-input 123213213})]
     (<>
-     ($ toddler/row "Number input"
-        ($ toddler/number-input
-           {:value (:number-input state)
-            :onChange (fn [e] (set-state! (assoc state :number-input (int (.. e -target -value)))))}))
      ($ toddler/row
         ($ ui/input-field
            {:name "Auto-size free input"
             :value (:free-input state)
             :onChange (fn [e] (set-state! (assoc state :free-input (.. e -target -value))))}))
-     ($ toddler/row
-        ($ toddler/autosize-text
-           {:name "Auto-size text"
-            :value (:auto-size-input state)
-            :onChange (fn [e] (set-state! (assoc state :auto-size-input (.. e -target -value))))}))
-     ($ toddler/row
-        ($ toddler/idle-input
-           {:name "Idle input"
-            :value (:idle-input state)
-            :onChange (fn [e] (set-state! (assoc state :idle-input (.. e -target -value))))}))
-     ($ toddler/row
-          ($ toddler/mask-input
-             {:name "Mask input"
-              :value (:mask-input state)
-              :onChange (fn [e] (set-state! (assoc state :mask-input (.. e -target -value))))}))
-     #_($ toddler/row "Default field"
-          ($ toddler/field-row "hey")
-          ($ toddler/field-row "hey"))
      ($ toddler/row
         ($ toddler/checkbox-field
            {:name "Checkbox field"
@@ -90,14 +68,17 @@
 
      ($ toddler/row
         ($ ui/timestamp-field
-           {:name "Timestamp"
+           {:name "Timestamp field"
             :value (:timestamp-field state)
             :placeholder "Click to open calendar"
             :onChange #(set-state! assoc :timestamp-field %)}))
-     #_($ toddler/row "Period input"
-          ($ toddler/PeriodInput
-             {:value "12.3.2022."
-              :onChange (fn [e] (set-state! assoc :textarea-field (.. e -target -value)))})))))
+     ($ toddler/row
+        ($ ui/period-field
+           {:name "Period input"
+            :value (:period-field state)
+            :onChange (fn [v]
+                         (.log js/console "Setting period: " v)
+                         (set-state! assoc :period-field v))})))))
 
 
 (defn Default

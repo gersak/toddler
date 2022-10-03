@@ -27,7 +27,6 @@
 (def ^:dynamic ^js *calendar-events* (create-context))
 (def ^:dynamic ^js *calendar-selected* (create-context))
 (def ^:dynamic ^js *calendar-disabled* (create-context (constantly false)))
-(def ^:dynamic ^js *calendar-control* (create-context))
 (def ^:dynamic ^js *calendar-opened* (create-context))
 (def ^:dynamic ^js *calendar-state* (create-context))
 
@@ -131,7 +130,7 @@
     rinput :render/input
     rpopup :render/popup
     :or {placeholder "-"
-         rinput AutosizeInput}
+         rinput autosize-input}
     :as props}]
   (let [value (or value (vura/month? (vura/date)))
         {on-month-change :on-month-change} (use-calendar-events)
@@ -180,15 +179,19 @@
   [{:keys [value
            placeholder
            className
+           open
            opened
            format]
-    :or {format :datetime}}]
-  (let [{:keys [open]} (hooks/use-context *calendar-control*)
-        disabled (hooks/use-context *calendar-disabled*)
+    wrapper :render/wrapper
+    :or {format :datetime
+         wrapper "div"}}]
+  (let [disabled (hooks/use-context *calendar-disabled*)
         translate (use-translate)]
-    (d/div
+    ($ wrapper
      {:onClick open
-      :className (str className (when opened (str " opened")))}
+      :className (str className 
+                      (when opened " opened")
+                      (when disabled " disabled"))}
      ($ autosize-input
         {:className "input"
          :readOnly true
@@ -493,62 +496,27 @@
         (reset! cache nil)))
     ;;
     (provider
-      {:context *calendar-control*
-       :value {:open #(set-opened! true)
-               :close #(do
-                         (set-opened! false)
-                         (when (and (ifn? onChange) (not= @cache value))
-                           (onChange @cache)))}}
+      {:context *calendar-selected*
+       :value selected?}
       (provider
-        {:context *calendar-selected*
-         :value selected?}
+        {:context *calendar-events*
+         :value events}
         (provider
-          {:context *calendar-events*
-           :value events}
+          {:context *calendar-disabled*
+           :value disabled}
           (provider
-            {:context *calendar-disabled*
-             :value disabled}
-            (provider
-              {:context *calendar-opened*
-               :value opened}
-              ($ popup/Area
-                 {:ref area}
-                 ($ rfield {:opened opened & props})
-                 (when (and (not read-only) (not disabled) opened)
-                   ($ rpopup {:ref popup & state}))))))))))
+            {:context *calendar-opened*
+             :value opened}
+            ($ popup/Area
+               {:ref area}
+               ($ rfield
+                  {:open set-opened!
+                   :opened opened
+                   & props})
+               (when (and (not read-only) (not disabled) opened)
+                 ($ rpopup {:ref popup & state})))))))))
 
-
-(defnc PeriodInput
-  [{:keys [disabled
-           placeholder
-           className
-           open
-           opened
-           format]
-    [from to :as value] :value
-    :or {format :medium-datetime}}]
-  (let [translate (use-translate)
-        input (hooks/use-ref nil)]
-    (d/div
-     {:onClick (fn []
-                 (when @input (.focus @input))
-                 (open))
-      :className (str className (when opened (str " opened")))}
-     ($ autosize-input
-        {:ref input
-         :className "input"
-         :readOnly true
-         :value (if (or (nil? value) (every? nil? value))
-                  " - "
-                  (str
-                    (if from (translate from format) " ")
-                    " - "
-                    (if to (translate to format) " ")))
-         :spellCheck false
-         :auto-complete "off"
-         :disabled disabled
-         :placeholder placeholder}))))
-
+;; PERIOD
 
 (defnc PeriodElement
   [{:keys [className]
@@ -603,6 +571,57 @@
                 :minute (:minute end)}))
           #_(when (and (some? end) rclear) ($ rclear))
           (when rclear ($ rclear)))))))))
+
+
+(defnc PeriodPopup
+  [{:keys [render/wrapper className]
+    :or {wrapper "div"}
+    :as props}
+   popup]
+  {:wrap [(react/forwardRef)]}
+  ($ popup/Element
+     {:ref popup
+      :className className 
+      :wrapper wrapper
+      :preference popup/cross-preference}
+     ($ PeriodElement
+        {:className "period" & (dissoc props :className)})))
+
+
+(defnc PeriodInput
+  [{:keys [disabled
+           placeholder
+           className
+           open
+           opened
+           format]
+    [from to :as value] :value
+    wrapper :render/wrapper
+    :or {format :medium-datetime
+         wrapper "div"}}]
+  (let [translate (use-translate)
+        input (hooks/use-ref nil)]
+    ($ wrapper
+     {:onClick (fn []
+                 (when @input (.focus @input))
+                 (open))
+      :className (str className
+                      (when opened (str " opened"))
+                      (when disabled " disabled"))}
+     ($ autosize-input
+        {:ref input
+         :className "input"
+         :readOnly true
+         :value (if (or (nil? value) (every? nil? value))
+                  " - "
+                  (str
+                    (if from (translate from format) " ")
+                    " - "
+                    (if to (translate to format) " ")))
+         :spellCheck false
+         :auto-complete "off"
+         :disabled disabled
+         :placeholder placeholder}))))
 
 
 (defnc PeriodElementProvider
@@ -705,15 +724,9 @@
     ($ popup/Area
        {:ref area}
        (when rfield
-         ($ rfield {:open (fn [] (set-opened! not)) :opened opened  & props}))
+         ($ rfield {:open (fn [] (set-opened! not)) :opened opened & props}))
+       ; (c/children props)
        (when (or
-              (nil? rfield)
-              (and (not read-only) (not disabled) opened))
+               (nil? rfield)
+               (and (not read-only) (not disabled) opened))
          ($ rpopup {:ref popup :value state})))))
-
-
-(defnc PeriodDropdownElement
-  [props]
-  ($ PeriodElementProvider
-     {& props}
-     ($ PeriodDropdown {& props})))

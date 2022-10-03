@@ -366,12 +366,6 @@
     :min-height 30}})
 
 
-
-
-
-
-
-
 (defnc VanillaDropdownInput
   [props]
   ($ dropdown/Input
@@ -515,8 +509,6 @@
 
 (defnc TimestampCalendar
   [props]
-  (println "TIMSTAMP CALENDAR: "
-    (pr-str props))
   ($ date/TimestampCalendar
     {:render/year-dropdown calendar-year-dropdown
      :render/month-dropdown calendar-month-dropdown
@@ -594,29 +586,10 @@
 
 
 (defnc TimestampFieldInput
-  [{:keys [placeholder value format]
-    :or {format :datetime-full}
-    :as props}]
-  (let [{:keys [open]} (hooks/use-context date/*calendar-control*)
-        disabled (hooks/use-context date/*calendar-disabled*)
-        translate (use-translate)
-        input (hooks/use-ref nil)]
-    ($ dropdown-field-wrapper
-       {:onClick (fn []
-                   (when @input (.focus @input))
-                   (open))
-        :className (str (:className props)
-                        (when (:opened props) " opened")
-                        (when disabled " disabled"))}
-       ($ autosize-input
-          {:ref input
-           :className "input"
-           :readOnly true
-           :value (when (some? value) (translate value format))
-           :spellCheck false
-           :auto-complete "off"
-           :disabled disabled
-           :placeholder placeholder}))))
+  [props]
+  ($ date/TimestampInput
+    {:render/wrapper dropdown-field-wrapper
+     & props}))
 
 
 (defnc TimestampField
@@ -638,6 +611,61 @@
         :render/field TimestampFieldInput})))
 
 
+(defnc PeriodElement
+  [props]
+  ($ date/PeriodElement
+    {& props
+     :render/calendar timestamp-calendar
+     :render/time timestamp-time
+     :render/clear timestamp-clear}))
+
+
+(defnc PeriodPopup
+  [props _ref]
+  {:wrap [react/forwardRef]}
+  ($ date/PeriodPopup
+    {& props
+     :ref _ref
+     :render/calendar timestamp-calendar
+     :render/time timestamp-time
+     :render/clear timestamp-clear
+     :render/wrapper dropdown-popup}))
+
+
+(defstyled period-popup PeriodPopup
+  {".period"
+   {:display "flex"
+    :flex-direction "row"}})
+
+
+(defnc PeriodFieldInput
+  [props] 
+  ($ date/PeriodInput
+    {& props
+     :render/wrapper dropdown-field-wrapper}))
+
+
+(defnc PeriodField
+  [{:keys [value placeholder disabled
+           read-only onChange format]
+    :or {format :medium-datetime}
+    :as props}]
+  ($ date/PeriodElementProvider
+    {& props}
+    ($ default-field
+       {& props}
+       ($ date/PeriodDropdown
+          {:value value
+           :onChange onChange
+           :placeholder placeholder
+           :disabled disabled
+           :read-only read-only
+           :format format
+           :className "data"
+           :render/popup PeriodPopup
+           :render/field PeriodFieldInput}))))
+
+
 (def components
   (merge
     #:field {:text textarea-field
@@ -646,7 +674,8 @@
              :float float-field
              :dropdown DropdownField
              :multiselect multiselect-field
-             :timestamp TimestampField}))
+             :timestamp TimestampField
+             :period PeriodField}))
 
 
 (defnc Provider [props]
