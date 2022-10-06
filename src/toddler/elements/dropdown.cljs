@@ -248,6 +248,7 @@
       [search]
       (when (ifn? onSearchChange)
         (onSearchChange search)))
+    (println "Rendering dropdown INput")
     ($ ui/wrapper
        {:onClick toggle!
         :className (cond-> className
@@ -311,7 +312,10 @@
 
 (defnc Element
   [props]
+  (println "RENDERING DROPDOWN ELEMENT:")
+  (.log js/console ui/input)
+  (.log js/console ui/popup)
   ($ Area
     {& props}
     ($ ui/input {& props})
-    ($ ui/popup )))
+    ($ ui/popup)))

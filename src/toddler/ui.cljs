@@ -36,7 +36,7 @@
 (defcomponent calendar-day :calendar/day)
 (defcomponent calendar-week :calendar/week)
 (defcomponent calendar-month :calendar/month)
-(defcomponent calendar-timme :calendar/time)
+(defcomponent calendar-time :calendar/time)
 
 (defcomponent calendar :calendar)
 

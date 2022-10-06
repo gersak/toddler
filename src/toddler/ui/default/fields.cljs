@@ -19,7 +19,7 @@
     [toddler.elements.multiselect :as multiselect]
     [toddler.elements.date :as date]
     [toddler.ui :as ui]
-    [toddler.ui.provider :refer [UI]]
+    [toddler.ui.provider :refer [UI ExtendUI]]
     ["react" :as react]))
 
 
@@ -232,7 +232,7 @@
 
 (defnc DropdownPopup
   [props]
-  ($ UI
+  ($ ExtendUI
     {:components {:wrapper dropdown-wrapper
                   :option dropdown-option}}
     ($ dropdown/Popup
@@ -332,8 +332,10 @@
 
 (defnc VanillaDropdownInput
   [props]
-  ($ UI
-    {:components {:input autosize-input}}
+  (println "SHOWING Vanilla")
+  ($ ExtendUI
+    {:components {:input autosize-input
+                  :wrapper "div"}}
     ($ dropdown/Input {& props})))
 
 
@@ -354,10 +356,12 @@
 
 (defnc CalendarYearDropdown
   [props]
-  ($ date/CalendarYearDropdown
-    {& props
-     :render/input VanillaDropdownInput
-     :render/popup DropdownPopup}))
+  ($ ExtendUI
+    {:components
+     {:input VanillaDropdownInput
+      :popup DropdownPopup}}
+    (println "RENDERING CALENDAR YEAR DROPDOWN")
+    ($ date/CalendarYearDropdown {& props})))
 
 
 (defstyled calendar-year-dropdown CalendarYearDropdown
@@ -403,9 +407,9 @@
 
 (defnc CalendarWeek
   [props]
-  ($ date/CalendarWeek
-    {:render/day calendar-day
-     & props}))
+  ($ UI
+    {:components {:calendar/day calendar-day}}
+    ($ date/CalendarWeek {& props})))
 
 
 (defstyled calendar-week CalendarWeek
@@ -440,10 +444,11 @@
 
 (defnc CalendarMonth
   [props]
-  ($ date/CalendarMonth
-    {:render/header calendar-month-header
-     :render/week calendar-week
-     & props}))
+  ($ UI
+    {:components {:header calendar-month-header
+                  :calendar/week calendar-week}}
+    ($ date/CalendarMonth
+       {& props})))
 
 
 (defstyled calendar-month CalendarMonth
@@ -470,14 +475,14 @@
      :font-weight 500}}})
 
 
-
 (defnc TimestampCalendar
   [props]
-  ($ date/TimestampCalendar
-    {:render/year-dropdown calendar-year-dropdown
-     :render/month-dropdown calendar-month-dropdown
-     :render/month calendar-month
-     & props}))
+  ($ UI
+    {:components
+     {:calendar/year-dropdown calendar-year-dropdown
+      :calendar/month-dropdown calendar-month-dropdown
+      :calendar/month calendar-month}}
+    ($ date/TimestampCalendar {& props})))
 
 
 (defstyled timestamp-calendar TimestampCalendar
@@ -540,20 +545,22 @@
 (defnc TimestampPopup
   [props _ref]
   {:wrap [react/forwardRef]}
-  ($ date/TimestampPopup
-    {:ref _ref
-     :render/calendar timestamp-calendar
-     :render/time timestamp-time
-     :render/clear timestamp-clear
-     :render/wrapper dropdown-wrapper
-     & props}))
+  ($ UI
+    {:components
+     {:calendar timestamp-calendar
+      :calendar/time timestamp-time
+      :clear timestamp-clear
+      :wrapper dropdown-wrapper}}
+    ($ date/TimestampPopup
+       {:ref _ref & props})))
 
 
 (defnc TimestampFieldInput
   [props]
-  ($ date/TimestampInput
-    {:render/wrapper dropdown-field-wrapper
-     & props}))
+  ($ UI
+    {:components
+     {:wrapper dropdown-field-wrapper}}
+    ($ date/TimestampInput {& props})))
 
 
 (defnc TimestampField
@@ -563,37 +570,41 @@
     :as props}]
   ($ default-field
     {& props}
-    ($ date/TimestampDropdown
-       {:value value
-        :onChange onChange
-        :placeholder placeholder
-        :disabled disabled
-        :read-only read-only
-        :format format
-        :className "data"
-        :render/popup TimestampPopup
-        :render/field TimestampFieldInput})))
+    ($ UI
+       {:components
+        {:popup TimestampPopup
+         :field TimestampFieldInput}}
+       ($ date/TimestampDropdown
+          {:value value
+           :onChange onChange
+           :placeholder placeholder
+           :disabled disabled
+           :read-only read-only
+           :format format
+           :className "data"}))))
 
 
 (defnc PeriodElement
   [props]
-  ($ date/PeriodElement
-    {& props
-     :render/calendar timestamp-calendar
-     :render/time timestamp-time
-     :render/clear timestamp-clear}))
+  ($ UI
+    {:components
+     {:calendar timestamp-calendar
+      :calendar/time timestamp-time
+      :clear timestamp-clear}}
+    ($ date/PeriodElement {& props})))
 
 
 (defnc PeriodPopup
   [props _ref]
   {:wrap [react/forwardRef]}
-  ($ date/PeriodPopup
-    {& props
-     :ref _ref
-     :render/calendar timestamp-calendar
-     :render/time timestamp-time
-     :render/clear timestamp-clear
-     :render/wrapper dropdown-wrapper}))
+  ($ UI
+    {:components
+     {:calendar timestamp-calendar
+      :calendar/time timestamp-time
+      :clear timestamp-clear
+      :wrapper dropdown-wrapper}}
+    ($ date/PeriodPopup
+       {& props :ref _ref})))
 
 
 (defstyled period-popup PeriodPopup
@@ -604,9 +615,10 @@
 
 (defnc PeriodFieldInput
   [props] 
-  ($ date/PeriodInput
-    {& props
-     :render/wrapper dropdown-field-wrapper}))
+  ($ UI
+    {:components {:wrapper dropdown-field-wrapper}}
+    ($ date/PeriodInput
+       {& props})))
 
 
 (defnc PeriodField
@@ -618,16 +630,18 @@
     {& props}
     ($ default-field
        {& props}
-       ($ date/PeriodDropdown
-          {:value value
-           :onChange onChange
-           :placeholder placeholder
-           :disabled disabled
-           :read-only read-only
-           :format format
-           :className "data"
-           :render/popup period-popup
-           :render/field PeriodFieldInput}))))
+       ($ UI
+          {:components
+           {:popup period-popup
+            :field PeriodFieldInput}}
+          ($ date/PeriodDropdown
+             {:value value
+              :onChange onChange
+              :placeholder placeholder
+              :disabled disabled
+              :read-only read-only
+              :format format
+              :className "data"})))))
 
 
 (defnc CheckboxField [{:keys [name className] :as props}]

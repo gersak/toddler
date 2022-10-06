@@ -14,7 +14,7 @@
     (c/children props)))
 
 
-(defnc UIMod
+(defnc ExtendUI
   [{:keys [components] :as props}]
   (let [current (hooks/use-context ui/__components__)]
     (provider

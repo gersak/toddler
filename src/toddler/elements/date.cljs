@@ -9,6 +9,7 @@
     [helix.dom :as d]
     [helix.styled-components :refer [defstyled]]
     [helix.children :as c]
+    [toddler.ui :as ui]
     [toddler.hooks
      :refer [use-calendar
              use-translate]]
@@ -75,20 +76,19 @@
 
 
 (defnc CalendarWeek
-  [{:keys [days className]
-    calendar-day :render/day}]
+  [{:keys [days className]}]
   (let [days (group-by :day days)]
     (d/div
       {:class className}
       (d/div
         {:class "week-days"}
-        ($ calendar-day {:key 1 :day 1 & (get-in days [1 0] {})})
-        ($ calendar-day {:key 2 :day 2 & (get-in days [2 0] {})})
-        ($ calendar-day {:key 3 :day 3 & (get-in days [3 0] {})})
-        ($ calendar-day {:key 4 :day 4 & (get-in days [4 0] {})})
-        ($ calendar-day {:key 5 :day 5 & (get-in days [5 0] {})})
-        ($ calendar-day {:key 6 :day 6 & (get-in days [6 0] {})})
-        ($ calendar-day {:key 7 :day 7 & (get-in days [7 0] {})})))))
+        ($ ui/calendar-day {:key 1 :day 1 & (get-in days [1 0] {})})
+        ($ ui/calendar-day {:key 2 :day 2 & (get-in days [2 0] {})})
+        ($ ui/calendar-day {:key 3 :day 3 & (get-in days [3 0] {})})
+        ($ ui/calendar-day {:key 4 :day 4 & (get-in days [4 0] {})})
+        ($ ui/calendar-day {:key 5 :day 5 & (get-in days [5 0] {})})
+        ($ ui/calendar-day {:key 6 :day 6 & (get-in days [6 0] {})})
+        ($ ui/calendar-day {:key 7 :day 7 & (get-in days [7 0] {})})))))
 
 
 (defnc CalendarMonthHeader
@@ -113,22 +113,18 @@
 
 
 (defnc CalendarMonth
-  [{:keys [className days]
-    month-header :render/header
-    calendar-week :render/week}]
+  [{:keys [className days]}]
   (let [weeks (sort-by key (group-by :week days))]
     (d/div
       {:class className}
-      ($ month-header {:days (range 1 8)})
+      ($ ui/header {:days (range 1 8)})
       (map
-        #($ calendar-week {:key (key %) :week (key %) :days (val %)})
+        #($ ui/calendar-week {:key (key %) :week (key %) :days (val %)})
         weeks))))
 
 
 (defnc CalendarMonthDropdown
   [{:keys [value placeholder className]
-    rinput :render/input
-    rpopup :render/popup
     :or {placeholder "-"
          rinput autosize-input}
     :as props}]
@@ -146,15 +142,11 @@
     ($ dropdown/Element
        {:placeholder placeholder
         :className className
-        :render/input rinput
-        :render/popup rpopup
         & props'})))
 
 
 (defnc CalendarYearDropdown
   [{:keys [value placeholder className]
-    rinput :render/input
-    rpopup :render/popup
     :or {placeholder "-"}
     :as props}]
   (let [value (or value (vura/year? (vura/date)))
@@ -166,12 +158,11 @@
                       :options
                       (let [year (vura/year? (vura/date))]
                         (range (- year 5) (+ year 5))))]
+    (println "FOR REAL")
     ;;
     ($ dropdown/Element
        {:placeholder placeholder
         :className className
-        :render/input rinput
-        :render/popup rpopup
         & props'})))
 
 
@@ -182,12 +173,10 @@
            open
            opened
            format]
-    wrapper :render/wrapper
-    :or {format :datetime
-         wrapper "div"}}]
+    :or {format :datetime}}]
   (let [disabled (hooks/use-context *calendar-disabled*)
         translate (use-translate)]
-    ($ wrapper
+    ($ ui/wrapper
      {:onClick open
       :className (str className 
                       (when opened " opened")
@@ -241,10 +230,7 @@
 
 
 (defnc TimestampCalendar
-  [{:keys [year month day-in-month className
-           render/year-dropdown
-           render/month-dropdown]
-    calendar-month :render/month}]
+  [{:keys [year month day-in-month className]}]
   (let [now (-> (vura/date) vura/time->value)
         year (or year (vura/year? now))
         month (or month (vura/month? now))
@@ -254,7 +240,8 @@
                (vura/calendar-frame
                  (vura/date->value (vura/date year month))
                  :month))
-        {:keys [on-next-month on-prev-month] :as evnts} (use-calendar-events)]
+        {:keys [on-next-month on-prev-month]} (use-calendar-events)
+        components (hooks/use-context ui/__components__)]
     (d/div
       {:className className}
       (d/div
@@ -266,10 +253,10 @@
             ($ icon/previous
                {:onClick on-prev-month
                 :className "button"})
-            ($ year-dropdown {:value year}))
+            ($ ui/calendar-year-dropdown {:value year}))
           (d/div
             {:className "months"}
-            ($ month-dropdown {:value month})
+            ($ ui/calendar-month-dropdown {:value month})
             ($ icon/next
                {:onClick on-next-month
                 :className "button"}))))
@@ -277,7 +264,7 @@
         {:className "content-wrapper"}
         (d/div
           {:className "content"}
-          ($ calendar-month {:value day-in-month :days days}))))))
+          ($ ui/calendar-month {:value day-in-month :days days}))))))
 
 
 
@@ -335,7 +322,6 @@
   [{:keys [disabled
            read-only
            onChange]
-    rcalendar :render/calendar
     :or {disabled false
          read-only false}
     value :value}]
@@ -389,37 +375,32 @@
          (provider
           {:context *calendar-disabled*
            :value disabled}
-          ($ rcalendar {& state})))))))
+          ($ ui/calendar {& state})))))))
 
 
 (defnc TimestampPopup
-  [{:keys [year month day-in-month hour minute className]
-    rcalendar :render/calendar
-    rtime :render/time
-    rclear :render/clear
-    wrapper :render/wrapper}
-   popup]
+  [{:keys [year month day-in-month hour minute className]} popup]
   {:wrap [(react/forwardRef)]}
   ($ popup/Element
     {:ref popup
      :className className 
-     :wrapper wrapper
+     :wrapper ui/wrapper
      :preference popup/cross-preference}
-    ($ rcalendar
+    ($ ui/calendar
        {:year year
         :month month
         :day-in-month day-in-month})
-    (when (or rtime rclear)
+    (when (or ui/calendar-time ui/clear)
       (d/div
         {:style
          {:display "flex"
           :flex-grow "1"
           :justify-content "center"}}
-        (when rtime
-          ($ rtime
+        (when ui/calendar-time
+          ($ ui/calendar-time
              {:hour hour
               :minute minute}))
-        (when rclear ($ rclear))))))
+        (when ui/clear ($ ui/clear))))))
 
 
 (defnc TimestampDropdown
@@ -427,8 +408,6 @@
            onChange
            disabled
            read-only]
-    rfield :render/field
-    rpopup :render/popup
     :as props}]
   (let [[{:keys [selected] :as state} set-state!] (hooks/use-state nil)
         ;;
@@ -509,20 +488,17 @@
              :value opened}
             ($ popup/Area
                {:ref area}
-               ($ rfield
+               ($ ui/field
                   {:open set-opened!
                    :opened opened
                    & props})
                (when (and (not read-only) (not disabled) opened)
-                 ($ rpopup {:ref popup & state})))))))))
+                 ($ ui/popup {:ref popup & state})))))))))
 
 ;; PERIOD
 
 (defnc PeriodElement
-  [{:keys [className]
-    rcalendar :render/calendar
-    rtime :render/time
-    rclear :render/clear}]
+  [{:keys [className]}]
   {:wrap [(react/forwardRef)]}
   (let [{start-events :start
          end-events :end} (use-calendar-events)
@@ -534,55 +510,52 @@
        :value start-events}
       (d/div
        {:className "start"}
-       ($ rcalendar
+       ($ ui/calendar
           {:year (:year start)
            :month (:month start)
            :day-in-month (:day-in-month start)})
-       (when (or rtime rclear)
+       (when (or ui/calendar-time ui/clear)
          (d/div
           {:style
            {:display "flex"
             :flex-grow "1"
             :justify-content "center"}}
-          (when rtime
-            ($ rtime
+          (when ui/calendar-time
+            ($ ui/calendar-time
                {:hour (:hour start)
                 :minute (:minute start)}))
           #_(when (and (some? start) rclear) ($ rclear))
-          (when rclear ($ rclear))))))
+          (when ui/clear ($ ui/clear))))))
      (provider
       {:context *calendar-events*
        :value end-events}
       (d/div
        {:className "end"}
-       ($ rcalendar
+       ($ ui/calendar
           {:year (:year end)
            :month (:month end)
            :day-in-month (:day-in-month end)})
-       (when (or rtime rclear)
+       (when (or ui/calendar-time ui/clear)
          (d/div
           {:style
            {:display "flex"
             :flex-grow "1"
             :justify-content "center"}}
-          (when rtime
-            ($ rtime
+          (when ui/calendar-time
+            ($ ui/calendar-time
                {:hour (:hour end)
                 :minute (:minute end)}))
-          #_(when (and (some? end) rclear) ($ rclear))
-          (when rclear ($ rclear)))))))))
+          (when ui/clear ($ ui/clear)))))))))
 
 
 (defnc PeriodPopup
-  [{:keys [render/wrapper className]
-    :or {wrapper "div"}
+  [{:keys [className]
     :as props}
    popup]
   {:wrap [(react/forwardRef)]}
   ($ popup/Element
      {:ref popup
       :className className 
-      :wrapper wrapper
       :preference popup/cross-preference}
      ($ PeriodElement
         {:className "period" & (dissoc props :className)})))
@@ -596,12 +569,11 @@
            opened
            format]
     [from to :as value] :value
-    wrapper :render/wrapper
     :or {format :medium-datetime
          wrapper "div"}}]
   (let [translate (use-translate)
         input (hooks/use-ref nil)]
-    ($ wrapper
+    ($ ui/wrapper
      {:onClick (fn []
                  (when @input (.focus @input))
                  (open))
@@ -697,8 +669,6 @@
            value
            read-only
            onChange]
-    rfield :render/field
-    rpopup :render/popup
     :as props}]
   (let [state (use-calendar-state)
         area (hooks/use-ref nil)
@@ -723,10 +693,10 @@
           (onChange [(:selected (nth @cache 0)) (:selected (nth @cache 1))]))))
     ($ popup/Area
        {:ref area}
-       (when rfield
-         ($ rfield {:open (fn [] (set-opened! not)) :opened opened & props}))
+       (when ui/field
+         ($ ui/field {:open (fn [] (set-opened! not)) :opened opened & props}))
        ; (c/children props)
        (when (or
-               (nil? rfield)
+               (nil? ui/field)
                (and (not read-only) (not disabled) opened))
-         ($ rpopup {:ref popup :value state})))))
+         ($ ui/popup {:ref popup :value state})))))
