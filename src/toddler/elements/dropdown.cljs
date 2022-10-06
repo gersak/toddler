@@ -7,7 +7,6 @@
    [helix.children :as c]
    [toddler.hooks :refer [use-idle]]
    [toddler.elements.popup :as popup]
-   [toddler.elements.input :refer [AutosizeInput]]
    [toddler.ui :as ui]
    ["toddler-icons$default" :as icon]))
 
@@ -105,8 +104,7 @@
 
 (defhook use-dropdown
   [{:keys [value options on-change onChange new-fn search-fn area area-position disabled]
-    :or {search-fn str}
-    :as props}]
+    :or {search-fn str}}]
   (let [on-change (or onChange on-change identity)
         [search set-search!] (use-idle
                               (search-fn value)
@@ -248,7 +246,6 @@
       [search]
       (when (ifn? onSearchChange)
         (onSearchChange search)))
-    (println "Rendering dropdown INput")
     ($ ui/wrapper
        {:onClick toggle!
         :className (cond-> className
@@ -312,9 +309,6 @@
 
 (defnc Element
   [props]
-  (println "RENDERING DROPDOWN ELEMENT:")
-  (.log js/console ui/input)
-  (.log js/console ui/popup)
   ($ Area
     {& props}
     ($ ui/input {& props})

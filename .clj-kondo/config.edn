@@ -1,3 +1,4 @@
 {:config-paths
  ["com.github.gersak/helix.placenta"
-  "lilactown/helix"]}
+  "lilactown/helix"]
+ :lint-as {toddler.ui/defcomponent clojure.core/def}}

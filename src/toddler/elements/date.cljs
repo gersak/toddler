@@ -390,17 +390,15 @@
        {:year year
         :month month
         :day-in-month day-in-month})
-    (when (or ui/calendar-time ui/clear)
-      (d/div
-        {:style
-         {:display "flex"
-          :flex-grow "1"
-          :justify-content "center"}}
-        (when ui/calendar-time
-          ($ ui/calendar-time
-             {:hour hour
-              :minute minute}))
-        (when ui/clear ($ ui/clear))))))
+    (d/div
+      {:style
+       {:display "flex"
+        :flex-grow "1"
+        :justify-content "center"}}
+      ($ ui/calendar-time
+         {:hour hour
+          :minute minute})
+      ($ ui/clear))))
 
 
 (defnc TimestampDropdown
@@ -514,38 +512,33 @@
           {:year (:year start)
            :month (:month start)
            :day-in-month (:day-in-month start)})
-       (when (or ui/calendar-time ui/clear)
-         (d/div
-          {:style
-           {:display "flex"
-            :flex-grow "1"
-            :justify-content "center"}}
-          (when ui/calendar-time
-            ($ ui/calendar-time
-               {:hour (:hour start)
-                :minute (:minute start)}))
-          #_(when (and (some? start) rclear) ($ rclear))
-          (when ui/clear ($ ui/clear))))))
+       (d/div
+         {:style
+          {:display "flex"
+           :flex-grow "1"
+           :justify-content "center"}}
+         ($ ui/calendar-time
+            {:hour (:hour start)
+             :minute (:minute start)})
+         ($ ui/clear))))
      (provider
       {:context *calendar-events*
        :value end-events}
       (d/div
-       {:className "end"}
-       ($ ui/calendar
-          {:year (:year end)
-           :month (:month end)
-           :day-in-month (:day-in-month end)})
-       (when (or ui/calendar-time ui/clear)
-         (d/div
+        {:className "end"}
+        ($ ui/calendar
+           {:year (:year end)
+            :month (:month end)
+            :day-in-month (:day-in-month end)})
+        (d/div
           {:style
            {:display "flex"
             :flex-grow "1"
             :justify-content "center"}}
-          (when ui/calendar-time
-            ($ ui/calendar-time
-               {:hour (:hour end)
-                :minute (:minute end)}))
-          (when ui/clear ($ ui/clear)))))))))
+          ($ ui/calendar-time
+             {:hour (:hour end)
+              :minute (:minute end)})
+          ($ ui/clear)))))))
 
 
 (defnc PeriodPopup
@@ -693,10 +686,7 @@
           (onChange [(:selected (nth @cache 0)) (:selected (nth @cache 1))]))))
     ($ popup/Area
        {:ref area}
-       (when ui/field
-         ($ ui/field {:open (fn [] (set-opened! not)) :opened opened & props}))
+       ($ ui/field {:open (fn [] (set-opened! not)) :opened opened & props})
        ; (c/children props)
-       (when (or
-               (nil? ui/field)
-               (and (not read-only) (not disabled) opened))
+       (when (and (not read-only) (not disabled) opened)
          ($ ui/popup {:ref popup :value state})))))
