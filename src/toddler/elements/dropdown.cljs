@@ -8,6 +8,7 @@
    [toddler.hooks :refer [use-idle]]
    [toddler.elements.popup :as popup]
    [toddler.elements.input :refer [AutosizeInput]]
+   [toddler.ui :as ui]
    ["toddler-icons$default" :as icon]))
 
 (defn get-available-options
@@ -180,10 +181,12 @@
                                        :input @input}))
      :options available-options}))
 
+
 (def ^:dynamic ^js *dropdown* (create-context))
 
+
 (defnc Decorator
-  [{:keys [className] :as props}]
+  [{:keys [className]}]
   (let [{:keys [options opened disabled]} (hooks/use-context *dropdown*)]
     (when (and (not disabled) (pos? (count options)))
       (d/span
@@ -228,11 +231,6 @@
 
 (defnc Input
   [{:keys [className onSearchChange placeholder]
-    rinput :render/input
-    rwrapper :render/wrapper
-    rimg :render/img
-    :or {rwrapper "div"
-         rinput AutosizeInput}
     :as props}]
   (let [{:keys [input
                 value
@@ -250,13 +248,13 @@
       [search]
       (when (ifn? onSearchChange)
         (onSearchChange search)))
-    ($ rwrapper
+    ($ ui/wrapper
        {:onClick toggle!
         :className (cond-> className
                      opened (str " opened"))
         & (select-keys props [:context :disabled])}
-       (when rimg ($ rimg {& value}))
-       ($ rinput
+       ($ ui/img {& value})
+       ($ ui/input
           {:ref input
            :className "input"
            :value search
@@ -273,9 +271,7 @@
 
 
 (defnc Popup
-  [{:keys [className]
-    rpopup :render/popup
-    roption :render/option}]
+  [{:keys [className]}]
   (let [[area-position set-area-position!] (hooks/use-context popup/*area-position*)
         {:keys [options
                 popup
@@ -294,11 +290,10 @@
           :items options
           :onChange (fn [{:keys [position]}]
                       (when (some? position) (set-area-position! position)))
-          :className (str className " animated fadeIn faster")
-          :wrapper rpopup}
+          :className (str className " animated fadeIn faster")}
          (map
            (fn [option]
-             ($ roption
+             ($ ui/option
                {:key (search-fn option)
                 :ref (ref-fn option)
                 :option option
@@ -315,10 +310,8 @@
 
 
 (defnc Element
-  [{rinput :render/input
-    rpopup :render/popup
-    :as props}]
+  [props]
   ($ Area
     {& props}
-    ($ rinput {& (dissoc props :render/input :render/popup)})
-    ($ rpopup)))
+    ($ ui/input {& props})
+    ($ ui/popup )))

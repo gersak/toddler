@@ -23,8 +23,11 @@
              use-dimensions]]
     [toddler.i18n.default]
     [toddler.elements :as toddler]
+    [toddler.ui :as ui]
     [toddler.elements.window :as window]
     [toddler.elements.popup :as popup]
+    [toddler.elements.dropdown :as dropdown
+     :refer [*dropdown*]]
     ["react" :as react]
     ["toddler-icons$default" :as icon]
     [toddler.app :as app]
@@ -106,7 +109,7 @@
 
 (defnc LocaleDropdown
   []
-  (let [{:keys [toggle! opened]} (hooks/use-context toddler/*dropdown*)
+  (let [{:keys [toggle! opened]} (hooks/use-context *dropdown*)
         locale (use-current-locale)
         pressed-button (when opened
                          {:color "#d3d3d3"
@@ -131,13 +134,13 @@
        :ref _ref 
        :style {:height header-height
                :width header-width}}
-      ($ toddler/DropdownArea
+      ($ dropdown/Area
          {:value locale
           :options [:hr :en :fa]
           :search-fn name
           :onChange (fn [v] (set-user! assoc-in [:settings :locale] v))}
          ($ LocaleDropdown)
-         ($ toddler/DropdownPopup)))))
+         ($ dropdown/Popup)))))
 
 
 (defstyled header Header
@@ -153,10 +156,10 @@
 (defnc EmptyContent
   [{:keys [className]}]
   (let [window (use-window-dimensions)]
-    ($ toddler/row
+    ($ ui/row
        {:className className
         :position :center}
-       ($ toddler/row
+       ($ ui/row
           {:position :center
            :style #js {:height (:height window)}}
           "Select a component from the list"))))

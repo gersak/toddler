@@ -13,6 +13,7 @@
     [vura.core :refer [round-number]]
     [helix.styled-components :refer [defstyled --themed]]
     [toddler.elements.scroll :refer [SimpleBar]]
+    [toddler.ui :as ui]
     [toddler.util :as util]))
 
 (.log js/console "Loading toddler.elements.popup")
@@ -435,6 +436,7 @@
           {:id "toddler-popups"
            :ref #(reset! container %)})))))
 
+
 (defnc Area
   [{:keys [render className] 
     :or {render "div"} 
@@ -463,10 +465,9 @@
 (.log js/console "Loaded toddler.elements.popup!")
 
 (defnc Element
-  [{:keys [preference style className offset wrapper onChange items]
+  [{:keys [preference style className offset onChange items]
     :or {preference default-preference
-         offset 5
-         wrapper element}
+         offset 5}
     :as props} ref]
   {:helix/features {:fast-refresh true}
    :wrap [(react/forwardRef)]}
@@ -503,7 +504,7 @@
         {:context *dimensions*
          :value computed}
         (<>
-          ($ wrapper
+          ($ ui/wrapper
              {:ref #(reset! dummy %)
               :className className
               :style (->js
@@ -520,7 +521,7 @@
              ; (if (and computed (not (ok-candidate? computed)))
              (c/children props))
           (when computed
-            ($ wrapper
+            ($ ui/wrapper
                {:ref #(reset! (or ref el) %)
                 :className className
                 :style (->js

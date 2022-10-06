@@ -9,13 +9,12 @@
     [helix.core :refer [$ defhook defnc provider]]
     [helix.hooks :as hooks]
     [helix.dom :as d]
-    [helix.children :as c]
     clojure.string
-    [toddler.hooks :refer [use-idle]]
     [toddler.elements.dropdown
      :refer [*dropdown*]]
     [toddler.elements.popup
      :as popup]
+    [toddler.ui :as ui]
     ["toddler-icons$default" :as icon]))
 
 (defn get-available-options 
@@ -201,10 +200,7 @@
 
 
 (defnc Element
-  [{rinput :render/input
-    rpopup :render/popup
-    roption :render/option
-    :keys [className context-fn search-fn disabled placeholder]
+  [{:keys [className context-fn search-fn disabled placeholder]
     :or {search-fn str}
     :as props}]
   (let [[area-position set-area-position!] (hooks/use-state nil)
@@ -227,7 +223,7 @@
           {:className className}
           (map
             (fn [option]
-              ($ roption
+              ($ ui/option
                 {:key (search-fn option)
                  :value option
                  :onRemove #(remove! option)
@@ -240,8 +236,8 @@
               :onClick #(when-not (empty? options) (open!))
               :className "dropdown"}
              (when (or (fn? new-fn) (not-empty options))
-               ($ rinput {:placeholder placeholder}))
-             ($ rpopup)))))))
+               ($ ui/input {:placeholder placeholder}))
+             ($ ui/popup)))))))
 
 
 
@@ -259,7 +255,7 @@
            onRemove
            disabled
            className
-           render/content]
+           content]
     :or {content DefaultOption}}]
   (let [on-remove (some #(when (fn? %) %) [onRemove on-remove])]
     (d/div

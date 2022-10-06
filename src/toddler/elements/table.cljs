@@ -17,6 +17,7 @@
      :refer [defstyled
              --themed]]
     [helix.spring :as spring]
+    [toddler.ui :as ui]
     [toddler.elements :as toddler]
     [toddler.hooks
      :refer [use-delayed
@@ -61,19 +62,16 @@
   nil)
 
 
-(defhook use-cell-renderer [column]
-  (let [f (hooks/use-context *cell-renderer*)]
-    (if (ifn? f) (or (f column) NotImplemented)
-      NotImplemented)))
-
 
 (defnc Cell
   [{{:keys [style level]
+     render :cell
      :as column} :column
     :keys [className]}]
   {:wrap [(memo #(= (:column %1) (:column %2)))]}
-  (let [render (use-cell-renderer column)
-        w (get style :width 100)]
+  (when (nil? render)
+    (.error "Cell renderer not specified for culumn " (pr-str column)))
+  (let [w (get style :width 100)]
     ;; Field dispatcher
     (d/div
       {:class className
@@ -148,22 +146,19 @@
         (c/children props)))))
 
 
-(defhook use-header-renderer [column]
-  (let [f (hooks/use-context *header-renderer*)]
-    (if (ifn? f) (or (f column) NotImplemented)
-      NotImplemented)))
-
 
 (defnc Header
   [{{:keys [style level]
      n :label
+     render :header
      :as column} :column
     :keys [className]
     :as props}
    _ref]
   {:wrap [(react/forwardRef)]}
-  (let [render (use-header-renderer column)
-        w (get style :width 100)]
+  (when (nil? render)
+    (.error "Header renderer not specified for culumn " (pr-str column)))
+  (let [w (get style :width 100)]
     (d/div
       {:class className
        :style (merge
@@ -443,7 +438,7 @@
                rows)))))))
 
 
-(defstyled table-button toddler/button
+(defstyled table-button ui/button
   {:display "flex"
    :justify-content "center"
    :align-items "center"
@@ -463,13 +458,15 @@
 
 (def $action-input
   {(str \&
-        toddler/dropdown-field-wrapper 
+        ui/wrapper
+        #_toddler/dropdown-field-wrapper 
         \space 
-        toddler/dropdown-field-discard)
+        ui/discard
+        #_toddler/dropdown-field-discard)
    {:color "transparent"}
    ;;
-   (str \& toddler/dropdown-field-wrapper ":hover")
-   {(str toddler/dropdown-field-discard) {:color "inherit"}}})
+   (str \& ui/wrapper #_toddler/dropdown-field-wrapper ":hover")
+   {(str ui/discard #_toddler/dropdown-field-discard) {:color "inherit"}}})
 
 
 (defnc ClearButton
@@ -523,7 +520,7 @@
 
 
 (defnc UUIDCell
-  [{:keys [className]}]
+  [props]
   (let [[visible? set-visible!] (hooks/use-state nil)
         hidden? (use-delayed (not visible?) 300)
         area (hooks/use-ref nil)
@@ -537,8 +534,10 @@
         :onMouseEnter (fn [] 
                         (set-copied! nil)
                         (set-visible! true))}
-       ($ uuid-button
-          {:context :fun
+       ($ c/children props)
+       #_($ uuid-button
+          {:className className
+           :context :fun
            :onClick (fn [] 
                       (when-not copied?
                         (.writeText js/navigator.clipboard (str value))
@@ -552,8 +551,7 @@
                      :animationDuration ".5s"
                      :animationDelay ".3s"}
              :preference popup/cross-preference
-             :className (str className " animated fadeIn" 
-                             (when copied? " copied"))}
+             :className (str  "uuid-popup" (when copied? " copied"))}
             (d/div {:class "info-tooltip"} (str value)))))))
 
 
@@ -591,7 +589,7 @@
                  (assoc r (get-in options [idx :value]) idx))
                nil
                options')]))]
-    ($ toddler/DropdownElement
+    ($ ui/dropdown #_toddler/DropdownElement
        {:value (get vm value) 
         :className className
         :searchable? false
@@ -627,7 +625,7 @@
          :or {format :datetime}
          :as column} (use-column)
         [value set-value!] (use-cell-state column)] 
-    ($ toddler/TimestampDropdownElement
+    ($ ui/dropdown #_toddler/TimestampDropdownElement
        {:value value
         :onChange (fn [v] (when-not read-only (set-value! v)))
         :format format
@@ -800,7 +798,7 @@
   [props]
   (let [{:keys [read-only disabled] :as column} (use-column)
         [value] (use-cell-state column)]
-    ($ toddler/DropdownElement
+    ($ ui/dropdown #_toddler/DropdownElement
        {:render/img toddler/UserDropdownAvatar
         :value value
         & props}
@@ -827,7 +825,7 @@
 (defnc UserDropdownOption
   [{:keys [option] :as props} ref]
   {:wrap [(react/forwardRef)]}
-  ($ toddler/dropdown-option
+  ($ ui/option #_toddler/dropdown-option
     {:ref ref
      & (dissoc props :ref)}
     ($ toddler/avatar {:size :small & option})
@@ -836,7 +834,7 @@
 
 (defnc UserDropdownPopup
   [props]
-  ($ toddler/DropdownPopup
+  ($ ui/popup #_toddler/DropdownPopup
     {:render/option UserDropdownOption
      & props}))
 
@@ -1074,13 +1072,12 @@
         {:className "header"}
         ($ SortElement {& header})
         ($ ColumnNameElement {& header}))
-      ($ toddler/PeriodDropdownElement
+      ($ ui/dropdown #_toddler/PeriodDropdownElement
          {:value [from to]
           :placeholder "Filter period..."
           :className "filter"
-          :render/field toddler/PeriodInput
-          ;; FIXME - PeriodDropdownElement is calling onChange even
-          ;; though there were no change. This should be fixed!
+          ;FIXME
+          ; :render/field toddler/PeriodInput
           :onChange (fn [[from to]] 
                       (dispatch
                         {:type :table.column/filter
@@ -1146,7 +1143,9 @@
              ($ popup/Element
                 {:ref popup
                  :preference popup-menu-preference
-                 :wrapper toddler/dropdown-popup}
+                 ; FIXME
+                 ; :wrapper toddler/dropdown-popup
+                 }
                 ($ rpopup {:onChange toggle}))))))))
 
 
@@ -1181,7 +1180,7 @@
          (d/div
            {:className "filter"
             :onClick #(set-opened! true)}
-           ($ toddler/checkbox
+           ($ ui/checkbox
               {:active (if (nil? v) nil (boolean (not-empty v)))}))
          (when (and (not-empty options) opened?) 
            ($ popup/Element
@@ -1260,7 +1259,7 @@
 (defstyled boolean-popup BooleanFilter 
   {:display "flex"
    :flex-direction "row"
- (str toddler/checkbox-button) {:margin "1px 2px"}})
+ (str ui/checkbox) {:margin "1px 2px"}})
 
 
 (defstyled boolean-header BooleanHeader 

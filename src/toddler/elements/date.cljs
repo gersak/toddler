@@ -613,7 +613,7 @@
          :className "input"
          :readOnly true
          :value (if (or (nil? value) (every? nil? value))
-                  " - "
+                  nil
                   (str
                     (if from (translate from format) " ")
                     " - "

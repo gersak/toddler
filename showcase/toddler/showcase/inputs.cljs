@@ -7,62 +7,32 @@
    [toddler.elements :as toddler]))
 
 
-(defnc AutosizeInput
-  []
-  (let [[state set-state!] (hooks/use-state "")]
-    (letfn [(on-change [e]
-              (set-state! (.. e -target -value)))]
-      ($ dev/centered-component
-         ($ toddler/input-field
-            {:name "user name"
-             :value state
-             :onChange on-change})))))
+; (defnc AvatarImage
+;   []
+;   (let [[state set-state!] (hooks/use-state 100)]
+;     (<>
+;      ($ toddler/slider
+;         {:width "300px"
+;          :min "10"
+;          :max "500"
+;          :value (str state)
+;          :onChange (fn [e] (set-state! (.-value (.-target e))))})
+;      (d/br)
+;      ($ toddler/avatar
+;         {:size (int state)
+;          :avatar "https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg"}))))
 
 
-(dev/add-component
- {:key ::autosize-input
-  :name "AutosizeInput"
-  :render AutosizeInput})
+; (dev/add-component
+;  {:key ::avatar-image
+;   :name "Avatar image"
+;   :render AvatarImage})
 
 
-(defnc AvatarImage
-  []
-  (let [[state set-state!] (hooks/use-state 100)]
-    (<>
-     ($ toddler/slider
-        {:width "300px"
-         :min "10"
-         :max "500"
-         :value (str state)
-         :onChange (fn [e] (set-state! (.-value (.-target e))))})
-     (d/br)
-     ($ toddler/avatar
-        {:size (int state)
-         :avatar "https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg"}))))
-
-
-(dev/add-component
- {:key ::avatar-image
-  :name "Avatar image"
-  :render AvatarImage})
-
-
-(defnc TimestampCalendar
-  []
-  (let [[state set-state!] (hooks/use-state nil)]
-    ($ toddler/TimestampCalendarElement
-       {:value state
-        :onChange (fn [v] (set-state! v))})))
-
-
-(dev/add-component
- {:key ::timestamp-calendar
-  :name "Timestamp Calendar"
-  :render TimestampCalendar})
 
 (defnc InputTypes
   []
-  (let [[state set-state!] (hooks/use-state {:number-input 0
+  #_(let [[state set-state!] (hooks/use-state {:number-input 0
                                              :free-input ""
                                              :check-box false
                                              :auto-size-input ""
@@ -156,15 +126,15 @@
   :render InputTypes})
 
 
-(defnc PeriodInput
-  []
-  (let [[state set-state!] (hooks/use-state [(js/Date.) (js/Date. "2022-10-01T12:00:00")])]
-    ($ toddler/PeriodDropdownElement
-       {:value state
-        :onChange (fn [v] (set-state! v))})))
+; (defnc PeriodInput
+;   []
+;   (let [[state set-state!] (hooks/use-state [(js/Date.) (js/Date. "2022-10-01T12:00:00")])]
+;     ($ toddler/PeriodDropdownElement
+;        {:value state
+;         :onChange (fn [v] (set-state! v))})))
 
 
-(dev/add-component
- {:key ::period-input
-  :name "Period input"
-  :render PeriodInput})
+; (dev/add-component
+;  {:key ::period-input
+;   :name "Period input"
+;   :render PeriodInput})

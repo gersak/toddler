@@ -1,15 +1,14 @@
 (ns toddler.showcase.ui
   (:require
-   [helix.core :refer [$ defnc <>]]
+   [helix.core :refer [$ defnc]]
    [helix.hooks :as hooks]
-   [helix.dom :as d]
+   ; [helix.dom :as d]
    [toddler.ui :as ui]
    [toddler.ui.default :as default]
-   [toddler.dev :as dev]
-   [toddler.elements :as toddler]))
+   [toddler.dev :as dev]))
 
 
-(defnc InputTypes
+(defnc Fields
   []
   (let [[state set-state!] (hooks/use-state {:number-input 0
                                              :free-input ""
@@ -22,70 +21,77 @@
                                              :multiselect-field ["jedan" "dva" "tri"]
                                              :textarea-field "I am text"
                                              :period-input 123213213})]
-    (<>
-     ($ toddler/row
-        ($ ui/input-field
-           {:name "Auto-size free input"
-            :value (:free-input state)
-            :onChange (fn [e] (set-state! (assoc state :free-input (.. e -target -value))))}))
-     ($ toddler/row
-        ($ toddler/checkbox-field
-           {:name "Checkbox field"
-            :active (:check-box state)
-            :onClick (fn [] (set-state! update :check-box not))}))
-     ($ toddler/row
-        ($ ui/integer-field
-           {:name "Integer field"
-            :value (:integer-field state)
-            :onChange (fn [v] (set-state! assoc :integer-field v))}))
-     ($ toddler/row
-        ($ ui/float-field
-           {:name "Float field"
-            :value (:float-field state)
-            :onChange (fn [v] (set-state! assoc :float-field v))}))
-     ($ toddler/row
-        ($ ui/multiselect-field
-           {:name "Multi-select field"
-            :value (:multiselect-field state)
-            :placeholder "Add item"
-            :options ["sto" "dvijesto" "tristo"]
-            :onRemove (fn [v] (set-state! assoc :multiselect-field v))
-            :onChange (fn [v] (set-state! assoc :multiselect-field v))}))
-     ($ toddler/row
-        ($ ui/dropdown-field
-           {:name "Dropdown field"
-            :value (:dropdown-field state)
-            :new-fn identity
-            :placeholder "Maybe pick item"
-            :options ["sto" "dvijesto" "tristo"]
-            :onRemove (fn [v] (set-state! assoc :dropdown-field v))
-            :onChange (fn [v] (set-state! assoc :dropdown-field v))}))
-     ($ toddler/row
-        ($ ui/text-field
-           {:name "Text area field"
-            :value (:textarea-field state)
-            :onChange (fn [e] (set-state! assoc :textarea-field (.. e -target -value)))}))
+     ($ default/Provider
+        ($ ui/row
+           ($ ui/input-field
+              {:name "Auto-size free input"
+               :value (:free-input state)
+               :onChange (fn [e] (set-state! (assoc state :free-input (.. e -target -value))))}))
+        ($ ui/row
+           ($ ui/boolean-field
+              {:name "Checkbox field"
+               :value (:boolean-field state)
+               :onClick (fn [] (set-state! update :boolean-field not))}))
+        ($ ui/row
+           ($ ui/integer-field
+              {:name "Integer field"
+               :value (:integer-field state)
+               :onChange (fn [v] (set-state! assoc :integer-field v))}))
+        ($ ui/row
+           ($ ui/float-field
+              {:name "Float field"
+               :value (:float-field state)
+               :onChange (fn [v] (set-state! assoc :float-field v))}))
+        ($ ui/row
+           ($ ui/multiselect-field
+              {:name "Multi-select field"
+               :value (:multiselect-field state)
+               :placeholder "Add item"
+               :options ["sto" "dvijesto" "tristo"]
+               :onRemove (fn [v] (set-state! assoc :multiselect-field v))
+               :onChange (fn [v] (set-state! assoc :multiselect-field v))}))
+        ($ ui/row
+           ($ ui/dropdown-field
+              {:name "Dropdown field"
+               :value (:dropdown-field state)
+               :new-fn identity
+               :placeholder "Maybe pick item"
+               :options ["sto" "dvijesto" "tristo"]
+               :onRemove (fn [v] (set-state! assoc :dropdown-field v))
+               :onChange (fn [v] (set-state! assoc :dropdown-field v))}))
+        ($ ui/row
+           ($ ui/text-field
+              {:name "Text area field"
+               :value (:textarea-field state)
+               :onChange (fn [e] (set-state! assoc :textarea-field (.. e -target -value)))}))
 
-     ($ toddler/row
-        ($ ui/timestamp-field
-           {:name "Timestamp field"
-            :value (:timestamp-field state)
-            :placeholder "Click to open calendar"
-            :onChange #(set-state! assoc :timestamp-field %)}))
-     ($ toddler/row
-        ($ ui/period-field
-           {:name "Period input"
-            :value (:period-field state)
-            :onChange (fn [v] (set-state! assoc :period-field v))})))))
+        ($ ui/row
+           ($ ui/timestamp-field
+              {:name "Timestamp field"
+               :value (:timestamp-field state)
+               :placeholder "Click to open calendar"
+               :onChange #(set-state! assoc :timestamp-field %)}))
+        ($ ui/row
+           ($ ui/period-field
+              {:name "Period input"
+               :placeholder "Click to open period dropdown"
+               :value (:period-field state)
+               :onChange (fn [v] (set-state! assoc :period-field v))})))))
 
-
-(defn Default
-   []
-   ($ default/Provider
-      ($ InputTypes)))
 
 
 (dev/add-component
- {:key ::ui-testing
-  :name "UI"
-  :render Default})
+   {:key ::fields
+    :name "Fields"
+    :render Fields})
+
+
+(defnc Table
+   []
+   "hi")
+
+
+(dev/add-component
+   {:key ::table
+    :name "Table"
+    :render Table})
