@@ -6,7 +6,7 @@
     ; [clojure.core.async :as async]
     [goog.string.format]
     [vura.core :as vura]
-    [cljs-bean.core :refer [->js]]
+    [cljs-bean.core :refer [->js ->clj]]
     [helix.styled-components :refer [defstyled --themed]]
     [helix.core
      :refer [$ defnc fnc provider
@@ -99,7 +99,7 @@
   (d/div
     {:ref _ref
      :className className
-     :style (->js style)
+     :style style 
      :position position}
     (when label
       (d/div
@@ -114,7 +114,7 @@
   (d/div
     {:ref _ref
      :className className
-     :style (->js style)
+     :style style 
      :position position}
     (when label
       (d/div

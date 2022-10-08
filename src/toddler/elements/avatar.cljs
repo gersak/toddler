@@ -2,11 +2,14 @@
   (:require
     [goog.object]
     [toddler.ui :as ui]
+    [vura.core :refer [round-number]]
+    [clojure.core.async :as async]
     [helix.core :refer [defnc $ <> create-context defhook provider]]
     [helix.hooks :as hooks]
     [helix.dom :as d]
     [helix.konva :as konva]
     [helix.children :as c]
+    [helix.styled-components :refer [defstyled]]
     [helix.image :refer [use-image]]))
 
 
@@ -16,17 +19,6 @@
 (defhook use-avatar-root
   []
   (hooks/use-context *avatar-root*))
-
-(defnc Avatar
-  [{:keys [avatar className]}]
-  (let [root (use-avatar-root)
-        avatar' (when avatar
-                  (if (re-find #"^data:image" avatar)
-                    avatar
-                    (str root avatar)))]
-    (d/img
-      {:class className
-       :src avatar'})))
 
 
 (defnc Image
@@ -67,7 +59,7 @@
   (hooks/use-context *stage*))
 
 
-(defnc Stage [{:keys [image className size]
+(defnc EditorStage [{:keys [image className size]
                :or {size 144}
                :as props} _ref]
   {:wrap [(ui/forward-ref)]}
@@ -94,8 +86,6 @@
                        :style {:z-index "10"}})]
     (hooks/use-effect
       [image]
-      (println "Image reloaded!")
-      (.log js/console image)
       (set-layer-zoom 0.5)
       (when image
         (set-avatar!
@@ -138,7 +128,7 @@
                           (set-layer-zoom new-scale)))}
             ($ Image
                {:avatar avatar
-                :onChange (fn [delta]  (set-avatar! merge delta))}))
+                :onChange (fn [delta] (set-avatar! merge delta))}))
           (konva/Layer
             (konva/Rect
               {& frame-props}))))
@@ -148,14 +138,14 @@
         (c/children props)))))
 
 
-(defnc Editor []
+(defnc Editor [{:keys [size]}]
   (let [stage (hooks/use-ref nil)
         [file set-file] (hooks/use-state nil)
         [image] (use-image file "anonymous")]
-    ($ Stage
+    ($ EditorStage
        {:ref #(reset! stage %)
         :image image
-        :size 500}
+        :size size}
        (<>
          ($ ui/button
             {:onClick (fn []
@@ -180,3 +170,148 @@
                                              (goog.object/set "src" url))]
                                    (set-file (.-src img)))))
                    :style {:color "teal"}})))))
+
+
+(defnc GeneratorStage
+  [{:keys [className size squares color background style]
+    :or {size 500
+         squares 16
+         color "gray"
+         background "white"}
+    :as props} _ref]
+  {:wrap [(ui/forward-ref)]}
+  (let [squares (hooks/use-memo
+                  [size squares color background]
+                  (let [squares (round-number (/ squares 2) 1 :floor)
+                        square-size (/ size squares)]
+                    (reduce
+                      concat
+                      (for [x (range squares) y (range squares)
+                            :let [draw? (rand-nth [true false])]]
+                        [{:key (str [x y])
+                          :x (* x square-size)
+                          :y (* y square-size)
+                          :fill (if draw? color background)
+                          :width square-size
+                          :height square-size}
+                         {:key (str [(+ squares (- squares x)) y])
+                          :x (- size square-size (* x square-size))
+                          :y (* y square-size)
+                          :fill (if draw? color background)
+                          :width square-size
+                          :height square-size}]))))]
+    (<>
+      (d/div
+        {:className className
+         :style style}
+        (konva/Stage
+          {:width size
+           :height size
+           :ref _ref}
+          (konva/Layer
+            (map
+              (fn [square]
+                (konva/Rect {& square}))
+              squares))))
+      (c/children props))))
+
+
+(defstyled hidden-generator GeneratorStage
+  {:visibility "hidden"
+   :position "fixed"
+   :top 0
+   :left 0})
+
+
+(def ^:dynamic *generator-queue* ^js (create-context))
+
+(defhook use-generator-queue [] (hooks/use-context *generator-queue*))
+
+
+(defnc Generator
+  [{:keys [palette]
+    :or {palette ["#FB8B24"
+                  "#EA4746"
+                  "#E22557"
+                  "#AE0366"
+                  "#820263"
+                  "#560D42"
+                  "#175F4C"
+                  "#04A777"
+                  "#46A6C9"
+                  "#385F75"
+                  "#313B4B"
+                  "#613C69"
+                  "#913D86"
+                  "#F03FC1"]}
+    :as props}]
+  (let [[color set-color!] (hooks/use-state (rand-nth palette))
+        queue (hooks/use-memo :once (async/chan 500))
+        stage (hooks/use-ref nil)
+        requests (hooks/use-ref nil)]
+    (hooks/use-effect
+      :once
+      (let [close? (async/chan)]
+        (async/go-loop []
+          (async/alt!
+            ;;
+            close?
+            ([_] (.log js/console "Closing generator"))
+            ;;
+            queue
+            ([request-channel]
+             (if (empty? @requests)
+               (do
+                 (.log js/console "Adding avatar request and restarting")
+                 (reset! requests [request-channel])
+                 (set-color! (rand-nth palette)))
+               (do
+                 (.log js/console "Adding avatar request without restarting")
+                 (swap! requests (fnil conj []) request-channel)))
+             (recur))))
+        (fn [] (async/close! close?))))
+    (hooks/use-layout-effect
+      [color]
+      (let [[request] @requests]
+        (when (and @stage request)
+          (async/put! request (.toDataURL @stage))
+          (swap! requests (comp vec rest))
+          (when (not-empty @requests)
+            (set-color! (rand-nth palette))))))
+    (provider
+      {:context *generator-queue*
+       :value queue}
+      ($ hidden-generator
+         {:color color 
+          :background "white"
+          :ref stage})
+      (c/children props))))
+
+
+
+(defnc Avatar
+  [{:keys [value className onGenerate]}]
+  (let [root (use-avatar-root)
+        [avatar set-avatar!] (hooks/use-state nil)
+        generator-queue (use-generator-queue)]
+    (hooks/use-memo
+      [value]
+      (if (some? value)
+        (if (re-find #"^data:image" value)
+          (when-not (= value avatar) (set-avatar! avatar))
+          (let [url (str root value)]
+            (when-not (= avatar url) (set-avatar! url))))
+        (when (some? generator-queue)
+          (async/go
+            ;; create generated promise
+            (let [generated (async/promise-chan)]
+              ;; send promise to generator queue
+              (async/>! generator-queue generated)
+              ;; then wait for generated result
+              (let [avatar (async/<! generated)]
+                ;; and handle stuff
+                (when (fn? onGenerate) (onGenerate avatar))
+                (set-avatar! avatar)))))))
+    (d/img
+      {:className className
+       :src avatar})))
