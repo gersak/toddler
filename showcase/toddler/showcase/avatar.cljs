@@ -73,14 +73,20 @@
    {:width 144})
 
 
+(defstyled avatars-row ui/row
+   {:display "flex"
+    :flex-wrap "wrap"
+    :flex-grow "1"})
+
+
 (defnc Avatar
    []
    ($ UI
       {:components default/components}
       ($ a/Generator
-         ($ avatar)
-         ($ avatar)
-         ($ avatar))))
+         (map
+            (fn [x] ($ avatar {:key x}))
+            (range 100)))))
 
 (dev/add-component
    {:key ::avatar

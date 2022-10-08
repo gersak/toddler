@@ -138,7 +138,8 @@
         (c/children props)))))
 
 
-(defnc Editor [{:keys [size]}]
+(defnc Editor [{:keys [size]
+                :or {size 250}}]
   (let [stage (hooks/use-ref nil)
         [file set-file] (hooks/use-state nil)
         [image] (use-image file "anonymous")]
@@ -271,13 +272,13 @@
              (recur))))
         (fn [] (async/close! close?))))
     (hooks/use-layout-effect
-      [color]
+      :always
       (let [[request] @requests]
         (when (and @stage request)
           (async/put! request (.toDataURL @stage))
           (swap! requests (comp vec rest))
           (when (not-empty @requests)
-            (set-color! (rand-nth palette))))))
+            (async/go (set-color! (rand-nth (remove #{color} palette))))))))
     (provider
       {:context *generator-queue*
        :value queue}
