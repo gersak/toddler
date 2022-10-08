@@ -204,7 +204,6 @@
       ;; Always check if everything is observedd!
       (hooks/use-effect
         :always
-        (.log js/console @nodes)
         (doseq [k ks
                 :let [observer (get @observers k)
                       node (get @nodes k)]

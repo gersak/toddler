@@ -5,7 +5,8 @@
    [helix.core :refer [$]]
    toddler.showcase.inputs
    toddler.showcase.table
-   toddler.showcase.ui))
+   toddler.showcase.ui
+   toddler.showcase.avatar))
 
 
 (.log js/console "Loaded showcase!")

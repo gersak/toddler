@@ -27,6 +27,7 @@
     "react-router-dom": "^6.4.2",
     "react-spring": "^9.5.5",
     "simplebar-react": "^2.4.3",
-    "styled-components": "^5.3.6"
+    "styled-components": "^5.3.6",
+    "use-image": "^1.1.0"
   }
 }
