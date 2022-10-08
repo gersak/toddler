@@ -12,6 +12,7 @@
     [toddler.elements.dropdown :as dropdown]
     [toddler.elements.multiselect :as multiselect]
     [toddler.elements.date :as date]
+    [toddler.ui :as ui]
     [toddler.ui.default.color :refer [color]]
     [toddler.ui.provider :refer [ExtendUI UI]]
     ["toddler-icons$default" :as icon]))
@@ -493,12 +494,205 @@
     :flex-direction "row"}})
 
 
+(defstyled avatar e/Avatar
+  nil
+  (fn [{:keys [theme size]
+        :or {size 36}}]
+    (let [size' (case size
+                  :small 20
+                  :medium 36
+                  :large 144
+                  size)]
+      (case (:name theme)
+        {:border-radius 20
+         :width size'
+         ; :margin "0 5px"
+         :height size'}))))
+
+
+(defstyled small-avatar e/Avatar
+  {:border-radius 20
+   :width 20
+   :height 20})
+
+
+(defstyled medium-avatar e/Avatar
+  {:border-radius 20
+   :width 36
+   :height 36})
+
+(defstyled large-avatar e/Avatar
+  {:border-radius 20
+   :width 144
+   :height 144})
+
+
+(defstyled user-dropdown-option e/UserDropdownOption
+  {(str avatar) {:margin-right 5}})
+
+
+(defstyled user-dropdown-input e/UserDropdownInput
+  {:font-size "12"
+   (str avatar) {:margin-right 5}})
+
+
+(defnc UserPopup
+  [props]
+  ($ ExtendUI
+    {:components
+     {:wrapper dropdown-wrapper
+      :option user-dropdown-option}}
+    ($ dropdown/Popup
+       {& props})))
+
+
+(defstyled user-popup UserPopup
+  {:max-height 250})
+
+
+(defnc UserInput
+  [props]
+  ($ UI
+    {:components
+     {:img ui/avatar
+      :input autosize-input
+      :wrapper "div"}}
+    ($ dropdown/Input
+       {& props})))
+
+
+(defnc UserElement
+  [props]
+  ($ ExtendUI
+    {:components
+     {:popup user-popup
+      :input UserInput}}
+    ($ dropdown/Element
+       {:search-fn :name
+        & (dissoc props :search-fn)})))
+
+
+(defstyled user UserElement
+  {:display "flex"
+   :align-items "center"}
+  (fn [{:keys [disabled read-only]}]
+    (let [cursor (if (or disabled read-only)
+                   "default"
+                   "pointer")]
+      (cond->
+        {:color (color :gray)
+         :cursor cursor
+         :input {:cursor cursor}}
+        (or disabled read-only) (assoc :pointer-events "none")))))
+
+
+(let [search-fn :name]
+  (defnc GroupElement
+    [props]
+    ($ dropdown/Element
+      {:search-fn search-fn
+       & (dissoc props :search-fn)})))
+
+
+
+
+
+(defstyled group e/GroupElement
+  {:display "flex"
+   :align-items "center"}
+  (fn [{:keys [disabled read-only]}]
+    (let [cursor (if (or disabled read-only)
+                   "default"
+                   "pointer")]
+      (cond->
+        {:color (color :gray)
+         :cursor cursor
+         :input {:cursor cursor}}
+        (or disabled read-only) (assoc :pointer-events "none")))))
+
+
+(let [size 32
+      inner 26
+      icon 14]
+  (defstyled card-action e/CardAction
+    {:height size
+     :width size
+     :display "flex"
+     :justify-content "center"
+     :align-items "center"
+     :border-radius size
+     ".action"
+     {:width inner
+      :height inner
+      :border-radius inner
+      :cursor "pointer"
+      :transition "color,background-color .2s ease-in-out"
+      :display "flex"
+      :justify-content "center"
+      :align-items "center"
+      :svg {:height icon
+            :width icon}}}
+    (fn [{:keys [context]}]
+      {:background-color (color :white)
+       ".action:hover"
+       (case context
+         :negative
+         {:background-color (color :red)
+          :color "#fff8f3"}
+         {:background-color (color :teal)
+          :color "#fff8f3"})
+       ".action"
+       {:background-color "#929292"
+        :color (color :gray/light)}})))
+
+
+(defstyled card-actions e/CardActions
+  {:position "absolute"
+   :top -16
+   :right -16
+   ".wrapper"
+   {:display "flex"
+    :flex-direction "row"
+    :justify-content "flex-end"
+    :align-items "center"}})
+
+
+(defstyled card "div"
+  {:position "relative"
+   :display "flex"
+   :flex-direction "column"
+   :max-width 300
+   :min-width 180
+   :padding "10px 10px 5px 10px"
+   :background-color "#eaeaea"
+   :border-radius 5
+   :transition "box-shadow .2s ease-in-out"
+   ":hover" {:box-shadow "1px 4px 11px 1px #ababab"}
+   (str card-actions) {:opacity "0"
+                       :transition "opacity .4s ease-in-out"}
+   (str ":hover " card-actions) {:opacity "1"}
+   ;;
+   (str avatar)
+   {:position "absolute"
+    :left -10
+    :top -10
+    :transition "all .1s ease-in-out"}})
+
+
+
 (def components
   {:row row
+   :card card
+   :card/action card-action
+   :card/actions card-actions
+   :user user
+   :group group
+   :avatar avatar
    :column column
    :checkbox checkbox
    :button button
    :buttons buttons
+   :simplebar e/simplebar
    :calendar/year-dropdown calendar-year-dropdown
    :calendar/month-dropdown calendar-month-dropdown
    :calendar/month calendar-month})

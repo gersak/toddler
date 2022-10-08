@@ -12,7 +12,6 @@
 (defcomponent avatar :avatar)
 (defcomponent row :row)
 (defcomponent column :column)
-(defcomponent card :card)
 (defcomponent form :form)
 (defcomponent checkbox :checkbox)
 (defcomponent button :button)
@@ -25,9 +24,16 @@
 (defcomponent wrapper :wrapper)
 (defcomponent discard :discard)
 (defcomponent dropdown :dropdown)
-(defcomponent img :dropdown)
+(defcomponent img :img)
 (defcomponent header :header)
+(defcomponent user :user)
+(defcomponent group :group)
+(defcomponent tooltip tooltip)
 
+
+(defcomponent card :card)
+(defcomponent card-action :card/action)
+(defcomponent card-actions :card/actions)
 
 
 (defcomponent calendar-month-dropdown :calendar/month-dropdown)

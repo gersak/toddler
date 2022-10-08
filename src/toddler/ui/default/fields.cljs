@@ -329,6 +329,60 @@
    :color (color :gray)})
 
 
+(defstyled user-avatar e/small-avatar
+  {:margin-right 8})
+
+
+(defnc UserFieldInput
+  [props]
+  ($ UI
+    {:components
+     {:img user-avatar
+      :input autosize-input
+      :wrapper dropdown-field-wrapper}}
+    ($ dropdown/Input
+       {& props})))
+
+
+(defstyled user-field-input UserFieldInput
+  {:display "flex"
+   :align-items "center"})
+
+
+(defnc UserElement
+  [props]
+  ($ ExtendUI
+    {:components
+     {:popup e/user-popup
+      :input user-field-input}}
+    ($ dropdown/Element
+       {:search-fn :name
+        & (dissoc props :search-fn)})))
+
+
+(defnc UserField
+  [props]
+  ($ default-field
+     {& props}
+     ($ UserElement
+        {:className "input"
+         & (->
+             props
+             (dissoc :name :style :className)
+             (update :value #(or % "")))})))
+
+
+(defnc GroupField
+  [props]
+  ($ default-field
+     {& props}
+     ($ ui/group
+        {:className "input"
+         & (->
+            props
+            (dissoc :name :style :className)
+            (update :value #(or % "")))})))
+
 
 (def components
   #:field {:text textarea-field
@@ -339,4 +393,6 @@
            :dropdown DropdownField
            :multiselect multiselect-field
            :timestamp TimestampField
-           :period PeriodField})
+           :period PeriodField
+           :group GroupField
+           :user UserField})

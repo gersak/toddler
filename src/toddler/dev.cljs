@@ -73,8 +73,7 @@
         :style #js {:height height 
                     :minWidth 300
                     :maxWidth 500}
-        :scrollableNodeProps #js {:ref _ref}
-        :ref _ref}
+        :scrollableNodeProps #js {:ref _ref}}
        (d/div
          {:className "title"}
          "TODDLER")

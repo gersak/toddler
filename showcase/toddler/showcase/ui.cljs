@@ -73,10 +73,16 @@
                :onChange #(set-state! assoc :timestamp-field %)}))
         ($ ui/row
            ($ ui/period-field
-              {:name "Period input"
+              {:name "Period Field"
                :placeholder "Click to open period dropdown"
                :value (:period-field state)
-               :onChange (fn [v] (set-state! assoc :period-field v))})))))
+               :onChange (fn [v] (set-state! assoc :period-field v))}))
+        ($ ui/row
+           ($ ui/user-field
+              {:name "User Field"
+               :placeholder "Click select user"
+               :value (:user-field state)
+               :onChange (fn [v] (set-state! assoc :user-field v))})))))
 
 
 

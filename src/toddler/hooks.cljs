@@ -195,13 +195,16 @@
                  [ks]
                  (reduce
                    (fn [r k]
-                     (assoc r k (fn [node] (swap! nodes assoc k node))))
+                     (assoc r k (fn [node]
+                                  (swap! nodes assoc k node))))
                    nil
                    ks))
           observers (hooks/use-ref nil)
           [dimensions set-dimensions!] (hooks/use-state nil)]
+      ;; Always check if everything is observedd!
       (hooks/use-effect
         :always
+        (.log js/console @nodes)
         (doseq [k ks
                 :let [observer (get @observers k)
                       node (get @nodes k)]
@@ -219,6 +222,7 @@
                                         :y (.-y content-rect)})))]
             (swap! observers assoc k (js/ResizeObserver. reset))
             (.observe (get @observers k) node))))
+      ;; Register on remove cleanup
       (hooks/use-effect
         :once
         (fn []

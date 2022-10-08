@@ -4,10 +4,9 @@
     clojure.string
     ; [clojure.data :refer [diff]]
     ; [clojure.core.async :as async]
-    [goog.string :as gstr]
     [goog.string.format]
     [vura.core :as vura]
-    [cljs-bean.core :refer [->clj ->js]]
+    [cljs-bean.core :refer [->js]]
     [helix.styled-components :refer [defstyled --themed]]
     [helix.core
      :refer [$ defnc fnc provider
@@ -19,9 +18,8 @@
     [toddler.app :as app]
     [toddler.hooks
      :refer [#_make-idle-service
+             use-delayed
              use-dimensions
-             use-translate
-             use-calendar
              use-idle]]
     [toddler.elements.input
      :refer [AutosizeInput
@@ -29,7 +27,6 @@
              IdleInput
              TextAreaElement
              SliderElement]]
-    [toddler.hooks :refer [use-delayed]]
     [toddler.elements.mask :refer [use-mask]]
     [toddler.elements.dropdown :as dropdown]
     [toddler.elements.multiselect :as multiselect]
@@ -37,7 +34,7 @@
     [toddler.elements.tooltip :as tip]
     [toddler.elements.scroll :refer [SimpleBar]]
     [toddler.ui :as ui]
-    [toddler.ui.provider :refer [UI]]
+    [toddler.ui.provider :refer [UI ExtendUI]]
     ["react" :as react]
     ["toddler-icons$default" :as icon]))
 
@@ -413,14 +410,6 @@
 
 ;; Avatar
 
-; (defnc Avatar
-;   [{:keys [avatar className]}]
-;   (let [avatar' (use-avatar avatar)] 
-;     (d/img 
-;       {:class className
-;        :src avatar'})))
-
-
 (def ^:dynamic *avatar-root* (create-context ""))
 
 
@@ -437,78 +426,26 @@
                     avatar
                     (str root avatar)))]
     (d/img
-     {:class className
-      :src avatar'})))
+      {:class className
+       :src avatar'})))
 
-(defstyled avatar Avatar
-  nil
-  (fn [{:keys [theme size]
-        :or {size 36}}]
-    (let [size' (case size
-                  :small 20
-                  :medium 36
-                  :large 144
-                  size)]
-      (case (:name theme)
-        {:border-radius 20
-         :width size'
-         ; :margin "0 5px"
-         :height size'}))))
 
-;; User field
 (defnc UserElement
   [props]
-  ($ dropdown/Element
-     {:search-fn :name
-      :render/img avatar
-      & (dissoc props :search-fn)}))
-
-
-(defstyled user UserElement
-  {:display "flex"
-   :align-items "center"}
-  --themed)
-
-
-(defnc UserField
-  [{:keys [render/field]
-    :as props}]
-  ($ field
-     {& props}
-     ($ UserElement
-        {:className "input"
-         & (->
-            props
-            (dissoc :name :style :className)
-            (update :value #(or % "")))})))
-
-;; Group field
-
-
-(defnc GroupElement
-  [props]
-  (let [search-fn :name]
+  ($ ExtendUI
+    {:components
+     {:img ui/avatar}}
     ($ dropdown/Element
-       {:search-fn search-fn
+       {:search-fn :name
         & (dissoc props :search-fn)})))
 
-(defstyled group GroupElement
-  {:display "flex"
-   :align-items "center"}
-  --themed)
 
-
-(defnc GroupField
-  [{:keys [render/field]
-    :as props}]
-  ($ field
-     {& props}
-     ($ GroupElement
-        {:className "input"
-         & (->
-            props
-            (dissoc :name :style :className)
-            (update :value #(or % "")))})))
+(let [search-fn :name]
+  (defnc GroupElement
+    [props]
+    ($ dropdown/Element
+      {:search-fn search-fn
+       & (dissoc props :search-fn)})))
 
 ;; User multiselect
 
@@ -516,7 +453,7 @@
 (defnc UserMultiselectElement
   [props]
   (let [search-fn :name
-        display-fn (fn [option] ($ avatar {& option}))]
+        display-fn (fn [option] ($ ui/avatar {& option}))]
     ($ multiselect/Element
        {:search-fn search-fn
         :display-fn display-fn
@@ -532,7 +469,7 @@
   [{:keys [className value]}]
   (d/div
    {:className className}
-   ($ avatar
+   ($ ui/avatar
       {:size :small
        & value})
    (:name value)))
@@ -556,62 +493,38 @@
   ($ ui/option
     {:ref ref
      & (dissoc props :ref :option)}
-    ($ avatar {:size :small & option})
+    ($ ui/avatar {:size :small & option})
     (:name option)))
 
-
-(defstyled user-dropdown-option UserDropdownOption
-  {(str avatar) {:margin-right 5}}
-  --themed)
 
 
 (defnc UserDropdownAvatar
   [props]
-  ($ avatar {:size :small & props}))
+  ($ ui/avatar {:size :small & props}))
 
 
 (defnc UserDropdownInput
   [props]
-  ($ ui/input
-    {:render/img UserDropdownAvatar
-     & props}))
-
-(defstyled user-dropdown-input UserDropdownInput
-  {:font-size "12"
-   (str avatar) {:margin-right 5}}
-  --themed)
+  ($ ExtendUI
+    {:components
+     {:img ui/avatar}}
+    ($ ui/input {& props})))
 
 
-(defnc UserDropdownPopup
-  [props]
-  ($ UI
-    {:components {:option user-dropdown-option}}
-    ($ ui/popup
-       {& props})))
 
-
-(defstyled user-dropdown-popup UserDropdownPopup
-  {:max-height 250})
-
-(defnc UserMultiselectField
-  [{:keys [render/field]
-    render-option :render/option
-    render-input :render/input
-    render-popup :render/popup
-    ; :or {field WrappedField
+; :or {field WrappedField
     ;      render-option user-tag
     ;      render-input user-dropdown-input
     ;      render-popup user-dropdown-popup}
-    :as props}]
+
+(defnc UserMultiselectField
+  [props]
   ($ ui/field {& props}
      (let [search-fn :name
-           display-fn (fn [option] ($ avatar {& option}))]
+           display-fn (fn [option] ($ ui/avatar {& option}))]
        ($ multiselect/Element
           {:search-fn search-fn
            :display-fn display-fn
-           :render/option render-option
-           :render/input render-input
-           :render/popup render-popup
            :className "multiselect"
            & (dissoc props :name :className :style)}))))
 
@@ -678,10 +591,8 @@
 
 (defnc CardAction
   [{:keys [className onClick tooltip disabled]
-    _icon :icon
-    render-tooltip :render/tooltip
-    :or {render-tooltip action-tooltip}}]
-  ($ render-tooltip
+    _icon :icon}]
+  ($ ui/tooltip
      {:message tooltip
       :disabled (or (empty? tooltip) disabled)}
      (d/div
@@ -689,32 +600,7 @@
       (d/div
        {:className "action"
         :onClick onClick}
-       ($ _icon)
-       #_($ fa {:icon _icon})))))
-
-
-(let [size 32
-      inner 26
-      icon 14]
-  (defstyled card-action CardAction
-    {:height size
-     :width size
-     :display "flex"
-     :justify-content "center"
-     :align-items "center"
-     :border-radius size
-     ".action"
-     {:width inner
-      :height inner
-      :border-radius inner
-      :cursor "pointer"
-      :transition "color,background-color .2s ease-in-out"
-      :display "flex"
-      :justify-content "center"
-      :align-items "center"
-      :svg {:height icon
-            :width icon}}}
-    --themed))
+       ($ _icon)))))
 
 
 (defnc CardActions
@@ -724,40 +610,6 @@
    (d/div
     {:className "wrapper"}
     (c/children props))))
-
-
-(defstyled card-actions CardActions
-  {:position "absolute"
-   :top -16
-   :right -16
-   ".wrapper"
-   {:display "flex"
-    :flex-direction "row"
-    :justify-content "flex-end"
-    :align-items "center"}})
-
-
-(defstyled card "div"
-  {:position "relative"
-   :display "flex"
-   :flex-direction "column"
-   :max-width 300
-   :min-width 180
-   :padding "10px 10px 5px 10px"
-   :background-color "#eaeaea"
-   :border-radius 5
-   :transition "box-shadow .2s ease-in-out"
-   ":hover" {:box-shadow "1px 4px 11px 1px #ababab"}
-   (str card-actions) {:opacity "0"
-                       :transition "opacity .4s ease-in-out"}
-   (str ":hover " card-actions) {:opacity "1"}
-   ;;
-   (str avatar)
-   {:position "absolute"
-    :left -10
-    :top -10
-    :transition "all .1s ease-in-out"}})
-
 
 
 (defnc ChecklistField 
@@ -846,53 +698,6 @@
 
 
 (def ^:dynamic *window-resizing* (create-context))
-
-
-
-
-; (defnc Container
-;   [{:keys [className style] :as props}]
-;   (let [container (hooks/use-ref nil)
-;         [dimensions set-dimensions!] (hooks/use-state nil)
-;         observer (hooks/use-ref nil)
-;         resize-idle-service (hooks/use-ref
-;                               (make-idle-service
-;                                 30
-;                                 (fn reset [entries]
-;                                   (let [[_ entry] (reverse entries)
-;                                         content-rect (.-contentRect entry)
-;                                         dimensions {:width (.-width content-rect)
-;                                                     :height (.-height content-rect)
-;                                                     :top (.-top content-rect)
-;                                                     :left (.-left content-rect)
-;                                                     :right (.-right content-rect)
-;                                                     :bottom (.-bottom content-rect)
-;                                                     :x (.-x content-rect)
-;                                                     :y (.-y content-rect)}]
-;                                     (set-dimensions! dimensions)))))]
-;     (hooks/use-effect
-;       :always
-;       (when (and (some? @container) (nil? @observer))
-;         (letfn [(resized [[entry]]
-;                   (async/put! @resize-idle-service entry))]
-;           (reset! observer (js/ResizeObserver. resized))
-;           (.observe @observer @container))))
-;     (hooks/use-effect
-;       :once
-;       (fn []
-;         (when @observer (.disconnect @observer))))
-;     ; (.log js/console @container)
-;     (d/div
-;       {:ref #(reset! container %)
-;        :className className
-;        :style style}
-;       (provider
-;         {:context *container-dimensions*
-;          :value dimensions}
-;         (provider
-;           {:context *container*
-;            :value container}
-;           (c/children props))))))
 
 
 (defn wrap-container

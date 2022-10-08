@@ -267,7 +267,6 @@
        (c/children props))))
 
 
-
 (defnc Popup
   [{:keys [className]}]
   (let [[area-position set-area-position!] (hooks/use-context popup/*area-position*)

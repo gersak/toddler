@@ -816,7 +816,7 @@
 (defnc AvatarCell [{:keys [className]}]
   (let [column (use-column)
         [avatar] (use-cell-state column)]
-    ($ toddler/avatar
+    ($ ui/avatar
        {:avatar avatar
         :size :small
         :className className})))
@@ -828,7 +828,7 @@
   ($ ui/option #_toddler/dropdown-option
     {:ref ref
      & (dissoc props :ref)}
-    ($ toddler/avatar {:size :small & option})
+    ($ ui/avatar {:size :small & option})
     (:name option)))
 
 
