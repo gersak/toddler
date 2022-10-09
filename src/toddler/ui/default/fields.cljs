@@ -68,11 +68,16 @@
 
 (defstyled text-area-wrapper field-wrapper
   {:flex-grow "1"
+   :padding-top 1
+   :padding-bottom 1
    :textarea
    {:overflow "hidden"
     :border "none"
     :resize "none"
-    :font-size "12"}})
+    :box-sizing "border-box"
+    :margin-top 6 
+    :padding 0
+    :font-size "12px"}})
 
 
 (defnc TextareaField

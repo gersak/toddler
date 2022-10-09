@@ -296,6 +296,7 @@
              (:padding-right style)
              (:padding-bottom style)
              (:padding-left style)])))]
+    (println "DUMMMY HEIGHT: " height)
     (hooks/use-effect
      :always
      (when @dummy
