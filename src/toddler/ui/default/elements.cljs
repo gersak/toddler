@@ -9,6 +9,7 @@
     [toddler.elements.input
      :refer [AutosizeInput]]
     [toddler.elements :as e]
+    [toddler.elements.avatar :as a]
     [toddler.elements.dropdown :as dropdown]
     [toddler.elements.multiselect :as multiselect]
     [toddler.elements.date :as date]
@@ -235,8 +236,9 @@
    {:padding "5px 5px"
     :justify-content "center"
     :align-items "center"
-    :font-size "12"
-    :display "flex"}
+    :display "flex"
+    :flex-direction "row"
+    :font-size "12"}
    :svg {:margin "0 5px"
          :padding-right 3}
    :border-radius 3
@@ -252,7 +254,8 @@
   "div"
   {:display "flex"
    :justify-content "row"
-   :align-items "center"})
+   :align-items "center"
+   :min-height 35})
 
 
 (defnc MultiselectInput
@@ -494,7 +497,7 @@
     :flex-direction "row"}})
 
 
-(defstyled avatar e/Avatar
+(defstyled avatar a/Avatar
   nil
   (fn [{:keys [theme size]
         :or {size 36}}]
@@ -510,47 +513,66 @@
          :height size'}))))
 
 
-(defstyled small-avatar e/Avatar
+(defstyled small-avatar a/Avatar
   {:border-radius 20
    :width 20
    :height 20})
 
 
-(defstyled medium-avatar e/Avatar
+(defstyled medium-avatar a/Avatar
   {:border-radius 20
    :width 36
    :height 36})
 
-(defstyled large-avatar e/Avatar
+(defstyled large-avatar a/Avatar
   {:border-radius 20
    :width 144
    :height 144})
 
 
-(defstyled user-dropdown-option e/UserDropdownOption
-  {(str avatar) {:margin-right 5}})
+(defnc IdentityDropdownOption
+  [{:keys [option className] :as props} ref]
+  {:wrap [(react/forwardRef)]}
+  ($ dropdown-option
+    {:ref ref
+     :className className
+     & (dissoc props :ref :option)}
+    ($ small-avatar {& option})
+    (:name option)))
 
 
-(defstyled user-dropdown-input e/UserDropdownInput
+(defstyled identity-dropdown-option IdentityDropdownOption
+  {(str small-avatar) {:margin-right 5}})
+
+
+(defnc IdentityDropdownInput
+  [props]
+  ($ ExtendUI
+    {:components
+     {:img ui/avatar}}
+    ($ ui/input {& props})))
+
+
+(defstyled identity-dropdown-input IdentityDropdownInput
   {:font-size "12"
    (str avatar) {:margin-right 5}})
 
 
-(defnc UserPopup
+(defnc IdentityPopup
   [props]
   ($ ExtendUI
     {:components
      {:wrapper dropdown-wrapper
-      :option user-dropdown-option}}
+      :option identity-dropdown-option}}
     ($ dropdown/Popup
        {& props})))
 
 
-(defstyled user-popup UserPopup
+(defstyled identity-popup IdentityPopup
   {:max-height 250})
 
 
-(defnc UserInput
+(defnc IdentityInput
   [props]
   ($ UI
     {:components
@@ -561,43 +583,18 @@
        {& props})))
 
 
-(defnc UserElement
+(defnc IdentityElement
   [props]
   ($ ExtendUI
     {:components
-     {:popup user-popup
-      :input UserInput}}
+     {:popup identity-popup
+      :input IdentityInput}}
     ($ dropdown/Element
        {:search-fn :name
         & (dissoc props :search-fn)})))
 
 
-(defstyled user UserElement
-  {:display "flex"
-   :align-items "center"}
-  (fn [{:keys [disabled read-only]}]
-    (let [cursor (if (or disabled read-only)
-                   "default"
-                   "pointer")]
-      (cond->
-        {:color (color :gray)
-         :cursor cursor
-         :input {:cursor cursor}}
-        (or disabled read-only) (assoc :pointer-events "none")))))
-
-
-(let [search-fn :name]
-  (defnc GroupElement
-    [props]
-    ($ dropdown/Element
-      {:search-fn search-fn
-       & (dissoc props :search-fn)})))
-
-
-
-
-
-(defstyled group e/GroupElement
+(defstyled Identity IdentityElement
   {:display "flex"
    :align-items "center"}
   (fn [{:keys [disabled read-only]}]
@@ -685,8 +682,7 @@
    :card card
    :card/action card-action
    :card/actions card-actions
-   :user user
-   :group group
+   :identity identity
    :avatar avatar
    :column column
    :checkbox checkbox

@@ -8,6 +8,7 @@
    [toddler.ui.provider :refer [UI]]
    [toddler.ui.default :as default]
    [toddler.elements.avatar :as a]
+   [toddler.elements :as toddler]
    [toddler.dev :as dev]))
 
 
@@ -79,18 +80,21 @@
     :flex-grow "1"})
 
 
-(defnc Avatar
+(defnc Avatars
    []
-   ($ UI
-      {:components default/components}
-      ($ a/Generator
-         (map
-            (fn [x] ($ avatar {:key x}))
-            (range 100)))))
+   (let [{:keys [width height]} (toddler/use-container-dimensions)]
+      ($ UI
+         {:components default/components}
+         ($ ui/simplebar
+            {:style #js {:width width :height height}}
+            ($ a/Generator
+               (map
+                  (fn [x] ($ avatar {:key x}))
+                  (range 100)))))))
 
 (dev/add-component
    {:key ::avatar
-    :name "Avatar"
-    :render Avatar})
+    :name "Avatars"
+    :render Avatars})
 
 

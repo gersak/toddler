@@ -9,6 +9,7 @@
     [helix.core :refer [$ defhook defnc provider]]
     [helix.hooks :as hooks]
     [helix.dom :as d]
+    [helix.children :as c]
     clojure.string
     [toddler.elements.dropdown
      :refer [*dropdown*]]
@@ -240,33 +241,27 @@
              ($ ui/popup)))))))
 
 
-
-
-
-(defnc DefaultOption
-  [{:keys [value className]}]
-  (d/div {:className className} value))
-
-
 (defnc Option
   [{:keys [value
            context
            on-remove
            onRemove
            disabled
-           className
-           content]
-    :or {content DefaultOption}}]
+           className]
+    :as props}]
   (let [on-remove (some #(when (fn? %) %) [onRemove on-remove])]
+    (.log js/console "CHILDREN: " (c/children props))
     (d/div
       {:context (if disabled :stale context)
        :className className}
-      ($ content {:className "content" :value value})
+      (d/div
+        {:className "content"}
+        (if-some [children (c/children props)]
+          children
+          value))
       (when on-remove
         ($ icon/clear
            {:className "remove"
             :onClick (fn [e]
                        (.stopPropagation e)
                        (on-remove value))})))))
-
-

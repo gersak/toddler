@@ -329,42 +329,42 @@
    :color (color :gray)})
 
 
-(defstyled user-avatar e/small-avatar
+(defstyled field-avatar e/small-avatar
   {:margin-right 8})
 
 
-(defnc UserFieldInput
+(defnc IdentityFieldInput
   [props]
   ($ UI
     {:components
-     {:img user-avatar
+     {:img field-avatar
       :input autosize-input
       :wrapper dropdown-field-wrapper}}
     ($ dropdown/Input
        {& props})))
 
 
-(defstyled user-field-input UserFieldInput
+(defstyled identity-field-input IdentityFieldInput
   {:display "flex"
    :align-items "center"})
 
 
-(defnc UserElement
+(defnc IdentityElement
   [props]
   ($ ExtendUI
     {:components
-     {:popup e/user-popup
-      :input user-field-input}}
+     {:popup e/identity-popup
+      :input identity-field-input}}
     ($ dropdown/Element
        {:search-fn :name
         & (dissoc props :search-fn)})))
 
 
-(defnc UserField
+(defnc IdentityField
   [props]
   ($ default-field
      {& props}
-     ($ UserElement
+     ($ IdentityElement
         {:className "input"
          & (->
              props
@@ -372,16 +372,52 @@
              (update :value #(or % "")))})))
 
 
-(defnc GroupField
+(defnc IdentityMultiselectElement
   [props]
-  ($ default-field
-     {& props}
-     ($ ui/group
-        {:className "input"
-         & (->
-            props
-            (dissoc :name :style :className)
-            (update :value #(or % "")))})))
+  ($ ExtendUI
+    {:components
+     {:popup e/identity-popup
+      :input identity-field-input}}
+    (let [search-fn :name
+          display-fn (fn [option] ($ ui/avatar {& option}))]
+      ($ e/multiselect
+         {:search-fn search-fn
+          :display-fn display-fn
+          :className "multiselect"
+          & (dissoc props :name :className :style)}))))
+
+
+(defnc IdentityMultiselectOption
+  [{{:keys [name] :as option} :value :as props}]
+  ($ e/multiselect-option
+    {:& props}
+    ($ field-avatar {& option})
+    (d/div {:className "name"} name)))
+
+
+(defnc IdentityMultiselectInput
+  [props]
+  ($ ExtendUI
+    {:components
+     {:img field-avatar
+      :input autosize-input
+      :wrapper e/multiselect-wrapper}}
+    ($ dropdown/Input
+       {& props})))
+
+
+(defnc IdentityMultiselectField
+  [props]
+  ($ ExtendUI
+    {:components {:wrapper multiselect-field-wrapper
+                  :input IdentityMultiselectInput
+                  :popup e/identity-popup
+                  :option IdentityMultiselectOption}}
+    ($ WrappedField
+       {& props}
+       ($ e/multiselect
+          {& (dissoc props :name :className :style)}))))
+
 
 
 (def components
@@ -394,5 +430,5 @@
            :multiselect multiselect-field
            :timestamp TimestampField
            :period PeriodField
-           :group GroupField
-           :user UserField})
+           :identity IdentityField
+           :identity-multiselect IdentityMultiselectField})

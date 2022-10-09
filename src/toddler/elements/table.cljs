@@ -798,8 +798,8 @@
   [props]
   (let [{:keys [read-only disabled] :as column} (use-column)
         [value] (use-cell-state column)]
-    ($ ui/dropdown #_toddler/DropdownElement
-       {:render/img toddler/UserDropdownAvatar
+    ($ ui/dropdown
+       {:img ui/avatar
         :value value
         & props}
        (when (every? not [read-only disabled])

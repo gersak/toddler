@@ -5,7 +5,7 @@
    [helix.core :refer [$]]
    toddler.showcase.inputs
    toddler.showcase.table
-   toddler.showcase.ui
+   toddler.showcase.fields
    toddler.showcase.avatar))
 
 

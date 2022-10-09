@@ -1,4 +1,5 @@
 (ns toddler.ui
+  (:refer-clojure :exclude [identity])
   (:require-macros [toddler.ui :refer [defcomponent]])
   (:require
     ["react" :as react]
@@ -15,7 +16,7 @@
 (defcomponent form :form)
 (defcomponent checkbox :checkbox)
 (defcomponent button :button)
-(defcomponent simplebar :simpleabr)
+(defcomponent simplebar :simplebar)
 (defcomponent popup :popup)
 (defcomponent option :option)
 (defcomponent input :input)
@@ -26,8 +27,7 @@
 (defcomponent dropdown :dropdown)
 (defcomponent img :img)
 (defcomponent header :header)
-(defcomponent user :user)
-(defcomponent group :group)
+(defcomponent identity :identity)
 (defcomponent tooltip tooltip)
 
 
@@ -48,10 +48,8 @@
 
 
 (defcomponent search-field :field/search)
-(defcomponent user-field :field/user)
-(defcomponent user-multiselect-field :field/user-multiselect)
-(defcomponent group-field :field/group)
-(defcomponent group-multiselect-field :field/group-multiselect)
+(defcomponent identity-field :field/identity)
+(defcomponent identity-multiselect-field :field/identity-multiselect)
 
 
 (defcomponent text-field :field/text)
@@ -80,8 +78,7 @@
 (defcomponent currency-cell :cell/currency)
 ; (defcomponent hash-cell)
 (defcomponent uuid-cell :cell/uuid)
-(defcomponent user-cell :cell/user)
-(defcomponent group-cell :cell/group)
+(defcomponent identity-cell :cell/identity)
 (defcomponent timestamp-cell :cell/timestamp)
 (defcomponent expand-cell :cell/expand)
 (defcomponent delete-cell :cell/delete)

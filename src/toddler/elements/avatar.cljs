@@ -263,12 +263,9 @@
             ([request-channel]
              (if (empty? @requests)
                (do
-                 (.log js/console "Adding avatar request and restarting")
                  (reset! requests [request-channel])
                  (set-color! (rand-nth palette)))
-               (do
-                 (.log js/console "Adding avatar request without restarting")
-                 (swap! requests (fnil conj []) request-channel)))
+               (swap! requests (fnil conj []) request-channel))
              (recur))))
         (fn [] (async/close! close?))))
     (hooks/use-layout-effect
@@ -291,7 +288,8 @@
 
 
 (defnc Avatar
-  [{:keys [value className onGenerate]}]
+  [{:keys [className onGenerate]
+    value :avatar}]
   (let [root (use-avatar-root)
         [avatar set-avatar!] (hooks/use-state nil)
         generator-queue (use-generator-queue)]
