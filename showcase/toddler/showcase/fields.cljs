@@ -28,7 +28,7 @@
               ($ ui/input-field
                  {:name "Auto-size free input"
                   :value (:free-input state)
-                  :onChange (fn [e] (set-state! (assoc state :free-input (.. e -target -value))))}))
+                  :onChange (fn [v] (set-state! assoc :free-input v))}))
            ($ ui/row
               ($ ui/boolean-field
                  {:name "Checkbox field"

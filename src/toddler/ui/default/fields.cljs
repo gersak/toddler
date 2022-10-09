@@ -111,8 +111,11 @@
 
 
 (defnc InputField
-  [props]
-  (let [_input (hooks/use-ref nil)]
+  [{:keys [onChange on-change] :as props}]
+  (let [_input (hooks/use-ref nil)
+        onChange (hooks/use-memo
+                   [onChange on-change]
+                   (or onChange on-change identity))]
     ($ WrappedField
        {:onClick (fn [] (when @_input (.focus @_input)))
         & props}
@@ -122,7 +125,9 @@
            :autoCorrect "off"
            :spellCheck "false"
            :autoCapitalize "false"
-           & (dissoc props :name :className :style)}))))
+           :onChange (fn [^js e]
+                       (onChange (.. e -target -value)))
+           & (dissoc props :onChange :name :className :style)}))))
 
 
 (defnc IntegerField
