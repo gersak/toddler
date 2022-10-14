@@ -46,13 +46,13 @@
 
 
 (defstyled enum-cell table/EnumCell
-  {:input {:font-size 12
+  {:input {:font-size "1em"
            :font-weight "600"
            :cursor "pointer"}})
 
 
 (defstyled text-cell table/TextCell
-  {:font-size "12"
+  {:font-size "1em"
    :border "none"
    :outline "none"
    :resize "none"
@@ -65,7 +65,7 @@
   {:display "flex"
    :justify-content "center"
    :input
-   {:font-size "12"
+   {:font-size "1em"
     :border "none"
     :outline "none"
     :resize "none"
@@ -78,7 +78,7 @@
 (defstyled integer-cell table/IntegerCell
   {:border "none"
    :outline "none"
-   :font-size "12"
+   :font-size "1em"
    :width "90%"}
   )
 
@@ -86,12 +86,12 @@
 (defstyled float-cell table/FloatCell
   {:border "none"
    :outline "none"
-   :font-size "12"}
+   :font-size "1em"}
   )
 
 
 (defstyled currency-cell table/CurrencyCell
-  {:font-size "12"
+  {:font-size "1em"
    :max-width 140
    :display "flex"
    :align-items "center"
@@ -101,7 +101,7 @@
   )
 
 (defstyled boolean-cell table/BooleanCell
-  {:font-size 12
+  {:font-size "1em"
    :padding 0
    :width 20
    :height 20
@@ -113,7 +113,7 @@
 
 
 (defstyled user-cell table/UserCell 
-  {:input {:font-size 12}
+  {:input {:font-size "1em"}
    ".clear" {:color "transparent"
              :display "flex"
              :align-items "center"}}
@@ -121,7 +121,7 @@
 
 (defstyled action-cell table/ActionCell
   {:padding 5
-   :font-size "10"
+   :font-size "0.8em"
    :border-radius 3
    :display "flex"
    :justify-content "center"
@@ -139,7 +139,7 @@
    :min-height 25
    :min-width 30
    :max-height 30
-   :font-size "12"
+   :font-size "1em"
    :align-items "center"
    ; :margin-top 3
    ".delete-marker"
@@ -162,7 +162,7 @@
 (def header-style
   {:display "flex"
    :flex-direction "column"
-   :font-size "12"
+   :font-size "1em"
    :height "100%"
    :justify-content "space-between"
    ".header" 
@@ -216,7 +216,7 @@
 
 
 (defstyled enum-popup popup/element
-  {(str toddler/checklist " .name") {:font-size "12"}})
+  {(str toddler/checklist " .name") {:font-size "1em"}})
 
 
 (defstyled enum-header table/EnumHeader 

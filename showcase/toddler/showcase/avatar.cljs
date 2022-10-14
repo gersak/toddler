@@ -7,8 +7,8 @@
    [toddler.ui :as ui]
    [toddler.ui.provider :refer [UI]]
    [toddler.ui.default :as default]
-   [toddler.elements.avatar :as a]
-   [toddler.elements :as toddler]
+   [toddler.avatar :as a]
+   [toddler.layout :as layout]
    [toddler.dev :as dev]))
 
 
@@ -82,7 +82,7 @@
 
 (defnc Avatars
    []
-   (let [{:keys [width height]} (toddler/use-container-dimensions)]
+   (let [{:keys [width height]} (layout/use-container-dimensions)]
       ($ UI
          {:components default/components}
          ($ ui/simplebar

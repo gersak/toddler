@@ -1,4 +1,4 @@
-(ns toddler.elements.dropdown
+(ns toddler.dropdown
   (:require
    clojure.string
    [helix.core :refer [defhook defnc create-context $ provider]]
@@ -6,7 +6,7 @@
    [helix.dom :as d]
    [helix.children :as c]
    [toddler.hooks :refer [use-idle]]
-   [toddler.elements.popup :as popup]
+   [toddler.popup :as popup]
    [toddler.ui :as ui]
    ["toddler-icons$default" :as icon]))
 

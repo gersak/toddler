@@ -1,4 +1,4 @@
-(ns toddler.elements.window
+(ns toddler.window
   (:require
    [clojure.core.async :as async]
    [vura.core :refer [round-number]]

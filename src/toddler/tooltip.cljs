@@ -1,4 +1,4 @@
-(ns toddler.elements.tooltip
+(ns toddler.tooltip
   (:require
     clojure.string
     ["react" :as react]
@@ -8,7 +8,7 @@
     [helix.hooks :as hooks]
     [helix.styled-components :refer-macros [defstyled]]
     [toddler.hooks :refer [use-delayed]]
-    [toddler.elements.popup :as popup]))
+    [toddler.popup :as popup]))
 
 (def basic
   {:display "flex"
@@ -58,6 +58,7 @@
 
 (defstyled action-tooltip ActionTooltip
   (assoc basic ".info-tooltip" basic-content))
+
 
 (comment
   (def els (array-seq (.getElementsByClassName js/document "tooltip-container")))

@@ -1,15 +1,17 @@
-(ns toddler.elements.input
+(ns toddler.input
   (:require
    clojure.string
    clojure.edn
    [vura.core :as vura]
    ["react" :as react]
    [cljs.core.async :as async]
-   [helix.core :refer [defnc factory $ <>]]
+   [helix.core :refer [defnc $ <>]]
    [helix.hooks :as hooks]
    [helix.dom :as d]
+   [toddler.ui :as ui]
    [toddler.util :as util]
-   [toddler.hooks :refer [use-translate]]
+   [toddler.mask :refer [use-mask]]
+   [toddler.hooks :refer [use-translate use-idle]]
    [toddler.i18n.number :refer [number-formatter]]))
 
 
@@ -112,7 +114,6 @@
         (number? value) value
         :else placeholder)))))
 
-(def input (factory InputElement))
 
 (defnc AutosizeInput
   [{:keys [value placeholder] :as props} _ref]
@@ -271,7 +272,6 @@
       (d/input
        {& (dissoc props'' :autoresize)}))))
 
-(def number (factory NumberElement))
 
 (defnc TextAreaElement [{:keys [value
                                 placeholder
@@ -296,7 +296,6 @@
              (:padding-right style)
              (:padding-bottom style)
              (:padding-left style)])))]
-    (println "DUMMMY HEIGHT: " height)
     (hooks/use-effect
      :always
      (when @dummy
@@ -361,5 +360,80 @@
       :onChange onChange})))
 
 
-(.log js/console "Loaded toddler.elements.input")
-; (def slider-element (om/factory SliderElement))
+(defnc CurrencyElement
+  [{:keys [currency amount
+           currency/options placeholder
+           className onChange
+           onBlur on-blur onFocus on-focus]}]
+  (let [on-blur (or onBlur on-blur identity)
+        on-focus (or onFocus on-focus identity)
+        [focused? set-focused!] (hooks/use-state nil)
+        value (if (some? amount)
+                (if (not focused?)
+                  (str amount)
+                  ; (format-currency currency amount)
+                  (str amount))
+                "")]
+    (d/div
+      {:className className}
+      ($ ui/dropdown
+         {:options options
+          :value currency
+          :placeholder "VAL"
+          :onChange (fn [currency]
+                      (onChange {:currency currency
+                                 :amount amount}))
+          :className "dropdown"})
+      (d/input
+        {:value value
+         :autoComplete "off"
+         :autoCorrect "off"
+         :spellCheck "false"
+         :autoCapitalize "false"
+         :placeholder placeholder
+         :disabled (nil? amount)
+         :onChange (fn [e]
+                     (some->>
+                       (.. e -target -value)
+                       not-empty
+                       (re-find #"-?\d+[\.|,]*\d*")
+                       (js/parseFloat)
+                       onChange))
+         :className "input"
+         :onBlur (fn [e]
+                   (set-focused! false)
+                   (on-blur e))
+         ;;
+         :onFocus (fn [e]
+                    (set-focused! true)
+                    (on-focus e))}))))
+
+
+(defnc Mask [props]
+  (let [props' (use-mask props)]
+    (d/div
+      {:class "eywa-mask-field"}
+      (d/input {& props'}))))
+
+
+(defnc Search
+  [{:keys [value icon on-change idle-timeout className onChange]
+    :or {idle-timeout 500
+         value ""}
+    :as props}]
+  (let [on-change (or on-change onChange identity)
+        [input set-input!] (use-idle "" #(on-change %) idle-timeout)]
+    (hooks/use-effect
+      [value]
+      (when (not= value input)
+        (set-input! value)))
+    (d/div
+      {:className className}
+      (d/div
+        {:class "value"}
+        ($ AutosizeInput
+           {& (merge
+                (dissoc props :className)
+                {:value input
+                 :on-change (fn [e] (set-input! (.. e -target -value)))})}))
+      (when icon ($ icon)))))

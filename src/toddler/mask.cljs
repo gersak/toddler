@@ -1,4 +1,4 @@
-(ns toddler.elements.mask
+(ns toddler.mask
   (:require 
     clojure.string
     [helix.dom :as d]
@@ -113,6 +113,3 @@
     (d/div
       {:class "eywa-mask-field"}
       (d/input {& props'}))))
-
-
-(.log js/console "Loaded toddler.elements.mask")

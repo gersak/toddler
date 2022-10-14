@@ -1,4 +1,4 @@
-(ns toddler.elements.date
+(ns toddler.date
   (:require
     ["react" :as react]
     [goog.string :as gstr]
@@ -13,10 +13,10 @@
     [toddler.hooks
      :refer [use-calendar
              use-translate]]
-    [toddler.elements.mask :refer [use-mask]]
-    [toddler.elements.dropdown :as dropdown]
-    [toddler.elements.popup :as popup]
-    [toddler.elements.input :refer [AutosizeInput]]
+    [toddler.mask :refer [use-mask]]
+    [toddler.dropdown :as dropdown]
+    [toddler.popup :as popup]
+    [toddler.input :refer [AutosizeInput]]
     ["toddler-icons$default" :as icon]))
 
 

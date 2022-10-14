@@ -99,7 +99,7 @@
 
 (defstyled close-button 
   CloseButton
-  {:font-size "20"
+  {:font-size "2em"
    :cursor "pointer"
    :transition "color .2s ease-in"
    :width 10
@@ -114,7 +114,7 @@
    :justify-content "space-between"
    :font-weight "600"
    :margin "0 0 15px"
-   :font-size "16"
+   :font-size "1.5em"
    :position "relative"
    :min-height 40
    "h1 h2" {:margin-top 15}
@@ -203,7 +203,7 @@
 
 (defstyled body Body
   {:position "relative"
-   :font-size "14"
+   :font-size "1.2em"
    :display "flex"
    :flex-grow "2"
    :flex-direction "column"

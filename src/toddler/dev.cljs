@@ -11,8 +11,6 @@
     [toddler.theme :as theme]
     [toddler.dev.themes.default]
     [toddler.themes.default]
-    ; [toddler.dev.default-theme]
-    ; [toddler.dev.strong-theme]
     [toddler.dev.context
      :refer [*components*]]
     [toddler.router.dom :as router]
@@ -22,11 +20,14 @@
              use-window-dimensions
              use-dimensions]]
     [toddler.i18n.default]
-    [toddler.elements :as toddler]
     [toddler.ui :as ui]
-    [toddler.elements.window :as window]
-    [toddler.elements.popup :as popup]
-    [toddler.elements.dropdown :as dropdown
+    [toddler.ui.provider :refer [UI]]
+    [toddler.ui.default :as default]
+    [toddler.layout :as layout
+     :refer [use-layout]]
+    [toddler.window :as window]
+    [toddler.popup :as popup]
+    [toddler.dropdown :as dropdown
      :refer [*dropdown*]]
     ["react" :as react]
     ["toddler-icons$default" :as icon]
@@ -68,7 +69,7 @@
   {:wrap [(react/forwardRef)]}
   (let [components (hooks/use-context *components*)
         {:keys [height]} (use-window-dimensions)]
-    ($ toddler/simplebar
+    ($ ui/simplebar
        {:className className
         :style #js {:height height 
                     :minWidth 300
@@ -125,7 +126,7 @@
   {:wrap [(react/forwardRef)]}
   (let [[{{locale :locale} :settings} set-user!] (use-current-user)
         window (use-window-dimensions)
-        layout (toddler/use-layout)
+        layout (use-layout)
         header-height 50
         header-width (- (:width window) (get-in layout [:navbar :width]))]
     (d/div
@@ -180,7 +181,7 @@
                       (:render c)))
                   components)
         window (use-window-dimensions)
-        layout (toddler/use-layout)
+        layout (use-layout)
         content-height (- (:height window) (get-in layout [:header :height]))
         content-width (- (:width window) (get-in layout [:navbar :width]))
         content-dimensions (hooks/use-memo
@@ -189,7 +190,7 @@
                               :height content-height})]
     (if render
       (provider
-        {:context toddler/*container-dimensions*
+        {:context layout/*container-dimensions*
          :value content-dimensions}
         (d/div
           {:style
@@ -242,27 +243,29 @@
            (provider
              {:context app/*layout*
               :value layout}
-             ($ popup/Container
-                ($ global-css)
-                ($ simplebar-css)
-                ($ window/DimensionsProvider
-                   (d/div
-                     {:className className}
-                     ($ navbar {:ref _navbar})
-                     (let [header-height 50
-                           header-width (- (:width window) (get-in layout [:navigation :width]))
-                           content-height (- (:height window) (get-in layout [:header :height]))
-                           content-width (- (:width window) (get-in layout [:navigation :width]))]
-                       (d/div
-                         {:className "content"}
-                         ($ header
-                            {:ref _header
-                             :style {:width header-width 
-                                     :height header-height}})
-                         ($ content
-                            {:ref _content
-                             :style {:height content-height 
-                                     :width content-width}}))))))))))))
+             ($ UI
+                {:components default/components}
+                ($ popup/Container
+                   ($ global-css)
+                   ($ simplebar-css)
+                   ($ window/DimensionsProvider
+                      (d/div
+                        {:className className}
+                        ($ navbar {:ref _navbar})
+                        (let [header-height 50
+                              header-width (- (:width window) (get-in layout [:navigation :width]))
+                              content-height (- (:height window) (get-in layout [:header :height]))
+                              content-width (- (:width window) (get-in layout [:navigation :width]))]
+                          (d/div
+                            {:className "content"}
+                            ($ header
+                               {:ref _header
+                                :style {:width header-width 
+                                        :height header-height}})
+                            ($ content
+                               {:ref _content
+                                :style {:height content-height 
+                                        :width content-width}})))))))))))))
 
 
 (defstyled playground Playground
@@ -289,7 +292,7 @@
 (defnc CenteredComponent
   [{:keys [className] :as props}]
   (let [window (use-window-dimensions)
-        {:keys [navbar]} (toddler/use-layout)]
+        {:keys [navbar]} (use-layout)]
     (d/div
       {:className className
        :style {:width (- (:width window) (:width navbar))

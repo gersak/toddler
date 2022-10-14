@@ -117,7 +117,7 @@
    :flex-direction "row"
    :box-shadow "0px 2px 4px -4px black"
    " .tab" 
-   {:font-size "12"
+   {:font-size "1em"
     :font-weight "500"
     :margin "4px 0px"
     :padding "0px 7px"

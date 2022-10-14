@@ -29,6 +29,8 @@
 (defcomponent header :header)
 (defcomponent identity :identity)
 (defcomponent tooltip tooltip)
+(defcomponent autosize-input :input/autosize)
+(defcomponent idle-input :input/idle)
 
 
 (defcomponent card :card)

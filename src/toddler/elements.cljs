@@ -21,27 +21,18 @@
              use-delayed
              use-dimensions
              use-idle]]
-    [toddler.elements.input
+    [toddler.input
      :refer [AutosizeInput
              NumberInput
              IdleInput
              TextAreaElement
              SliderElement]]
-    [toddler.elements.mask :refer [use-mask]]
-    [toddler.elements.dropdown :as dropdown]
-    [toddler.elements.multiselect :as multiselect]
-    [toddler.elements.popup :as popup]
-    [toddler.elements.tooltip :as tip]
-    [toddler.elements.scroll :refer [SimpleBar]]
+    [toddler.mask :refer [use-mask]]
+    [toddler.popup :as popup]
+    [toddler.tooltip :as tip]
     [toddler.ui :as ui]
-    [toddler.ui.provider :refer [UI ExtendUI]]
     ["react" :as react]
     ["toddler-icons$default" :as icon]))
-
-
-(defstyled simplebar SimpleBar
-  {"transition" "box-shadow 0.3s ease-in-out"}
-  --themed)
 
 
 (defn --flex-position
@@ -132,10 +123,10 @@
    (d/p text)))
 
 
-(defstyled info Info
-  {:display "flex"
-   :align-items "baseline"
-   :p {:margin "5px 0"}})
+; (defstyled info Info
+;   {:display "flex"
+;    :align-items "baseline"
+;    :p {:margin "5px 0"}})
 
 
 (def action-tooltip tip/action-tooltip)
@@ -196,7 +187,7 @@
    :padding 3
    :use-select "none"
    :cursor :pointer
-   :font-size "12"
+   :font-size "1em"
    :transition "all .2s linear"
    :path {:cursor "pointer"}
    :user-select "none"
@@ -221,7 +212,7 @@
    :use-select "none"
    :cursor :pointer
    :opacity ".7"
-   :font-size "14"
+   :font-size "1.2em"
    :transition "all .2s linear"
    :path {:cursor "pointer"}
    :user-select "none"
@@ -229,7 +220,7 @@
    :svg {:margin "0 3px"}
    ":hover"
    {:opacity "1"
-    :font-size "16"}}
+    :font-size "1.4em"}}
   (fn [{:keys [icon-position]}]
     (case icon-position
       :right {:svg {:margin-left 5}}
@@ -277,7 +268,7 @@
    {:padding "5px 5px"
     :justify-content "center"
     :align-items "center"
-    :font-size "12"
+    :font-size "1em"
     :display "flex"}
    :svg {:margin "0 5px"
          :padding-right 3}
@@ -326,28 +317,10 @@
   --themed)
 
 
-(defstyled autosize-input AutosizeInput
-  {:outline "none"
-   :border "none"})
-
-
-(defstyled idle-input IdleInput
-  {:outline "none"
-   :border "none"})
-
-
-(defstyled autosize-text TextAreaElement
-  {:pre {:font-family "Ubuntu"}})
-
-
-(defstyled number-input NumberInput
-  {:outline "none"
-   :border "none"})
-
 (defnc Mask [props]
   (let [props' (use-mask props)]
     (d/div
-     {:class "eywa-mask-field"}
+     {:class "mask"}
      (d/input
       {:spellCheck false
        :auto-complete "off"

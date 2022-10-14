@@ -4,7 +4,7 @@
 ;; Writtenby Robert Gersak <robi@neyho.com>, June 2019
 
 
-(ns toddler.elements.search
+(ns toddler.search
   (:require 
     clojure.string
     [helix.core

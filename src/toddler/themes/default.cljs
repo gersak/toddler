@@ -90,7 +90,7 @@
    {:margin "2px 0 4px 4px"
     :padding-bottom 2
     :text-transform "uppercase"
-    :font-size "14"
+    :font-size "1.2em"
     :color (color :gray)
     :border-bottom (str "1px solid " (color :gray))}
    :padding 3})
@@ -330,7 +330,7 @@
   [_]
   {".day"
    {:color (color :gray)
-    :font-size 12
+    :font-size "1em"
     ;;
     "&.disabled, &:hover.disabled"
     {:background-color "white"
@@ -355,7 +355,7 @@
   [_]
   {".day-wrapper .day"
    {:color (color :gray)
-    :font-size 12
+    :font-size "1em"
     "&.weekend"
     {:color (color :red)}}})
 
@@ -388,7 +388,7 @@
              :else (color :gray))
     :user-select "none"
     :transition "all .3s ease-in-out"
-    :font-size 12
+    :font-size "1em"
     :font-weight "600"
     :text-transform "uppercase"}})
 

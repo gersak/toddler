@@ -4,7 +4,7 @@
    [helix.hooks :as hooks]
    ; [helix.dom :as d]
    [toddler.ui :as ui]
-   [toddler.elements.avatar :as a]
+   [toddler.avatar :as a]
    [toddler.ui.default :as default]
    [toddler.dev :as dev]))
 

@@ -23,10 +23,10 @@
      :refer [use-delayed
              use-dimensions
              use-translate]]
-    [toddler.elements.input
+    [toddler.input
      :refer [TextAreaElement]]
-    [toddler.elements.popup :as popup]
-    [toddler.elements.tooltip :as tip]
+    [toddler.popup :as popup]
+    [toddler.tooltip :as tip]
     ["react" :as react]
     ["toddler-icons$default" :as icon]))
 
@@ -284,7 +284,7 @@
                 (str "Show " option)))
             (or options (range 10 60 10))))
         (d/span (str "| Page: "))
-        ($ toddler/idle-input
+        ($ ui/idle-input
            {:placeholder "?"
             :className "pag"
             :spell-check false
@@ -402,7 +402,7 @@
          :className className
          :style {:height container-height
                  :width container-width}}
-        ($ toddler/simplebar
+        ($ ui/simplebar
            {:key :thead/simplebar
             :scrollableNodeProps #js {:ref #(reset! header-scroll %)}
             :className "thead"
@@ -416,7 +416,7 @@
              ($ rheader 
                 {:key :thead/row
                  :className "trow"})))
-        ($ toddler/simplebar
+        ($ ui/simplebar
            {:key :tbody/simplebar
             :scrollableNodeProps #js {:ref #(reset! body-scroll %)}
             :className (str "tbody" (when (empty? rows) " empty"))
@@ -442,7 +442,7 @@
   {:display "flex"
    :justify-content "center"
    :align-items "center"
-   :font-size "10"
+   :font-size "0.8em"
    :height 20
    :min-height 20
    :padding 0
@@ -645,7 +645,7 @@
         [value set-value!] (use-cell-state column)
         translate (use-translate)
         [focused? set-focused!] (hooks/use-state false)]
-    ($ toddler/autosize-input
+    ($ ui/autosize-input
        {:className className
         :value (if value
                  (if focused? 
@@ -671,7 +671,7 @@
         [value set-value!] (use-cell-state column)
         translate (use-translate)
         [focused? set-focused!] (hooks/use-state false)]
-    ($ toddler/autosize-input
+    ($ ui/autosize-input
       {:className className
        :value (if value
                 (if focused? 
@@ -695,7 +695,7 @@
   [{:keys [className]}]
   (let [{:keys [placeholder] :as column} (use-column)
         [value set-value!] (use-cell-state column)] 
-    ($ toddler/CurrencyElement
+    #_($ toddler/CurrencyElement
        {:className className
         :placeholder placeholder
         :value value
@@ -727,14 +727,14 @@
 
 
 (defstyled enum-cell EnumCell
-  {:input {:font-size 12
+  {:input {:font-size "1em"
            :font-weight "600"
            :cursor "pointer"}}
   --themed)
 
 
 (defstyled text-cell TextCell
-  {:font-size "12"
+  {:font-size "1em"
    :border "none"
    :outline "none"
    :resize "none"
@@ -747,7 +747,7 @@
   {:display "flex"
    :justify-content "center"
    :input
-   {:font-size "12"
+   {:font-size "1em"
     :border "none"
     :outline "none"
     :resize "none"
@@ -760,7 +760,7 @@
 (defstyled integer-cell IntegerCell
   {:border "none"
    :outline "none"
-   :font-size "12"
+   :font-size "1em"
    :width "90%"}
   --themed)
 
@@ -768,12 +768,12 @@
 (defstyled float-cell FloatCell
   {:border "none"
    :outline "none"
-   :font-size "12"}
+   :font-size "1em"}
   --themed)
 
 
 (defstyled currency-cell CurrencyCell
-  {:font-size "12"
+  {:font-size "1em"
    :max-width 140
    :display "flex"
    :align-items "center"
@@ -783,7 +783,7 @@
   --themed)
 
 (defstyled boolean-cell BooleanCell
-  {:font-size 12
+  {:font-size "1em"
    :padding 0
    :width 20
    :height 20
@@ -910,7 +910,7 @@
 
 
 (defstyled user-cell UserCell 
-  {:input {:font-size 12}
+  {:input {:font-size "1em"}
    ".clear" {:color "transparent"
              :display "flex"
              :align-items "center"}}
@@ -918,7 +918,7 @@
 
 (defstyled action-cell ActionCell
   {:padding 5
-   :font-size "10"
+   :font-size "0.8em"
    :border-radius 3
    :display "flex"
    :justify-content "center"
@@ -936,7 +936,7 @@
    :min-height 25
    :min-width 30
    :max-height 30
-   :font-size "12"
+   :font-size "1em"
    :align-items "center"
    ; :margin-top 3
    ".delete-marker"
@@ -1014,7 +1014,7 @@
         ($ ColumnNameElement {& header}))
       (d/div
         {:className "filter"}
-        ($ toddler/idle-input
+        ($ ui/idle-input
            {:placeholder "Filter..."
             :className "filter"
             :spellCheck false
@@ -1044,7 +1044,7 @@
         ($ ColumnNameElement {& header}))
       (d/div
         {:className "filter"}
-        ($ toddler/idle-input
+        ($ ui/idle-input
            {:placeholder "Filter..."
             :className "filter"
             :spellCheck false
@@ -1212,7 +1212,7 @@
 (def header-style
   {:display "flex"
    :flex-direction "column"
-   :font-size "12"
+   :font-size "1em"
    :height "100%"
    :justify-content "space-between"
    ".header" 
@@ -1270,7 +1270,7 @@
 
 
 (defstyled enum-popup popup/element
-  {(str toddler/checklist " .name") {:font-size "12"}})
+  {(str toddler/checklist " .name") {:font-size "1em"}})
 
 
 (defstyled enum-header EnumHeader 
@@ -1329,7 +1329,7 @@
 (defstyled pagination Pagination
   {:padding "2px 3px 8px 3px"
    :display "flex"
-   :font-size "12"
+   :font-size "1em"
    :align-items "center"
    :button {:outline "none"
             :border "none"}

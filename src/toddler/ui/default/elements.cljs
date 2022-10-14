@@ -1,25 +1,45 @@
 (ns toddler.ui.default.elements
   (:require
     ["react" :as react]
+    [clojure.string :as str]
     [helix.core
      :refer [$ defnc]]
-    [helix.dom :as d]
     [helix.styled-components :refer [defstyled]]
     [helix.children :as c]
-    [toddler.elements.input
-     :refer [AutosizeInput]]
+    [toddler.input
+     :refer [AutosizeInput
+             IdleInput]]
     [toddler.elements :as e]
-    [toddler.elements.avatar :as a]
-    [toddler.elements.dropdown :as dropdown]
-    [toddler.elements.multiselect :as multiselect]
-    [toddler.elements.date :as date]
-    [toddler.ui :as ui]
+    [toddler.layout :as l]
+    [toddler.avatar :as a]
+    [toddler.dropdown :as dropdown]
+    [toddler.multiselect :as multiselect]
+    [toddler.date :as date]
+    [toddler.scroll :refer [SimpleBar]]
     [toddler.ui.default.color :refer [color]]
-    [toddler.ui.provider :refer [ExtendUI UI]]
-    ["toddler-icons$default" :as icon]))
+    [toddler.ui.provider :refer [ExtendUI UI]]))
+
+
+(defstyled simplebar SimpleBar
+  {"transition" "box-shadow 0.3s ease-in-out"}
+  (fn 
+    [{:keys [$shadow-top $shadow-bottom $hidden]}]
+    (let [box-shadow (cond-> []
+                       $shadow-top (conj "inset 0px 11px 8px -10px #CCC")
+                       $shadow-bottom (conj "inset 0px -11px 8px -10px #CCC"))]
+      (cond-> nil
+        (not-empty box-shadow)
+        (assoc :box-shadow (str/join ", " box-shadow))
+        $hidden
+        (assoc ".simplebar-track" {:display "none"})))))
 
 
 (defstyled autosize-input AutosizeInput
+  {:outline "none"
+   :border "none"})
+
+
+(defstyled idle-input IdleInput
   {:outline "none"
    :border "none"})
 
@@ -83,7 +103,7 @@
    :padding "5px 18px"
    :max-height 30
    :min-width 80
-   :font-size "12"
+   :font-size "1em"
    :line-height "1.33"
    :text-align "center"
    :vertical-align "center"
@@ -129,7 +149,7 @@
         disabled (assoc :pointer-events "none")))))
 
 
-(defstyled row e/Row
+(defstyled row l/Row
   {:display "flex"
    :flex-direction "row"
    :align-items "center"
@@ -138,13 +158,13 @@
    {:margin "2px 0 4px 4px"
     :padding-bottom 2
     :text-transform "uppercase"
-    :font-size "14"
+    :font-size "1em"
     :color (color :gray)
     :border-bottom (str "1px solid " (color :gray))}}
-  e/--flex-position)
+  l/--flex-position)
 
 
-(defstyled column e/Column
+(defstyled column l/Column
   {:display "flex"
    :flex-direction "column"
    :flex-grow "1"
@@ -152,11 +172,11 @@
    {:margin "2px 0 4px 4px"
     :padding-bottom 2
     :text-transform "uppercase"
-    :font-size "14"
+    :font-size "1.2em"
     :color (color :gray)
     :border-bottom (str "1px solid " (color :gray))}
    :padding 3}
-  e/--flex-position)
+  l/--flex-position)
 
 
 
@@ -176,7 +196,7 @@
 
 (defstyled dropdown-option
   "div"
-  {:font-size "12"
+  {:font-size "1em"
    :display "flex"
    :justify-content "flex-start"
    :align-items "center"
@@ -231,14 +251,8 @@
    :flex-direction "row"
    :justify-content "start"
    :align-items "center"
-   ; :flex-wrap "wrap"
-   ".content"
-   {:padding "5px 5px"
-    :justify-content "center"
-    :align-items "center"
-    :display "flex"
-    :flex-direction "row"
-    :font-size "12"}
+   :padding "5px 5px"
+   :font-size "1em"
    :svg {:margin "0 5px"
          :padding-right 3}
    :border-radius 3
@@ -294,7 +308,7 @@
    :border "1px solid transparent"
    ".day"
    {:text-align "center"
-    :font-size "10"
+    :font-size "0.8em"
     :user-select "none"
     :padding 3
     :width 20
@@ -320,7 +334,7 @@
     "&.weekend"
     {:color (color :red)}}
    :color (color :gray)
-   :font-size 12})
+   :font-size "1em"})
 
 
 (defnc CalendarWeek
@@ -347,7 +361,7 @@
     ".day"
     {:text-align "center"
      :font-weight "500"
-     :font-size "12"
+     :font-size "1em"
      :border-collapse "collapse"
      :user-select "none"
      :padding 3
@@ -355,7 +369,7 @@
      :border "1px solid transparent"}}
    ".day-wrapper .day"
    {:color (color :gray)
-    :font-size 12
+    :font-size "1em"
     "&.weekend"
     {:color (color :red)}}})
 
@@ -432,7 +446,7 @@
    :justify-content "center"
    :align-items "center"
    :input {:max-width 40}
-   :font-size "12"
+   :font-size "1em"
    :margin "3px 0 5px 0"
    :justify-self "center"
    ".time" {:outline "none"
@@ -530,84 +544,6 @@
    :height 144})
 
 
-(defnc IdentityDropdownOption
-  [{:keys [option className] :as props} ref]
-  {:wrap [(react/forwardRef)]}
-  ($ dropdown-option
-    {:ref ref
-     :className className
-     & (dissoc props :ref :option)}
-    ($ small-avatar {& option})
-    (:name option)))
-
-
-(defstyled identity-dropdown-option IdentityDropdownOption
-  {(str small-avatar) {:margin-right 5}})
-
-
-(defnc IdentityDropdownInput
-  [props]
-  ($ ExtendUI
-    {:components
-     {:img ui/avatar}}
-    ($ ui/input {& props})))
-
-
-(defstyled identity-dropdown-input IdentityDropdownInput
-  {:font-size "12"
-   (str avatar) {:margin-right 5}})
-
-
-(defnc IdentityPopup
-  [props]
-  ($ ExtendUI
-    {:components
-     {:wrapper dropdown-wrapper
-      :option identity-dropdown-option}}
-    ($ dropdown/Popup
-       {& props})))
-
-
-(defstyled identity-popup IdentityPopup
-  {:max-height 250})
-
-
-(defnc IdentityInput
-  [props]
-  ($ UI
-    {:components
-     {:img ui/avatar
-      :input autosize-input
-      :wrapper "div"}}
-    ($ dropdown/Input
-       {& props})))
-
-
-(defnc IdentityElement
-  [props]
-  ($ ExtendUI
-    {:components
-     {:popup identity-popup
-      :input IdentityInput}}
-    ($ dropdown/Element
-       {:search-fn :name
-        & (dissoc props :search-fn)})))
-
-
-(defstyled Identity IdentityElement
-  {:display "flex"
-   :align-items "center"}
-  (fn [{:keys [disabled read-only]}]
-    (let [cursor (if (or disabled read-only)
-                   "default"
-                   "pointer")]
-      (cond->
-        {:color (color :gray)
-         :cursor cursor
-         :input {:cursor cursor}}
-        (or disabled read-only) (assoc :pointer-events "none")))))
-
-
 (let [size 32
       inner 26
       icon 14]
@@ -678,17 +614,20 @@
 
 
 (def components
-  {:row row
-   :card card
-   :card/action card-action
-   :card/actions card-actions
-   :identity identity
-   :avatar avatar
-   :column column
-   :checkbox checkbox
-   :button button
-   :buttons buttons
-   :simplebar e/simplebar
-   :calendar/year-dropdown calendar-year-dropdown
-   :calendar/month-dropdown calendar-month-dropdown
-   :calendar/month calendar-month})
+  (merge
+    {:row row
+     :card card
+     :card/action card-action
+     :card/actions card-actions
+     :identity identity
+     :avatar avatar
+     :column column
+     :checkbox checkbox
+     :button button
+     :buttons buttons
+     :simplebar simplebar
+     :calendar/year-dropdown calendar-year-dropdown
+     :calendar/month-dropdown calendar-month-dropdown
+     :calendar/month calendar-month}
+    #:input {:autosize autosize-input
+             :idle idle-input}))

@@ -1,9 +1,10 @@
 (ns toddler.showcase.table
    (:require
       [toddler.dev :as dev]
-      [toddler.elements :as toddler]
+      [toddler.layout :as layout]
       [toddler.elements.table :as table]
       [toddler.grid :as grid]
+      [toddler.ui :as ui]
       toddler.elements.table.theme
       [vura.core :as vura]
       [helix.core :refer [$ defnc]]
@@ -115,7 +116,7 @@
 
 (defnc TableContainer
    [{:keys [style] :as props}]
-   ($ toddler/Container
+   ($ layout/Container
       {:style
        (merge
           {:display "flex"
@@ -165,8 +166,8 @@
       grid-columns {:lg 10 :md 10 :sm 1 :xs 1}]
    (defnc TableGrid
       []
-      (let [{:keys [height width]} (toddler/use-container-dimensions)]
-         ($ toddler/simplebar
+      (let [{:keys [height width]} (layout/use-container-dimensions)]
+         ($ ui/simplebar
             {:style #js {:height height
                          :width width
                          :boxSizing "border-box"}}

@@ -1,8 +1,23 @@
-(ns toddler.elements.layout
+(ns toddler.layout
   (:require
-    [helix.core :refer [defnc create-context]]
+    [helix.core
+     :refer [defnc create-context
+             defhook provider memo
+             fnc $]]
     [helix.hooks :as hooks]
-    [helix.dom :as d]))
+    [helix.dom :as d]
+    [helix.children :as c]
+    [helix.styled-components :refer [defstyled]]
+    [vura.core :as vura]
+    [toddler.ui :refer [forward-ref]]
+    [toddler.app :as app]
+    [toddler.hooks
+     :refer [use-dimensions]]))
+
+
+(defhook use-layout
+  ([] (hooks/use-context app/*layout*))
+  ([k] (get (hooks/use-context app/*layout*) k)))
 
 
 (def ^:dynamic ^js *container* (create-context nil))
@@ -37,13 +52,35 @@
             (c/children props)))))))
 
 
+(defn wrap-container
+  ([component]
+   (fnc Container [props]
+     ($ Container ($ component {& props}))))
+  ([component cprops]
+   (fnc [props]
+     ($ Container {& cprops} ($ component {& props})))))
+
+
+(defn get-window-dimensions
+  []
+  (let [w (vura/round-number (..  js/window -visualViewport -width) 1 :floor)
+        h (vura/round-number (.. js/window -visualViewport -height) 1 :floor)]
+    {:x 0
+     :y 0
+     :top 0
+     :bottom h
+     :left 0
+     :right w
+     :width w
+     :height h}))
+
+
 (defnc Column
-  [{:keys [label style className position] :as props} _ref]
-  {:wrap [(react/forwardRef)]}
+  [{:keys [label className position] :as props} _ref]
+  {:wrap [(forward-ref)]}
   (d/div
     {:ref _ref
      :className className
-     :style (->js style)
      :position position}
     (when label
       (d/div
@@ -59,12 +96,11 @@
 
 
 (defnc Row
-  [{:keys [label className style position] :as props} _ref]
-  {:wrap [(react/forwardRef)]}
+  [{:keys [label className position] :as props} _ref]
+  {:wrap [(forward-ref)]}
   (d/div
     {:ref _ref
      :className className
-     :style (->js style)
      :position position}
     (when label
       (d/div
@@ -78,3 +114,14 @@
    :flex-direction "row"
    :align-items "center"
    :flex-grow "1"})
+
+
+(defn --flex-position
+  [{:keys [position]}]
+  (when-some [jc (case position
+                   :center "center"
+                   :end "flex-end"
+                   :explode "space-between"
+                   nil)]
+    {:justify-content jc
+     ".wrapper" {:justify-content jc}}))

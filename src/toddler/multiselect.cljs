@@ -4,16 +4,16 @@
 ;; Writtenby Robert Gersak <robi@neyho.com>, June 2019
 
 
-(ns toddler.elements.multiselect
+(ns toddler.multiselect
   (:require
     [helix.core :refer [$ defhook defnc provider]]
     [helix.hooks :as hooks]
     [helix.dom :as d]
     [helix.children :as c]
     clojure.string
-    [toddler.elements.dropdown
+    [toddler.dropdown
      :refer [*dropdown*]]
-    [toddler.elements.popup
+    [toddler.popup
      :as popup]
     [toddler.ui :as ui]
     ["toddler-icons$default" :as icon]))
@@ -250,15 +250,12 @@
            className]
     :as props}]
   (let [on-remove (some #(when (fn? %) %) [onRemove on-remove])]
-    (.log js/console "CHILDREN: " (c/children props))
     (d/div
       {:context (if disabled :stale context)
        :className className}
-      (d/div
-        {:className "content"}
-        (if-some [children (c/children props)]
-          children
-          value))
+      (if-some [children (c/children props)]
+        children
+        value)
       (when on-remove
         ($ icon/clear
            {:className "remove"

@@ -1,4 +1,4 @@
-(ns toddler.elements.popup
+(ns toddler.popup
   (:require
     clojure.string
     [cljs-bean.core :refer [->js]]
@@ -12,11 +12,10 @@
     [helix.children :as c]
     [vura.core :refer [round-number]]
     [helix.styled-components :refer [defstyled --themed]]
-    [toddler.elements.scroll :refer [SimpleBar]]
+    [toddler.scroll :refer [SimpleBar]]
     [toddler.ui :as ui]
+    [toddler.hooks :refer [use-delayed]]
     [toddler.util :as util]))
-
-(.log js/console "Loading toddler.elements.popup")
 
 (def ^:dynamic ^js *area-element* (create-context))
 (def ^:dynamic ^js *dimensions* (create-context))
@@ -462,7 +461,6 @@
    :padding 7}
   --themed)
 
-(.log js/console "Loaded toddler.elements.popup!")
 
 (defnc Element
   [{:keys [preference style className offset onChange items]
@@ -531,11 +529,41 @@
                             :position "fixed"
                             :zIndex "1000"}))}
                ($ SimpleBar
-                  {:style #js {:width (round-number (- popup-width padding-left padding-right) 1 :ceil)
-                               :height (round-number (- popup-height padding-top padding-bottom) 1 :ceil)}}
+                  {:style {:width (round-number (- popup-width padding-left padding-right) 1 :ceil)
+                           :height (round-number (- popup-height padding-top padding-bottom) 1 :ceil)}}
                   (c/children props))))))
       @container-node)))
 
+
+(defnc Tooltip
+  [{:keys [message preference className disabled] 
+    :or {preference cross-preference}
+    :as props} ref]
+  {:wrap [(react/forwardRef)]}
+  (let [[visible? set-visible!] (hooks/use-state nil)
+        hidden? (use-delayed (not visible?) 300)
+        area (hooks/use-ref nil)
+        popup (hooks/use-ref nil)]
+    (if (and (some? message) (not disabled)) 
+      ($ Area
+         {:ref area
+          :className "popup_area"
+          :onMouseLeave (fn [] (set-visible! false))
+          :onMouseEnter (fn [] (set-visible! true))}
+         (c/children props)
+         (when visible?
+           ($ Element
+              {:ref (or ref popup)
+               :style {:visibility (if hidden? "hidden" "visible")
+                       :animationDuration ".5s"
+                       :animationDelay ".3s"}
+               :preference preference
+               :className (str className " animated fadeIn")}
+              (d/div {:class "info-tooltip"} message))))
+      (c/children props))))
+
+
+;; TODO implement menu
 
 
 

@@ -10,14 +10,14 @@
     [helix.dom :as d]
     [helix.children :as c]
     [helix.hooks  :as hooks]
-    [toddler.elements.input
+    [toddler.input
      :refer [AutosizeInput
              NumberInput
              TextAreaElement]]
     [toddler.ui.default.color :refer [color]]
     [toddler.ui.default.elements :as e]
-    [toddler.elements.dropdown :as dropdown]
-    [toddler.elements.date :as date]
+    [toddler.dropdown :as dropdown]
+    [toddler.date :as date]
     [toddler.ui :as ui]
     [toddler.ui.provider :refer [UI ExtendUI]]
     ["react" :as react]))
@@ -42,7 +42,7 @@
    {:color (color :gray)
     :user-select "none"
     :transition "all .3s ease-in-out"
-    :font-size 12
+    :font-size "0.8em"
     :font-weight "600"
     :text-transform "uppercase"}})
 
@@ -54,7 +54,7 @@
    :margin-top 4
    :padding "4px 10px"
    :cursor "text"
-   :input {:font-size "12"}
+   :input {:font-size "1em"}
    :overflow "hidden"
    :border-color "#b3b3b3 !important"
    :background "#e5e5e5"
@@ -77,7 +77,7 @@
     :box-sizing "border-box"
     :margin-top 6 
     :padding 0
-    :font-size "12px"}})
+    :font-size "1em"}})
 
 
 (defnc TextareaField
@@ -333,7 +333,7 @@
    {:margin-left 5
     :user-select "none"
     :transition "all .3s ease-in-out"
-    :font-size "12"
+    :font-size ".8em"
     :font-weight "600"
     :text-transform "uppercase"}
    :color (color :gray)})
@@ -359,11 +359,41 @@
    :align-items "center"})
 
 
+(defnc IdentityDropdownOption
+  [{:keys [option className] :as props} ref]
+  {:wrap [(react/forwardRef)]}
+  ($ e/dropdown-option
+    {:ref ref
+     :className className
+     & (dissoc props :ref :option)}
+    ($ e/small-avatar {& option})
+    (:name option)))
+
+
+(defstyled identity-dropdown-option IdentityDropdownOption
+  {(str e/small-avatar) {:margin-right 5}})
+
+
+(defnc IdentityPopup
+  [props]
+  ($ ExtendUI
+    {:components
+     {:wrapper e/dropdown-wrapper
+      :option identity-dropdown-option}}
+    ($ dropdown/Popup
+       {& props})))
+
+
+(defstyled identity-popup IdentityPopup
+  {:max-height 250})
+
+
+
 (defnc IdentityElement
   [props]
   ($ ExtendUI
     {:components
-     {:popup e/identity-popup
+     {:popup identity-popup
       :input identity-field-input}}
     ($ dropdown/Element
        {:search-fn :name
@@ -386,7 +416,7 @@
   [props]
   ($ ExtendUI
     {:components
-     {:popup e/identity-popup
+     {:popup identity-popup
       :input identity-field-input}}
     (let [search-fn :name
           display-fn (fn [option] ($ ui/avatar {& option}))]
@@ -421,13 +451,12 @@
   ($ ExtendUI
     {:components {:wrapper multiselect-field-wrapper
                   :input IdentityMultiselectInput
-                  :popup e/identity-popup
+                  :popup identity-popup
                   :option IdentityMultiselectOption}}
     ($ WrappedField
        {& props}
        ($ e/multiselect
           {& (dissoc props :name :className :style)}))))
-
 
 
 (def components

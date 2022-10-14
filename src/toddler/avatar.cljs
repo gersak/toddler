@@ -1,4 +1,4 @@
-(ns toddler.elements.avatar
+(ns toddler.avatar
   (:require
     [goog.object]
     [toddler.ui :as ui]
@@ -29,10 +29,10 @@
       (<>
        (konva/Image
         {:& avatar
-         :onClick (fn [e] (onSelect (.. e -target)))
+         :onClick (fn [^js e] (onSelect (.. e -target)))
          :ref #(reset! shape-ref %)
          :draggable true
-         :onDragMove (fn [e]
+         :onDragMove (fn [^js e]
                        (let [node ^js @shape-ref]
                          (onChange
                           {:width (.width node)
@@ -41,18 +41,20 @@
                            :y (.y (.-target e))})))})))))
 
 
-(defn download-uri [uri, name, mime]
-  (let [link (doto (.createElement js/document "a")
-               (set! -download name)
-               (set! -href uri)
-               (set! -type mime))]
-    (.appendChild (.-body js/document) link)
+(defn download-uri [^js uri, name, mime]
+  (let [^js document js/document
+        ^js body (.-body document)
+        ^js link (doto (.createElement document "a")
+                   (goog.object/set "download" name)
+                   (goog.object/set "href" uri)
+                   (goog.object/set "type" mime))]
+    (.appendChild body link)
     (.click link)
-    (.removeChild (.-body js/document) link)))
+    (.removeChild body link)))
 
 
 
-(def ^:dynamic *stage* (create-context))
+(def ^:dynamic ^js *stage* (create-context))
 
 
 (defhook use-stage []
@@ -119,7 +121,7 @@
              :offsetY half-size 
              :scaleX layer-zoom
              :scaleY layer-zoom
-             :onWheel (fn [e]
+             :onWheel (fn [^js e]
                         (let [scale-by 1.02
                               old-scale layer-zoom
                               new-scale (if (< (.-deltaY (.-evt e)) 0)
@@ -224,7 +226,7 @@
    :left 0})
 
 
-(def ^:dynamic *generator-queue* ^js (create-context))
+(def ^:dynamic ^js *generator-queue* (create-context))
 
 (defhook use-generator-queue [] (hooks/use-context *generator-queue*))
 
