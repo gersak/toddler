@@ -9,6 +9,7 @@
   com.github.gersak/helix.placenta           {:local/root "helix.placenta"}
   camel-snake-kebab/camel-snake-kebab        {:mvn/version "0.4.3"}
   ; com.github.gersak/vura                     {:mvn/version "0.5.7-SNAPSHOT"}
+  com.thheller/shadow-css                    {:mvn/version "0.4.1"} 
   com.github.gersak/vura                     {:local/root "../vura/core/"}
   lilactown/helix                            {:mvn/version "0.1.6"}}
  :aliases
