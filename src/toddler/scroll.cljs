@@ -15,9 +15,14 @@
     simplebar/default))
 
 
+(defn transform-style
+  [data]
+  (->js (transform-keys csk/->camelCaseString data)))
+
+
 (defnc SimpleBar
   [props _ref]
   {:wrap [(forward-ref)]}
   ($ _SimpleBar
     {:ref _ref
-     & (update props :style (comp ->js #(transform-keys csk/->camelCaseString %)))}))
+     & (update props :style transform-style)}))

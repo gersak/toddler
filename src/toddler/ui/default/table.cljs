@@ -14,31 +14,21 @@
      :refer [deep-merge]]
     [helix.styled-components
      :refer [defstyled]]
-    [toddler.elements :as toddler]
-    [toddler.elements.table :as table]
-    [toddler.elements.popup :as popup]
-    [toddler.elements.tooltip :as tip]
-    [toddler.ui :as ui]
-    ["react" :as react]))
+    ; [toddler.elements :as toddler]
+    [toddler.table :as table]
+    [toddler.popup :as popup]
+    [toddler.tooltip :as tip]
+    [toddler.ui.default.fields :as fields]
+    [toddler.ui.provider :refer [ExtendUI]]
+    [toddler.ui :as ui]))
 
 
 
 (defnc NotImplemented
   []
-  (let [field (use-column)] 
+  (let [field (table/use-column)] 
     (.error js/console (str "Field not implemented\n%s" (pr-str field))))
   nil)
-
-
-(def $action-input
-  {(str \&
-        toddler/dropdown-field-wrapper 
-        \space 
-        toddler/dropdown-field-discard)
-   {:color "transparent"}
-   ;;
-   (str \& toddler/dropdown-field-wrapper ":hover")
-   {(str toddler/dropdown-field-discard) {:color "inherit"}}})
 
 
 (defstyled uuid-cell table/UUIDCell
@@ -108,16 +98,34 @@
    :display "flex"
    :justify-content "center"
    :align-items "center"
-   :transition "background-color .3s ease-in-out"}
-  )
+   :transition "background-color .3s ease-in-out"})
 
 
-(defstyled user-cell table/UserCell 
-  {:input {:font-size "1em"}
+(defstyled identity-cell-input table/IdentityCellInput
+  {:display "flex"
+   :align-items "center"})
+
+
+(defnc IdentityCell
+  [props]
+  ($ ExtendUI
+    {:components
+     {:popup fields/identity-popup
+      :input identity-cell-input}}
+    ($ table/IdentityCell
+       {& props})))
+
+
+(defstyled identity-cell table/IdentityCell
+  {:display "flex"
+   :aling-items "center"
+   :input {:font-size "1em"
+           :outline "none"
+           :border "none"}
    ".clear" {:color "transparent"
              :display "flex"
-             :align-items "center"}}
-  )
+             :align-items "center"}})
+
 
 (defstyled action-cell table/ActionCell
   {:padding 5
@@ -177,7 +185,7 @@
   header-style)
 
 
-(defstyled user-header table/UserHeader
+(defstyled identity-header table/IdentityHeader
   (deep-merge
     header-style
     {".filter"
@@ -216,7 +224,7 @@
 
 
 (defstyled enum-popup popup/element
-  {(str toddler/checklist " .name") {:font-size "1em"}})
+  {(str ui/checklist " .name") {:font-size "1em"}})
 
 
 (defstyled enum-header table/EnumHeader 
@@ -248,6 +256,8 @@
 (def components
   (merge
     {:table table}
+    #:table {:row table/Row
+             :header table/HeaderRow}
     #:cell {:expand expand-cell
             :delete delete-cell
             :boolean boolean-cell
@@ -259,9 +269,9 @@
             :uuid uuid-cell
             :text text-cell
             :timestamp timestamp-cell
-            :user user-cell}
+            :identity identity-cell}
     #:header {:enum enum-header
               :boolean boolean-header
               :text text-header
-              :user user-header
+              :identity identity-header
               :timestamp timestamp-header}))

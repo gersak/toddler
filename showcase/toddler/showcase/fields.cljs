@@ -105,14 +105,3 @@
    {:key ::fields
     :name "Fields"
     :render Fields})
-
-
-(defnc Table
-   []
-   "hi")
-
-
-(dev/add-component
-   {:key ::table
-    :name "Table"
-    :render Table})

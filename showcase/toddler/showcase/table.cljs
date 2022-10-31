@@ -2,37 +2,38 @@
    (:require
       [toddler.dev :as dev]
       [toddler.layout :as layout]
-      [toddler.elements.table :as table]
+      [toddler.table :as table]
       [toddler.grid :as grid]
       [toddler.ui :as ui]
+      [toddler.ui.provider :refer [UI]]
+      [toddler.ui.default :as default]
       toddler.elements.table.theme
       [vura.core :as vura]
       [helix.core :refer [$ defnc]]
       [helix.dom :as d]
-      [helix.styled-components :refer [defstyled]]
       [helix.children :as c]))
 
 
 (def columns
    [{:cursor :euuid
      :label "UUID"
-     :type "uuid"
+     :cell ui/uuid-cell
      :style {:width 50}}
     {:cursor :user
      :label "User"
-     :type "user"
+     :cell ui/identity-cell
      :style {:width 100}}
     {:cursor :integer
-     :type "int"
+     :cell ui/integer-cell
      :label "Integer"
      :style {:width 100}}
     {:cursor :text
-     :type "string"
+     :cell ui/text-cell
      :label "Text"
      :style {:width 250}}
-    {:cursor :enum
+    #_{:cursor :enum
      :label "ENUM"
-     :type "enum"
+     :cell ui/enum-cell
      :options [{:name "Dog"
                 :value :dog}
                {:name "Cat"
@@ -44,17 +45,18 @@
      :placeholder "Choose your fav"
      :style {:width 100}}
     {:cursor :timestamp
+     :cell ui/timestamp-cell
      :label "Timestamp"
-     :type "timestamp"
      :style {:width 120}}
     {:cursor :boolean
+     :cell ui/boolean-cell
      :label "BOOL"
      :type "boolean"
      :style {:width 50}}])
 
 
 (defn generate-column
-   [{t :type}]
+   [{t :cell}]
    (let [now (-> (vura/date) vura/time->value)]
       (letfn [(rand-date
                  []
@@ -64,29 +66,29 @@
                           (vura/hours (rand-int 1000)))
                        (vura/minutes (rand-int 60)))
                     vura/value->time))]
-         (case t
-            "uuid" (random-uuid)
-            "int" (rand-int 10000)
-            "user" {:euuid (random-uuid)
-                    :name (rand-nth
-                             ["John"
-                              "Emerick"
-                              "Harry"
-                              "Ivan"
-                              "Dugi"
-                              "Ricky"])
-                    :avatar (rand-nth
-                               ["https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.FMXcWvy8DeSem2kV_8KH0gHaEK%26pid%3DApi&f=1"
-                                "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.SuUOaB0bwigOLr3NLT2ZZgHaEK%26pid%3DApi&f=1"
-                                "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.VCtUu6tnkPzLht6T46WD5wHaEx%26pid%3DApi&f=1"
-                                "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.3JCqIfj_9yEyfPeWvNwdeQHaDt%26pid%3DApi&f=1"
-                                "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.jUhREZmYLBkJCe7cmSdevwHaEX%26pid%3DApi&f=1"
-                                "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.w2kZvvrVVyFG0JNVzdYhbwHaEK%26pid%3DApi&f=1"
-                                "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.iBbhCR5cHpgkHsABbNeVtQHaEK%26pid%3DApi&f=1"])}
-            "enum" (:value (rand-nth (get-in columns [4 :options])))
-            "timestamp" (rand-date)
-            "string" (apply str (repeatedly 20 #(rand-nth "abcdefghijklmnopqrstuvwxyz0123456789")))
-            "bool" (rand-nth [true false])
+         (condp = t
+            ui/uuid-cell (random-uuid)
+            ui/integer-cell (rand-int 10000)
+            ui/identity-cell {:euuid (random-uuid)
+                              :name (rand-nth
+                                       ["John"
+                                        "Emerick"
+                                        "Harry"
+                                        "Ivan"
+                                        "Dugi"
+                                        "Ricky"])
+                              :avatar (rand-nth
+                                         ["https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.FMXcWvy8DeSem2kV_8KH0gHaEK%26pid%3DApi&f=1"
+                                          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.SuUOaB0bwigOLr3NLT2ZZgHaEK%26pid%3DApi&f=1"
+                                          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.VCtUu6tnkPzLht6T46WD5wHaEx%26pid%3DApi&f=1"
+                                          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.3JCqIfj_9yEyfPeWvNwdeQHaDt%26pid%3DApi&f=1"
+                                          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.jUhREZmYLBkJCe7cmSdevwHaEX%26pid%3DApi&f=1"
+                                          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.w2kZvvrVVyFG0JNVzdYhbwHaEK%26pid%3DApi&f=1"
+                                          "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.iBbhCR5cHpgkHsABbNeVtQHaEK%26pid%3DApi&f=1"])}
+            ui/enum-cell (:value (rand-nth (get-in columns [4 :options])))
+            ui/timestamp-cell (rand-date)
+            ui/text-cell (apply str (repeatedly 20 #(rand-nth "abcdefghijklmnopqrstuvwxyz0123456789")))
+            ui/boolean-cell (rand-nth [true false])
             nil))))
 
 
@@ -132,26 +134,29 @@
 
 (defnc Table
    []
-   (d/div
-      {:style
-       {:width "100%" :height "100%" ;:width width :height height
-        :display "flex"
-        :padding 30
-        :box-sizing "border-box"
-        :justifyContent "center"
-        :alignItems "center"}}
-      ($ TableContainer
-         ($ table/table
-            {:rows data
-             :columns columns
-             :dispatch (fn [event]
-                          (println "Dispatching\n" event))}))))
+   ($ UI
+      {:components default/components}
+      (d/div
+         {:style
+          {:width "100%" :height "100%" ;:width width :height height
+           :display "flex"
+           :padding 30
+           :box-sizing "border-box"
+           :justifyContent "center"
+           :alignItems "center"}}
+         ($ TableContainer
+            ($ ui/table
+               {:rows data
+                :columns columns
+                :dispatch (fn [event]
+                             (println "Dispatching\n" event))})))))
 
 
 (dev/add-component
    {:key ::table
     :name "Table"
     :render Table})
+
 
 (let [large [{:i "top" :x 0 :y 0 :w 10 :h 1}
              {:i "bottom-left" :x 0 :y 1 :w 5 :h 1}
@@ -168,25 +173,25 @@
       []
       (let [{:keys [height width]} (layout/use-container-dimensions)]
          ($ ui/simplebar
-            {:style #js {:height height
-                         :width width
-                         :boxSizing "border-box"}}
+            {:style {:height height
+                     :width width
+                     :boxSizing "border-box"}}
             ($ grid/GridLayout
                {:width width
                 :row-height (/ height 2)
                 :columns grid-columns
                 :layouts layouts}
-               ($ table/table
+               ($ ui/table
                   {:key "top"
                    :rows data
                    :columns columns
                    :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))})
-               ($ table/table
+               ($ ui/table
                   {:key "bottom-left"
                    :rows data
                    :columns columns
                    :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))})
-               ($ table/table
+               ($ ui/table
                   {:key "bottom-right"
                    :rows data
                    :columns columns

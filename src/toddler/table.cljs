@@ -1,4 +1,4 @@
-(ns toddler.elements.table
+(ns toddler.table
   (:require
     [cljs-bean.core :refer [->clj]]
     [clojure.string :as str]
@@ -11,14 +11,14 @@
              <> provider]]
     [helix.hooks :as hooks]
     [helix.children :as c]
-    [helix.placenta.util
-     :refer [deep-merge]]
-    [helix.styled-components
-     :refer [defstyled
-             --themed]]
     [helix.spring :as spring]
+    [helix.styled-components :refer [defstyled]]
     [toddler.ui :as ui]
-    [toddler.elements :as toddler]
+    [toddler.ui.provider :refer [ExtendUI UI]]
+    [toddler.layout :as layout]
+    [toddler.dropdown :as dropdown]
+    [toddler.ui.default.fields :as fields]
+    ; [toddler.elements :as toddler]
     [toddler.hooks
      :refer [use-delayed
              use-dimensions
@@ -26,7 +26,7 @@
     [toddler.input
      :refer [TextAreaElement]]
     [toddler.popup :as popup]
-    [toddler.tooltip :as tip]
+    [toddler.ui.default.elements :as e]
     ["react" :as react]
     ["toddler-icons$default" :as icon]))
 
@@ -67,7 +67,8 @@
   [{{:keys [style level]
      render :cell
      :as column} :column
-    :keys [className]}]
+    :keys [className]
+    :or {render "div"}}]
   {:wrap [(memo #(= (:column %1) (:column %2)))]}
   (when (nil? render)
     (.error "Cell renderer not specified for culumn " (pr-str column)))
@@ -178,28 +179,24 @@
 
 (defn same-header-row [a b]
   (=
-   (select-keys a [:className :render/row :render/header])
-   (select-keys b [:className :render/row :render/header])))
+   (select-keys a [:className])
+   (select-keys b [:className])))
 
 
 (defnc HeaderRow
-  [{:keys [className]
-    rrender :render/row
-    rheader :render/header
-    :or {rheader Header 
-         rrender FRow}}
+  [{:keys [className]}
    _ref]
   {:wrap [(react/forwardRef)
           (memo same-header-row)]}
   (let [columns (use-columns)]
-    ($ rrender
+    ($ ui/row
        {:className className
         & (when _ref {:ref _ref})}
        (map 
          (fn [{a :attribute
                p :cursor
                :as column}]
-           ($ rheader
+           ($ ui/header
              {:key (if (nil? p) a
                      (if (keyword? p) p
                        (str/join "->" (map name (not-empty p)))))
@@ -299,7 +296,7 @@
 
 (defnc AddRowAction
   [{:keys [tooltip render name]
-    :or {render toddler/action}}]
+    :or {render ui/action}}]
   (let [dispatch (use-dispatch)]
     ($ render 
        {:onClick #(dispatch {:topic :table.row/add})
@@ -314,52 +311,46 @@
     (d/div
       {:className className}
       (map
-        (fn [{:keys [id render] 
-              :or {render toddler/Action}
-              :as action}]
+        (fn [{:keys [id render]}]
           ($ render 
             {:key id 
              :className "action" 
-             & (dissoc action :render)}))
+             & (dissoc ui/action :render)}))
         actions))))
 
 
-(defnc Interactions
-  [{:keys [className]
-    ractions :render/actions
-    rpagination :render/pagination
-    :or {rpagination Pagination
-         ractions Actions}}
-   _ref]
-  {:wrap [(react/forwardRef)]}
-  (let [{:keys [total-count] :as pagination} (use-pagination)
-        actions (use-actions)
-        rows (use-rows)
-        showing-pagination? (and pagination (> total-count (count rows)))]
-    (when (or pagination actions)
-      (d/div
-        {:className className
-         :style {:display "flex"
-                 :justify-content
-                 (cond
-                   (and showing-pagination? (not-empty actions)) "space-between"
-                   showing-pagination? "flex-start"
-                   actions "flex-end")}
-         :ref _ref}
-        (<>
-          (when pagination ($ rpagination {:className "pagination"}))
-          (when (not-empty actions) ($ ractions {:className "actions"})))))))
+; (defnc Interactions
+;   [{:keys [className]
+;     ractions :render/actions
+;     rpagination :render/pagination
+;     :or {rpagination Pagination
+;          ractions Actions}}
+;    _ref]
+;   {:wrap [(react/forwardRef)]}
+;   (let [{:keys [total-count] :as pagination} (use-pagination)
+;         actions (use-actions)
+;         rows (use-rows)
+;         showing-pagination? (and pagination (> total-count (count rows)))]
+;     (when (or pagination actions)
+;       (d/div
+;         {:className className
+;          :style {:display "flex"
+;                  :justify-content
+;                  (cond
+;                    (and showing-pagination? (not-empty actions)) "space-between"
+;                    showing-pagination? "flex-start"
+;                    actions "flex-end")}
+;          :ref _ref}
+;         (<>
+;           (when pagination ($ rpagination {:className "pagination"}))
+;           (when (not-empty actions) ($ ractions {:className "actions"})))))))
 
 
 (defnc TableLayout
-  [{rrow :render/row
-    rheader :render/header
-    :keys [className]
-    :or {rrow Row
-         rheader HeaderRow}}]
+  [{:keys [className]}]
   (let [{container-width :width
          container-height :height
-         :as container-dimensions} (toddler/use-container-dimensions)
+         :as container-dimensions} (layout/use-container-dimensions)
         rows (use-rows)
         ; [{container-width :width
         ;   container-height :height} set-container!] (hooks/use-state nil) 
@@ -373,7 +364,7 @@
         scroll (hooks/use-ref nil)
         style {:minWidth table-width}]
     (when (nil? container-dimensions)
-      (.error js/console "Wrap toddler/Table in container"))
+      (.error js/console "Wrap Table in container"))
     (hooks/use-effect
       [@body-scroll @header-scroll]
       (letfn [(sync-body-scroll [e]
@@ -402,33 +393,34 @@
          :className className
          :style {:height container-height
                  :width container-width}}
-        ($ ui/simplebar
+        #_($ ui/simplebar
            {:key :thead/simplebar
             :scrollableNodeProps #js {:ref #(reset! header-scroll %)}
             :className "thead"
             :$hidden (boolean (not-empty rows))
-            :style #js {:minWidth container-width
-                        :maxHeight 100}}
+            :style {:minWidth container-width
+                    :maxHeight 100}}
            (spring/div
              {:key :thead
               :ref #(reset! thead %) 
               :style style}
-             ($ rheader 
+             ($ ui/table-header-row
                 {:key :thead/row
                  :className "trow"})))
         ($ ui/simplebar
            {:key :tbody/simplebar
-            :scrollableNodeProps #js {:ref #(reset! body-scroll %)}
+            ; :scrollableNodeProps #js {:ref #(reset! body-scroll %)}
             :className (str "tbody" (when (empty? rows) " empty"))
-            :style #js {:minWidth container-width
-                        :maxHeight table-height}}
+            ; :style {:minWidth container-width
+            ;         :maxHeight table-height}
+            }
            (spring/div
              {:key :tbody
               :style style 
               :ref #(reset! tbody %)}
              (map-indexed
                (fn [idx row]
-                 ($ rrow
+                 ($ ui/table-row
                    {:key (or 
                            (:euuid row)
                            idx)
@@ -436,24 +428,6 @@
                     :className "trow" 
                     :data row}))
                rows)))))))
-
-
-(defstyled table-button ui/button
-  {:display "flex"
-   :justify-content "center"
-   :align-items "center"
-   :font-size "0.8em"
-   :height 20
-   :min-height 20
-   :padding 0
-   :margin "0px !important"})
-
-
-(defstyled uuid-button table-button
-  (let [size 20]
-    {:min-width size
-     :min-height size
-     :height size :width size}))
 
 
 (def $action-input
@@ -484,19 +458,6 @@
         ($ icon/clear)))))
 
 
-(defstyled clear-button ClearButton
-  {:position "absolute"
-   :right 0
-   :top 6
-   :transition "color .2s ease-in-out"}
-  --themed)
-
-
-;;;;;;;;;;;
-;; CELLS ;;
-;;;;;;;;;;;
-
-
 (defhook use-cell-state
   [el]
   (let [{:keys [idx] :as row} (hooks/use-context *row-record*)
@@ -520,7 +481,7 @@
 
 
 (defnc UUIDCell
-  [props]
+  [{:keys [className] :as props}]
   (let [[visible? set-visible!] (hooks/use-state nil)
         hidden? (use-delayed (not visible?) 300)
         area (hooks/use-ref nil)
@@ -534,8 +495,7 @@
         :onMouseEnter (fn [] 
                         (set-copied! nil)
                         (set-visible! true))}
-       ($ c/children props)
-       #_($ uuid-button
+       ($ ui/button
           {:className className
            :context :fun
            :onClick (fn [] 
@@ -589,7 +549,7 @@
                  (assoc r (get-in options [idx :value]) idx))
                nil
                options')]))]
-    ($ ui/dropdown #_toddler/DropdownElement
+    ($ ui/dropdown
        {:value (get vm value) 
         :className className
         :searchable? false
@@ -717,100 +677,8 @@
                          (nil false) " inactive"))
        :onClick #(set-value! (not value))}
       ($ (case value
-           nil icon/checkbox
-           icon/checkboxDefault)))))
-
-
-(defstyled uuid-cell UUIDCell
-  (assoc tip/basic ".info-tooltip" tip/basic-content)
-  --themed)
-
-
-(defstyled enum-cell EnumCell
-  {:input {:font-size "1em"
-           :font-weight "600"
-           :cursor "pointer"}}
-  --themed)
-
-
-(defstyled text-cell TextCell
-  {:font-size "1em"
-   :border "none"
-   :outline "none"
-   :resize "none"
-   :padding 0
-   :width "100%"}
-  --themed)
-
-
-(defstyled timestamp-cell TimestampCell
-  {:display "flex"
-   :justify-content "center"
-   :input
-   {:font-size "1em"
-    :border "none"
-    :outline "none"
-    :resize "none"
-    :padding 2
-    :width "100%"}}
-  ;;
-  --themed)
-
-
-(defstyled integer-cell IntegerCell
-  {:border "none"
-   :outline "none"
-   :font-size "1em"
-   :width "90%"}
-  --themed)
-
-
-(defstyled float-cell FloatCell
-  {:border "none"
-   :outline "none"
-   :font-size "1em"}
-  --themed)
-
-
-(defstyled currency-cell CurrencyCell
-  {:font-size "1em"
-   :max-width 140
-   :display "flex"
-   :align-items "center"
-   :input {:outline "none"
-           :border "none"
-           :max-width 100}}
-  --themed)
-
-(defstyled boolean-cell BooleanCell
-  {:font-size "1em"
-   :padding 0
-   :width 20
-   :height 20
-   :display "flex"
-   :justify-content "center"
-   :align-items "center"
-   :transition "background-color .3s ease-in-out"}
-  --themed)
-
-
-(defnc UserCellInput
-  [props]
-  (let [{:keys [read-only disabled] :as column} (use-column)
-        [value] (use-cell-state column)]
-    ($ ui/dropdown
-       {:img ui/avatar
-        :value value
-        & props}
-       (when (every? not [read-only disabled])
-         ($ ClearButton
-            {:className "clear"})))))
-
-
-(defstyled user-cell-input UserCellInput
-  (assoc $action-input :display "flex" :align-items "center"
-    ".clear" {:transition "color .2s ease-in-out"})
-  --themed)
+           nil icon/checkboxDefault
+           icon/checkbox)))))
 
 
 (defnc AvatarCell [{:keys [className]}]
@@ -822,31 +690,21 @@
         :className className})))
 
 
-(defnc UserDropdownOption
-  [{:keys [option] :as props} ref]
-  {:wrap [(react/forwardRef)]}
-  ($ ui/option #_toddler/dropdown-option
-    {:ref ref
-     & (dissoc props :ref)}
-    ($ ui/avatar {:size :small & option})
-    (:name option)))
-
-
-(defnc UserDropdownPopup
+(defnc IdentityCellInput
   [props]
-  ($ ui/popup #_toddler/DropdownPopup
-    {:render/option UserDropdownOption
-     & props}))
+  ($ UI
+    {:components
+     {:img fields/field-avatar
+      :input "input"
+      :wrapper "div"}}
+    ($ dropdown/Input
+       {& props})))
 
 
-(defstyled user-dropdown-popup UserDropdownPopup
-  {:max-height 250})
-
-
-(defnc UserCell [props]
-  (let [{:keys [label style placeholder read-only options] :as column} (use-column)
+(defnc IdentityCell [props]
+  (let [{:keys [label style placeholder read-only disabled options] :as column} (use-column)
         [value set-value!] (use-cell-state column)]
-    ($ UserCellInput
+    ($ dropdown/Element
        {:name label
         :value value
         :onChange (comp set-value! not-empty)
@@ -855,9 +713,17 @@
         :style (->clj style) 
         :read-only read-only
         :options (when-not read-only options)
-        :render/input user-cell-input
-        :render/popup user-dropdown-popup
-        & props})))
+        & props}
+       (when (every? not [read-only disabled])
+         ($ ClearButton
+            {:className "clear"})))))
+
+
+(defstyled identity-cell IdentityCell
+  {:display "flex"
+   :align-items "center"
+   :input {:outline "none"
+           :border "none"}})
 
 
 ;; ACTION CELLS
@@ -909,52 +775,6 @@
                        "icon")}))))
 
 
-(defstyled user-cell UserCell 
-  {:input {:font-size "1em"}
-   ".clear" {:color "transparent"
-             :display "flex"
-             :align-items "center"}}
-  --themed)
-
-(defstyled action-cell ActionCell
-  {:padding 5
-   :font-size "0.8em"
-   :border-radius 3
-   :display "flex"
-   :justify-content "center"
-   :transition "box-shadow .3s ease-in,background .3s ease-in"
-   :border "2px solid transparent"
-   :align-items "center"
-   :cursor "pointer"
-   ":focus" {:outline "none"}}
-  --themed)
-
-(defstyled delete-cell DeleteCell
-  {:display "flex"
-   :justify-content "center"
-   :align-content "center"
-   :min-height 25
-   :min-width 30
-   :max-height 30
-   :font-size "1em"
-   :align-items "center"
-   ; :margin-top 3
-   ".delete-marker"
-   {:cursor "pointer"
-    :margin "1px 3px"
-    :transition "color .3s ease-in"}}
-  --themed)
-
-(defstyled expand-cell ExpandCell
-  {:display "flex"
-   :flex-grow "1"
-   :justify-content "center"
-   :cursor "pointer"
-   :svg {:transition "transform .3s ease-in-out"}}
-  --themed)
-
-
-
 ;;;;;;;;;;;;;;;;
 ;;   HEADERS  ;;
 ;;;;;;;;;;;;;;;;
@@ -1000,7 +820,7 @@
       column-name)))
 
 
-(defnc UserHeader
+(defnc IdentityHeader
   [{{:keys [filter] :as column} :column
     :as header}]
   (let [{v :_ilike
@@ -1077,7 +897,6 @@
           :placeholder "Filter period..."
           :className "filter"
           ;FIXME
-          ; :render/field toddler/PeriodInput
           :onChange (fn [[from to]] 
                       (dispatch
                         {:type :table.column/filter
@@ -1109,9 +928,7 @@
 
 (defnc BooleanHeader 
   [{{:keys [filter] :as column} :column
-    rpopup :render/popup
-    :as header
-    :or {rpopup "div"}}]
+    :as header}]
   (let [{v :_eq} filter
         [opened? set-opened!] (hooks/use-state nil)
         dispatch (use-dispatch) 
@@ -1146,14 +963,12 @@
                  ; FIXME
                  ; :wrapper toddler/dropdown-popup
                  }
-                ($ rpopup {:onChange toggle}))))))))
+                ($ ui/popup {:onChange toggle}))))))))
 
 
 (defnc EnumHeader
   [{{:keys [filter]
      :as column} :column
-    rpopup :render/popup
-    :or {rpopup "div"}
     :as header}]
   (let [{v :_in} filter
         options (map 
@@ -1185,9 +1000,9 @@
          (when (and (not-empty options) opened?) 
            ($ popup/Element
               {:ref popup
-               :wrapper rpopup
+               :wrapper ui/wrapper
                :preference popup-menu-preference}
-              ($ toddler/checklist
+              ($ ui/checklist
                  {:value v
                   :multiselect? true
                   :options options 
@@ -1223,124 +1038,6 @@
    {:margin "4px 0"}})
 
 
-(defstyled plain-header PlainHeader 
-  header-style
-  --themed)
-
-
-(defstyled user-header UserHeader
-  (deep-merge
-    header-style
-    {".filter"
-     {:line-height 12
-      :padding 0
-      ; :flex-grow "1"
-      :justify-self "center"
-      :resize "none"
-      :border "none"
-      :width "100%"}})
-  --themed)
-
-
-(defstyled text-header TextHeader 
-  (deep-merge
-    header-style
-    {".filter"
-     {:line-height 12
-      :padding 0
-      ; :flex-grow "1"
-      :justify-self "center"
-      :resize "none"
-      :border "none"
-      :width "100%"}})
-  --themed)
-
-
-(defstyled boolean-popup BooleanFilter 
-  {:display "flex"
-   :flex-direction "row"
- (str ui/checkbox) {:margin "1px 2px"}})
-
-
-(defstyled boolean-header BooleanHeader 
-  (deep-merge 
-    header-style
-    {:align-items "center"})
-  --themed)
-
-
-(defstyled enum-popup popup/element
-  {(str toddler/checklist " .name") {:font-size "1em"}})
-
-
-(defstyled enum-header EnumHeader 
-  (deep-merge
-    header-style
-    {:justify-content "flex-start"
-     :align-items "center"
-     ; ".header" {:margin-left "-1em"}
-     })
-  --themed)
-
-(defstyled timestamp-header TimestampHeader
-  (deep-merge
-    header-style
-    {:justify-content "flex-start"
-     :align-items "center"
-     ; ".header" {:margin-left "-1em"}
-     })
-  --themed)
-
-
-(defn header-resolver
-  [{:keys [type]}]
-  (case  type
-    "enum" enum-header
-    "boolean" boolean-header
-    "string" text-header 
-    "user" user-header
-    "timestamp" timestamp-header
-    plain-header))
-
-
-(defn cell-resolver
-  [{:keys [render type]}]
-  (if (some? render) render
-    (case type
-      :action/delete delete-cell
-      :action/expand expand-cell
-      "boolean" boolean-cell
-      "currency" currency-cell
-      "enum" enum-cell
-      "float" float-cell
-      "hashed" HashedCell
-      "int" integer-cell
-      "uuid" uuid-cell
-      "string" text-cell
-      "user" user-cell
-      "timestamp" timestamp-cell
-      (throw
-        (js/Error.
-          (str
-            "Unknown reneder type: '" type
-            "'. Specify either valid :type or :render attribute in column definition"))))))
-
-
-(defstyled pagination Pagination
-  {:padding "2px 3px 8px 3px"
-   :display "flex"
-   :font-size "1em"
-   :align-items "center"
-   :button {:outline "none"
-            :border "none"}
-   :input 
-   {:margin-left 3
-    :border "none"
-    :outling "none"
-    :width 40}}
-  --themed)
-
-
 (defn column-default-style
   [{{:keys [width] 
      :or {width 100}
@@ -1372,17 +1069,8 @@
 
 (defnc Table
   [{:keys [dispatch rows actions pagination]
-    cell-resolver :cell/resolver
-    header-resolver :header/resolver
-    :or {cell-resolver cell-resolver
-         header-resolver header-resolver}
     :as props}]
-  (let [{:keys [columns]} (use-table-defaults props)
-        ; [style] (spring/use-spring
-        ;           {:from {:opacity 0}
-        ;            :to {:opacity 1}
-        ;            :delay 200})
-        ]
+  (let [{:keys [columns]} (use-table-defaults props)]
     (provider
       {:context *actions*
        :value actions}
@@ -1390,27 +1078,13 @@
         {:context *pagination*
          :value pagination}
         (provider
-          {:context *cell-renderer*
-           :value cell-resolver}
+          {:context *dispatch*
+           :value dispatch}
           (provider
-            {:context *header-renderer*
-             :value header-resolver}
+            {:context *columns*
+             :value columns}
             (provider
-              {:context *dispatch*
-               :value dispatch}
-              (provider
-                {:context *columns*
-                 :value columns}
-                (provider
-                  {:context *rows*
-                   :value rows}
-                  ($ TableLayout
-                     {& props}))))))))))
-
-
-
-(defstyled table Table
-  {:display "flex"
-   :flex-direction "column"
-   :flex-grow "1"}
-  --themed)
+              {:context *rows*
+               :value rows}
+              ($ TableLayout
+                 {& props}))))))))

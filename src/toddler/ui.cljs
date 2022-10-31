@@ -31,6 +31,8 @@
 (defcomponent tooltip tooltip)
 (defcomponent autosize-input :input/autosize)
 (defcomponent idle-input :input/idle)
+(defcomponent action :action)
+(defcomponent checklist :checklist)
 
 
 (defcomponent card :card)
@@ -65,6 +67,11 @@
 (defcomponent boolean-field :field/boolean)
 
 
+(defcomponent table :table)
+(defcomponent table-row :table/row)
+(defcomponent table-header-row :table/header-row)
+
+
 (defcomponent enum-header :header/enum)
 (defcomponent boolean-header :header/boolean)
 (defcomponent text-header :header/text)
@@ -73,12 +80,13 @@
 (defcomponent plain-header :header/plain)
 
 
+(defcomponent boolean-cell :cell/boolean)
 (defcomponent integer-cell :cell/integer)
 (defcomponent float-cell :cell/float)
 (defcomponent text-cell :cell/text)
 (defcomponent enum-cell :cell/enum)
 (defcomponent currency-cell :cell/currency)
-; (defcomponent hash-cell)
+(defcomponent hash-cell :cell/hashed)
 (defcomponent uuid-cell :cell/uuid)
 (defcomponent identity-cell :cell/identity)
 (defcomponent timestamp-cell :cell/timestamp)
