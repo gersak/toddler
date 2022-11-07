@@ -4,7 +4,6 @@
     clojure.string
     [shadow.css :refer [css]]
     [goog.string.format]
-    [helix.styled-components :refer [defstyled]]
     [helix.core
      :refer [$ defnc provider]]
     [helix.dom :as d]
@@ -376,32 +375,42 @@
               :className "data"})))))
 
 
-(defnc CheckboxField [{:keys [name className] :as props}]
-  (d/span
-    {:class className}
-    ($ ui/checkbox {& (dissoc props :name :className)})
-    (d/label
-      {:className "field-name"}
-      name)))
+(defnc checkbox-field
+  [{:keys [name] :as props}]
+  (let [$default (css
+                   :flex
+                   :items-center
+                   :mx-2
+                   :my-3
+                   :text-gray-500
+                   ["& .field-name"
+                    :ml-2
+                    :select-none
+                    :text-sm
+                    :font-bold
+                    :uppercase
+                    {:transition "all .3s ease-in-out"}])]
+    (d/span
+      {:class $default}
+      ($ ui/checkbox {& (dissoc props :name :className)})
+      (d/label
+        {:className "field-name"}
+        name))))
 
 
-(defstyled checkbox-field CheckboxField
-  {:display "flex"
-   :flex-direction "row"
-   :align-items "center"
-   :margin "5px 10px"
-   ".field-name"
-   {:margin-left 5
-    :user-select "none"
-    :transition "all .3s ease-in-out"
-    :font-size ".8em"
-    :font-weight "600"
-    :text-transform "uppercase"}
-   :color (color :gray)})
-
-
-(defstyled field-avatar e/avatar
-  {:margin-right 8})
+; (defstyled checkbox-field CheckboxField
+;   {:display "flex"
+;    :flex-direction "row"
+;    :align-items "center"
+;    :margin "5px 10px"
+;    ".field-name"
+;    {:margin-left 5
+;     :user-select "none"
+;     :transition "all .3s ease-in-out"
+;     :font-size ".8em"
+;     :font-weight "600"
+;     :text-transform "uppercase"}
+;    :color (color :gray)})
 
 
 (defnc identity-dropdown-option
@@ -411,23 +420,9 @@
     {:ref ref
      & (dissoc props :ref :option)}
     ($ e/avatar {:size :small
-                 :className (css :mr-5)
+                 :className (css :mr-2)
                  & option})
     (:name option)))
-
-
-
-(defnc identity-popup
-  [props]
-  (let [$style (css {:max-height "20em"})]
-    ($ ExtendUI
-       {:components
-        {:wrapper e/dropdown-wrapper
-         :option identity-dropdown-option}}
-       ($ dropdown/Popup
-          {:className $style
-           & props}))))
-
 
 
 (defnc identity-field
@@ -485,64 +480,14 @@
                  {:className "dropdown-popup"})))))))
 
 
-
-; (defnc multiselect-field
-;   [{:keys [context-fn search-fn disabled]
-;     :or {search-fn str}
-;     :as props}]
-;   (let [[area-position set-area-position!] (hooks/use-state nil)
-;         {:keys [remove!
-;                 toggle!
-;                 options
-;                 new-fn
-;                 area]
-;          :as multiselect} (use-multiselect
-;                             (assoc props
-;                                    :search-fn search-fn
-;                                    :area-position area-position))
-;         $wrapper (css
-;                    :flex
-;                    :items-center
-;                    {:min-height "3em"})]
-;     (provider
-;       {:context dropdown/*dropdown*
-;        :value multiselect}
-;       (provider
-;         {:context popup/*area-position*
-;          :value [area-position set-area-position!]}
-;            ($ field
-;               {:onClick (fn [] (toggle!))
-;                & props}
-;               ($ field-wrapper
-;                  {:className $wrapper}
-;                  (map
-;                    (fn [option]
-;                      ($ e/multiselect-option
-;                        {:key (search-fn option)
-;                         :value option
-;                         :onRemove #(remove! option)
-;                         :context (if disabled :stale
-;                                    (when (fn? context-fn)
-;                                      (context-fn option)))}))
-;                    (:value props))
-;                  (when (or (fn? new-fn) (not-empty options))
-;                    ($ popup/Area
-;                       {:ref area}
-;                       ($ dropdown/Input {& props})
-;                       ($ ExtendUI
-;                          {:components
-;                           {:option e/dropdown-option
-;                            :wrapper e/dropdown-wrapper}}
-;                          ($ dropdown/Popup
-;                             {:className "dropdown-popup"}))))))))))
-
-
-
 (defnc IdentityMultiselectOption
   [{{:keys [name] :as option} :value :as props}]
   ($ e/multiselect-option
     {& props}
-    ($ field-avatar {:size :small & option})
+    ($ e/avatar
+       {:size :small
+        :className (css :mr-2)
+        & option})
     (d/div {:className "name"} name)))
 
 

@@ -110,7 +110,7 @@
   [props]
   ($ ExtendUI
     {:components
-     {:popup fields/identity-popup
+     {;:popup fields/identity-popup
       :input identity-cell-input}}
     ($ table/IdentityCell
        {& props})))

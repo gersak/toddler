@@ -694,7 +694,7 @@
   [props]
   ($ UI
     {:components
-     {:img fields/field-avatar
+     {;:img fields/field-avatar
       :input "input"
       :wrapper "div"}}
     ($ dropdown/Input

@@ -71,9 +71,9 @@
         {:keys [height]} (use-window-dimensions)]
     ($ ui/simplebar
        {:className className
-        :style #js {:height height 
-                    :minWidth 300
-                    :maxWidth 500}
+        :style {:height height 
+                :min-width 300
+                :max-width 500}
         :scrollableNodeProps #js {:ref _ref}}
        (d/div
          {:className "title"}

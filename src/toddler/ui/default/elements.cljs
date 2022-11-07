@@ -298,7 +298,6 @@
 
 (defnc dropdown-option
   [props]
-  (println "RENDERING DROPDOWN OPTION!!!!")
   (let [$layout (css
                   :flex
                   :justify-start
