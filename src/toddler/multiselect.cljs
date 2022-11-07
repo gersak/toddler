@@ -6,7 +6,7 @@
 
 (ns toddler.multiselect
   (:require
-    [helix.core :refer [$ defhook defnc provider]]
+    [helix.core :refer [$ defhook defnc provider <>]]
     [helix.hooks :as hooks]
     [helix.dom :as d]
     [helix.children :as c]
@@ -201,7 +201,7 @@
 
 
 (defnc Element
-  [{:keys [className context-fn search-fn disabled placeholder]
+  [{:keys [context-fn search-fn disabled placeholder]
     :or {search-fn str}
     :as props}]
   (let [[area-position set-area-position!] (hooks/use-state nil)
@@ -220,8 +220,7 @@
       (provider
         {:context popup/*area-position*
          :value [area-position set-area-position!]}
-        (d/div
-          {:className className}
+        (<>
           (map
             (fn [option]
               ($ ui/option

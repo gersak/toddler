@@ -27,4 +27,5 @@
     #:orange {:dark "#ff4007"}
     #:yellow {:dark "#FFDC00"
               :deep "#c7ac00"}
+    #:green {:dark "#02bf72"}
     #:white {:transparent "#ffffffee"}))

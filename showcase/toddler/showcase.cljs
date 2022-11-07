@@ -3,8 +3,9 @@
    ["react-dom/client" :refer [createRoot]]
    [toddler.dev :as dev]
    [helix.core :refer [$]]
-   toddler.showcase.table
+   toddler.showcase.calendar
    toddler.showcase.fields
+   toddler.showcase.table
    toddler.showcase.avatar))
 
 

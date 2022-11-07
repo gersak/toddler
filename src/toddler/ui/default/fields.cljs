@@ -2,257 +2,318 @@
   (:require
     clojure.set
     clojure.string
+    [shadow.css :refer [css]]
     [goog.string.format]
-    [cljs-bean.core :refer [->clj]]
     [helix.styled-components :refer [defstyled]]
     [helix.core
-     :refer [$ defnc]]
+     :refer [$ defnc provider]]
     [helix.dom :as d]
     [helix.children :as c]
     [helix.hooks  :as hooks]
     [toddler.input
+     :as input
      :refer [AutosizeInput
              NumberInput
              TextAreaElement]]
     [toddler.ui.default.color :refer [color]]
     [toddler.ui.default.elements :as e]
-    [toddler.dropdown :as dropdown]
+    [toddler.dropdown :as dropdown
+     :refer [use-dropdown]]
+    [toddler.multiselect
+     :refer [use-multiselect]]
     [toddler.date :as date]
     [toddler.ui :as ui]
     [toddler.ui.provider :refer [UI ExtendUI]]
+    [toddler.popup :as popup]
+    ["toddler-icons$default" :as icon]
     ["react" :as react]))
 
 
-(defnc Field
+(defnc field
   [{:keys [name className style]
     :as props}]
+  (let [$style (css
+                 :flex :flex-col
+                 :mx-2 :my-1
+                 ["& .field-name"
+                  :text-gray-500
+                  :text-sm
+                  :font-bold
+                  :uppercase
+                  {:user-select "none"
+                   :transition "all .3s ease-in-out"}])]
+    (d/div
+      {:class [className $style]
+       :style style 
+       & (select-keys props [:onClick])}
+      (when name (d/label {:className "field-name"} name))
+      (c/children props))))
+
+
+
+(defnc field-wrapper
+  [{:keys [className] :as props}]
+  (let [$style (css
+                 :flex
+                 :items-center
+                 :border-3
+                 :border-gray-400
+                 :rounded-md
+                 :px-3 :py-1
+                 :cursor-text
+                 :text-gray-800
+                 :bg-gray-200
+                 {:transition "all .3s ease-in-out"
+                  :min-height "2.25em"}
+                 ["&:focus-within"
+                  {:border-color "#2cc8c8 !important"
+                   :box-shadow "0 0 3px #2cc8c8"
+                   :background-color "transparent"}])]
   (d/div
-   {:class className
-    :style (->clj style)
-    & (select-keys props [:onClick])}
-   (when name (d/label {:className "field-name"} name))
-   (c/children props)))
+    {:class [className
+             $style]}
+    (c/children props))))
 
 
-(defstyled default-field Field
-  {:display "flex"
-   :flex-direction "column"
-   :margin "5px 10px"
-   ".field-name"
-   {:color (color :gray)
-    :user-select "none"
-    :transition "all .3s ease-in-out"
-    :font-size "0.8em"
-    :font-weight "600"
-    :text-transform "uppercase"}})
+(defnc textarea-field
+  [props]
+  (let [$style (css
+                 ["& textarea" {:font-family "Robot"}])
+        _input (hooks/use-ref nil)]
+    ($ field
+       {:className [$style]
+        :onClick (fn [] (when @_input (.focus @_input)))
+        & props}
+       ($ field-wrapper
+          {:className (css
+                        :grow
+                        :py-1
+                        ["& textarea"
+                         :text-gray-800
+                         {:overflow "hidden"
+                          :min-height "2em"
+                          :border "none"
+                          :resize "none"
+                          :box-sizing "border-box"
+                          :margin-top "6px" 
+                          :padding "0"
+                          :font-size "1em"}])}
+          ($ TextAreaElement
+             {:ref _input 
+              :spellCheck false
+              :auto-complete "off"
+              :className "input"
+              & (cond->
+                  (->
+                    props
+                    (dissoc :name :style :className)
+                    (update :value #(or % ""))))})))))
 
 
-(defstyled field-wrapper
-  "div"
-  {:border "1px solid"
-   :border-radius 2
-   :margin-top 4
-   :padding "4px 10px"
-   :cursor "text"
-   :input {:font-size "1em"}
-   :overflow "hidden"
-   :border-color "#b3b3b3 !important"
-   :background "#e5e5e5"
-   :transition "all .3s ease-in-out"
-   ":focus-within" {:border-color (str (color :teal) "!important")
-                    :box-shadow (str "0 0 3px " (color :teal))
-                    :background-color "transparent"}
-   "input,textarea"
-   {:color (color :gray)}})
-
-
-(defstyled text-area-wrapper field-wrapper
-  {:flex-grow "1"
-   :padding-top 1
-   :padding-bottom 1
-   :textarea
-   {:overflow "hidden"
-    :border "none"
-    :resize "none"
-    :box-sizing "border-box"
-    :margin-top 6 
-    :padding 0
-    :font-size "1em"}})
-
-
-(defnc TextareaField
-  [{:keys [style]
-    :as props} _ref]
-  {:wrap [(react/forwardRef)]}
-  ($ default-field {& props}
-    ($ text-area-wrapper
-       ($ TextAreaElement
-          {:spellCheck false
-           :auto-complete "off"
-           :style style
-           :className "input"
-           & (cond->
-               (->
-                 props
-                 (dissoc :name :style :className)
-                 (update :value #(or % "")))
-               _ref (assoc :ref _ref))}))))
-
-(defstyled textarea-field TextareaField
-  {:textarea {:font-family "Roboto"}})
-
-
-(defnc WrappedField
-  [{:keys [context]
-    :as props}]
-  ($ default-field {& props}
-    ($ field-wrapper {:context context}
-       (c/children props))))
-
-
-(defstyled autosize-input AutosizeInput
-  {:outline "none"
-   :border "none"})
-
-
-(defnc InputField
+(defnc input-field
   [{:keys [onChange on-change] :as props}]
   (let [_input (hooks/use-ref nil)
         onChange (hooks/use-memo
                    [onChange on-change]
-                   (or onChange on-change identity))]
-    ($ WrappedField
+                   (or onChange on-change identity))
+        $wrapper (css
+                   {:min-height "2em"})]
+    ($ field
        {:onClick (fn [] (when @_input (.focus @_input)))
         & props}
-       ($ autosize-input
-          {:ref _input
-           :autoComplete "off"
-           :autoCorrect "off"
-           :spellCheck "false"
-           :autoCapitalize "false"
-           :onChange (fn [^js e]
-                       (onChange (.. e -target -value)))
-           & (dissoc props :onChange :name :className :style)}))))
+       ($ field-wrapper
+          {:class [$wrapper]}
+          ($ AutosizeInput
+             {:ref _input
+              :className (css
+                            {:outline "none"
+                             :border "none"})
+              :autoComplete "off"
+              :autoCorrect "off"
+              :spellCheck "false"
+              :autoCapitalize "false"
+              :onChange (fn [^js e]
+                          (onChange (.. e -target -value)))
+              & (dissoc props :onChange :name :className :style)})))))
 
 
-(defnc IntegerField
+(defnc integer-field
   [{:keys [onChange]
     :or {onChange identity}
     :as props}]
   (let [input (hooks/use-ref nil)]
-    ($ WrappedField
+    ($ field
        {:onClick (fn [] (when @input (.focus @input)))
         & props}
-       ($ NumberInput
-          {:ref input
-           & (->
-              props
-              (dissoc :name :className :style)
-              (assoc :onChange
-                     (fn [e]
-                       (some->>
-                        (.. e -target -value)
-                        not-empty
-                        (re-find #"-?\d+[\.|,]*\d*")
-                        (js/parseFloat)
-                        onChange))))}))))
+       ($ field-wrapper
+          ($ NumberInput
+             {:ref input
+              :className [(css ["& input" :border-0])]
+              & (->
+                  props
+                  (dissoc :name :className :style)
+                  (assoc :onChange
+                         (fn [e]
+                           (some->>
+                             (.. e -target -value)
+                             not-empty
+                             (re-find #"-?\d+[\.|,]*\d*")
+                             (js/parseFloat)
+                             onChange))))})))))
 
 
-(defstyled integer-field IntegerField {:input {:border "none"}})
-
-
-(defnc FloatField
+(defnc float-field
   [{:keys [onChange]
     :or {onChange identity}
     :as props}]
   (let [input (hooks/use-ref nil)]
-    ($ WrappedField
+    ($ field
        {:onClick (fn [] (when @input (.focus @input)))
         & props}
-       ($ NumberInput
-          {:ref input
-           & (->
-              props
-              (dissoc :name :className :style)
-              (assoc :onChange
-                     (fn [e]
-                       (some->>
-                        (.. e -target -value)
-                        not-empty
-                        (re-find #"-?\d+[\.|,]*\d*")
-                        (js/parseFloat)
-                        onChange))))}))))
+       ($ field-wrapper
+          ($ NumberInput
+             {:ref input
+              :className (css ["& input" :border-0])
+              & (->
+                  props
+                  (dissoc :name :className :style)
+                  (assoc :onChange
+                         (fn [e]
+                           (some->>
+                             (.. e -target -value)
+                             not-empty
+                             (re-find #"-?\d+[\.|,]*\d*")
+                             (js/parseFloat)
+                             onChange))))})))))
 
 
-(defstyled float-field FloatField {:input {:border "none"}})
-
-
-(defstyled dropdown-field-wrapper field-wrapper
-  {:position "relative"
-   :padding "4px 16px 4px 4px"
-   :cursor "pointer"})
-
-
-(defstyled dropdown-element-decorator dropdown/Decorator
-  {:position "absolute"
-   :right 4 
-   :top 7
-   :transition "color .2s ease-in-out"
-   :color (color :gray)
-   "&.opened" {:color "transparent"}})
-
-(defnc DropdownInput
+;; TODO remove
+(defnc dropdown-field-wrapper
   [props]
-  ($ ExtendUI
-    {:components {:input autosize-input
-                  :wrapper dropdown-field-wrapper}}
-    ($ dropdown/Input
-       {& props}
-       ($ dropdown-element-decorator {:className "decorator"}))))
+  ($ field-wrapper
+    {:class (css
+              {:position "relative"
+               :padding "4px 16px 4px 4px"
+               :cursor "pointer"})
+     & props}))
 
 
-(defnc DropdownField
+(defnc dropdown-option
   [props]
-  ($ default-field {& props}
-     ($ ExtendUI
-        {:components {:input DropdownInput
-                      :popup e/DropdownPopup}}
-        ($ dropdown/Element
-           {:className "dropdown"
-            & (dissoc props :name :className :style)}))))
+  (let [$layout (css
+                  :flex
+                  :justify-start
+                  :items-center
+                  :cursor-pointer
+                  :text-gray-500
+                  :rounded-sm
+                  :bg-white
+                  {:transition "color .2s ease-in,background-color .2s ease-in"
+                   :padding "4px 6px 4px 4px"}
+                  [:hover :text-gray-600 :bg-cyan-100]
+                  ["&:last-child" {:border-bottom "none"}])]
+    (d/div
+      {:class [$layout]
+       & props}
+      (c/children props))))
 
 
-(defstyled multiselect-field-wrapper field-wrapper
-  {:position "relative"
-   :padding "4px 16px 4px 4px"
-   :border "1px solid black"
-   :min-width 100
-   ".tags" {:display "flex"
-            :flex-direction "row"
-            :flex-wrap "wrap"
-            :align-items "baseline"
-            (str autosize-input) {:align-self "center"}}})
-
-
-(defnc MultiselectField
+(defnc dropdown-field
   [props]
-  ($ UI
-    {:components {:wrapper multiselect-field-wrapper
-                  :input e/MultiselectInput
-                  :popup e/DropdownPopup
-                  :option e/multiselect-option}}
-    ($ WrappedField
-       {& props}
-       ($ e/multiselect
-          {& (dissoc props :name :className :style)}))))
+  (let [[area-position set-area-position!] (hooks/use-state nil)
+        ;;
+        {:keys [input area toggle! opened] :as dropdown}
+        (use-dropdown
+          (->
+            props
+            (assoc :area-position area-position)
+            (dissoc :className)))
+        $wrapper (css
+                   :flex
+                   :justify-between
+                   :items-center)
+        $decorator (css
+                     :text-gray-400
+                     ["&.opened" :text-transparent]
+                     {:transition "color .2s ease-in-out"})]
+    (provider
+      {:context dropdown/*dropdown*
+       :value dropdown}
+      (provider
+        {:context popup/*area-position*
+         :value [area-position set-area-position!]}
+        ($ popup/Area
+           {:ref area
+            & (select-keys props [:className])}
+           ($ field
+              {:onClick (fn []
+                          (toggle!)
+                          (when @input (.focus @input)))
+               & props}
+              ($ field-wrapper
+                 {:className $wrapper}
+                 ($ dropdown/Input {& props})
+                 (d/span
+                   {:class (cond-> [$decorator]
+                             opened (conj "opened"))}
+                   ($ icon/dropdownDecorator))))
+           ($ ExtendUI
+              {:components
+               {:option e/dropdown-option
+                :wrapper e/dropdown-wrapper}}
+              ($ dropdown/Popup
+                 {:className "dropdown-popup"})))))))
 
 
-(defstyled multiselect-field MultiselectField
-  {".multiselect"
-   {:display "flex"
-    :align-items "center"
-    :flex-wrap "wrap"
-    :min-height 30}})
+(defnc multiselect-field
+  [{:keys [context-fn search-fn disabled]
+    :or {search-fn str}
+    :as props}]
+  (let [[area-position set-area-position!] (hooks/use-state nil)
+        {:keys [remove!
+                toggle!
+                options
+                new-fn
+                area]
+         :as multiselect} (use-multiselect
+                            (assoc props
+                                   :search-fn search-fn
+                                   :area-position area-position))
+        $wrapper (css
+                   :flex
+                   :items-center
+                   {:min-height "3em"})]
+    (provider
+      {:context dropdown/*dropdown*
+       :value multiselect}
+      (provider
+        {:context popup/*area-position*
+         :value [area-position set-area-position!]}
+           ($ field
+              {:onClick (fn [] (toggle!))
+               & props}
+              ($ field-wrapper
+                 {:className $wrapper}
+                 (map
+                   (fn [option]
+                     ($ e/multiselect-option
+                       {:key (search-fn option)
+                        :value option
+                        :onRemove #(remove! option)
+                        :context (if disabled :stale
+                                   (when (fn? context-fn)
+                                     (context-fn option)))}))
+                   (:value props))
+                 (when (or (fn? new-fn) (not-empty options))
+                   ($ popup/Area
+                      {:ref area}
+                      ($ dropdown/Input {& props})
+                      ($ ExtendUI
+                         {:components
+                          {:option e/dropdown-option
+                           :wrapper e/dropdown-wrapper}}
+                         ($ dropdown/Popup
+                            {:className "dropdown-popup"}))))))))))
 
 
 (defnc TimestampFieldInput
@@ -268,7 +329,7 @@
            read-only onChange format]
     :or {format :datetime-full}
     :as props}]
-  ($ default-field
+  ($ field 
     {& props}
     ($ ExtendUI
        {:components
@@ -299,7 +360,7 @@
     :as props}]
   ($ date/PeriodElementProvider
     {& props}
-    ($ default-field
+    ($ field
        {& props}
        ($ ExtendUI
           {:components
@@ -339,135 +400,212 @@
    :color (color :gray)})
 
 
-(defstyled field-avatar e/small-avatar
+(defstyled field-avatar e/avatar
   {:margin-right 8})
 
 
-(defnc IdentityFieldInput
-  [props]
-  ($ UI
-    {:components
-     {:img field-avatar
-      :input autosize-input
-      :wrapper dropdown-field-wrapper}}
-    ($ dropdown/Input
-       {& props})))
-
-
-(defstyled identity-field-input IdentityFieldInput
-  {:display "flex"
-   :align-items "center"})
-
-
-(defnc IdentityDropdownOption
-  [{:keys [option className] :as props} ref]
+(defnc identity-dropdown-option
+  [{:keys [option] :as props} ref]
   {:wrap [(react/forwardRef)]}
   ($ e/dropdown-option
     {:ref ref
-     :className className
      & (dissoc props :ref :option)}
-    ($ e/small-avatar {& option})
+    ($ e/avatar {:size :small
+                 :className (css :mr-5)
+                 & option})
     (:name option)))
 
 
-(defstyled identity-dropdown-option IdentityDropdownOption
-  {(str e/small-avatar) {:margin-right 5}})
 
-
-(defnc IdentityPopup
+(defnc identity-popup
   [props]
-  ($ ExtendUI
-    {:components
-     {:wrapper e/dropdown-wrapper
-      :option identity-dropdown-option}}
-    ($ dropdown/Popup
-       {& props})))
-
-
-(defstyled identity-popup IdentityPopup
-  {:max-height 250})
+  (let [$style (css {:max-height "20em"})]
+    ($ ExtendUI
+       {:components
+        {:wrapper e/dropdown-wrapper
+         :option identity-dropdown-option}}
+       ($ dropdown/Popup
+          {:className $style
+           & props}))))
 
 
 
-(defnc IdentityElement
+(defnc identity-field
   [props]
-  ($ ExtendUI
-    {:components
-     {:popup identity-popup
-      :input identity-field-input}}
-    ($ dropdown/Element
-       {:search-fn :name
-        & (dissoc props :search-fn)})))
+  (let [[area-position set-area-position!] (hooks/use-state nil)
+        ;;
+        {:keys [value input area toggle! opened] :as dropdown}
+        (use-dropdown
+          (->
+            props
+            (assoc :area-position area-position
+                   :search-fn :name)
+            (dissoc :className)))
+        $wrapper (css
+                   :flex
+                   :justify-between
+                   :items-center)
+        $decorator (css
+                     :text-gray-400
+                     ["&.opened" :text-transparent]
+                     {:transition "color .2s ease-in-out"})]
+    (provider
+      {:context dropdown/*dropdown*
+       :value dropdown}
+      (provider
+        {:context popup/*area-position*
+         :value [area-position set-area-position!]}
+        ($ popup/Area
+           {:ref area
+            & (select-keys props [:className])}
+           ($ field
+              {:onClick (fn []
+                          (toggle!)
+                          (when @input (.focus @input)))
+               & props}
+              ($ field-wrapper
+                 {:className $wrapper}
+                 ($ e/avatar
+                    {:className (css :mr-2
+                                     :border
+                                     :border-solid
+                                     :border-gray-500)
+                     :size :small}
+                    value)
+                 ($ dropdown/Input {& props})
+                 (d/span
+                   {:class (cond-> [$decorator]
+                             opened (conj "opened"))}
+                   ($ icon/dropdownDecorator))))
+           ($ ExtendUI
+              {:components
+               {:option identity-dropdown-option
+                :wrapper e/dropdown-wrapper}}
+              ($ dropdown/Popup
+                 {:className "dropdown-popup"})))))))
 
 
-(defnc IdentityField
-  [props]
-  ($ default-field
-     {& props}
-     ($ IdentityElement
-        {:className "input"
-         & (->
-             props
-             (dissoc :name :style :className)
-             (update :value #(or % "")))})))
 
+; (defnc multiselect-field
+;   [{:keys [context-fn search-fn disabled]
+;     :or {search-fn str}
+;     :as props}]
+;   (let [[area-position set-area-position!] (hooks/use-state nil)
+;         {:keys [remove!
+;                 toggle!
+;                 options
+;                 new-fn
+;                 area]
+;          :as multiselect} (use-multiselect
+;                             (assoc props
+;                                    :search-fn search-fn
+;                                    :area-position area-position))
+;         $wrapper (css
+;                    :flex
+;                    :items-center
+;                    {:min-height "3em"})]
+;     (provider
+;       {:context dropdown/*dropdown*
+;        :value multiselect}
+;       (provider
+;         {:context popup/*area-position*
+;          :value [area-position set-area-position!]}
+;            ($ field
+;               {:onClick (fn [] (toggle!))
+;                & props}
+;               ($ field-wrapper
+;                  {:className $wrapper}
+;                  (map
+;                    (fn [option]
+;                      ($ e/multiselect-option
+;                        {:key (search-fn option)
+;                         :value option
+;                         :onRemove #(remove! option)
+;                         :context (if disabled :stale
+;                                    (when (fn? context-fn)
+;                                      (context-fn option)))}))
+;                    (:value props))
+;                  (when (or (fn? new-fn) (not-empty options))
+;                    ($ popup/Area
+;                       {:ref area}
+;                       ($ dropdown/Input {& props})
+;                       ($ ExtendUI
+;                          {:components
+;                           {:option e/dropdown-option
+;                            :wrapper e/dropdown-wrapper}}
+;                          ($ dropdown/Popup
+;                             {:className "dropdown-popup"}))))))))))
 
-(defnc IdentityMultiselectElement
-  [props]
-  ($ ExtendUI
-    {:components
-     {:popup identity-popup
-      :input identity-field-input}}
-    (let [search-fn :name
-          display-fn (fn [option] ($ ui/avatar {& option}))]
-      ($ e/multiselect
-         {:search-fn search-fn
-          :display-fn display-fn
-          :className "multiselect"
-          & (dissoc props :name :className :style)}))))
 
 
 (defnc IdentityMultiselectOption
   [{{:keys [name] :as option} :value :as props}]
   ($ e/multiselect-option
-    {:& props}
-    ($ field-avatar {& option})
+    {& props}
+    ($ field-avatar {:size :small & option})
     (d/div {:className "name"} name)))
 
 
-(defnc IdentityMultiselectInput
-  [props]
-  ($ ExtendUI
-    {:components
-     {:img field-avatar
-      :input autosize-input
-      :wrapper e/multiselect-wrapper}}
-    ($ dropdown/Input
-       {& props})))
-
-
-(defnc IdentityMultiselectField
-  [props]
-  ($ ExtendUI
-    {:components {:wrapper multiselect-field-wrapper
-                  :input IdentityMultiselectInput
-                  :popup identity-popup
-                  :option IdentityMultiselectOption}}
-    ($ WrappedField
-       {& props}
-       ($ e/multiselect
-          {& (dissoc props :name :className :style)}))))
+(defnc identity-multiselect-field
+  [{:keys [context-fn search-fn disabled]
+    :or {search-fn str}
+    :as props}]
+  (let [[area-position set-area-position!] (hooks/use-state nil)
+        {:keys [remove!
+                toggle!
+                options
+                new-fn
+                area]
+         :as multiselect} (use-multiselect
+                            (assoc props
+                                   :search-fn search-fn
+                                   :area-position area-position))
+        $wrapper (css
+                   :flex
+                   :items-center
+                   {:min-height "3em"})]
+    (provider
+      {:context dropdown/*dropdown*
+       :value multiselect}
+      (provider
+        {:context popup/*area-position*
+         :value [area-position set-area-position!]}
+           ($ field
+              {:onClick (fn [] (toggle!))
+               & props}
+              ($ field-wrapper
+                 {:className $wrapper}
+                 (map
+                   (fn [option]
+                     ($ IdentityMultiselectOption
+                       {:key (search-fn option)
+                        :value option
+                        :onRemove #(remove! option)
+                        :context (if disabled :stale
+                                   (when (fn? context-fn)
+                                     (context-fn option)))}))
+                   (:value props))
+                 (when (or (fn? new-fn) (not-empty options))
+                   ($ popup/Area
+                      {:ref area}
+                      ($ dropdown/Input {& props})
+                      ($ ExtendUI
+                         {:components
+                          {:option identity-dropdown-option
+                           :wrapper e/dropdown-wrapper}}
+                         ($ dropdown/Popup
+                            {:className "dropdown-popup"}))))))))))
 
 
 (def components
   #:field {:text textarea-field
            :boolean checkbox-field
-           :input InputField
+           :input input-field
            :integer integer-field 
            :float float-field
-           :dropdown DropdownField
+           :dropdown dropdown-field
            :multiselect multiselect-field
            :timestamp TimestampField
            :period PeriodField
-           :identity IdentityField
-           :identity-multiselect IdentityMultiselectField})
+           :identity identity-field
+           :identity-multiselect identity-multiselect-field})

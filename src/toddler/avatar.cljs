@@ -290,7 +290,7 @@
 
 
 (defnc Avatar
-  [{:keys [className onGenerate]
+  [{:keys [className onGenerate style]
     value :avatar}]
   (let [root (use-avatar-root)
         [avatar set-avatar!] (hooks/use-state nil)
@@ -315,4 +315,5 @@
                 (set-avatar! avatar)))))))
     (d/img
       {:className className
+       :style style
        :src avatar})))

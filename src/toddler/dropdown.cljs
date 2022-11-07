@@ -8,6 +8,7 @@
    [toddler.hooks :refer [use-idle]]
    [toddler.popup :as popup]
    [toddler.ui :as ui]
+   [toddler.input :refer [AutosizeInput]]
    ["toddler-icons$default" :as icon]))
 
 (defn get-available-options
@@ -99,8 +100,10 @@
     ;; EVERYTHING ELSE
     "default"))
 
+
 (defn maybe-focus [input]
   (when @input (.focus @input)))
+
 
 (defhook use-dropdown
   [{:keys [value options on-change onChange new-fn search-fn area area-position disabled]
@@ -186,13 +189,13 @@
 (defnc Decorator
   [{:keys [className]}]
   (let [{:keys [options opened disabled]} (hooks/use-context *dropdown*)]
-    (when (and (not disabled) (pos? (count options)))
+    (when (and (not disabled) (pos? (count options))
+               icon/dropdownDecorator)
       (d/span
        {:className (str
                     className
                     (when opened " opened"))}
-       (when icon/dropdownDecorator
-         ($ icon/dropdownDecorator))))))
+       ($ icon/dropdownDecorator)))))
 
 
 (defnc Discard
@@ -228,16 +231,12 @@
 
 
 (defnc Input
-  [{:keys [className onSearchChange placeholder]
-    :as props}]
+  [{:keys [onSearchChange placeholder]} _ref]
   (let [{:keys [input
-                value
                 search
                 on-change
                 on-key-down
                 sync-search!
-                toggle!
-                opened
                 disabled
                 read-only
                 searchable?]
@@ -246,25 +245,18 @@
       [search]
       (when (ifn? onSearchChange)
         (onSearchChange search)))
-    ($ ui/wrapper
-       {:onClick toggle!
-        :className (cond-> className
-                     opened (str " opened"))
-        & (select-keys props [:context :disabled])}
-       ($ ui/img {& value})
-       ($ ui/input
-          {:ref input
-           :className "input"
-           :value search
-           :read-only (or read-only (not searchable?))
-           :disabled disabled
-           :spellCheck false
-           :auto-complete "off"
-           :placeholder placeholder
-           :onChange on-change
-           :onBlur sync-search!
-           :onKeyDown on-key-down})
-       (c/children props))))
+    ($ AutosizeInput
+       {:ref input
+        :className "input"
+        :value search
+        :read-only (or read-only (not searchable?))
+        :disabled disabled
+        :spellCheck false
+        :auto-complete "off"
+        :placeholder placeholder
+        :onChange on-change
+        :onBlur sync-search!
+        :onKeyDown on-key-down})))
 
 
 (defnc Popup
@@ -287,7 +279,7 @@
           :items options
           :onChange (fn [{:keys [position]}]
                       (when (some? position) (set-area-position! position)))
-          :className (str className " animated fadeIn faster")}
+          :className className}
          (map
            (fn [option]
              ($ ui/option

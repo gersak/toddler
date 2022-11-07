@@ -1,6 +1,7 @@
 (ns repl
   (:require
     [clojure.java.io :as io]
+    [toddler.ui.default.color :refer [color]]
     [shadow.css.build :as cb]
     [shadow.cljs.devtools.server.fs-watch :as fs-watch]))
 
@@ -11,7 +12,7 @@
   (let [result
         (-> @css-ref
             (cb/generate '{:ui {:include [toddler.ui*]}})
-            (cb/write-outputs-to (io/file "public" "css")))]
+            (cb/write-outputs-to (io/file "dev" "css")))]
 
     (prn :CSS-GENERATED)
     (doseq [mod (:outputs result)
@@ -26,7 +27,8 @@
   ;; first initialize my css
   (reset! css-ref
           (-> (cb/start)
-              (cb/index-path (io/file "src" "main") {})))
+              (cb/index-path (io/file "src") {})
+              (cb/index-path (io/file "showcase") {})))
 
   ;; then build it once
   (generate-css)
@@ -65,4 +67,6 @@
 
 
 (comment
+  (-> css-ref deref keys )
+  (spit "aliases.edn" (-> css-ref deref :aliases keys ))
   (go))

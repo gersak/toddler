@@ -25,6 +25,15 @@
      ($ a/Generator
         ($ default/Provider
            ($ ui/row
+              {:label "Buttons"}
+              ($ ui/button "DEFAULT")
+              ($ ui/button {:context :positive} "Positive")
+              ($ ui/button {:context :negative} "Negative")
+              ($ ui/button {:context :fun} "Fun")
+              ($ ui/button {:context :fresh} "Fresh")
+              ($ ui/button {:context :stale} "Stale")
+              ($ ui/button {:disabled true} "Disabled"))
+           ($ ui/row
               ($ ui/input-field
                  {:name "Auto-size free input"
                   :value (:free-input state)

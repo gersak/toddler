@@ -1,7 +1,6 @@
 (ns toddler.popup
   (:require
     clojure.string
-    [cljs-bean.core :refer [->js]]
     ["react" :as react]
     ["react-dom" :as rdom]
     [helix.core 
@@ -505,13 +504,12 @@
           ($ ui/wrapper
              {:ref #(reset! dummy %)
               :className className
-              :style (->js
-                       (merge
-                         style
-                         {:top -10000 :left -10000 
-                          :position "fixed"
-                          :zIndex "1000"
-                          :visibility "hidden"}))}
+              :style (merge
+                       style
+                       {:top -10000 :left -10000 
+                        :position "fixed"
+                        :zIndex "1000"
+                        :visibility "hidden"})}
              ;; TODO - think about what happens when height is limited by css
              ;; or style properties. Than commented line doesn't work well
              ;; on the other hand with current line simplebar is always present
@@ -522,12 +520,11 @@
             ($ ui/wrapper
                {:ref #(reset! (or ref el) %)
                 :className className
-                :style (->js
-                         (merge
-                           style
-                           {:top top :left left
-                            :position "fixed"
-                            :zIndex "1000"}))}
+                :style (merge
+                         style
+                         {:top top :left left
+                          :position "fixed"
+                          :zIndex "1000"})}
                ($ SimpleBar
                   {:style {:width (round-number (- popup-width padding-left padding-right) 1 :ceil)
                            :height (round-number (- popup-height padding-top padding-bottom) 1 :ceil)}}

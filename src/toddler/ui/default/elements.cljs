@@ -2,214 +2,319 @@
   (:require
     ["react" :as react]
     [clojure.string :as str]
+    [shadow.css :refer [css]]
     [helix.core
      :refer [$ defnc]]
-    [helix.styled-components :refer [defstyled]]
+    [helix.dom :as d]
     [helix.children :as c]
     [toddler.input
      :refer [AutosizeInput
              IdleInput]]
-    [toddler.elements :as e]
-    [toddler.layout :as l]
+    [toddler.ui :refer [forward-ref]]
     [toddler.avatar :as a]
     [toddler.dropdown :as dropdown]
     [toddler.multiselect :as multiselect]
     [toddler.date :as date]
-    [toddler.scroll :refer [SimpleBar]]
-    [toddler.ui.default.color :refer [color]]
-    [toddler.ui.provider :refer [ExtendUI UI]]))
+    [toddler.scroll :as scroll]
+    [toddler.ui.provider :refer [ExtendUI UI]]
+    ["toddler-icons$default" :as icon]))
 
 
-(defstyled simplebar SimpleBar
-  {"transition" "box-shadow 0.3s ease-in-out"}
-  (fn 
-    [{:keys [$shadow-top $shadow-bottom $hidden]}]
-    (let [box-shadow (cond-> []
-                       $shadow-top (conj "inset 0px 11px 8px -10px #CCC")
-                       $shadow-bottom (conj "inset 0px -11px 8px -10px #CCC"))]
-      (cond-> nil
-        (not-empty box-shadow)
-        (assoc :box-shadow (str/join ", " box-shadow))
-        $hidden
-        (assoc ".simplebar-track" {:display "none"})))))
+(defnc simplebar
+  [{:keys [className shadow hidden] :as props
+    :or {shadow #{}}}
+   _ref]
+  {:wrap (forward-ref)}
+  (let [$default (css {:transition "box-shadow 0.3s ease-in-out"})
+        $shadow-top (css {:box-shadow "inset 0px 11px 8px -10px #CCC"})
+        $shadow-bottom (css {:box-shadow "inset 0px -11px 8px -10px #CCC"}) 
+        $hidden (css ["& .simplebar-track" {:display "none"}])
+        className (str/join
+                    " "
+                    (cond-> [className $default]
+                      (shadow :top) (conj $shadow-top) 
+                      (shadow :bottom) (conj $shadow-bottom)
+                      hidden (conj $hidden)))]
+    ($ scroll/_SimpleBar
+       {:className className
+        :ref _ref
+        & (-> props
+              (dissoc :shadow :className :class)
+              (:style scroll/transform-style))}
+       (c/children props))))
 
 
-(defstyled autosize-input AutosizeInput
-  {:outline "none"
-   :border "none"})
+(defnc autosize-input
+  [props]
+  ($ AutosizeInput
+    {:className (css
+                  :border-0
+                  :outline-none)
+     & props}))
 
 
-(defstyled idle-input IdleInput
-  {:outline "none"
-   :border "none"})
+(defnc idle-input
+  [props]
+  ($ IdleInput
+    {:className (css {:outline "none"
+                      :border "none"})
+     & props}))
 
 
-(defstyled buttons
-  "div"
-  {:display "flex"
-   :button {:margin 0
-            :border-radius 0}
-   :button:first-of-type {:border-top-left-radius 4 :border-bottom-left-radius 4}
-   :button:last-of-type {:border-top-right-radius 4 :border-bottom-right-radius 4}})
+(defnc buttons
+  [props]
+  (let [$wrapper (css
+                   :display "flex"
+                   :button {:m-0
+                            :rounded-none}
+                   :button:first-of-type {:border-top-left-radius "4px" :border-bottom-left-radius "4px"}
+                   :button:last-of-type {:border-top-right-radius "4px" :border-bottom-right-radius "4px"})]
+    (d/div
+      {:className $wrapper}
+      (c/children props))))
 
-(defn button-colors
+
+(defn button-color
   [{:keys [context disabled]}]
-  (let [context (if disabled :disabled context)]
+  (let [context (if disabled :disabled context)
+        $positive
+        (css :text-green-200
+             :bg-green-600
+             [:hover :text-white :bg-green-500])
+        ;;
+        $negative
+        (css
+          :text-red-600
+          :bg-red-200
+          [:hover :bg-red-400 :text-red-900])
+        $fun
+        (css 
+          :bg-cyan-500
+          :text-cyan-100
+          [:hover :bg-cyan-400])
+        ;;
+        $fresh
+        (css
+          :text-yellow-900
+          :bg-yellow-300
+          [:hover :text-black :bg-yellow-400]) 
+        ;;
+        $stale
+        (css
+          {:color :gray
+           :background-color :gray/light}
+          [:hover {:background-color "#d9d9d9"}])
+        ;;
+        $disabled
+        (css 
+          {:color "white"
+           :background-color "#bbbbbb"
+           :cursor "initial"
+           :pointer-events "none"
+           :user-select "none"})
+        ;;
+        $default
+        (css :text-teal-900
+             :bg-cyan-400
+             [:hover :bg-cyan-300])]
     (case context
-      ;;
-      :positive
-      {:color "white"
-       :background-color (color :green/dark)
-       :hover {:color "white"
-               :background-color (color :green)}}
-      ;;
-      :negative
-      {:color (color :red)
-       :background-color (color :gray/light)
-       :hover {:color "white"
-               :background-color (color :red)}}
-      ;;
-      :fun
-      {:color "white"
-       :background-color (color :teal)
-       :hover {:background-color (color :teal/saturated)}}
-      ;;
-      :fresh
-      {:color (color :gray)
-       :background-color (color :gray/light)
-       :hover {:color "black"
-               :background-color (color :yellow)}}
-      ;;
-      :stale
-      {:color (color :gray)
-       :background-color (color :gray/light)
-       ::hover {:color "white"
-                :background-color (color :gray/dark)}}
-      ;;
-      :disabled
-      {:color "white"
-       :background-color "#bbbbbb"
-       :cursor "initial"}
-      ;;
-      {:color "white"
-       :background-color "#5e82b8"
-       :hover {:background-color (color :asphalt/dark)}})))
+      :positive $positive
+      :negative $negative
+      :fun $fun
+      :fresh $fresh
+      :stale $stale
+      :disabled $disabled
+      $default)))
 
 
-(defstyled button
-  "button"
-  {:border "2px solid transparent"
-   :border-radius 2
-   :padding "5px 18px"
-   :max-height 30
-   :min-width 80
-   :font-size "1em"
-   :line-height "1.33"
-   :text-align "center"
-   :vertical-align "center"
-   :transition "box-shadow .3s ease-in,background .3s ease-in"
-   :cursor "pointer"
-   :margin "3px 2px"
-   ":hover" {:transition "background .3s ease-in"}
-   ":focus" {:outline "none"}
-   ":active" {:transform "translate(0px,2px)" :box-shadow "none"}}
-  (fn [{:keys [disabled] :as props}]
-    (let [{:keys [background-color color hover]}
-          (button-colors props)]
-      (cond->
-        {:color color 
-         :background-color background-color 
-         ":hover" (assoc hover :box-shadow "0px 2px 4px 0px #aeaeae")}
-        disabled (assoc :pointer-events "none")))))
+(defnc button
+  [{:keys [disabled] :as props}]
+  (let [$color (button-color props) 
+        $layout (css 
+                  :flex
+                  :border-2
+                  :border-transparent
+                  :rounded-sm
+                  ; :px-18
+                  ; :py-4
+                  {:justify-content "center"
+                   :padding "8px 18px"
+                   :align-items "center"
+                   :max-height "30px"
+                   :min-width "80px"
+                   :font-size "1em"
+                   :line-height "1.33"
+                   :text-align "center"
+                   :vertical-align "center"
+                   :margin "3px 2px"
+                   :transition "box-shadow .3s ease-in,background .3s ease-in"
+                   :cursor "pointer"}
+                  ["&:hover" {:transition "background .3s ease-in"}]
+                  ["&:focus" {:outline "none"}]
+                  ["&:active" {:transform "translate(0px,2px)" :box-shadow "none"}])
+        $shadow (css
+                  ["&:hover" {:box-shadow "0px 2px 4px 0px #aeaeae"}])
+        $disabled (css :pointer-events "none")]
+    (d/button
+      {:class (cond-> [$layout
+                       $color
+                       $shadow]
+                disabled (conj $disabled))}
+      (c/children props))))
 
 
-(defstyled checkbox e/Checkbox
-  {:cursor "pointer"
-   :path {:cursor "pointer"}
-   :transition "color .2s ease-in"
-   :width 20
-   :height 20
-   :border-radius 3
-   :border-color "transparent"
-   :padding 0
-   :display "flex"
-   :justify-content "center"
-   :outline "none"
-   :align-items "center"
-   ":active" {:border-color "transparent"}}
-  (fn [{:keys [theme value disabled]}]
-    (let [[c bc] (case (:name theme)
-                   ["white" (case value 
-                              true (color :green)
-                              false (color :disabled)
-                              (color :gray/light))])]
-      (cond->
-        {:color c
-         :background-color bc}
-        disabled (assoc :pointer-events "none")))))
-
-
-(defstyled row l/Row
-  {:display "flex"
-   :flex-direction "row"
-   :align-items "center"
-   :flex-grow "1"
-   ".label"
-   {:margin "2px 0 4px 4px"
-    :padding-bottom 2
-    :text-transform "uppercase"
-    :font-size "1em"
-    :color (color :gray)
-    :border-bottom (str "1px solid " (color :gray))}}
-  l/--flex-position)
-
-
-(defstyled column l/Column
-  {:display "flex"
-   :flex-direction "column"
-   :flex-grow "1"
-   ".label"
-   {:margin "2px 0 4px 4px"
-    :padding-bottom 2
-    :text-transform "uppercase"
-    :font-size "1.2em"
-    :color (color :gray)
-    :border-bottom (str "1px solid " (color :gray))}
-   :padding 3}
-  l/--flex-position)
+(defnc checkbox
+  [{:keys [value disabled] :as props}]
+  (let [$layout (css
+                  {:cursor "pointer"
+                   :transition "color .2s ease-in"
+                   :width "1.5em" 
+                   :height "1.5em"
+                   :border-radius "4px"
+                   :border-color "transparent"
+                   :padding "0px"
+                   :display "flex"
+                   :justify-content "center"
+                   :outline "none"
+                   :align-items "center"}
+                  ["& path" {:cursor "pointer"}]
+                  ["&:active" {:border-color "transparent"}])
+        $active (css
+                  :text-white
+                  :bg-green-500)
+        $inactive (css
+                    :text-white
+                    :bg-gray-400)
+        $disabled (css :pointer-events "none")]
+    (d/button
+      {:class [$layout
+               (if value $active $inactive)
+               (when disabled $disabled)]
+       & (dissoc props :value)}
+      ($ (case value
+           nil icon/checkboxDefault
+           icon/checkbox)))))
 
 
 
+(defnc row
+  [{:keys [label position] :as props} _ref]
+  {:wrap [(forward-ref)]}
+  (let [$layout (css
+                  :text-gray-800
+                  {:display "flex"
+                   :flex-direction "row"
+                   :align-items "center"
+                   :flex-grow "1"}
+                  ["& .label"
+                   {:margin "4px 4px 4px 4px"
+                    :padding-bottom "2px"
+                    :text-transform "uppercase"
+                    :font-size "1em"
+                    :color :text-gray-800}])
+        $start (css {:justify-content "flex-start"})
+        $center (css {:justify-content "center"})
+        $end (css {:justify-content "flex-end"})
+        $explode (css {:justify-content "space-between"})
+        $position (case position
+                    :center $center
+                    :end $end
+                    :explode $explode
+                    $start)]
+    (d/div
+      {:ref _ref
+       :class [$layout
+               $position]
+       :position position}
+      (when label
+        (d/div
+          {:className "label"}
+          (d/label label)))
+      (c/children props))))
 
-(defstyled dropdown-wrapper "div"
-  {:display "flex"
-   :flex-direction "column"
-   :border-radius 3
-   :padding 7
-   :background-color "white"
-   :box-shadow "0px 3px 10px -3px black"
-   " .simplebar-scrollbar:before"
-   {:background (color :gray)
-    :pointer-events "none"}
-   :max-height 400})
+
+(defnc column
+  [{:keys [label position] :as props} _ref]
+  {:wrap [(forward-ref)]}
+  (let [$layout (css
+                  :text-gray-800
+                  {:display "flex"
+                   :flex-direction "column"
+                   :align-items "center"
+                   :flex-grow "1"}
+                  ["& .label"
+                   {:margin "4px 4px 4px 4px"
+                    :padding-bottom "2px"
+                    :text-transform "uppercase"
+                    :font-size "1em"
+                    :color :text-gray-800}])
+        $start (css {:justify-content "flex-start"})
+        $center (css {:justify-content "center"})
+        $end (css {:justify-content "flex-end"})
+        $explode (css {:justify-content "space-between"})
+        $position (case position
+                    :center $center
+                    :end $end
+                    :explode $explode
+                    $start)]
+    (d/div
+      {:ref _ref
+       :class [$layout
+               $position]
+       :position position}
+      (when label
+        (d/div
+          {:className "label"}
+          (d/label label)))
+      (c/children props))))
 
 
-(defstyled dropdown-option
-  "div"
-  {:font-size "1em"
-   :display "flex"
-   :justify-content "flex-start"
-   :align-items "center"
-   :color (color :gray) ;"#00b99a"
-   :cursor "pointer"
-   :background-color "white" 
-   :transition "color .2s ease-in,background-color .2s ease-in"
-   :padding "4px 6px 4px 4px"
-   ; :border-radius 3
-   ; :font-weight "500" 
-   " :hover" {:color (color :gray) 
-              :background-color "#d7f3f3"}
-   ":last-child" {:border-bottom "none"}})
+(defnc dropdown-wrapper
+  [{:keys [style] :as props} _ref]
+  {:wrap [(forward-ref)]}
+  (let [$layout (css
+                  :flex
+                  :flex-col
+                  :m-0
+                  :p-2
+                  :bg-white
+                  :shadow-xl
+                  :rounded-sm
+                  :border-2
+                  :border
+                  :border-gray-100
+                  {:box-shadow "0 11px 25px -5px rgb(0 0 0 / 9%), 0 4px 20px 0px rgb(0 0 0 / 14%)"}
+                  ; {:box-shadow "0px 3px 10px -3px black"}
+                  ["& .simplebar-scrollbar:before"
+                   :bg-gray-100
+                   :pointer-events-none
+                   {:max-height "400px"}])]
+    (d/div
+      {:ref _ref
+       :class [$layout]
+       :style style}
+      (c/children props))))
+
+
+(defnc dropdown-option
+  [props]
+  (println "RENDERING DROPDOWN OPTION!!!!")
+  (let [$layout (css
+                  :flex
+                  :justify-start
+                  :items-center
+                  :cursor-pointer
+                  :text-gray-500
+                  :rounded-sm
+                  :bg-white
+                  {:transition "color .2s ease-in,background-color .2s ease-in"
+                   :padding "4px 6px 4px 4px"}
+                  [:hover :text-gray-600 :bg-cyan-100]
+                  ["&:last-child" {:border-bottom "none"}])]
+    (d/div
+      {:class [$layout]
+       & props}
+      (c/children props))))
 
 
 (defnc DropdownPopup
@@ -230,46 +335,69 @@
     ($ dropdown/Input {& props})))
 
 
-(defnc CalendarMonthDropdown
+(defnc calendar-month-dropdown
   [props]
-  ($ UI
-    {:components {:input VanillaDropdownInput
-                  :popup DropdownPopup}}
-    ($ date/CalendarMonthDropdown {& props})))
+  (let [$style (css
+                 {:margin "5px 0"
+                  :cursor "pointer"}
+                 ["& input" :cursor-pointer :text-rose-700])]
+    ($ UI
+       {:components {:input VanillaDropdownInput
+                     :popup DropdownPopup}}
+       ($ date/CalendarMonthDropdown {:className $style & props}))))
 
 
-(defstyled calendar-month-dropdown CalendarMonthDropdown
-  {:margin "5px 0"
-   :cursor "pointer"
-   :input {:cursor "pointer"
-           :color (color :red)}})
+(defnc calendar-year-dropdown
+  [props]
+  (let [$style (css
+                 :mx-3
+                 :cursor-pointer
+                 ["& input" :cursor-pointer :text-rose-700])]
+    ($ ExtendUI
+       {:components
+        {:input VanillaDropdownInput
+         :popup DropdownPopup}}
+       ($ date/CalendarYearDropdown {:className $style & props}))))
 
 
-(defstyled multiselect-option multiselect/Option
-  {:margin 3
-   :display "flex"
-   :flex-direction "row"
-   :justify-content "start"
-   :align-items "center"
-   :padding "5px 5px"
-   :font-size "1em"
-   :svg {:margin "0 5px"
-         :padding-right 3}
-   :border-radius 3
-   :color "white"
-   :background-color (color :teal)
-   " .remove" {:color (color :teal/dark)
-               :cursor "pointer"
-               :transition "color .2s ease-in"
-               :path {:cursor "pointer"}}
-   " .remove:hover" {:color (color :red)}})
+(defnc multiselect-option 
+  [props]
+  (let [$style (css
+                 :text-white
+                 :bg-cyan-500
+                 :rounded-sm
+                 :px-2
+                 :py-1
+                 {:margin "3px"
+                  :display "flex"
+                  :flex-direction "row"
+                  :justify-content "start"
+                  :align-items "center"
+                  :font-size "1em"}
+                 ["& svg" {:margin "0 5px"
+                           :padding-right "3px"}]
+                 ["& .remove:hover" :text-black]
+                 ["& .remove"
+                  :text-cyan-700
+                  :cursor-pointer
+                  :flex
+                  :items-center
+                  :justify-center
+                  {:transition "color .2s ease-in"}]
+                 ["& .remove path" :cursor-pointer])]
+    ($ multiselect/Option
+       {:className $style & props})))
 
-(defstyled multiselect-wrapper
-  "div"
-  {:display "flex"
-   :justify-content "row"
-   :align-items "center"
-   :min-height 35})
+
+(defnc multiselect-wrapper
+  [props]
+  (d/div
+    {:class (css
+              {:display "flex"
+               :justify-content "row"
+               :align-items "center"
+               :min-height "2.3em"})}
+    (c/children props)))
 
 
 (defnc MultiselectInput
@@ -282,191 +410,189 @@
        (c/children props))))
 
 
-(defstyled multiselect multiselect/Element
-  {:display "flex"
-   :alignItems "center"})
-
-
-(defnc CalendarYearDropdown
+(defnc multiselect
   [props]
-  ($ ExtendUI
-    {:components
-     {:input VanillaDropdownInput
-      :popup DropdownPopup}}
-    ($ date/CalendarYearDropdown {& props})))
+  (d/div
+    {:class (css
+              {:display "flex"
+               :alignItems "center"})}
+    ($ multiselect/Element
+       {& props})))
 
 
-(defstyled calendar-year-dropdown CalendarYearDropdown
-  {:margin "5px 0"
-   :cursor "pointer"
-   :input {:cursor "pointer"
-           :color (color :red)}})
-
-
-(defstyled calendar-day date/CalendarDay
-  {:border-collapse "collapse"
-   :border "1px solid transparent"
-   ".day"
-   {:text-align "center"
-    :font-size "0.8em"
-    :user-select "none"
-    :padding 3
-    :width 20
-    :border-collapse "collapse"
-    :border "1px solid transparent"
-    :cursor "pointer"
-    ".empty" {:cursor "default"}
-    "&.disabled, &:hover.disabled"
-    {:background-color "white"
-     :color (color :disabled)
-     :border-color "transparent"
-     :cursor "default"}
-    ;;
-    ":hover:not(.empty),&.selected"
-    {:color "white"
-     :background-color (color :teal/saturated)
-     :border-collapse "collapse"
-     :border (str "1px solid " (color :teal/dark))
-     :border-radius 2
-     :font-weight 500}
-    "&.today"
-    {:border "1px solid (color :teal)"}
-    "&.weekend"
-    {:color (color :red)}}
-   :color (color :gray)
-   :font-size "1em"})
-
-
-(defnc CalendarWeek
+(defnc calendar-day
   [props]
-  ($ UI
-    {:components {:calendar/day calendar-day}}
-    ($ date/CalendarWeek {& props})))
+  (let [$style (css
+                 :border
+                 :border-transparent
+                 :text-gray-500
+                 ;;
+                 ["& .day"
+                  {:text-align "center"
+                   :font-size "0.8em"
+                   :user-select "none"
+                   :padding "3px"
+                   :width "25px"
+                   :border-collapse "collapse"
+                   :border "1px solid transparent"
+                   :cursor "pointer"}]
+                 ["& .day.today"
+                  :border
+                  :border-teal-600
+                  :text-gray-800
+                  :bg-cyan-300]
+                 ;;
+                 ["& .day.weekend" :text-rose-700]
+                 ;;
+                 ["& .day.empty" {:cursor "default"}]
+                 ;;
+                 ["& .day.disabled, & .day:hover.disabled"
+                  :border
+                  :border-solid
+                  :border-transparent
+                  :text-gray-500
+                  :cursor-default]
+                 ;;
+                 ["& .day:hover:not(.empty), & .day.selected"
+                  :text-white
+                  :border
+                  :rounded-sm
+                  :border-cyan-800
+                  :bg-cyan-500
+                  :font-bold])]
+    ($ date/CalendarDay
+       {:className $style
+        & (dissoc props :className :class)})))
 
 
-(defstyled calendar-week CalendarWeek
-  {".week-days"
-   {:display "flex"
-    :flex-direction "row"}})
+(defnc calendar-week
+  [props]
+  (let [$style (css
+                 ["& .week-days"
+                  :flex
+                  :flex-row])]
+    ($ UI
+       {:components {:calendar/day calendar-day}}
+       ($ date/CalendarWeek
+          {:className $style
+           & props}))))
 
 
-(defstyled calendar-month-header date/CalendarMonthHeader
-  {:display "flex"
-   :flex-direction "row"
-   :border-radius 3
-   :cursor "default"
-   ".day-wrapper"
-   {:border-collapse "collapse"
-    :border "1px solid transparent"
-    ".day"
-    {:text-align "center"
-     :font-weight "500"
-     :font-size "1em"
-     :border-collapse "collapse"
-     :user-select "none"
-     :padding 3
-     :width 20
-     :border "1px solid transparent"}}
-   ".day-wrapper .day"
-   {:color (color :gray)
-    :font-size "1em"
-    "&.weekend"
-    {:color (color :red)}}})
+(defnc calendar-month-header
+  [props]
+  (let [$style (css
+                 :flex
+                 :flex-row
+                 :cursor-default
+                 {:cursor "default"}
+                 ["& .day-wrapper .day" :text-gray-500]
+                 ["& .day.weekend" :text-rose-700]
+                 ["& .day-wrapper"
+                  {:border-collapse "collapse"
+                   :border "1px solid transparent"}]
+                 ["& .day-wrapper .day"
+                  {:text-align "center"
+                   :font-weight "500"
+                   :font-size "0.8em"
+                   :border-collapse "collapse"
+                   :user-select "none"
+                   :padding "3px"
+                   :width "25px"
+                   :border "1px solid transparent"}])]
+    ($ date/CalendarMonthHeader
+       {:className $style & props})))
 
 
 (defnc CalendarMonth
   [props]
   ($ UI
-    {:components {:header calendar-month-header
-                  :calendar/week calendar-week}}
+    {:components
+     {:header calendar-month-header
+      :calendar/week calendar-week}}
     ($ date/CalendarMonth
        {& props})))
 
 
-(defstyled calendar-month CalendarMonth
-  {:display "flex"
-   :flex-direction "column"
-   :width 220
-   ".week-days-header .day-wrapper .day"
-   {:color (color :gray)}
-   ".week-row .week-days .day-wrapper .day"
-   {:color (color :gray)
-    ;;
-    "&.disabled, &:hover.disabled"
-    {:background-color "white"
-     :color (color :disabled)
-     :border-color "transparent"
-     :cursor "default"}
-    ;;
-    ":hover:not(.empty),&.selected"
-    {:color "white"
-     :background-color (color :teal/saturated)
-     :border-collapse "collapse"
-     :border (str "1px solid " (color :teal/dark))
-     :border-radius 2
-     :font-weight 500}}})
-
-
-(defnc TimestampCalendar
+(defnc calendar-month
   [props]
-  ($ date/TimestampCalendar {& props}))
+  (let [$style (css
+                 :flex
+                 :flex-col
+                 {:width "220px"})]
+    ($ CalendarMonth
+       {:className $style
+        & props})))
 
 
-(defstyled timestamp-calendar TimestampCalendar
-  {:display "flex"
-   :flex-direction "column"
-   :border-radius 3
-   :padding 7
-   :width 230
-   :height 190
-   ; (str popup/dropdown-container) {:overflow "hidden"}
-   ".header-wrapper" {:display "flex" :justify-content "center" :flex-grow "1"}
-   ".header"
-   {:display "flex"
-    :justify-content "space-between"
-    :width 200
-    :height 38
-    ".years"
-    {:position "relative"
-     :display "flex"
-     :align-items "center"}
-    ".months"
-    {:position "relative"
-     :display "flex"
-     :align-items "center"}}
-   ".content-wrapper"
-   {:display "flex"
-    :height 150
-    :justify-content "center"
-    :flex-grow "1"}})
+(defnc timestamp-calendar
+  [props]
+  (let [$style (css
+                 {:display "flex"
+                  :flex-direction "column"
+                  :border-radius "3px"
+                  :padding "7px"
+                  :width "230px"
+                  :height "190px"}
+                 ; (str popup/dropdown-container) {:overflow "hidden"}
+                 ["& .header-wrapper" {:display "flex" :justify-content "center" :flex-grow "1"}]
+                 ["& .header"
+                  {:display "flex"
+                   :justify-content "space-between"
+                   :width "200px"
+                   :height "38px"}]
+                 ["& .header .years"
+                  {:position "relative"
+                   :display "flex"
+                   :align-items "center"}]
+                 ["& .header .months"
+                  {:position "relative"
+                   :display "flex"
+                   :align-items "center"}]
+                 ["& .content-wrapper"
+                  {:display "flex"
+                   :height "150px"
+                   :justify-content "center"
+                   :flex-grow "1"}])]
+    ($ date/TimestampCalendar
+       {:className $style
+        & props})))
 
 
-(defstyled timestamp-time date/TimestampTime
-  {:display "flex"
-   :justify-content "center"
-   :align-items "center"
-   :input {:max-width 40}
-   :font-size "1em"
-   :margin "3px 0 5px 0"
-   :justify-self "center"
-   ".time" {:outline "none"
-            :border "none"}})
+(defnc timestamp-time
+  [props]
+  ($ date/TimestampTime
+    {:className (css
+                  {:display "flex"
+                   :justify-content "center"
+                   :align-items "center"
+
+                   :font-size "1em"
+                   :margin "3px 0 5px 0"
+                   :justify-self "center"}
+                  ["& input" {:max-width "40px"}]
+                  ["& .time" {:outline "none"
+                              :border "none"}])
+     & props}))
 
 
-(defstyled timestamp-clear date/TimestampClear
-  {:width 15
-   :height 15
-   :padding 4
-   :display "flex"
-   :justify-self "flex-end"
-   :justify-content "center"
-   :align-items "center"
-   :background-color (color :gray/light)
-   :color "white"
-   :transition "background .3s ease-in-out"
-   :border-radius 20
-   :cursor "pointer"
-   ":hover" {:background-color (color :red)}})
+(defnc timestamp-clear
+  [props]
+  ($ date/TimestampClear
+    {:className (css
+                  :flex
+                  :bg-gray-400
+                  :text-white
+                  :items-center
+                  :justify-center
+                  :cursor-pointer
+                  {:width "15px"
+                   :height "15px"
+                   :padding "4px"
+                   :justify-self "flex-end"
+                   :transition "background .3s ease-in-out"
+                   :border-radius "20px"}
+                  ["&:hover" :bg-red-500])
+     & props}))
 
 
 (defnc TimestampPopup
@@ -492,124 +618,127 @@
     ($ date/PeriodElement {& props})))
 
 
-(defnc PeriodPopup
+(defnc period-popup
   [props _ref]
   {:wrap [react/forwardRef]}
-  ($ ExtendUI
-    {:components
-     {:calendar timestamp-calendar
-      :calendar/time timestamp-time
-      :clear timestamp-clear
-      :wrapper dropdown-wrapper}}
-    ($ date/PeriodPopup
-       {& props :ref _ref})))
+  (let [$style (css ["& .period" :flex :flex-row])]
+    ($ ExtendUI
+       {:components
+        {:calendar timestamp-calendar
+         :calendar/time timestamp-time
+         :clear timestamp-clear
+         :wrapper dropdown-wrapper}}
+       ($ date/PeriodPopup
+          {:className $style
+           & props :ref _ref}))))
 
 
-(defstyled period-popup PeriodPopup
-  {".period"
-   {:display "flex"
-    :flex-direction "row"}})
+(defnc avatar
+  [{:keys [size className] :as props}]
+  (let [size' (case size
+                :small "1.5em"
+                :medium "3.5em"
+                :large "10em"
+                size)]
+    ($ a/Avatar
+       {:className className
+        :style {:border-radius 20
+                :width size'
+                :height size'}
+        & props})))
 
 
-(defstyled avatar a/Avatar
-  nil
-  (fn [{:keys [theme size]
-        :or {size 36}}]
-    (let [size' (case size
-                  :small 20
-                  :medium 36
-                  :large 144
-                  size)]
-      (case (:name theme)
-        {:border-radius 20
-         :width size'
-         ; :margin "0 5px"
-         :height size'}))))
+(defnc tooltip
+  [props]
+  (c/children props))
 
 
-(defstyled small-avatar a/Avatar
-  {:border-radius 20
-   :width 20
-   :height 20})
+(defnc card-action
+  [{:keys [tooltip disabled onClick context] :as props}]
+  ($ tooltip
+    {:message tooltip
+     :disabled (or (empty? tooltip) disabled)}
+    (let [$wrapper (css
+                     {:height "32px"
+                      :width "32px"
+                      :display "flex"
+                      :justify-content "center"
+                      :align-items "center"
+                      :border-radius "32px"})
+          $action (css
+                    {:width "26px"
+                     :height "26px"
+                     :border-radius "26px"
+                     :cursor "pointer"
+                     :transition "color,background-color .2s ease-in-out"
+                     :display "flex"
+                     :color "#929292"
+                     :justify-content "center"
+                     :align-items "center"}
+                    ["& svg" {:height "14px"
+                              :width "14px"}])
+          $default (css
+                     [:hover :bg-cyan-500
+                      {:color "#fff8f3"}])
+          $negative (css
+                      [:hover :bg-red-500
+                       {:color "#fff8f3"}])]
+      (d/div
+        {:class [$wrapper
+                 $action
+                 (case context
+                   :negative $negative
+                   $default)]}
+        (d/div
+          {:className "action"
+           :onClick onClick}
+          (c/children props))))))
 
 
-(defstyled medium-avatar a/Avatar
-  {:border-radius 20
-   :width 36
-   :height 36})
+(defnc card-actions
+  [props]
+  (let [$layout (css
+                  {:position "absolute"
+                   :top "-16px"
+                   :right "-16px"}
+                  ["& .wrapper"
+                    {:display "flex"
+                     :flex-direction "row"
+                     :justify-content "flex-end"
+                     :align-items "center"}])]
+    (d/div
+      {:className ["card-actions" $layout]}
+      (d/div
+        {:className "wrapper"}
 
-(defstyled large-avatar a/Avatar
-  {:border-radius 20
-   :width 144
-   :height 144})
-
-
-(let [size 32
-      inner 26
-      icon 14]
-  (defstyled card-action e/CardAction
-    {:height size
-     :width size
-     :display "flex"
-     :justify-content "center"
-     :align-items "center"
-     :border-radius size
-     ".action"
-     {:width inner
-      :height inner
-      :border-radius inner
-      :cursor "pointer"
-      :transition "color,background-color .2s ease-in-out"
-      :display "flex"
-      :justify-content "center"
-      :align-items "center"
-      :svg {:height icon
-            :width icon}}}
-    (fn [{:keys [context]}]
-      {:background-color (color :white)
-       ".action:hover"
-       (case context
-         :negative
-         {:background-color (color :red)
-          :color "#fff8f3"}
-         {:background-color (color :teal)
-          :color "#fff8f3"})
-       ".action"
-       {:background-color "#929292"
-        :color (color :gray/light)}})))
+        (c/children props)))))
 
 
-(defstyled card-actions e/CardActions
-  {:position "absolute"
-   :top -16
-   :right -16
-   ".wrapper"
-   {:display "flex"
-    :flex-direction "row"
-    :justify-content "flex-end"
-    :align-items "center"}})
-
-
-(defstyled card "div"
-  {:position "relative"
-   :display "flex"
-   :flex-direction "column"
-   :max-width 300
-   :min-width 180
-   :padding "10px 10px 5px 10px"
-   :background-color "#eaeaea"
-   :border-radius 5
-   :transition "box-shadow .2s ease-in-out"
-   ":hover" {:box-shadow "1px 4px 11px 1px #ababab"}
-   (str card-actions) {:opacity "0"
-                       :transition "opacity .4s ease-in-out"}
-   (str ":hover " card-actions) {:opacity "1"}
-   ;;
-   (str avatar)
-   {:position "absolute"
-    :left -10
-    :top -10
-    :transition "all .1s ease-in-out"}})
+(defnc card
+  [props]
+  (let [$card (css
+                {:position "relative"
+                 :display "flex"
+                 :flex-direction "column"
+                 :max-width "300px"
+                 :min-width "180px"
+                 :padding "10px 10px 5px 10px"
+                 :background-color "#eaeaea"
+                 :border-radius "5px"
+                 :transition "box-shadow .2s ease-in-out"}
+                ["& .card-actions" {:opacity "0"
+                                   :transition "opacity .4s ease-in-out"}]
+                ["&:hover .card-actions" {:opacity "1"}]
+                ;;
+                ["& .avatar"
+                 {:position "absolute"
+                  :left "-10px"
+                  :top "-10px"
+                  :transition "all .1s ease-in-out"}]
+                ["&:hover" {:box-shadow "1px 4px 11px 1px #ababab"}])]
+    (d/div
+      {:className $card}
+      (c/children props))))
 
 
 
@@ -626,6 +755,9 @@
      :button button
      :buttons buttons
      :simplebar simplebar
+     :calendar/day calendar-day
+     :calendar/week calendar-week
+     ; :calendar/time calendar-time
      :calendar/year-dropdown calendar-year-dropdown
      :calendar/month-dropdown calendar-month-dropdown
      :calendar/month calendar-month}
