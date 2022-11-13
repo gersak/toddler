@@ -231,7 +231,9 @@
 
 
 (defnc Input
-  [{:keys [onSearchChange placeholder]} _ref]
+  [{:keys [onSearchChange placeholder]
+    rinput :render/input
+    :or {rinput AutosizeInput}} _ref]
   (let [{:keys [input
                 search
                 on-change
@@ -245,7 +247,7 @@
       [search]
       (when (ifn? onSearchChange)
         (onSearchChange search)))
-    ($ AutosizeInput
+    ($ rinput
        {:ref input
         :className "input"
         :value search
@@ -260,7 +262,11 @@
 
 
 (defnc Popup
-  [{:keys [className]}]
+  [{:keys [className]
+    rwrapper :render/wrapper
+    roption :render/option
+    :or {rwrapper "div"
+         roption "div"}}]
   (let [[area-position set-area-position!] (hooks/use-context popup/*area-position*)
         {:keys [options
                 popup
@@ -277,12 +283,13 @@
       ($ popup/Element
          {:ref popup
           :items options
+          :wrapper rwrapper
           :onChange (fn [{:keys [position]}]
                       (when (some? position) (set-area-position! position)))
           :className className}
          (map
            (fn [option]
-             ($ ui/option
+             ($ roption
                {:key (search-fn option)
                 :ref (ref-fn option)
                 :option option

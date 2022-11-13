@@ -12,7 +12,6 @@
     [vura.core :refer [round-number]]
     [helix.styled-components :refer [defstyled --themed]]
     [toddler.scroll :refer [SimpleBar]]
-    [toddler.ui :as ui]
     [toddler.hooks :refer [use-delayed]]
     [toddler.util :as util]))
 
@@ -462,9 +461,10 @@
 
 
 (defnc Element
-  [{:keys [preference style className offset onChange items]
+  [{:keys [preference style className offset onChange items wrapper]
     :or {preference default-preference
-         offset 5}
+         offset 5
+         wrapper "div"}
     :as props} ref]
   {:helix/features {:fast-refresh true}
    :wrap [(react/forwardRef)]}
@@ -501,7 +501,7 @@
         {:context *dimensions*
          :value computed}
         (<>
-          ($ ui/wrapper
+          ($ wrapper
              {:ref #(reset! dummy %)
               :className className
               :style (merge
@@ -517,7 +517,7 @@
              ; (if (and computed (not (ok-candidate? computed)))
              (c/children props))
           (when computed
-            ($ ui/wrapper
+            ($ wrapper
                {:ref #(reset! (or ref el) %)
                 :className className
                 :style (merge

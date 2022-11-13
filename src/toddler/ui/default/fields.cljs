@@ -14,7 +14,7 @@
      :refer [AutosizeInput
              NumberInput
              TextAreaElement]]
-    [toddler.ui.default.color :refer [color]]
+    [toddler.hooks :refer [use-translate]]
     [toddler.ui.default.elements :as e]
     [toddler.dropdown :as dropdown
      :refer [use-dropdown]]
@@ -22,7 +22,7 @@
      :refer [use-multiselect]]
     [toddler.date :as date]
     [toddler.ui :as ui]
-    [toddler.ui.provider :refer [UI ExtendUI]]
+    [toddler.ui.provider :refer [ExtendUI]]
     [toddler.popup :as popup]
     ["toddler-icons$default" :as icon]
     ["react" :as react]))
@@ -186,37 +186,6 @@
                              onChange))))})))))
 
 
-;; TODO remove
-(defnc dropdown-field-wrapper
-  [props]
-  ($ field-wrapper
-    {:class (css
-              {:position "relative"
-               :padding "4px 16px 4px 4px"
-               :cursor "pointer"})
-     & props}))
-
-
-(defnc dropdown-option
-  [props]
-  (let [$layout (css
-                  :flex
-                  :justify-start
-                  :items-center
-                  :cursor-pointer
-                  :text-gray-500
-                  :rounded-sm
-                  :bg-white
-                  {:transition "color .2s ease-in,background-color .2s ease-in"
-                   :padding "4px 6px 4px 4px"}
-                  [:hover :text-gray-600 :bg-cyan-100]
-                  ["&:last-child" {:border-bottom "none"}])]
-    (d/div
-      {:class [$layout]
-       & props}
-      (c/children props))))
-
-
 (defnc dropdown-field
   [props]
   (let [[area-position set-area-position!] (hooks/use-state nil)
@@ -241,27 +210,25 @@
       (provider
         {:context popup/*area-position*
          :value [area-position set-area-position!]}
-        ($ popup/Area
-           {:ref area
-            & (select-keys props [:className])}
-           ($ field
-              {:onClick (fn []
-                          (toggle!)
-                          (when @input (.focus @input)))
-               & props}
-              ($ field-wrapper
-                 {:className $wrapper}
+        ($ field
+           {:onClick (fn []
+                       (toggle!)
+                       (when @input (.focus @input)))
+            & props}
+           ($ field-wrapper
+              {:className $wrapper}
+              ($ popup/Area
+                 {:ref area
+                  & (select-keys props [:className])}
                  ($ dropdown/Input {& props})
-                 (d/span
-                   {:class (cond-> [$decorator]
-                             opened (conj "opened"))}
-                   ($ icon/dropdownDecorator))))
-           ($ ExtendUI
-              {:components
-               {:option e/dropdown-option
-                :wrapper e/dropdown-wrapper}}
-              ($ dropdown/Popup
-                 {:className "dropdown-popup"})))))))
+                 ($ dropdown/Popup
+                    {:className "dropdown-popup"
+                     :render/option e/dropdown-option
+                     :render/wrapper e/dropdown-wrapper}))
+              (d/span
+                {:class (cond-> [$decorator]
+                          opened (conj "opened"))}
+                ($ icon/dropdownDecorator))))))))
 
 
 (defnc multiselect-field
@@ -307,47 +274,63 @@
                    ($ popup/Area
                       {:ref area}
                       ($ dropdown/Input {& props})
-                      ($ ExtendUI
-                         {:components
-                          {:option e/dropdown-option
-                           :wrapper e/dropdown-wrapper}}
-                         ($ dropdown/Popup
-                            {:className "dropdown-popup"}))))))))))
+                      ($ dropdown/Popup
+                         {:className "dropdown-popup"
+                          :render/option e/dropdown-option
+                          :render/wrapper e/dropdown-wrapper})))))))))
 
 
-(defnc TimestampFieldInput
-  [props]
-  ($ ExtendUI
-    {:components
-     {:wrapper dropdown-field-wrapper}}
-    ($ date/TimestampInput {& props})))
-
-
-(defnc TimestampField
-  [{:keys [value placeholder disabled
-           read-only onChange format]
-    :or {format :datetime-full}
-    :as props}]
-  ($ field 
-    {& props}
-    ($ ExtendUI
-       {:components
-        {:popup e/TimestampPopup
-         :field TimestampFieldInput}}
-       ($ date/TimestampDropdown
-          {:value value
-           :onChange onChange
-           :placeholder placeholder
-           :disabled disabled
-           :read-only read-only
-           :format format
-           :className "data"}))))
+(defnc timestamp-field
+  [{:keys [value placeholder disabled className
+           read-only onChange format name]
+    :or {format :datetime-full} :as props}]
+  (let [[opened set-opened!] (hooks/use-state false)
+        translate (use-translate)
+        area (hooks/use-ref nil)
+        popup (hooks/use-ref nil)
+        {:keys [days state]} (date/use-calendar props :month)]
+    ($ field
+       {:name name
+        :onClick (fn []
+                   (when (and (not disabled) (not read-only))
+                     (set-opened! not)))}
+       ($ field-wrapper
+          {:className (str className 
+                           (when opened " opened")
+                           (when disabled " disabled"))}
+          ($ popup/Area
+             {:ref area}
+             ($ AutosizeInput
+                {:className "input"
+                 :readOnly true
+                 :value (when (some? value) (translate value format))
+                 :spellCheck false
+                 :auto-complete "off"
+                 :disabled disabled
+                 :placeholder placeholder})
+             (when opened
+               ($ popup/Element
+                  {:ref popup
+                   :className className 
+                   :wrapper e/dropdown-wrapper
+                   :preference popup/cross-preference}
+                  ($ e/timestamp-calendar {:days days})
+                  #_(d/div
+                    {:style
+                     {:display "flex"
+                      :flex-grow "1"
+                      :justify-content "center"}}
+                    #_($ e/calendar-time
+                         {& state})
+                    #_($ e/clear)))))))))
 
 
 (defnc PeriodFieldInput
   [props] 
   ($ ExtendUI
-    {:components {:wrapper dropdown-field-wrapper}}
+    {:components {
+                  ; :wrapper dropdown-field-wrapper
+                  }}
     ($ date/PeriodInput
        {& props})))
 
@@ -396,21 +379,6 @@
       (d/label
         {:className "field-name"}
         name))))
-
-
-; (defstyled checkbox-field CheckboxField
-;   {:display "flex"
-;    :flex-direction "row"
-;    :align-items "center"
-;    :margin "5px 10px"
-;    ".field-name"
-;    {:margin-left 5
-;     :user-select "none"
-;     :transition "all .3s ease-in-out"
-;     :font-size ".8em"
-;     :font-weight "600"
-;     :text-transform "uppercase"}
-;    :color (color :gray)})
 
 
 (defnc identity-dropdown-option
@@ -472,12 +440,10 @@
                    {:class (cond-> [$decorator]
                              opened (conj "opened"))}
                    ($ icon/dropdownDecorator))))
-           ($ ExtendUI
-              {:components
-               {:option identity-dropdown-option
-                :wrapper e/dropdown-wrapper}}
-              ($ dropdown/Popup
-                 {:className "dropdown-popup"})))))))
+           ($ dropdown/Popup
+              {:className "dropdown-popup"
+               :render/option identity-dropdown-option
+               :render/wrapper e/dropdown-wrapper}))))))
 
 
 (defnc IdentityMultiselectOption
@@ -534,12 +500,10 @@
                    ($ popup/Area
                       {:ref area}
                       ($ dropdown/Input {& props})
-                      ($ ExtendUI
-                         {:components
-                          {:option identity-dropdown-option
-                           :wrapper e/dropdown-wrapper}}
-                         ($ dropdown/Popup
-                            {:className "dropdown-popup"}))))))))))
+                      ($ dropdown/Popup
+                         {:className "dropdown-popup"
+                          :render/option identity-dropdown-option
+                          :render/wrapper e/dropdown-wrapper})))))))))
 
 
 (def components
@@ -550,7 +514,7 @@
            :float float-field
            :dropdown dropdown-field
            :multiselect multiselect-field
-           :timestamp TimestampField
+           :timestamp timestamp-field
            :period PeriodField
            :identity identity-field
            :identity-multiselect identity-multiselect-field})
