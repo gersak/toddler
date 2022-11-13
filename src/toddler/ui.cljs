@@ -63,6 +63,7 @@
 (defcomponent dropdown-field :field/dropdown)
 (defcomponent multiselect-field :field/multiselect)
 (defcomponent timestamp-field :field/timestamp)
+(defcomponent date-field :field/date)
 (defcomponent period-field :field/period)
 (defcomponent boolean-field :field/boolean)
 

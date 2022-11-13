@@ -1,6 +1,7 @@
 (ns toddler.ui.default.elements
   (:require
     ["react" :as react]
+    [goog.string :as gstr]
     [vura.core :as vura]
     [clojure.string :as str]
     [shadow.css :refer [css]]
@@ -16,6 +17,7 @@
     [toddler.avatar :as a]
     [toddler.dropdown :as dropdown]
     [toddler.multiselect :as multiselect]
+    [toddler.mask :refer [use-mask]]
     [toddler.date :as date]
     [toddler.scroll :as scroll]
     [toddler.popup :as popup]
@@ -506,21 +508,8 @@
         & (dissoc props :className :class)})))
 
 
-(defnc calendar-week
-  [props]
-  (let [$style (css
-                 ["& .week-days"
-                  :flex
-                  :flex-row])]
-    ($ UI
-       {:components {:calendar/day calendar-day}}
-       ($ date/CalendarWeek
-          {:className $style
-           & props}))))
-
-
 (defnc calendar-month-header
-  [props]
+  [{:keys [className days] :as props}]
   (let [$style (css
                  :flex
                  :flex-row
@@ -539,19 +528,24 @@
                    :user-select "none"
                    :padding "3px"
                    :width "25px"
-                   :border "1px solid transparent"}])]
-    ($ date/CalendarMonthHeader
-       {:className $style & props})))
-
-
-(defnc CalendarMonth
-  [props]
-  ($ UI
-    {:components
-     {:header calendar-month-header
-      :calendar/week calendar-week}}
-    ($ date/CalendarMonth
-       {& props})))
+                   :border "1px solid transparent"}])
+        week-days (date/use-week-days)
+        day-names (zipmap
+                    [7 1 2 3 4 5 6]
+                    week-days)]
+    (d/div
+      {:class [className $style]}
+      (map
+        (fn [n]
+          (let [is-weekend (vura/*weekend-days* n)]
+            (d/div
+              {:class "day-wrapper"
+               :key n}
+              (d/div
+                {:class (cond-> ["day"]
+                          is-weekend (conj "weekend"))}
+                (get day-names n)))))
+        days))))
 
 
 (defnc calendar-month
@@ -610,7 +604,6 @@
       ($ calendar-month-header {:days (range 1 8)})
       (map
         (fn [[k days]]
-          (println "KEYS: " k)
           (let [week-days (group-by :day days)]
             (d/div
               {:key k
@@ -644,7 +637,8 @@
                   :border-radius "3px"
                   :padding "7px"
                   :width "230px"
-                  :height "190px"}
+                  ; :height "190px"
+                  }
                  ; (str popup/dropdown-container) {:overflow "hidden"}
                  ["& .header-wrapper" {:display "flex" :justify-content "center" :flex-grow "1"}]
                  ["& .header"
@@ -662,7 +656,7 @@
                    :align-items "center"}]
                  ["& .content-wrapper"
                   {:display "flex"
-                   :height "150px"
+                   :height "200px"
                    :justify-content "center"
                    :flex-grow "1"}])
         ;;
@@ -674,9 +668,11 @@
             (cond-> 
               (merge props context)
               (some? value) (assoc :selected v)
-              (fn? onChange) (assoc :onChange (fn [v]
-                                                (when-not (= v value)
-                                                  (when v (onChange (vura/value->time v)))))))))
+              (fn? onChange) (assoc
+                               :onChange (fn [v]
+                                           (when-not (= v value)
+                                             (when v
+                                               (onChange (vura/value->time v)))))))))
         ;;
         {:keys [days]
          {:keys [year month]} :state
@@ -721,60 +717,80 @@
           {:className "content"}
           ($ calendar-month
              {:days days
-              :selected (vura/day-context selected)
+              :selected (when selected (vura/day-context selected))
               :on-select (fn [{:keys [day-in-month]}]
                            (on-day-change day-in-month))
               & props}))))))
 
 
 (defnc timestamp-time
-  [props]
-  ($ date/TimestampTime
-    {:className (css
-                  {:display "flex"
-                   :justify-content "center"
-                   :align-items "center"
+  [{:keys [value read-only disabled onChange] :as props}]
+  (let [{:keys [hour minute] :as state} (hooks/use-memo
+                                          [value]
+                                          (if-not value {:hour 0 :minute 0}
+                                            (->
+                                              value
+                                              vura/time->value
+                                              vura/day-time-context)))
+        props' (use-mask
+                 {:value (gstr/format "%02d:%02d" hour minute)
+                  :disabled disabled
+                  :read-only read-only
+                  :mask (gstr/format "%02d:%02d" 0 0)
+                  :delimiters #{\:}
+                  :constraints [#"([0-1][0-9])|(2[0-3])" #"[0-5][0-9]"]
+                  :onChange (fn [time-]
+                              (let [[h m] (map js/parseInt (str/split time- #":"))]
+                                (when (ifn? onChange)
+                                  (println "SETTING TIME: " [h m])
+                                  (println "NEXT CONTEXT:"
+                                           (->
+                                             state 
+                                             (assoc :hour h :minute m)
+                                             vura/context->value))
+                                  (onChange
+                                    (->
+                                      state 
+                                      (assoc :hour h :minute m)
+                                      vura/context->value
+                                      vura/value->time)))))})]
+    (d/div
+      {:className (css
+                    {:display "flex"
+                     :justify-content "center"
+                     :align-items "center"
 
-                   :font-size "1em"
-                   :margin "3px 0 5px 0"
-                   :justify-self "center"}
-                  ["& input" {:max-width "40px"}]
-                  ["& .time" {:outline "none"
-                              :border "none"}])
-     & props}))
+                     :font-size "1em"
+                     :margin "3px 0 5px 0"
+                     :justify-self "center"}
+                    ["& input" {:max-width "40px"}]
+                    ["& .time" {:outline "none"
+                                :border "none"}])}
+      (d/input
+        {:className "time"
+         :spellCheck false
+         :auto-complete "off"
+         & (dissoc props' :className :constraints :delimiters :mask)}))))
 
 
-(defnc timestamp-clear
-  [props]
-  ($ date/TimestampClear
-    {:className (css
-                  :flex
-                  :bg-gray-400
-                  :text-white
-                  :items-center
-                  :justify-center
-                  :cursor-pointer
-                  {:width "15px"
-                   :height "15px"
-                   :padding "4px"
-                   :justify-self "flex-end"
-                   :transition "background .3s ease-in-out"
-                   :border-radius "20px"}
-                  ["&:hover" :bg-red-500])
-     & props}))
-
-
-(defnc TimestampPopup
-  [props _ref]
-  {:wrap [react/forwardRef]}
-  ($ ExtendUI
-    {:components
-     {:calendar timestamp-calendar
-      :calendar/time timestamp-time
-      :clear timestamp-clear
-      :wrapper dropdown-wrapper}}
-    ($ date/TimestampPopup
-       {:ref _ref & props})))
+; (defnc timestamp-clear
+;   [props]
+;   ($ date/TimestampClear
+;     {:className (css
+;                   :flex
+;                   :bg-gray-400
+;                   :text-white
+;                   :items-center
+;                   :justify-center
+;                   :cursor-pointer
+;                   {:width "15px"
+;                    :height "15px"
+;                    :padding "4px"
+;                    :justify-self "flex-end"
+;                    :transition "background .3s ease-in-out"
+;                    :border-radius "20px"}
+;                   ["&:hover" :bg-red-500])
+;      & props}))
 
 
 (defnc PeriodElement
@@ -782,8 +798,7 @@
   ($ ExtendUI
     {:components
      {:calendar timestamp-calendar
-      :calendar/time timestamp-time
-      :clear timestamp-clear}}
+      :calendar/time timestamp-time}}
     ($ date/PeriodElement {& props})))
 
 
@@ -795,7 +810,6 @@
        {:components
         {:calendar timestamp-calendar
          :calendar/time timestamp-time
-         :clear timestamp-clear
          :wrapper dropdown-wrapper}}
        ($ date/PeriodPopup
           {:className $style
@@ -923,9 +937,7 @@
      :button button
      :buttons buttons
      :simplebar simplebar
-     :calendar/day calendar-day
-     :calendar/week calendar-week
-     ; :calendar/time calendar-time
+     :calendar/timestamp timestamp-calendar
      :calendar/year-dropdown calendar-year-dropdown
      :calendar/month-dropdown calendar-month-dropdown
      :calendar/month calendar-month}

@@ -280,20 +280,31 @@
                           :render/wrapper e/dropdown-wrapper})))))))))
 
 
-(defnc timestamp-field
+(defnc timestamp-dropdown
   [{:keys [value placeholder disabled className
-           read-only onChange format name]
-    :or {format :datetime-full} :as props}]
+           read-only onChange format name time?]
+    :or {format :full-date
+         time? true} :as props}]
   (let [[opened set-opened!] (hooks/use-state false)
         translate (use-translate)
         area (hooks/use-ref nil)
         popup (hooks/use-ref nil)
-        {:keys [days state]} (date/use-calendar props :month)]
+        $clear (css
+                 :text-gray-400
+                 ["&:hover"
+                  :text-gray-900
+                  {:cursor "pointer"}]
+                 {:transition "color .2s ease-in-out"})]
+    (popup/use-outside-action
+      opened area popup
+      (fn [e]
+        (when (.contains js/document.body (.-target e))
+          (set-opened! false))))
     ($ field
        {:name name
         :onClick (fn []
                    (when (and (not disabled) (not read-only))
-                     (set-opened! not)))}
+                     (set-opened! true)))}
        ($ field-wrapper
           {:className (str className 
                            (when opened " opened")
@@ -314,15 +325,42 @@
                    :className className 
                    :wrapper e/dropdown-wrapper
                    :preference popup/cross-preference}
-                  ($ e/timestamp-calendar {:days days})
-                  #_(d/div
-                    {:style
-                     {:display "flex"
-                      :flex-grow "1"
-                      :justify-content "center"}}
-                    #_($ e/calendar-time
-                         {& state})
-                    #_($ e/clear)))))))))
+                  ($ e/timestamp-calendar
+                     {:value value
+                      :disabled disabled
+                      :read-only read-only
+                      :onChange onChange})
+                  (when time?
+                    ($ e/timestamp-time
+                       {:value value
+                        :disabled (if-not value true
+                                    disabled)
+                        :read-only read-only
+                        :onChange onChange})))))
+          (when value
+            (d/span
+              {:class (cond-> [$clear]
+                        opened (conj "opened"))
+               :onClick (fn [e]
+                          (.stopPropagation e)
+                          (.preventDefault e)
+                          (onChange nil)
+                          (set-opened! false))}
+              ($ icon/clear)))))))
+
+
+(defnc timestamp-field
+  [props]
+  ($ timestamp-dropdown
+    {:format :medium-datetime & props}))
+
+
+(defnc date-field
+  [props]
+  ($ timestamp-dropdown
+    {:format :full-date
+     :time? false
+     & props}))
 
 
 (defnc PeriodFieldInput
@@ -515,6 +553,7 @@
            :dropdown dropdown-field
            :multiselect multiselect-field
            :timestamp timestamp-field
+           :date date-field
            :period PeriodField
            :identity identity-field
            :identity-multiselect identity-multiselect-field})

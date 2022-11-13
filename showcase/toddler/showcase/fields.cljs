@@ -77,10 +77,16 @@
                   :onChange (fn [e] (set-state! assoc :textarea-field (.. e -target -value)))}))
 
            ($ ui/row
+              ($ ui/date-field
+                 {:name "Date field"
+                  :value (:date-field state)
+                  :placeholder "Click to open calendar"
+                  :onChange #(set-state! assoc :date-field %)}))
+           ($ ui/row
               ($ ui/timestamp-field
                  {:name "Timestamp field"
                   :value (:timestamp-field state)
-                  :placeholder "Click to open calendar"
+                  :placeholder "Click to open timestamp calendar"
                   :onChange #(set-state! assoc :timestamp-field %)}))
            ($ ui/row
               ($ ui/period-field
