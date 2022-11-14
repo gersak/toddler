@@ -1,7 +1,7 @@
 (ns toddler.ui.default.fields
   (:require
     clojure.set
-    clojure.string
+    [clojure.string :as str]
     [shadow.css :refer [css]]
     [goog.string.format]
     [helix.core
@@ -284,7 +284,7 @@
   [{:keys [value placeholder disabled className
            read-only onChange format name time?]
     :or {format :full-date
-         time? true} :as props}]
+         time? true}}]
   (let [[opened set-opened!] (hooks/use-state false)
         translate (use-translate)
         area (hooks/use-ref nil)
@@ -304,13 +304,13 @@
        {:name name
         :onClick (fn []
                    (when (and (not disabled) (not read-only))
-                     (set-opened! true)))}
-       ($ field-wrapper
-          {:className (str className 
-                           (when opened " opened")
-                           (when disabled " disabled"))}
-          ($ popup/Area
-             {:ref area}
+                     (set-opened! (if time? true not))))}
+       ($ popup/Area
+          {:ref area}
+          ($ field-wrapper
+             {:className (str className 
+                              (when opened " opened")
+                              (when disabled " disabled"))}
              ($ AutosizeInput
                 {:className "input"
                  :readOnly true
@@ -336,17 +336,17 @@
                         :disabled (if-not value true
                                     disabled)
                         :read-only read-only
-                        :onChange onChange})))))
-          (when value
-            (d/span
-              {:class (cond-> [$clear]
-                        opened (conj "opened"))
-               :onClick (fn [e]
-                          (.stopPropagation e)
-                          (.preventDefault e)
-                          (onChange nil)
-                          (set-opened! false))}
-              ($ icon/clear)))))))
+                        :onChange onChange}))))
+             (when value
+               (d/span
+                 {:class (cond-> [$clear]
+                           opened (conj "opened"))
+                  :onClick (fn [e]
+                             (.stopPropagation e)
+                             (.preventDefault e)
+                             (onChange nil)
+                             (set-opened! false))}
+                 ($ icon/clear))))))))
 
 
 (defnc timestamp-field
@@ -373,27 +373,118 @@
        {& props})))
 
 
-(defnc PeriodField
-  [{:keys [value placeholder disabled
-           read-only onChange format]
-    :or {format :medium-datetime}
-    :as props}]
-  ($ date/PeriodElementProvider
-    {& props}
+(defnc period-dropdown
+  [{:keys [value placeholder disabled className
+           read-only onChange format name time?]
+    :or {format :full-date
+         time? true}}]
+  (let [[start end :as value] (or value [nil nil])
+        [opened set-opened!] (hooks/use-state false)
+        translate (use-translate)
+        area (hooks/use-ref nil)
+        popup (hooks/use-ref nil)
+        $clear (css
+                 :text-gray-400
+                 ["&:hover"
+                  :text-gray-900
+                  {:cursor "pointer"}]
+                 {:transition "color .2s ease-in-out"})]
+    (popup/use-outside-action
+      opened area popup
+      (fn [e]
+        (when (.contains js/document.body (.-target e))
+          (set-opened! false))))
     ($ field
-       {& props}
-       ($ ExtendUI
-          {:components
-           {:popup e/period-popup
-            :field PeriodFieldInput}}
-          ($ date/PeriodDropdown
-             {:value value
-              :onChange onChange
-              :placeholder placeholder
-              :disabled disabled
-              :read-only read-only
-              :format format
-              :className "data"})))))
+       {:name name
+        :onClick (fn []
+                   (when (and (not disabled) (not read-only))
+                     (set-opened! true)))}
+       ($ popup/Area
+          {:ref area}
+          ($ field-wrapper
+             {:className (str className 
+                              (when opened " opened")
+                              (when disabled " disabled"))}
+             ($ AutosizeInput
+                {:className "input"
+                 :readOnly true
+                 :value (when (or
+                                (some? start)
+                                (some? end))
+                          (cond
+                            (and start end)
+                            (str (translate start format) " - " (translate end format))
+                            ;;
+                            (and start (not end))
+                            (str
+                              (str/capitalize (translate :time.after)) " "
+                              (translate start format))
+                            ;;
+                            (and end (not start))
+                            (str
+                              (str/capitalize (translate :time.before)) " "
+                              (translate end format))))
+                 :spellCheck false
+                 :auto-complete "off"
+                 :disabled disabled
+                 :placeholder placeholder})
+             (when opened
+               ($ popup/Element
+                  {:ref popup
+                   :className className 
+                   :wrapper e/dropdown-wrapper
+                   :preference popup/cross-preference}
+                  ($ e/period-calendar
+                     {:value value
+                      :disabled disabled
+                      :read-only read-only
+                      :onChange onChange})
+                  (when time?
+                    (d/div
+                      {:class (css
+                                :flex
+                                :justify-around)}
+                      ($ e/timestamp-time
+                         {:key "start"
+                          :value start
+                          :disabled (if-not start true
+                                      disabled)
+                          :read-only read-only
+                          :onChange (fn [x]
+                                      (onChange (assoc value 0 x)))})
+                      ($ e/timestamp-time
+                         {:key "end"
+                          :value end
+                          :disabled (if-not end true
+                                      disabled)
+                          :read-only read-only
+                          :onChange (fn [x]
+                                      (onChange (assoc value 1 x)))})))))
+             (when value
+               (d/span
+                 {:class (cond-> [$clear]
+                           opened (conj "opened"))
+                  :onClick (fn [e]
+                             (.stopPropagation e)
+                             (.preventDefault e)
+                             (onChange nil)
+                             (set-opened! false))}
+                 ($ icon/clear))))))))
+
+
+(defnc timestamp-period-field
+  [props]
+  ($ period-dropdown
+    {:format :medium-datetime
+     & props}))
+
+
+(defnc date-period-field
+  [props]
+  ($ period-dropdown
+    {:format :full-date
+     :time? false
+     & props}))
 
 
 (defnc checkbox-field
@@ -554,6 +645,7 @@
            :multiselect multiselect-field
            :timestamp timestamp-field
            :date date-field
-           :period PeriodField
+           :date-period date-period-field
+           :timestamp-period timestamp-period-field
            :identity identity-field
            :identity-multiselect identity-multiselect-field})

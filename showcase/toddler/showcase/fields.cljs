@@ -89,11 +89,17 @@
                   :placeholder "Click to open timestamp calendar"
                   :onChange #(set-state! assoc :timestamp-field %)}))
            ($ ui/row
-              ($ ui/period-field
+              ($ ui/date-period-field
                  {:name "Period Field"
                   :placeholder "Click to open period dropdown"
-                  :value (:period-field state)
-                  :onChange (fn [v] (set-state! assoc :period-field v))}))
+                  :value (:date-period-field state)
+                  :onChange (fn [v] (set-state! assoc :date-period-field v))}))
+           ($ ui/row
+              ($ ui/timestamp-period-field
+                 {:name "Timestamp Period Field"
+                  :placeholder "Click to open timestamp period dropdown"
+                  :value (:timestamp-period-field state)
+                  :onChange (fn [v] (set-state! assoc :timestamp-period-field v))}))
            ($ ui/row
               ($ ui/identity-field
                  {:name "Identity Field"

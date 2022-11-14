@@ -549,7 +549,7 @@
 
 
 (defnc calendar-month
-  [{:keys [selected days on-select disabled read-only]}]
+  [{:keys [days on-select disabled read-only]}]
   (let [$month (css
                  :flex
                  :flex-col
@@ -662,7 +662,7 @@
         ;;
         {:keys [selected] :as props'}
         (hooks/use-memo
-          [value]
+          [value onChange]
           (let [v (vura/time->value (or value (vura/date)))
                 context (vura/day-time-context v)]
             (cond-> 
@@ -681,14 +681,13 @@
                  on-year-change
                  on-month-change
                  on-day-change]} :events} (date/use-calendar props' :month)
-        days' (hooks/use-memo
-                [days]
-                (if-not selected days
-                  (let [selected (vura/day-time-context selected)]
-                    (map
-                      (fn [day]
-                        (assoc day :selected (date/same day selected)))
-                      days))))]
+        upstream-is-selected (hooks/use-context date/*calendar-selected*)
+        is-selected (hooks/use-memo
+                      [selected]
+                      (if-not selected (constantly false)
+                        (let [selected-context (vura/day-context selected)]
+                          (fn [day]
+                            (date/same day selected-context)))))]
     (d/div
       {:className $style}
       (d/div
@@ -715,12 +714,14 @@
         {:className "content-wrapper"}
         (d/div
           {:className "content"}
-          ($ calendar-month
-             {:days days
-              :selected (when selected (vura/day-context selected))
-              :on-select (fn [{:keys [day-in-month]}]
-                           (on-day-change day-in-month))
-              & props}))))))
+          (provider
+            {:context date/*calendar-selected*
+             :value (or upstream-is-selected is-selected)}
+            ($ calendar-month
+               {:days days
+                :on-select (fn [{:keys [day-in-month]}]
+                             (on-day-change day-in-month))
+                & props})))))))
 
 
 (defnc timestamp-time
@@ -742,12 +743,6 @@
                   :onChange (fn [time-]
                               (let [[h m] (map js/parseInt (str/split time- #":"))]
                                 (when (ifn? onChange)
-                                  (println "SETTING TIME: " [h m])
-                                  (println "NEXT CONTEXT:"
-                                           (->
-                                             state 
-                                             (assoc :hour h :minute m)
-                                             vura/context->value))
                                   (onChange
                                     (->
                                       state 
@@ -792,6 +787,56 @@
 ;                   ["&:hover" :bg-red-500])
 ;      & props}))
 
+
+
+(defnc period-calendar
+  [{:keys [onChange] :as props
+    [start end :as value] :value
+    :or {value [nil nil]}}]
+  (let [$wrapper (css :flex)
+        [after before] (hooks/use-memo
+                         [start end]
+                         (let [start (some->
+                                       start
+                                       vura/date->value
+                                       vura/midnight)
+                               end (some->
+                                     end
+                                     vura/date->value
+                                     vura/midnight
+                                     (+ vura/day))]
+                           [(fn [{:keys [value]}]
+                              (when start
+                                (if end
+                                  (and (<= start value)
+                                       (< value end))
+                                  (<= start value))))
+                            (fn [{:keys [value]}]
+                              (when end
+                                (if start
+                                  (and (<= start value)
+                                       (< value end))
+                                  (< value end))))]))]
+    (d/div
+      {:className $wrapper}
+      (provider
+        {:context date/*calendar-selected*
+         :value after}
+        ($ timestamp-calendar
+           {:key :start
+            :value start
+            :onChange (fn [v]
+                        (when (fn? onChange)
+                          (onChange (assoc value 0 v))))}))
+      (provider
+        {:context date/*calendar-selected*
+         :value before}
+        ($ timestamp-calendar
+           {:key :end
+            :value end
+            :onChange (fn [v]
+                        (when (fn? onChange)
+                          (onChange (assoc value 1 v))))})))))
 
 (defnc PeriodElement
   [props]

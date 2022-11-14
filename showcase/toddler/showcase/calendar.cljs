@@ -18,7 +18,8 @@
          [{:keys [week]} :as week-context] (vura/calendar-frame value :week)
          month-context (vura/calendar-frame value :month)
          [{:keys [month year]} set-dropdown!] (hooks/use-state nil)
-         [timestamp set-timestamp!] (hooks/use-state (vura/date 2023 6 1))]
+         [timestamp set-timestamp!] (hooks/use-state (vura/date 2023 6 1))
+         [period set-period!] (hooks/use-state [(vura/date 2022 1 1) (vura/date 2022 7 9)])]
       ($ default/Provider
          ($ ui/row
             {:label "Day"}
@@ -43,7 +44,12 @@
             {:label "Timestamp calendar"}
             ($ e/timestamp-calendar
                {:value timestamp
-                :onChange set-timestamp!})))))
+                :onChange set-timestamp!}))
+         ($ ui/row
+            {:label "Period calendar"}
+            ($ e/period-calendar
+               {:value period
+                :onChange set-period!})))))
 
 
 

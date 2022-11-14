@@ -26,7 +26,7 @@
 ;; CALENDAR
 (def ^:dynamic ^js *calendar-events* (create-context))
 (def ^:dynamic ^js *calendar-selected* (create-context))
-(def ^:dynamic ^js *calendar-disabled* (create-context (constantly false)))
+(def ^:dynamic ^js *calendar-disabled* (create-context))
 (def ^:dynamic ^js *calendar-opened* (create-context))
 (def ^:dynamic ^js *calendar-state* (create-context))
 
@@ -46,19 +46,22 @@
   [{:keys [value
            day-in-month
            today
-           selected
-           disabled
            className
-           onClick]}]
+           onClick]
+    :as props}]
   (let [is-weekend (cond (some? value)
                          (if (vura/weekend? value)
                            true false))
+        is-disabled (hooks/use-context *calendar-disabled*)
+        disabled (when (ifn? is-disabled) (is-disabled props))
+        is-selected (hooks/use-context *calendar-selected*)
+        selected (when (ifn? is-selected) (is-selected props))
         #_is-holiday #_(cond (some? value)
                              (if (-> value vura/*holiday?*)
                                "red" ""))]
     (d/div
       {:class className
-       :onClick onClick}
+       :onClick (when-not disabled onClick)}
       (d/div
         {:class (cond-> ["day"]
                   selected (conj "selected")
@@ -133,31 +136,6 @@
                                     :month month
                                     :day-in-month (min day-in-month last-day)))))
       :on-time-change #(set-timestamp! (merge timestamp %))})))
-
-
-(defnc TimestampPopup
-  [{:keys [year month day-in-month hour minute className]} popup]
-  {:wrap [(react/forwardRef)]}
-  (let [opened (hooks/use-context *calendar-opened*)]
-    (when opened
-      ($ popup/Element
-         {:ref popup
-          :className className 
-          :wrapper ui/wrapper
-          :preference popup/cross-preference}
-         ($ ui/calendar
-            {:year year
-             :month month
-             :day-in-month day-in-month})
-         (d/div
-           {:style
-            {:display "flex"
-             :flex-grow "1"
-             :justify-content "center"}}
-           ($ ui/calendar-time
-              {:hour hour
-               :minute minute})
-           ($ ui/clear))))))
 
 
 (defhook use-calendar
@@ -399,6 +377,18 @@
          :placeholder placeholder}))))
 
 
+(defnc use-period
+  [{[upstream-start upstream-end] :value
+    :or {upstream-start nil upstream-end nil}
+    :as props}]
+  (let [start-calendar (use-calendar
+                         (assoc props :value upstream-start))
+        end-calendar (use-calendar
+                       (assoc props :value upstream-end))]
+    {:start start-calendar
+     :end end-calendar}))
+
+
 (defnc PeriodElementProvider
   [{:keys [disabled
            read-only
@@ -415,32 +405,32 @@
                             {:selected upstream-end})])
         ;;
         set-state! (hooks/use-memo
-                    [disabled read-only]
-                    (if (or disabled read-only)
-                      (fn [& _])
-                      set-state!))
+                     [disabled read-only]
+                     (if (or disabled read-only)
+                       (fn [& _])
+                       set-state!))
         selected? (hooks/use-memo
-                   [start-value end-value]
-                   (fn [data]
-                     (letfn [(->value [{:keys [year month day-in-month]}]
-                               (vura/utc-date-value year month day-in-month))]
-                       (let [start (when start-value (-> start-value vura/date->value vura/midnight))
-                             current (->value data)
-                             end (when end-value (-> end-value vura/date->value vura/midnight))]
-                         (cond
-                           (nil? start) (<= current end)
-                           (nil? end) (>= current start)
-                           :else
-                           (or
-                            (= start current)
-                            (= end current)
-                            (<= start current end)))))))
+                    [start-value end-value]
+                    (fn [data]
+                      (letfn [(->value [{:keys [year month day-in-month]}]
+                                (vura/utc-date-value year month day-in-month))]
+                        (let [start (when start-value (-> start-value vura/date->value vura/midnight))
+                              current (->value data)
+                              end (when end-value (-> end-value vura/date->value vura/midnight))]
+                          (cond
+                            (nil? start) (<= current end)
+                            (nil? end) (>= current start)
+                            :else
+                            (or
+                              (= start current)
+                              (= end current)
+                              (<= start current end)))))))
         [set-start! set-end!] (hooks/use-memo
-                               :once
-                               [(fn [value]
-                                  (set-state! assoc 0 value))
-                                (fn [value]
-                                  (set-state! assoc 1 value))])
+                                :once
+                                [(fn [value]
+                                   (set-state! assoc 0 value))
+                                 (fn [value]
+                                   (set-state! assoc 1 value))])
         start-events (use-timestamp-events start set-start!)
         end-events (use-timestamp-events end set-end!)]
     (hooks/use-effect
