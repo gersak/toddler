@@ -304,7 +304,7 @@
        {:name name
         :onClick (fn []
                    (when (and (not disabled) (not read-only))
-                     (set-opened! (if time? true not))))}
+                     (set-opened! true)))}
        ($ popup/Area
           {:ref area}
           ($ field-wrapper
@@ -329,7 +329,9 @@
                      {:value value
                       :disabled disabled
                       :read-only read-only
-                      :onChange onChange})
+                      :onChange (fn [x]
+                                  (onChange x)
+                                  (when-not time? (set-opened! false)))})
                   (when time?
                     ($ e/timestamp-time
                        {:value value

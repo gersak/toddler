@@ -1,6 +1,5 @@
 (ns toddler.ui.default.elements
   (:require
-    ["react" :as react]
     [goog.string :as gstr]
     [vura.core :as vura]
     [clojure.string :as str]
@@ -509,7 +508,7 @@
 
 
 (defnc calendar-month-header
-  [{:keys [className days] :as props}]
+  [{:keys [className days]}]
   (let [$style (css
                  :flex
                  :flex-row
@@ -725,7 +724,7 @@
 
 
 (defnc timestamp-time
-  [{:keys [value read-only disabled onChange] :as props}]
+  [{:keys [value read-only disabled onChange]}]
   (let [{:keys [hour minute] :as state} (hooks/use-memo
                                           [value]
                                           (if-not value {:hour 0 :minute 0}
@@ -769,7 +768,7 @@
 
 
 (defnc period-calendar
-  [{:keys [onChange] :as props
+  [{:keys [onChange]
     [start end :as value] :value
     :or {value [nil nil]}}]
   (let [$wrapper (css :flex)

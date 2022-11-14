@@ -1,27 +1,12 @@
 (ns toddler.date
   (:require
-    ["react" :as react]
-    [clojure.string :as str]
-    [goog.string :as gstr]
     [goog.string.format]
     [vura.core :as vura]
-    [helix.core :refer [$ defnc defhook create-context provider]]
+    [helix.core :refer [defnc defhook create-context]]
     [helix.hooks :as hooks]
     [helix.dom :as d]
-    [helix.styled-components :refer [defstyled]]
-    [helix.children :as c]
-    [toddler.ui :as ui]
-    [toddler.hooks :as th]
-    [toddler.mask :refer [use-mask]]
-    [toddler.dropdown :as dropdown]
-    [toddler.popup :as popup]
-    [toddler.input :refer [AutosizeInput]]
-    ["toddler-icons$default" :as icon]))
+    [toddler.hooks :as th]))
 
-
-(defstyled autosize-input AutosizeInput
-  {:outline "none"
-   :border "none"})
 
 ;; CALENDAR
 (def ^:dynamic ^js *calendar-events* (create-context))
