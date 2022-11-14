@@ -363,16 +363,6 @@
      & props}))
 
 
-(defnc PeriodFieldInput
-  [props] 
-  ($ ExtendUI
-    {:components {
-                  ; :wrapper dropdown-field-wrapper
-                  }}
-    ($ date/PeriodInput
-       {& props})))
-
-
 (defnc period-dropdown
   [{:keys [value placeholder disabled className
            read-only onChange format name time?]

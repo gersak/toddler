@@ -768,27 +768,6 @@
          & (dissoc props' :className :constraints :delimiters :mask)}))))
 
 
-; (defnc timestamp-clear
-;   [props]
-;   ($ date/TimestampClear
-;     {:className (css
-;                   :flex
-;                   :bg-gray-400
-;                   :text-white
-;                   :items-center
-;                   :justify-center
-;                   :cursor-pointer
-;                   {:width "15px"
-;                    :height "15px"
-;                    :padding "4px"
-;                    :justify-self "flex-end"
-;                    :transition "background .3s ease-in-out"
-;                    :border-radius "20px"}
-;                   ["&:hover" :bg-red-500])
-;      & props}))
-
-
-
 (defnc period-calendar
   [{:keys [onChange] :as props
     [start end :as value] :value
@@ -837,28 +816,6 @@
             :onChange (fn [v]
                         (when (fn? onChange)
                           (onChange (assoc value 1 v))))})))))
-
-(defnc PeriodElement
-  [props]
-  ($ ExtendUI
-    {:components
-     {:calendar timestamp-calendar
-      :calendar/time timestamp-time}}
-    ($ date/PeriodElement {& props})))
-
-
-(defnc period-popup
-  [props _ref]
-  {:wrap [react/forwardRef]}
-  (let [$style (css ["& .period" :flex :flex-row])]
-    ($ ExtendUI
-       {:components
-        {:calendar timestamp-calendar
-         :calendar/time timestamp-time
-         :wrapper dropdown-wrapper}}
-       ($ date/PeriodPopup
-          {:className $style
-           & props :ref _ref}))))
 
 
 (defnc avatar
