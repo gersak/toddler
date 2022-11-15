@@ -451,7 +451,7 @@
                           :read-only read-only
                           :onChange (fn [x]
                                       (onChange (assoc value 1 x)))})))))
-             (when value
+             (when (some some? value)
                (d/span
                  {:class (cond-> [$clear]
                            opened (conj "opened"))
