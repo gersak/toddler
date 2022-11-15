@@ -14,15 +14,14 @@
      :refer [AutosizeInput
              NumberInput
              TextAreaElement]]
+    [toddler.i18n :as i18n]
     [toddler.hooks :refer [use-translate]]
     [toddler.ui.default.elements :as e]
     [toddler.dropdown :as dropdown
      :refer [use-dropdown]]
     [toddler.multiselect
      :refer [use-multiselect]]
-    [toddler.date :as date]
     [toddler.ui :as ui]
-    [toddler.ui.provider :refer [ExtendUI]]
     [toddler.popup :as popup]
     ["toddler-icons$default" :as icon]
     ["react" :as react]))
@@ -627,12 +626,102 @@
                           :render/wrapper e/dropdown-wrapper})))))))))
 
 
+(defnc currency-field
+  [{:keys [disabled onChange value placeholder name
+           onFocus on-focus onBlur on-blur className]
+    :or {onChange identity}}]
+  (let [{:keys [currency amount]} value
+        ;;
+        [area-position set-area-position!] (hooks/use-state nil)
+        ;;
+        {:keys [input area toggle!] :as dropdown}
+        (use-dropdown
+          (->
+            (hash-map
+              :value currency
+              :area-position area-position
+              :options ["EUR" "USD" "JPY" "AUD" "CAD" "CHF"]
+              :onChange (fn [x] (onChange {:amount amount :currency x})))
+            (dissoc :className)))
+        on-blur (or onBlur on-blur identity)
+        on-focus (or onFocus on-focus identity)
+        [focused? set-focused!] (hooks/use-state nil)
+        amount (if (some? amount)
+                 (if (not focused?)
+                   (i18n/translate amount currency)
+                   (str amount))
+                 "")
+        $clear (css
+                 :text-gray-400
+                 ["&:hover"
+                  :text-gray-900
+                  {:cursor "pointer"}]
+                 {:transition "color .2s ease-in-out"})]
+    ($ field
+       {:name name
+        :className className}
+       ($ field-wrapper
+          (provider
+            {:context dropdown/*dropdown*
+             :value dropdown}
+            (provider
+              {:context popup/*area-position*
+               :value [area-position set-area-position!]}
+              ($ popup/Area
+                 {:ref area}
+                 (d/input
+                   {:value (or currency "")
+                    :className (css
+                                 :w-10
+                                 :font-bold
+                                 :cursor-pointer)
+                    :read-only true
+                    :onClick toggle!
+                    :placeholder "VAL"})
+                 ($ dropdown/Popup
+                    {:render/option e/dropdown-option
+                     :render/wrapper e/dropdown-wrapper}))))
+          ($ AutosizeInput
+             {:ref input
+              :value amount
+              :placeholder placeholder
+              :disabled (or disabled (not currency))
+              :className (css ["& input" :border-0])
+              :onBlur (fn [e]
+                        (set-focused! false)
+                        (on-blur e))
+              :onFocus (fn [e]
+                         (set-focused! true)
+                         (on-focus e))
+              :onChange (fn [e]
+                          (if-some [amount (some->>
+                                               (.. e -target -value)
+                                               not-empty
+                                               (re-find #"-?\d+[\.|,]*\d*")
+                                               (js/parseFloat))]
+                            (onChange
+                              {:amount amount
+                               :currency currency})
+                            (onChange
+                              {:amount nil
+                               :currency currency})))})
+          (when value
+            (d/span
+              {:class $clear
+               :onClick (fn [e]
+                          (.stopPropagation e)
+                          (.preventDefault e)
+                          (onChange nil))}
+              ($ icon/clear)))))))
+
+
 (def components
   #:field {:text textarea-field
            :boolean checkbox-field
            :input input-field
            :integer integer-field 
            :float float-field
+           :currency currency-field
            :dropdown dropdown-field
            :multiselect multiselect-field
            :timestamp timestamp-field

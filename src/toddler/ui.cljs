@@ -59,6 +59,7 @@
 (defcomponent text-field :field/text)
 (defcomponent integer-field :field/integer)
 (defcomponent float-field :field/float)
+(defcomponent currency-field :field/currency)
 (defcomponent input-field :field/input)
 (defcomponent dropdown-field :field/dropdown)
 (defcomponent multiselect-field :field/multiselect)

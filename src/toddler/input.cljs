@@ -362,7 +362,7 @@
 
 (defnc CurrencyElement
   [{:keys [currency amount
-           currency/options placeholder
+           options placeholder
            className onChange
            onBlur on-blur onFocus on-focus]}]
   (let [on-blur (or onBlur on-blur identity)

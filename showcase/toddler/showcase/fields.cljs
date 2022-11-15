@@ -54,6 +54,12 @@
                   :value (:float-field state)
                   :onChange (fn [v] (set-state! assoc :float-field v))}))
            ($ ui/row
+              ($ ui/currency-field
+                 {:name "Currency field"
+                  :placeholder "Price"
+                  :value (:currency-field state)
+                  :onChange (fn [v] (set-state! assoc :currency-field v))}))
+           ($ ui/row
               ($ ui/multiselect-field
                  {:name "Multi-select field"
                   :value (:multiselect-field state)
