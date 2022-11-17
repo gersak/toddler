@@ -12,13 +12,10 @@
     [helix.hooks :as hooks]
     [helix.children :as c]
     [helix.spring :as spring]
-    [helix.styled-components :refer [defstyled]]
     [toddler.ui :as ui]
-    [toddler.ui.provider :refer [ExtendUI UI]]
+    [toddler.ui.provider :refer [UI]]
     [toddler.layout :as layout]
     [toddler.dropdown :as dropdown]
-    [toddler.ui.default.fields :as fields]
-    ; [toddler.elements :as toddler]
     [toddler.hooks
      :refer [use-delayed
              use-dimensions
@@ -26,7 +23,6 @@
     [toddler.input
      :refer [TextAreaElement]]
     [toddler.popup :as popup]
-    [toddler.ui.default.elements :as e]
     ["react" :as react]
     ["toddler-icons$default" :as icon]))
 
@@ -80,6 +76,7 @@
                 (->clj style)
                 {:display "flex"
                  :flex (str w  \space 0 \space "auto")
+                 :position "relative"
                  :min-width w
                  :width w}) 
        :level level}
@@ -395,7 +392,7 @@
                  :width container-width}}
         #_($ ui/simplebar
            {:key :thead/simplebar
-            :scrollableNodeProps #js {:ref #(reset! header-scroll %)}
+            :ref #(reset! header-scroll %)
             :className "thead"
             :$hidden (boolean (not-empty rows))
             :style {:minWidth container-width
@@ -409,11 +406,9 @@
                  :className "trow"})))
         ($ ui/simplebar
            {:key :tbody/simplebar
-            ; :scrollableNodeProps #js {:ref #(reset! body-scroll %)}
             :className (str "tbody" (when (empty? rows) " empty"))
-            ; :style {:minWidth container-width
-            ;         :maxHeight table-height}
-            }
+            :style {:minWidth container-width
+                    :maxHeight table-height}}
            (spring/div
              {:key :tbody
               :style style 
@@ -701,32 +696,32 @@
        {& props})))
 
 
-(defnc IdentityCell [props]
-  (let [{:keys [label style placeholder read-only disabled options] :as column} (use-column)
-        [value set-value!] (use-cell-state column)]
-    ($ dropdown/Element
-       {:name label
-        :value value
-        :onChange (comp set-value! not-empty)
-        :search-fn :name
-        :placeholder placeholder
-        :style (->clj style) 
-        :read-only read-only
-        :options (when-not read-only options)
-        & props}
-       (when (every? not [read-only disabled])
-         ($ ClearButton
-            {:className "clear"})))))
+; (defnc IdentityCell [props]
+;   (let [{:keys [label style placeholder read-only disabled options] :as column} (use-column)
+;         [value set-value!] (use-cell-state column)]
+;     ($ dropdown/Element
+;        {:name label
+;         :value value
+;         :onChange (comp set-value! not-empty)
+;         :search-fn :name
+;         :placeholder placeholder
+;         :style (->clj style) 
+;         :read-only read-only
+;         :options (when-not read-only options)
+;         & props}
+;        (when (every? not [read-only disabled])
+;          ($ ClearButton
+;             {:className "clear"})))))
 
 
-(defstyled identity-cell IdentityCell
-  {:display "flex"
-   :align-items "center"
-   :input {:outline "none"
-           :border "none"}})
+; (defstyled identity-cell IdentityCell
+;   {:display "flex"
+;    :align-items "center"
+;    :input {:outline "none"
+;            :border "none"}})
 
 
-;; ACTION CELLS
+; ;; ACTION CELLS
 (defnc DeleteCell
   [{:keys [className]}]
   (let [[row] (use-row)
@@ -1058,7 +1053,7 @@
                 :alignItems "flex-start"})))))
 
 (defhook use-table-defaults
-  [{:keys [columns ] :as props}]
+  [{:keys [columns] :as props}]
   (hooks/use-memo
     [columns]
     (-> props

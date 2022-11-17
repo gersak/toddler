@@ -24,5 +24,5 @@
   [props _ref]
   {:wrap [(forward-ref)]}
   ($ _SimpleBar
-    {:ref _ref
-     & (update props :style transform-style)}))
+    {& (cond-> (update props :style transform-style)
+         _ref (assoc :scrollableNodeProps #js {:ref _ref}))}))

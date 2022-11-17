@@ -463,8 +463,7 @@
 (defnc Element
   [{:keys [preference style className offset onChange items wrapper]
     :or {preference default-preference
-         offset 5
-         wrapper "div"}
+         offset 5}
     :as props} ref]
   {:helix/features {:fast-refresh true}
    :wrap [(react/forwardRef)]}
@@ -501,34 +500,58 @@
         {:context *dimensions*
          :value computed}
         (<>
-          ($ wrapper
-             {:ref #(reset! dummy %)
-              :className className
-              :style (merge
-                       style
-                       {:top -10000 :left -10000 
-                        :position "fixed"
-                        :zIndex "1000"
-                        :visibility "hidden"})}
-             ;; TODO - think about what happens when height is limited by css
-             ;; or style properties. Than commented line doesn't work well
-             ;; on the other hand with current line simplebar is always present
-             ;; even for small popups.... this is not goood
-             ; (if (and computed (not (ok-candidate? computed)))
-             (c/children props))
-          (when computed
+          (if wrapper
             ($ wrapper
-               {:ref #(reset! (or ref el) %)
+               {:ref #(reset! dummy %)
                 :className className
                 :style (merge
                          style
-                         {:top top :left left
+                         {:top -10000 :left -10000 
                           :position "fixed"
-                          :zIndex "1000"})}
-               ($ SimpleBar
-                  {:style {:width (round-number (- popup-width padding-left padding-right) 1 :ceil)
-                           :height (round-number (- popup-height padding-top padding-bottom) 1 :ceil)}}
-                  (c/children props))))))
+                          :zIndex "1000"
+                          :visibility "hidden"})}
+               ;; TODO - think about what happens when height is limited by css
+               ;; or style properties. Than commented line doesn't work well
+               ;; on the other hand with current line simplebar is always present
+               ;; even for small popups.... this is not goood
+               ; (if (and computed (not (ok-candidate? computed)))
+               (c/children props))
+            (d/div
+              {:ref #(reset! dummy %)
+               :className className
+               :style (merge
+                        style
+                        {:top -10000 :left -10000 
+                         :position "fixed"
+                         :zIndex "1000"
+                         :visibility "hidden"})}
+              (c/children props)))
+          (when computed
+            (if wrapper
+              ($ wrapper
+                 {:ref #(reset! (or ref el) %)
+                  :className className
+                  :style (merge
+                           style
+                           {:top top :left left
+                            :position "fixed"
+                            :zIndex "1000"})}
+                 ($ SimpleBar
+                    {:style {:width (round-number (- popup-width padding-left padding-right) 1 :ceil)
+                             :height (round-number (- popup-height padding-top padding-bottom) 1 :ceil)}}
+                    (c/children props)))
+              (d/div
+                {:ref #(reset! (or ref el) %)
+                 :className className
+                 :style (merge
+                          style
+                          {:top top :left left
+                           :position "fixed"
+                           :zIndex "1000"})}
+                ($ SimpleBar
+                   {:style {:width (round-number (- popup-width padding-left padding-right) 1 :ceil)
+                            :height (round-number (- popup-height padding-top padding-bottom) 1 :ceil)}}
+                   (c/children props)))))))
       @container-node)))
 
 

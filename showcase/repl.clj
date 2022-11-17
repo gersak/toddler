@@ -1,9 +1,9 @@
 (ns repl
   (:require
     [clojure.java.io :as io]
-    [toddler.ui.default.color :refer [color]]
     [shadow.css.build :as cb]
-    [shadow.cljs.devtools.server.fs-watch :as fs-watch]))
+    [shadow.cljs.devtools.server.fs-watch :as fs-watch])
+  (:import java.util.zip.ZipInputStream))
 
 (defonce css-ref (atom nil))
 (defonce css-watch-ref (atom nil))
@@ -19,6 +19,20 @@
             {:keys [warning-type] :as warning} (:warnings mod)]
       (prn [:CSS (name warning-type) (dissoc warning :warning-type)]))
     (println)))
+
+
+(comment
+  (file-seq (io/file "src"))
+  (io/resource "neyho")
+  *classpath*
+  (def s (ZipInputStream. (io/input-stream (io/resource "shadow/css"))))
+  (.available s)
+  (.getNextEntry s)
+  (with-open [s (ZipInputStream. (io/input-stream (io/resource "shadow/css")))]
+    (loop [dirs []]
+      (if-let [entry (.getNextEntry s)]
+        (recur (conj dirs (.getName entry)))
+        dirs))))
 
 (defn start
   {:shadow/requires-server true}
@@ -67,6 +81,10 @@
 
 
 (comment
-  (-> css-ref deref keys )
+  (-> css-ref deref keys)
+  (-> css-ref deref :aliases keys)
+  (-> css-ref deref :colors)
+  (-> css-ref deref )
+  (-> css-ref deref :namespaces keys)
   (spit "aliases.edn" (-> css-ref deref :aliases keys ))
   (go))

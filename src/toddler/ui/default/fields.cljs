@@ -501,17 +501,6 @@
         name))))
 
 
-(defnc identity-dropdown-option
-  [{:keys [option] :as props} ref]
-  {:wrap [(react/forwardRef)]}
-  ($ e/dropdown-option
-    {:ref ref
-     & (dissoc props :ref :option)}
-    ($ e/avatar {:size :small
-                 :className (css :mr-2)
-                 & option})
-    (:name option)))
-
 
 (defnc identity-field
   [props]
@@ -562,7 +551,7 @@
                    ($ icon/dropdownDecorator))))
            ($ dropdown/Popup
               {:className "dropdown-popup"
-               :render/option identity-dropdown-option
+               :render/option e/identity-dropdown-option
                :render/wrapper e/dropdown-wrapper}))))))
 
 
@@ -622,7 +611,7 @@
                       ($ dropdown/Input {& props})
                       ($ dropdown/Popup
                          {:className "dropdown-popup"
-                          :render/option identity-dropdown-option
+                          :render/option e/identity-dropdown-option
                           :render/wrapper e/dropdown-wrapper})))))))))
 
 

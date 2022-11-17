@@ -39,7 +39,6 @@
 
 (defonce component-db (atom nil))
 
-(.log js/console "Processing toddler/dev.cljs")
 
 (defnc Component
   [{:keys [className component]}]
@@ -70,11 +69,11 @@
   (let [components (hooks/use-context *components*)
         {:keys [height]} (use-window-dimensions)]
     ($ ui/simplebar
-       {:className className
+       {:ref _ref
+        :className className
         :style {:height height 
                 :min-width 300
-                :max-width 500}
-        :scrollableNodeProps #js {:ref _ref}}
+                :max-width 500}}
        (d/div
          {:className "title"}
          "TODDLER")
@@ -223,6 +222,7 @@
         [{_navbar :navbar
           _header :header
           _content :content} layout] (use-dimensions [:navbar :header :content])]
+    ; (println "LAYOUT: " layout)
     (hooks/use-effect
       :once
       (.log js/console "Adding playground watcher!")

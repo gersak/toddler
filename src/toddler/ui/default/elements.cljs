@@ -1,5 +1,6 @@
 (ns toddler.ui.default.elements
   (:require
+    [cljs-bean.core :refer [->js]]
     [goog.string :as gstr]
     [vura.core :as vura]
     [clojure.string :as str]
@@ -41,10 +42,11 @@
                       hidden (conj $hidden)))]
     ($ scroll/_SimpleBar
        {:className className
-        :ref _ref
-        & (-> props
-              (dissoc :shadow :className :class)
-              (:style scroll/transform-style))}
+        & (cond->
+            (-> props
+                (dissoc :shadow :className :class)
+                (update :style scroll/transform-style))
+            _ref (assoc :scrollableNodeProps #js {:ref _ref}))}
        (c/children props))))
 
 
@@ -132,7 +134,7 @@
 
 
 (defnc button
-  [{:keys [disabled] :as props}]
+  [{:keys [disabled className] :as props}]
   (let [$color (button-color props) 
         $layout (css 
                   :flex
@@ -162,8 +164,10 @@
     (d/button
       {:class (cond-> [$layout
                        $color
-                       $shadow]
-                disabled (conj $disabled))}
+                       $shadow
+                       className]
+                disabled (conj $disabled))
+       & (dissoc props :className)}
       (c/children props))))
 
 
@@ -923,6 +927,18 @@
     (d/div
       {:className $card}
       (c/children props))))
+
+
+(defnc identity-dropdown-option
+  [{:keys [option] :as props} ref]
+  {:wrap [(forward-ref)]}
+  ($ dropdown-option
+    {:ref ref
+     & (dissoc props :ref :option)}
+    ($ avatar {:size :small
+                 :className (css :mr-2)
+                 & option})
+    (:name option)))
 
 
 (def components

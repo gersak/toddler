@@ -2,7 +2,6 @@
    (:require
       [toddler.dev :as dev]
       [toddler.layout :as layout]
-      [toddler.table :as table]
       [toddler.grid :as grid]
       [toddler.ui :as ui]
       [toddler.ui.provider :refer [UI]]
@@ -31,7 +30,7 @@
      :cell ui/text-cell
      :label "Text"
      :style {:width 250}}
-    #_{:cursor :enum
+    {:cursor :enum
      :label "ENUM"
      :cell ui/enum-cell
      :options [{:name "Dog"
@@ -134,11 +133,10 @@
 
 (defnc Table
    []
-   ($ UI
-      {:components default/components}
+   ($ default/Provider
       (d/div
          {:style
-          {:width "100%" :height "100%" ;:width width :height height
+          {:width "100%" :height "100%"
            :display "flex"
            :padding 30
            :box-sizing "border-box"

@@ -196,7 +196,8 @@
        :ref #(reset! body %)}
       ($ interactions/simplebar
          {:className "content"
-          :scrollableNodeProps #js {:ref #(when _ref (reset! _ref %))}
+          :ref _ref
+          ; :scrollableNodeProps #js {:ref #(when _ref (reset! _ref %))}
           :style #js {:height height
                       :width width}}
         (c/children props)))))
