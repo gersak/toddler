@@ -46,6 +46,7 @@
     {:cursor :timestamp
      :cell ui/timestamp-cell
      :label "Timestamp"
+     :show-time true
      :style {:width 120}}
     {:cursor :boolean
      :cell ui/boolean-cell
@@ -133,6 +134,7 @@
 
 (defnc Table
    []
+   (println "DATA: " data)
    ($ default/Provider
       (d/div
          {:style

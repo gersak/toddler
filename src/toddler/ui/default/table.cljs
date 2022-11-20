@@ -43,7 +43,7 @@
                     [className
                      (css
                        :my-1
-                       {:min-height "42px"})]))
+                       {:min-height "2em"})]))
 
      & (dissoc props :className :class)}))
 
@@ -219,22 +219,77 @@
 
 (defnc timestamp-cell
   []
-  nil)
-
-
-;(defstyled timestamp-cell table/TimestampCell
-;  {:display "flex"
-;   :justify-content "center"
-;   :input
-;   {:font-size "1em"
-;    :border "none"
-;    :outline "none"
-;    :resize "none"
-;    :padding 2
-;    :width "100%"}}
-;  ;;
-;  )
-
+  (let [{:keys [placeholder format disabled read-only show-time] :as column} (table/use-column)
+        format (or format (if show-time :datetime :date))
+        [value set-value!] (table/use-cell-state column)
+        [opened set-opened!] (hooks/use-state false)
+        translate (use-translate)
+        area (hooks/use-ref nil)
+        popup (hooks/use-ref nil)]
+    (popup/use-outside-action
+      opened area popup
+      (fn [e]
+        (when (.contains js/document.body (.-target e))
+          (set-opened! false))))
+    ($ popup/Area
+       {:ref area
+        :onClick (fn []
+                   (when (and (not disabled) (not read-only))
+                     (set-opened! true)))
+        :className (css
+                     ; :flex
+                     ; :grow
+                     :items-center
+                     :py-2
+                     {:display "flex"
+                      :flex-grow "1"}
+                     ["& .clear"
+                      :text-transparent
+                      {:transition "color .2s ease-in-out"
+                       :position "absolute"
+                       :right "0px"}]
+                     ["&:hover .clear " :text-gray-400]
+                     ["& .clear:hover" :text-gray-900 :cursor-pointer])}
+       (d/input
+         {:className (css
+                       :text-sm
+                       )
+          :readOnly true
+          :value (when (some? value) (translate value format))
+          :spellCheck false
+          :auto-complete "off"
+          :disabled disabled
+          :placeholder placeholder})
+       (when value
+         (d/span
+           {:class (cond-> ["clear"]
+                     opened (conj "opened"))
+            :onClick (fn [e]
+                       (.stopPropagation e)
+                       (.preventDefault e)
+                       (set-value! nil)
+                       (set-opened! false))}
+           ($ icon/clear)))
+       (when opened
+         ($ popup/Element
+            {:ref popup
+             ; :className className 
+             :wrapper e/dropdown-wrapper
+             :preference popup/cross-preference}
+            ($ e/timestamp-calendar
+               {:value value
+                :disabled disabled
+                :read-only read-only
+                :onChange (fn [x]
+                            (set-value! x)
+                            (when-not show-time (set-opened! false)))})
+            (when show-time
+              ($ e/timestamp-time
+                 {:value value
+                  :disabled (if-not value true
+                              disabled)
+                  :read-only read-only
+                  :onChange set-value!})))))))
 
 
 (defnc integer-cell

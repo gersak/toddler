@@ -305,7 +305,8 @@
 
 
 (defnc dropdown-option
-  [props]
+  [props _ref]
+  {:wrap [(forward-ref)]}
   (let [$layout (css
                   :flex
                   :justify-start
@@ -320,6 +321,7 @@
                   ["&:last-child" {:border-bottom "none"}])]
     (d/div
       {:class [$layout]
+       :ref _ref
        & props}
       (c/children props))))
 
