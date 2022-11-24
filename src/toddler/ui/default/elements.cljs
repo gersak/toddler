@@ -1,5 +1,6 @@
 (ns toddler.ui.default.elements
   (:require
+    [clojure.set :as set]
     [cljs-bean.core :refer [->js]]
     [goog.string :as gstr]
     [vura.core :as vura]
@@ -204,9 +205,90 @@
            icon/checkbox)))))
 
 
+(defnc checklist-row
+  [{cname :name 
+    value :value 
+    disabled :disabled
+    onChange :onChange}]
+  (let [$icon (css
+                {:cursor "pointer"
+                 :transition "color .2s ease-in"
+                 :width "1.5em" 
+                 :height "1.5em"
+                 :border-radius "4px"
+                 :border-color "transparent"
+                 :padding "0px"
+                 :display "flex"
+                 :justify-content "center"
+                 :outline "none"
+                 :align-items "center"}
+                ["& path" {:cursor "pointer"}]
+                ["&:active" {:border-color "transparent"}])
+        $active (css
+                  :text-white
+                  :bg-green-500)
+        $inactive (css
+                    :text-white
+                    :bg-gray-400)
+        $disabled (css :pointer-events "none")]
+    (d/div
+      {:class (css :flex
+                   :items-center
+                   :cursor-pointer
+                   :mx-2
+                   :my-3
+                   :text-gray-500)
+       :onClick #(onChange (not value))}
+      (d/div 
+        {:class [$icon
+                 (if value $active $inactive)
+                 (when disabled $disabled)]}
+        ($ icon/checkbox))
+      (d/div 
+        {:class (css :ml-2
+                     :select-none
+                     :text-sm
+                     :font-bold
+                     :uppercase
+                     {:transition "all .3s ease-in-out"})}
+        cname))))
+
+
+(defnc checklist [{:keys [value
+                          options
+                          multiselect?
+                          onChange
+                          className] 
+                   :or {onChange identity
+                        value []}}]
+  (let [value' (set/intersection
+                 (set options)
+                 (if multiselect? 
+                   (set value)
+                   #{value}))] 
+    (d/div
+      {:className className}
+      (d/div
+        {:class "list"}
+        (map
+          (fn [{:keys [name] :as option}]
+            ($ checklist-row
+              {:key name
+               :name name 
+               :value (boolean (contains? value' option))
+               :onChange #(onChange
+                            (if (true? %)
+                              (if multiselect?
+                                ((fnil conj []) value' option) 
+                                option)
+                              (if multiselect?
+                                (vec (remove #{option} value'))
+                                nil)))}))
+          options)))))
+
 
 (defnc row
-  [{:keys [label position] :as props} _ref]
+  [{:keys [className label position] :as props} _ref]
   {:wrap [(forward-ref)]}
   (let [$layout (css
                   :text-gray-800
@@ -232,7 +314,8 @@
     (d/div
       {:ref _ref
        :class [$layout
-               $position]
+               $position
+               className]
        :position position}
       (when label
         (d/div

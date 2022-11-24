@@ -184,7 +184,8 @@
           (letfn [(reset [[entry]]
                     (async/put! @resize-idle-service entry))]
             (reset! observer (js/ResizeObserver. reset))
-            (.observe @observer @node))))
+            (.observe @observer @node)
+            (set-dimensions! (util/bounding-client-rect @node)))))
       (hooks/use-effect
         :once
         (fn [] (when @observer (.disconnect @observer))))

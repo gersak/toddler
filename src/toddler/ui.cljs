@@ -67,6 +67,7 @@
 (defcomponent date-field :field/date)
 (defcomponent date-period-field :field/date-period)
 (defcomponent boolean-field :field/boolean)
+(defcomponent checklist-field :field/checklist)
 
 
 (defcomponent table :table)

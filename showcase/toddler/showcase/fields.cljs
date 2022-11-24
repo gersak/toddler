@@ -51,6 +51,20 @@
                      :value (:boolean-field state)
                      :onClick (fn [] (set-state! update :boolean-field not))}))
               ($ ui/row
+                 ($ ui/checklist-field
+                    {:name "Checklist field"
+                     :value (:checklist-field state)
+                     :multiselect? true
+                     :options [{:name "Konj"
+                                :value :konj}
+                               {:name "Ovca"
+                                :value :ovca}
+                               {:name "Krava"
+                                :value :krava}
+                               {:name "Vepar"
+                                :value :vepar}]
+                     :onChange (fn [v] (set-state! assoc :checklist-field v))}))
+              ($ ui/row
                  ($ ui/integer-field
                     {:name "Integer field"
                      :value (:integer-field state)

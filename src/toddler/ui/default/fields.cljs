@@ -501,6 +501,29 @@
         name))))
 
 
+(defnc checklist-field
+  [props]
+  (let [$style (css
+                 ["& .row"
+                  :flex
+                  :items-center
+                  :cursor-pointer
+                  :mx-2
+                  :my-3
+                  :text-gray-500]
+                 ["& .row .name"
+                   :ml-2
+                   :select-none
+                   :text-sm
+                   :font-bold
+                   :uppercase
+                   {:transition "all .3s ease-in-out"}])]
+    ($ field
+       {& props}
+       ($ e/checklist
+          {& (dissoc props :className)}))))
+
+
 
 (defnc identity-field
   [props]
@@ -707,6 +730,7 @@
 (def components
   #:field {:text textarea-field
            :boolean checkbox-field
+           :checklist checklist-field
            :input input-field
            :integer integer-field 
            :float float-field

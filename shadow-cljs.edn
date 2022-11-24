@@ -10,7 +10,7 @@
    :output-dir "dev/js"
    :output-to "dev/js/main.js"
    :devtools {:http-root "dev"
-              :http-port 3000
+              :http-port 8000 
               :preloads []}}
   :webpack
   {:target :esm

@@ -17,22 +17,28 @@
    [{:cursor :euuid
      :label "UUID"
      :cell ui/uuid-cell
+     :header ui/plain-header
      :style {:width 50}}
     {:cursor :user
      :label "User"
+     :header ui/plain-header
      :cell ui/identity-cell
      :style {:width 100}}
     {:cursor :integer
+     :header ui/plain-header
      :cell ui/integer-cell
+     :align :center
      :label "Integer"
      :style {:width 100}}
     {:cursor :text
+     :header ui/text-header
      :cell ui/text-cell
      :label "Text"
      :style {:width 250}}
     {:cursor :enum
      :label "ENUM"
      :cell ui/enum-cell
+     :header ui/enum-header
      :options [{:name "Dog"
                 :value :dog}
                {:name "Cat"
@@ -45,12 +51,14 @@
      :style {:width 100}}
     {:cursor :timestamp
      :cell ui/timestamp-cell
+     :header ui/plain-header
      :label "Timestamp"
      :show-time true
      :style {:width 120}}
     {:cursor :boolean
      :cell ui/boolean-cell
-     :label "BOOL"
+     :header ui/plain-header
+     :label "Boolean"
      :type "boolean"
      :style {:width 50}}])
 
@@ -134,7 +142,6 @@
 
 (defnc Table
    []
-   (println "DATA: " data)
    ($ default/Provider
       (d/div
          {:style

@@ -4,17 +4,17 @@
     [clojure.string :as str]
     [helix.dom :as d]
     [helix.core 
-     :refer [defnc $ provider]]
+     :refer [defnc $ provider defhook]]
     [helix.hooks :as hooks]
-    [helix.placenta.util
-     :refer [deep-merge]]
-    [helix.styled-components
-     :refer [defstyled]]
+    [helix.children :as c]
     [shadow.css :refer [css]]
     ; [toddler.elements :as toddler]
-    [toddler.hooks :refer [use-delayed use-translate]]
+    [toddler.hooks :refer [use-delayed
+                           use-translate
+                           use-dimensions]]
     [toddler.table :as table]
     [toddler.popup :as popup]
+    [toddler.layout :as layout]
     ; [toddler.tooltip :as tip]
     [toddler.dropdown :as dropdown]
     [toddler.input :refer [TextAreaElement]]
@@ -73,9 +73,9 @@
                    :rounded-lg
                    :text-white
                    :p-4
-                   :shadow-md
+                   :shadow-lg
                    :font-bold
-                   {:background-color "#424242d1"})
+                   {:background-color "#333333ee"})
         $copied (css
                   :text-green-300)]
     ($ popup/Area
@@ -95,7 +95,6 @@
                        (set-copied! true)))}
          ($ icon/uuid))
        (when visible?
-         (println "COPIED" copied?)
          ($ popup/Element
             {:ref popup
              :style {:visibility (if hidden? "hidden" "visible")
@@ -335,7 +334,7 @@
                  :outline-0
                  :text-sm
                  :py-2)]
-    ($ ui/autosize-input
+    ($ e/autosize-input
        {:className $float
         :value (if value
                  (if focused? 
@@ -356,15 +355,9 @@
 
 
 
-(defstyled currency-cell table/CurrencyCell
-  {:font-size "1em"
-   :max-width 140
-   :display "flex"
-   :align-items "center"
-   :input {:outline "none"
-           :border "none"
-           :max-width 100}}
-  )
+(defnc currency-cell
+  []
+  nil)
 
 
 (defnc boolean-cell
@@ -474,137 +467,386 @@
                :render/wrapper e/dropdown-wrapper}))))))
 
 
-(defstyled action-cell table/ActionCell
-  {:padding 5
-   :font-size "0.8em"
-   :border-radius 3
-   :display "flex"
-   :justify-content "center"
-   :transition "box-shadow .3s ease-in,background .3s ease-in"
-   :border "2px solid transparent"
-   :align-items "center"
-   :cursor "pointer"
-   ":focus" {:outline "none"}}
-  )
+; (defstyled action-cell table/ActionCell
+;   {:padding 5
+;    :font-size "0.8em"
+;    :border-radius 3
+;    :display "flex"
+;    :justify-content "center"
+;    :transition "box-shadow .3s ease-in,background .3s ease-in"
+;    :border "2px solid transparent"
+;    :align-items "center"
+;    :cursor "pointer"
+;    ":focus" {:outline "none"}}
+;   )
 
-(defstyled delete-cell table/DeleteCell
-  {:display "flex"
-   :justify-content "center"
-   :align-content "center"
-   :min-height 25
-   :min-width 30
-   :max-height 30
-   :font-size "1em"
-   :align-items "center"
-   ; :margin-top 3
-   ".delete-marker"
-   {:cursor "pointer"
-    :margin "1px 3px"
-    :transition "color .3s ease-in"}}
-  )
 
-(defstyled expand-cell table/ExpandCell
-  {:display "flex"
-   :flex-grow "1"
-   :justify-content "center"
-   :cursor "pointer"
-   :svg {:transition "transform .3s ease-in-out"}}
-  )
+(defnc delete-cell [])
+
+; (defstyled delete-cell table/DeleteCell
+;   {:display "flex"
+;    :justify-content "center"
+;    :align-content "center"
+;    :min-height 25
+;    :min-width 30
+;    :max-height 30
+;    :font-size "1em"
+;    :align-items "center"
+;    ; :margin-top 3
+;    ".delete-marker"
+;    {:cursor "pointer"
+;     :margin "1px 3px"
+;     :transition "color .3s ease-in"}}
+;   )
+
+
+(defnc expand-cell [])
+
+; (defstyled expand-cell table/ExpandCell
+;   {:display "flex"
+;    :flex-grow "1"
+;    :justify-content "center"
+;    :cursor "pointer"
+;    :svg {:transition "transform .3s ease-in-out"}}
+;   )
 
 
 
 ;; Styled headers
-(def header-style
-  {:display "flex"
-   :flex-direction "column"
-   :font-size "1em"
-   :height "100%"
-   :justify-content "space-between"
-   ".header" 
-   {:display "flex"
-    :flex-direction "row"
-    ".name" {:cursor "pointer" :font-weight "600"}}
-   ".filter"
-   {:margin "4px 0"}})
+(def $header
+  (css
+    :flex
+    :text-sm
+    :font-bold
+    :flex-col
+    :h-full
+    :justify-between
+    :m-1
+    {:flex-grow "1"}
+    ["& .header" :flex :row]
+    ["& .header .row" :cursor-pointer :font-bold]
+    ["& .sort-marker.hidden" {:opacity "0"}]))
 
 
-(defstyled plain-header table/PlainHeader 
-  header-style)
+(let [$default (css :justify-start :items-start)
+      $top-center (css :justify-center :items-start)
+      $top-right (css :justify-end :items-start)
+      $center-left (css :justify-start :items-center)
+      $center (css :justify-center :items-center)
+      $center-right (css :justify-end :items-center)
+      $bottom-left (css :justify-start :items-end)
+      $bottom-center (css :justify-center :items-end)
+      $bottom-right (css :justify-end :items-end)]
+
+  (defhook use-cell-alignment-css
+    "Pass in column and function will return css class for aligment"
+    [{:keys [align]}]
+    (case align
+      (:center #{:top :center}) $top-center
+      (:right #{:top :right}) $top-right
+      #{:center :left} $center-left
+      #{:center :right} $center-right
+      #{:center} $center
+      (:bottom  #{:bottom-left}) $bottom-left
+      #{:bottom :center} $bottom-center
+      #{:bottom :right} $bottom-right
+      $default))
+  (defhook use-header-alignment-css
+    "Pass in column and function will return css class for aligment"
+    [{:keys [align]}]
+    (if (set? align)
+      (condp some? align
+        :center $top-center
+        :right $top-right
+        $default)
+      (case align
+        :center $top-center
+        :right $top-right
+        $default))))
 
 
-(defstyled identity-header table/IdentityHeader
-  (deep-merge
-    header-style
-    {".filter"
-     {:line-height 12
-      :padding 0
-      ; :flex-grow "1"
-      :justify-self "center"
-      :resize "none"
-      :border "none"
-      :width "100%"}}))
+(defnc plain-header
+  [{:keys [className column] :as props}]
+  (let [$alignment (use-header-alignment-css column)]
+    (d/div
+      {:class [$header className]}
+      (d/div 
+        {:class [$alignment "header"]}
+        ($ table/SortElement {& props})
+        ($ table/ColumnNameElement {& props})))))
 
 
-(defstyled text-header table/TextHeader 
-  (deep-merge
-    header-style
-    {".filter"
-     {:line-height 12
-      :padding 0
-      ; :flex-grow "1"
-      :justify-self "center"
-      :resize "none"
-      :border "none"
-      :width "100%"}}))
+(defnc identity-header [])
 
 
-(defstyled boolean-popup table/BooleanFilter 
-  {:display "flex"
-   :flex-direction "row"
-   (str ui/checkbox) {:margin "1px 2px"}})
+; (defstyled identity-header table/IdentityHeader
+;   nil
+;   #_(deep-merge
+;     header-style
+;     {".filter"
+;      {:line-height 12
+;       :padding 0
+;       ; :flex-grow "1"
+;       :justify-self "center"
+;       :resize "none"
+;       :border "none"
+;       :width "100%"}}))
 
 
-(defstyled boolean-header table/BooleanHeader 
-  (deep-merge 
-    header-style
-    {:align-items "center"}))
+(defnc text-header
+  [{{:keys [filter :filter/placeholder] :as column
+     :or {placeholder "Filter..."}} :column
+    :keys [className]
+    :as props}]
+  (let [v filter
+        dispatch (table/use-dispatch)
+        $alignment (use-header-alignment-css column)
+        $filter (css
+                  :p-0
+                  :border-0
+                  :w-full
+                  :font-thin
+                  :text-xs)]
+    (d/div
+      {:class [$header className]}
+      (d/div
+        {:class [$alignment "header"]}
+        ($ table/SortElement {& props})
+        ($ table/ColumnNameElement {& props}))
+      (d/div
+        {:className $filter}
+        ($ e/idle-input
+           {:placeholder placeholder
+            :className "filter"
+            :spellCheck false
+            :auto-complete "off"
+            :value (or v "")
+            :onChange (fn [value]
+                        (when dispatch
+                          (dispatch
+                            {:type :table.column/filter
+                             :column column
+                             :value (not-empty value)})))})))))
+
+; (defstyled text-header table/TextHeader 
+;   nil
+;   #_(deep-merge
+;     header-style
+;     {".filter"
+;      {:line-height 12
+;       :padding 0
+;       ; :flex-grow "1"
+;       :justify-self "center"
+;       :resize "none"
+;       :border "none"
+;       :width "100%"}}))
 
 
-(defstyled enum-popup popup/element
-  {(str ui/checklist " .name") {:font-size "1em"}})
+
+(defnc boolean-popup [])
+
+; (defstyled boolean-popup table/BooleanFilter 
+;   {:display "flex"
+;    :flex-direction "row"
+;    (str ui/checkbox) {:margin "1px 2px"}})
 
 
-(defstyled enum-header table/EnumHeader 
-  (deep-merge
-    header-style
-    {:justify-content "flex-start"
-     :align-items "center"
-     ; ".header" {:margin-left "-1em"}
-     })
-  )
+(defnc boolean-header [])
 
-(defstyled timestamp-header table/TimestampHeader
-  (deep-merge
-    header-style
-    {:justify-content "flex-start"
-     :align-items "center"
-     ; ".header" {:margin-left "-1em"}
-     })
-  )
+; (defstyled boolean-header table/BooleanHeader 
+;   nil
+;   #_(deep-merge 
+;     header-style
+;     {:align-items "center"}))
 
 
 
-(defstyled table table/Table
-  {:display "flex"
-   :flex-direction "column"
-   :flex-grow "1"})
+(defnc enum-popup [])
+
+; (defstyled enum-popup popup/element
+;   {(str ui/checklist " .name") {:font-size "1em"}})
+
+
+(def popup-menu-preference
+  [#{:bottom :center} 
+   #{:left :center} 
+   #{:right :center} 
+   #{:top :center}])
+
+
+(defnc header-popup-wrapper
+  [{:keys [style] :as props} _ref]
+  {:wrap [(ui/forward-ref)]}
+  (let [$layout (css
+                  :flex
+                  :flex-col
+                  :m-0
+                  :p-2
+                  :bg-gray-800
+                  :shadow-xl
+                  :rounded-xl
+                  :border-2
+                  :border
+                  :border-gray-100
+                  {:box-shadow "0 11px 25px -5px rgb(0 0 0 / 9%), 0 4px 20px 0px rgb(0 0 0 / 14%)"}
+                  ; {:box-shadow "0px 3px 10px -3px black"}
+                  ["& .simplebar-scrollbar:before"
+                   :bg-gray-100
+                   :pointer-events-none
+                   {:max-height "400px"}])]
+    (d/div
+      {:ref _ref
+       :class [$layout]
+       :style style}
+      (c/children props))))
+
+
+(defnc enum-header
+  [{:keys [className] :as props
+    {:keys [filter options] :as column} :column }]
+  (let [v filter
+        [opened? set-opened!] (hooks/use-state nil)
+        dispatch (table/use-dispatch) 
+        area (hooks/use-ref nil)
+        popup (hooks/use-ref nil)
+        $alignment (use-header-alignment-css column)
+        $filter (css
+                  :flex
+                  :flex-col
+                  :items-center
+                  ["& .filter" :flex :justify-center])]
+    (popup/use-outside-action
+      opened? area popup
+      #(set-opened! false))
+    (d/div
+      {:class [$header $alignment className (css :flex-row)]}
+      (d/div 
+        {:class [$filter ]}
+        (d/div
+          {:class ["header"]}
+          ($ table/SortElement {& props})
+          ($ table/ColumnNameElement {& props}))
+        ($ popup/Area
+           {:ref area
+            :className "filter"
+            :onClick (fn []
+                       (set-opened! true)
+                       #_(when opened? 
+                           (.preventDefault e)))}
+           ($ e/checkbox
+              {:active (if (nil? v) nil (boolean (not-empty v)))})
+           (when (and (not-empty options) opened?) 
+             ($ popup/Element
+                {:ref popup
+                 :wrapper header-popup-wrapper
+                 :preference popup-menu-preference}
+                ($ e/checklist
+                   {:value v
+                    :multiselect? true
+                    :options options 
+                    :onChange #(dispatch
+                                 {:type :table.column/filter
+                                  :column column
+                                  :value (when (not-empty %) %)})}))))))))
+
+; (defstyled enum-header table/EnumHeader 
+;   nil
+;   #_(deep-merge
+;       header-style
+;       {:justify-content "flex-start"
+;        :align-items "center"
+;        ; ".header" {:margin-left "-1em"}
+;        })
+;   )
+
+
+(defnc timestamp-header [])
+
+; (defstyled timestamp-header table/TimestampHeader
+;   nil
+;   #_(deep-merge
+;       header-style
+;       {:justify-content "flex-start"
+;        :align-items "center"
+;        ; ".header" {:margin-left "-1em"}
+;        }))
+
+
+
+(defnc table
+  [props]
+  (let [[header {header-height :height}] (use-dimensions) 
+        body (hooks/use-ref nil)
+        {:keys [height width]} (layout/use-container-dimensions)
+        [header-style body-style] (hooks/use-memo
+                                    [height width header-height]
+                                    [(cond->
+                                       {:width width}
+                                       header-height (assoc :height header-height))
+                                     {:height (- height header-height)
+                                      :width width}])
+        scroll (hooks/use-ref nil)]
+    (hooks/use-effect
+      [@body @header]
+      (letfn [(sync-body-scroll [e]
+                (when-some [left (.. e -target -scrollLeft)]
+                  (when (and @header (not= @scroll left)) 
+                    (reset! scroll left)
+                    (aset @header "scrollLeft" left))))
+              (sync-header-scroll [e]
+                (when-some [left (.. e -target -scrollLeft)]
+                  (when (and @body (not= @scroll left)) 
+                    (reset! scroll left)
+                    (aset @body "scrollLeft" left))))]
+        (when @body
+          (when @header
+            (.addEventListener @header "scroll" sync-header-scroll))
+          (when @body
+            (.addEventListener @body "scroll" sync-body-scroll))
+          (fn [] 
+            (when @body
+              (.removeEventListener @body "scroll" sync-body-scroll))
+            (when @header
+              (.removeEventListener @header "scroll" sync-header-scroll))))))
+    ($ table/TableProvider
+       {& props}
+       (d/div
+         {:style {:display "flex"
+                  :flex-direction "column"}}
+         ($ layout/Container
+            {:style header-style}
+            ($ table/Header
+               {:ref (fn [el] (reset! header el))
+                :className (css :flex
+                                :grow
+                                :p-3
+                                :border-1
+                                :border-transparent
+                                ["& .simplebar-scrollbar:before"
+                                 {:visibility "hidden"}]
+                                ["& .trow" :items-start])}))
+         (when body-style
+           ($ layout/Container
+              {:style body-style}
+              ($ table/Body
+                 {:ref (fn [el] (reset! body el))
+                  :className (css
+                               :flex
+                               :column
+                               :grow
+                               :p-3
+                               :bg-gray-100
+                               :border
+                               :border-solid
+                               :border-gray-300
+                               :shadow-lg
+                               :rounded-md)})))))))
 
 
 (def components
   (merge
     {:table table}
-    #:table {:row row
-             :header table/HeaderRow}
+    #:table {:row row}
     #:cell {:expand expand-cell
             :delete delete-cell
             :boolean boolean-cell
@@ -616,9 +858,9 @@
             :uuid uuid-cell
             :text text-cell
             :timestamp timestamp-cell
-            :identity identity-cell
-            }
-    #:header {:enum enum-header
+            :identity identity-cell}
+    #:header {:plain plain-header
+              :enum enum-header
               :boolean boolean-header
               :text text-header
               ; :identity identity-header

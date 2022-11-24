@@ -145,61 +145,6 @@
 
 
 
-(defnc Header
-  [{{:keys [style level]
-     n :label
-     render :header
-     :as column} :column
-    :keys [className]
-    :as props}
-   _ref]
-  {:wrap [(react/forwardRef)]}
-  (when (nil? render)
-    (.error "Header renderer not specified for culumn " (pr-str column)))
-  (let [w (get style :width 100)]
-    (d/div
-      {:class className
-       :style (merge
-                (->clj style)
-                {:display "flex"
-                 :flex (str w  \space 0 \space "auto")
-                 :min-width w
-                 :width w})
-       :level level
-       & (cond-> (select-keys props [:onClick :onMouseDown])
-           _ref (assoc :ref _ref))}
-      (when n
-        ($ render
-           {:column (assoc column :style nil)
-            :onChange identity})))))
-
-
-(defn same-header-row [a b]
-  (=
-   (select-keys a [:className])
-   (select-keys b [:className])))
-
-
-(defnc HeaderRow
-  [{:keys [className]}
-   _ref]
-  {:wrap [(react/forwardRef)
-          (memo same-header-row)]}
-  (let [columns (use-columns)]
-    ($ ui/row
-       {:className className
-        & (when _ref {:ref _ref})}
-       (map 
-         (fn [{a :attribute
-               p :cursor
-               :as column}]
-           ($ ui/header
-             {:key (if (nil? p) a
-                     (if (keyword? p) p
-                       (str/join "->" (map name (not-empty p)))))
-              :className "th"
-              :column column}))
-         (remove :hidden columns)))))
 
 
 (defn init-pagination
@@ -343,86 +288,87 @@
 ;           (when (not-empty actions) ($ ractions {:className "actions"})))))))
 
 
-(defnc TableLayout
-  [{:keys [className]}]
-  (let [{container-width :width
-         container-height :height
-         :as container-dimensions} (layout/use-container-dimensions)
-        rows (use-rows)
-        ; [{container-width :width
-        ;   container-height :height} set-container!] (hooks/use-state nil) 
-        table-width (use-table-width)
-        tbody (hooks/use-ref nil)
-        body-scroll (hooks/use-ref nil)
-        header-scroll (hooks/use-ref nil)
-        [thead {header-height :height}] (use-dimensions)
-        header-height (round-number header-height 1 :up)
-        table-height (round-number (- container-height header-height) 1 :down)
-        scroll (hooks/use-ref nil)
-        style {:minWidth table-width}]
-    (when (nil? container-dimensions)
-      (.error js/console "Wrap Table in container"))
-    (hooks/use-effect
-      [@body-scroll @header-scroll]
-      (letfn [(sync-body-scroll [e]
-                (when-some [left (.. e -target -scrollLeft)]
-                  (when (and @header-scroll (not= @scroll left)) 
-                    (reset! scroll left)
-                    (aset @header-scroll "scrollLeft" left))))
-              (sync-header-scroll [e]
-                (when-some [left (.. e -target -scrollLeft)]
-                  (when (and @body-scroll (not= @scroll left)) 
-                    (reset! scroll left)
-                    (aset @body-scroll "scrollLeft" left))))]
-        (when @body-scroll
-          (when @header-scroll
-            (.addEventListener @header-scroll "scroll" sync-header-scroll))
-          (when @body-scroll
-            (.addEventListener @body-scroll "scroll" sync-body-scroll))
-          (fn [] 
-            (when @body-scroll
-              (.removeEventListener @body-scroll "scroll" sync-body-scroll))
-            (when @header-scroll
-              (.removeEventListener @header-scroll "scroll" sync-header-scroll))))))
-    (when (and container-width container-height)
-      (d/div
-        {:key :table
-         :className className
-         :style {:height container-height
-                 :width container-width}}
-        #_($ ui/simplebar
-           {:key :thead/simplebar
-            :ref #(reset! header-scroll %)
-            :className "thead"
-            :$hidden (boolean (not-empty rows))
-            :style {:minWidth container-width
-                    :maxHeight 100}}
-           (spring/div
-             {:key :thead
-              :ref #(reset! thead %) 
-              :style style}
-             ($ ui/table-header-row
-                {:key :thead/row
-                 :className "trow"})))
-        ($ ui/simplebar
-           {:key :tbody/simplebar
-            :className (str "tbody" (when (empty? rows) " empty"))
-            :style {:minWidth container-width
-                    :maxHeight table-height}}
-           (spring/div
-             {:key :tbody
-              :style style 
-              :ref #(reset! tbody %)}
-             (map-indexed
-               (fn [idx row]
-                 ($ ui/table-row
-                   {:key (or 
-                           (:euuid row)
-                           idx)
-                    :idx idx
-                    :className "trow" 
-                    :data row}))
-               rows)))))))
+; (defnc TableLayout
+;   [{:keys [className]}]
+;   (let [{container-width :width
+;          container-height :height
+;          :as container-dimensions} (layout/use-container-dimensions)
+;         rows (use-rows)
+;         ; [{container-width :width
+;         ;   container-height :height} set-container!] (hooks/use-state nil) 
+;         table-width (use-table-width)
+;         tbody (hooks/use-ref nil)
+;         body-scroll (hooks/use-ref nil)
+;         header-scroll (hooks/use-ref nil)
+;         [thead {header-height :height}] (use-dimensions)
+;         header-height (round-number header-height 1 :up)
+;         table-height (round-number (- container-height header-height) 1 :down)
+;         scroll (hooks/use-ref nil)
+;         style {:minWidth table-width}]
+;     (when (nil? container-dimensions)
+;       (.error js/console "Wrap Table in container"))
+;     (hooks/use-effect
+;       [@body-scroll @header-scroll]
+;       (letfn [(sync-body-scroll [e]
+;                 (when-some [left (.. e -target -scrollLeft)]
+;                   (when (and @header-scroll (not= @scroll left)) 
+;                     (reset! scroll left)
+;                     (aset @header-scroll "scrollLeft" left))))
+;               (sync-header-scroll [e]
+;                 (when-some [left (.. e -target -scrollLeft)]
+;                   (when (and @body-scroll (not= @scroll left)) 
+;                     (reset! scroll left)
+;                     (aset @body-scroll "scrollLeft" left))))]
+;         (when @body-scroll
+;           (when @header-scroll
+;             (.addEventListener @header-scroll "scroll" sync-header-scroll))
+;           (when @body-scroll
+;             (.addEventListener @body-scroll "scroll" sync-body-scroll))
+;           (fn [] 
+;             (when @body-scroll
+;               (.removeEventListener @body-scroll "scroll" sync-body-scroll))
+;             (when @header-scroll
+;               (.removeEventListener @header-scroll "scroll" sync-header-scroll))))))
+;     (when (and container-width container-height)
+;       (d/div
+;         {:key :table
+;          :className className
+;          :style {:height container-height
+;                  :width container-width}}
+;         #_($ ui/simplebar
+;            {:key :thead/simplebar
+;             :ref #(reset! header-scroll %)
+;             :className "thead"
+;             :$hidden (boolean (not-empty rows))
+;             :style {:minWidth container-width
+;                     :maxHeight 100}}
+;            (spring/div
+;              {:key :thead
+;               :ref #(reset! thead %) 
+;               :style style}
+;              ($ ui/table-header-row
+;                 {:key :thead/row
+;                  :className "trow"})))
+;         ($ ui/simplebar
+;            {:key :tbody/simplebar
+;             ; :ref #(reset! body-scroll %)
+;             :className (str "tbody" (when (empty? rows) " empty"))
+;             :style {:minWidth container-width
+;                     :maxHeight table-height}}
+;            (spring/div
+;              {:key :tbody
+;               :style style 
+;               :ref #(reset! tbody %)}
+;              (map-indexed
+;                (fn [idx row]
+;                  ($ ui/table-row
+;                    {:key (or 
+;                            (:euuid row)
+;                            idx)
+;                     :idx idx
+;                     :className "trow" 
+;                     :data row}))
+;                rows)))))))
 
 
 (def $action-input
@@ -696,31 +642,6 @@
        {& props})))
 
 
-; (defnc IdentityCell [props]
-;   (let [{:keys [label style placeholder read-only disabled options] :as column} (use-column)
-;         [value set-value!] (use-cell-state column)]
-;     ($ dropdown/Element
-;        {:name label
-;         :value value
-;         :onChange (comp set-value! not-empty)
-;         :search-fn :name
-;         :placeholder placeholder
-;         :style (->clj style) 
-;         :read-only read-only
-;         :options (when-not read-only options)
-;         & props}
-;        (when (every? not [read-only disabled])
-;          ($ ClearButton
-;             {:className "clear"})))))
-
-
-; (defstyled identity-cell IdentityCell
-;   {:display "flex"
-;    :align-items "center"
-;    :input {:outline "none"
-;            :border "none"}})
-
-
 ; ;; ACTION CELLS
 (defnc DeleteCell
   [{:keys [className]}]
@@ -779,17 +700,13 @@
   (case order
     :desc
     ($ icon/sortDesc
-       {:className "sort-marker"
-        :pull "left"})
+       {:className "sort-marker"})
     :asc
     ($ icon/sortAsc
-       {:className "sort-marker"
-        :pull "left"})
+       {:className "sort-marker"})
     ;;
     ($ icon/sortDesc 
-       {:className "sort-marker"
-        :pull "left"
-        :style #js {:opacity "0"}})))
+       {:className "sort-marker hidden"})))
 
 
 (defnc ColumnNameElement
@@ -820,7 +737,7 @@
     :as header}]
   (let [{v :_ilike
          :or {v ""}} filter
-        dispatch use-dispatch] 
+        dispatch (use-dispatch)] 
     (d/div
       {:className (:className header)}
       (d/div
@@ -848,8 +765,7 @@
 (defnc TextHeader
   [{{:keys [filter] :as column} :column
     :as header}]
-  (let [{v :_ilike
-         :or {v ""}} filter
+  (let [v filter
         dispatch (use-dispatch)] 
     (d/div
       {:className (:className header)}
@@ -870,8 +786,7 @@
                           (dispatch
                             {:type :table.column/filter
                              :column column
-                             :value (if (empty? value) nil 
-                                      {:_ilike value})})))})))))
+                             :value (not-empty value)})))})))))
 
 
 (defnc TimestampHeader
@@ -921,7 +836,7 @@
         :onClick #(onChange nil)})))
 
 
-(defnc BooleanHeader 
+(defnc BooleanHeader
   [{{:keys [filter] :as column} :column
     :as header}]
   (let [{v :_eq} filter
@@ -959,6 +874,7 @@
                  ; :wrapper toddler/dropdown-popup
                  }
                 ($ ui/popup {:onChange toggle}))))))))
+
 
 
 (defnc EnumHeader
@@ -1019,20 +935,6 @@
 
 
 ;; Styled headers
-(def header-style
-  {:display "flex"
-   :flex-direction "column"
-   :font-size "1em"
-   :height "100%"
-   :justify-content "space-between"
-   ".header" 
-   {:display "flex"
-    :flex-direction "row"
-    ".name" {:cursor "pointer" :font-weight "600"}}
-   ".filter"
-   {:margin "4px 0"}})
-
-
 (defn column-default-style
   [{{:keys [width] 
      :or {width 100}
@@ -1052,17 +954,138 @@
                {:justifyContent "flex-start"
                 :alignItems "flex-start"})))))
 
+
 (defhook use-table-defaults
   [{:keys [columns] :as props}]
   (hooks/use-memo
     [columns]
-    (-> props
-        (update :columns
-                (fn [columns]
-                  (mapv column-default-style columns))))))
+    (->
+      props
+      (update :columns
+              (fn [columns]
+                (vec
+                  (map-indexed
+                    (fn [idx c]
+                      (assoc (column-default-style c)
+                        :idx idx))
+                    columns)))))))
 
 
-(defnc Table
+; (defnc Header
+;   [{{:keys [style level]
+;      n :label
+;      render :header
+;      :as column} :column
+;     [className]
+;     :as props}
+;    _ref]
+;   {:wrap [(react/forwardRef)]}
+;   (when (nil? render)
+;     (.error "Header renderer not specified for culumn " (pr-str column)))
+;   (let [w (get style :width 100)]
+;     (d/div
+;       {:class className
+;        :style (merge
+;                 (->clj style)
+;                 {:display "flex"
+;                  :flex (str w  \space 0 \space "auto")
+;                  :min-width w
+;                  :width w})
+;        :level level
+;        & (cond-> (select-keys props [:onClick :onMouseDown])
+;            _ref (assoc :ref _ref))}
+;       (when n
+;         ($ render
+;            {:column (assoc column :style nil)
+;             :onChange identity})))))
+
+
+(defnc Header
+  [{:keys [className]} _ref]
+  {:wrap [(ui/forward-ref)]}
+  (let [{container-width :width
+         container-height :height} (layout/use-container-dimensions)
+        table-width (use-table-width)
+        rows (use-rows)
+        style {:minWidth table-width}
+        columns (use-columns)]
+    ; (when (nil? container-dimensions)
+    ;   (.error js/console "Wrap Table Header in container"))
+    (when (and container-width container-height (some :header columns))
+      ($ ui/simplebar
+         {:key :thead/simplebar
+          :ref _ref 
+          :className (str/join " " ["thead" className])
+          :style (cond->
+                   {:minWidth container-width
+                    :maxHeight 500}
+                   (empty? rows) (assoc :visible "hidden"))}
+         ($ ui/row
+            {:key :thead/row
+             :style style
+             :className "trow"}
+            (map
+              (fn [{a :attribute
+                    idx :idx
+                    render :header
+                    style :style
+                    p :cursor
+                    :as column}]
+                (let [w (get style :width 100)]
+                  (d/div
+                    {:key idx
+                     :style (merge style
+                                   {:display "flex"
+                                    :flex (str w  \space 0 \space "auto")
+                                    :min-width w
+                                    :width w})}
+                    (when render
+                      ($ render
+                         {:key (if (nil? p) a
+                                 (if (keyword? p) p
+                                   (str/join "->" (map name (not-empty p)))))
+                          :className "th"
+                          :column column})))))
+              (remove :hidden columns)))))))
+
+
+(defnc Body
+  [{:keys [className]} _ref]
+  {:wrap [(ui/forward-ref)]}
+  (let [{container-width :width
+         container-height :height} (layout/use-container-dimensions)
+        rows (use-rows)
+        table-width (use-table-width)
+        style {:minWidth table-width}]
+    ; (when (nil? container-dimensions)
+    ;   (.error js/console "Wrap TableBody in container"))
+    (when (and container-width container-height)
+      ($ ui/simplebar
+         {:key :tbody/simplebar
+          :ref _ref
+          :className (str/join
+                       " "
+                       (remove empty? ["tbody"
+                                       className
+                                       (when (empty? rows) " empty")]))
+          :style {:minWidth container-width
+                  :maxHeight container-height}}
+         (d/div
+           {:key :tbody
+            :style style}
+           (map-indexed
+             (fn [idx row]
+               ($ ui/table-row
+                 {:key (or 
+                         (:euuid row)
+                         idx)
+                  :idx idx
+                  :className "trow" 
+                  :data row}))
+             rows))))))
+
+
+(defnc TableProvider
   [{:keys [dispatch rows actions pagination]
     :as props}]
   (let [{:keys [columns]} (use-table-defaults props)]
@@ -1081,5 +1104,4 @@
             (provider
               {:context *rows*
                :value rows}
-              ($ TableLayout
-                 {& props}))))))))
+              (c/children props))))))))
