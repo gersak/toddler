@@ -37,7 +37,8 @@
             result))]
   (defnc Container
     [{:keys [className style] :as props}]
-    {:wrap [(memo same?)]}
+    ;; TODO - maybe remove this
+    ; {:wrap [(memo same?)]}
     (let [[container dimensions] (use-dimensions)]
       (d/div
         {:ref #(reset! container %)

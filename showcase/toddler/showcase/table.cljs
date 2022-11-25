@@ -10,6 +10,7 @@
       [vura.core :as vura]
       [helix.core :refer [$ defnc]]
       [helix.dom :as d]
+      [helix.hooks :as hooks]
       [helix.children :as c]))
 
 
@@ -24,10 +25,14 @@
      :header ui/plain-header
      :cell ui/identity-cell
      :style {:width 100}}
+    {:cursor :float
+     :header ui/plain-header
+     :cell ui/float-cell
+     :label "Float"
+     :style {:width 100}}
     {:cursor :integer
      :header ui/plain-header
      :cell ui/integer-cell
-     :align :center
      :label "Integer"
      :style {:width 100}}
     {:cursor :text
@@ -77,6 +82,7 @@
          (condp = t
             ui/uuid-cell (random-uuid)
             ui/integer-cell (rand-int 10000)
+            ui/float-cell (* (rand) 1000)
             ui/identity-cell {:euuid (random-uuid)
                               :name (rand-nth
                                        ["John"
@@ -93,7 +99,7 @@
                                           "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.jUhREZmYLBkJCe7cmSdevwHaEX%26pid%3DApi&f=1"
                                           "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.w2kZvvrVVyFG0JNVzdYhbwHaEK%26pid%3DApi&f=1"
                                           "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.iBbhCR5cHpgkHsABbNeVtQHaEK%26pid%3DApi&f=1"])}
-            ui/enum-cell (:value (rand-nth (get-in columns [4 :options])))
+            ui/enum-cell (rand-nth (get-in columns [5 :options]))
             ui/timestamp-cell (rand-date)
             ui/text-cell (apply str (repeatedly 20 #(rand-nth "abcdefghijklmnopqrstuvwxyz0123456789")))
             ui/boolean-cell (rand-nth [true false])
@@ -140,6 +146,37 @@
           style)}
       (c/children props)))
 
+
+(defn reducer
+   [state
+    ;;
+    {:keys [type idx value]
+     {:keys [cursor]
+      cidx :idx} :column}]
+   (letfn [(apply-filters
+              [{:keys [rows columns] :as state}]
+              (if-some [filters (not-empty
+                                   (keep
+                                      (fn [{f :filter c :cursor}]
+                                         (when f
+                                            (fn [row]
+                                               (println "CHECKING ROW: " row)
+                                               (println "F: " f)
+                                               (f (get row c)))))
+                                      columns))]
+                 (assoc state :data (filter (apply every-pred filters) rows))
+                 (assoc state :data rows)))]
+      (->
+         (case type
+            :table.element/change
+            (assoc-in state [:rows idx cursor] value)
+            :table.column/filter
+            (assoc-in state [:columns cidx :filter]  value)
+            state)
+         ;;
+         apply-filters)))
+
+
 (defnc Table
    []
    ($ default/Provider
@@ -151,12 +188,16 @@
            :box-sizing "border-box"
            :justifyContent "center"
            :alignItems "center"}}
-         ($ TableContainer
-            ($ ui/table
-               {:rows data
-                :columns columns
-                :dispatch (fn [event]
-                             (println "Dispatching\n" event))})))))
+         (let [[{:keys [data columns]} dispatch] (hooks/use-reducer
+                                                    reducer
+                                                    {:rows data
+                                                     :data data
+                                                     :columns columns})]
+            ($ TableContainer
+               ($ ui/table
+                  {:rows data
+                   :columns columns
+                   :dispatch dispatch}))))))
 
 
 (dev/add-component

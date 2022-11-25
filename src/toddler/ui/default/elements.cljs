@@ -210,48 +210,17 @@
     value :value 
     disabled :disabled
     onChange :onChange}]
-  (let [$icon (css
-                {:cursor "pointer"
-                 :transition "color .2s ease-in"
-                 :width "1.5em" 
-                 :height "1.5em"
-                 :border-radius "4px"
-                 :border-color "transparent"
-                 :padding "0px"
-                 :display "flex"
-                 :justify-content "center"
-                 :outline "none"
-                 :align-items "center"}
-                ["& path" {:cursor "pointer"}]
-                ["&:active" {:border-color "transparent"}])
-        $active (css
-                  :text-white
-                  :bg-green-500)
-        $inactive (css
-                    :text-white
-                    :bg-gray-400)
-        $disabled (css :pointer-events "none")]
-    (d/div
-      {:class (css :flex
-                   :items-center
-                   :cursor-pointer
-                   :mx-2
-                   :my-3
-                   :text-gray-500)
-       :onClick #(onChange (not value))}
-      (d/div 
-        {:class [$icon
-                 (if value $active $inactive)
-                 (when disabled $disabled)]}
-        ($ icon/checkbox))
-      (d/div 
-        {:class (css :ml-2
-                     :select-none
-                     :text-sm
-                     :font-bold
-                     :uppercase
-                     {:transition "all .3s ease-in-out"})}
-        cname))))
+  (d/div
+    {:class ["row"
+             (when value "selected")
+             (when disabled "disabled")]
+     :onClick #(onChange (not value))}
+    (d/div 
+      {:class "icon"}
+      ($ icon/checkbox))
+    (d/div 
+      {:class "name"}
+      cname)))
 
 
 (defnc checklist [{:keys [value

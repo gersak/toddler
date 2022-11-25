@@ -241,7 +241,7 @@
     :or {render ui/action}}]
   (let [dispatch (use-dispatch)]
     ($ render 
-       {:onClick #(dispatch {:topic :table.row/add})
+       {:onClick #(dispatch {:type :table.row/add})
         :tooltip tooltip
         :icon icon/add}
        name)))
@@ -393,7 +393,7 @@
       (d/span
         {:className className
          :onClick #(dispatch
-                     {:topic :table.cell/clear
+                     {:type :table.cell/clear
                       :row row
                       :column column})}
         ($ icon/clear)))))
@@ -411,9 +411,9 @@
         value (get-in row k) 
         set-value! (hooks/use-memo
                      [idx]
-                     (fn []
+                     (fn [value]
                        (dispatch
-                         {:topic :table.element/change
+                         {:type :table.element/change
                           :idx idx 
                           :column el
                           :value value})))]
@@ -651,7 +651,7 @@
       {:className className 
        :onClick (fn [e] (.stopPropagation e)
                   (dispatch
-                    {:topic :table.row/delete
+                    {:type :table.row/delete
                      :row row}))}
       ($ icon/clear
          {:className "delete-marker"}))))
@@ -1089,6 +1089,7 @@
   [{:keys [dispatch rows actions pagination]
     :as props}]
   (let [{:keys [columns]} (use-table-defaults props)]
+    ;; TODO - remove actions and pagination
     (provider
       {:context *actions*
        :value actions}

@@ -57,7 +57,7 @@
         [copied? set-copied!] (hooks/use-state false)
         column (table/use-column)
         [value] (table/use-cell-state column)
-        $button (css :w-10 :p-2
+        $button (css :w-7 :p-1
                      :text-white
                      :rounded-sm
                      :flex
@@ -81,7 +81,7 @@
     ($ popup/Area
        {:ref area
         :className (css
-                     :py-1)
+                     {:padding-top "0.4em"})
         :onMouseLeave (fn [] (set-visible! false))
         :onMouseEnter (fn [] 
                         (set-copied! nil)
@@ -110,23 +110,8 @@
 
 (defnc enum-cell
   []
-  (let [{:keys [placeholder options] :as column} (table/use-column)
+  (let [{:keys [placeholder label] :as column} (table/use-column)
         [value set-value!] (table/use-cell-state column)
-        [options' om vm] 
-        (hooks/use-memo
-          [options]
-          (let [options' (range (count options))]
-            [options'
-             (reduce
-               (fn [r idx]
-                 (assoc r idx (get options idx)))
-               nil
-               options')
-             (reduce
-               (fn [r idx]
-                 (assoc r (get-in options [idx :value]) idx))
-               nil
-               options')]))
         ;;
         [area-position set-area-position!] (hooks/use-state nil)
         ;;
@@ -134,17 +119,20 @@
                 search
                 on-key-down
                 sync-search!
+                on-change
                 disabled
                 toggle!
                 area]
          :as dropdown}
-        (dropdown/use-dropdown (assoc column
-                                      :value (get vm value)
-                                      :searchable? false
-                                      :area-position area-position
-                                      :search-fn #(get-in om [% :name])
-                                      :options options'
-                                      :onChange #(set-value! (get-in om [% :value]))))]
+        (dropdown/use-dropdown
+          (merge
+            {:search-fn :name
+             :ref-fn :value
+             :searchable? true
+             :onChange set-value!}
+            (assoc column
+                   :value value
+                   :area-position area-position)))]
     (provider
       {:context popup/*area-position*
        :value [area-position set-area-position!]}
@@ -163,6 +151,7 @@
                            :flex
                            :items-center
                            :py-2
+                           :font-bold
                            ["& .decorator"
                             :text-transparent
                             {:transition "color .2s ease-in-out"
@@ -173,11 +162,11 @@
                {:ref input
                 :className "input"
                 :value search 
-                :read-only true
                 :disabled disabled
                 :spellCheck false
                 :auto-complete "off"
-                :placeholder placeholder
+                :placeholder (or placeholder label)
+                :onChange on-change 
                 :onBlur sync-search!
                 :onKeyDown on-key-down})
              (d/span
@@ -191,7 +180,7 @@
 
 (defnc text-cell
   []
-  (let [{:keys [placeholder options read-only] 
+  (let [{:keys [label placeholder options read-only] 
          {:keys [width]} :style
          :as column} (table/use-column)
         [value set-value!] (table/use-cell-state column)
@@ -212,13 +201,13 @@
                     (set-value! 
                       (not-empty (.. e -target -value))))
         :options options 
-        :placeholder placeholder})))
+        :placeholder (or placeholder label)})))
 
 
 
 (defnc timestamp-cell
   []
-  (let [{:keys [placeholder format disabled read-only show-time] :as column} (table/use-column)
+  (let [{:keys [placeholder label format disabled read-only show-time] :as column} (table/use-column)
         format (or format (if show-time :datetime :date))
         [value set-value!] (table/use-cell-state column)
         [opened set-opened!] (hooks/use-state false)
@@ -250,15 +239,13 @@
                      ["&:hover .clear " :text-gray-400]
                      ["& .clear:hover" :text-gray-900 :cursor-pointer])}
        (d/input
-         {:className (css
-                       :text-sm
-                       )
+         {:className (css :text-sm)
           :readOnly true
-          :value (when (some? value) (translate value format))
+          :value (if (some? value) (translate value format) "")
           :spellCheck false
           :auto-complete "off"
           :disabled disabled
-          :placeholder placeholder})
+          :placeholder (or placeholder label)})
        (when value
          (d/span
            {:class (cond-> ["clear"]
@@ -291,67 +278,97 @@
                   :onChange set-value!})))))))
 
 
-(defnc integer-cell
-  []
-  (let [{:keys [placeholder read-only disabled] :as column} (table/use-column)
-        [value set-value!] (table/use-cell-state column)
-        translate (use-translate)
-        [focused? set-focused!] (hooks/use-state false)
-        $input (css
-                 :outline-none
-                 :border-0
-                 :text-sm
-                 :w-full
-                 :py-2)]
-    (d/input
-      {:value (if value
-                (if focused? 
-                  (str value) 
-                  (translate value))
-                "")
-       :class [$input]
-       :placeholder placeholder
-       :read-only read-only
-       :disabled disabled
-       :onFocus #(set-focused! true)
-       :onBlur #(set-focused! false)
-       :onChange (fn [e] 
-                   (let [number (.. e -target -value)]
-                     (when-some [value (try
-                                         (js/parseInt number)
-                                         (catch js/Error _ nil))]
-                       (set-value! value))))})))
+(letfn [(text->number [text]
+          (if (empty? text) nil
+            (let [number (js/parseInt text)]
+              (when-not (js/Number.isNaN number) number))))]
+  (defnc integer-cell
+    []
+    (let [{:keys [placeholder read-only disabled label] :as column} (table/use-column)
+          [value set-value!] (table/use-cell-state column)
+          translate (use-translate)
+          [focused? set-focused!] (hooks/use-state false)
+          [input set-input!] (hooks/use-state (when value (translate value)))
+          $input (css
+                   :outline-none
+                   :border-0
+                   :text-sm
+                   :w-full
+                   :py-2)]
+      (hooks/use-effect
+        [focused?]
+        (set-input! (str value)))
+      (hooks/use-effect
+        [value]
+        (when-not (= (text->number input) value)
+          (set-input! (when value (translate value)))))
+      (d/input
+        {:value (if value
+                  (if focused? 
+                    input
+                    (translate value))
+                  "")
+         :class [$input]
+         :placeholder (or placeholder label)
+         :read-only read-only
+         :disabled disabled
+         :onFocus #(set-focused! true)
+         :onBlur #(set-focused! false)
+         :onChange (fn [e]
+                     (let [text (.. e -target -value)
+                           number (js/parseInt text)]
+                       (if (empty? text) (set-value! nil)
+                         (when-not (js/Number.isNaN number)
+                           (when-not (= number value) (set-input! text))
+                           (set-value! number)))))}))))
 
 
-(defnc float-cell
-  []
-  (let [{:keys [placeholder read-only disabled] :as column} (table/use-column)
-        [value set-value!] (table/use-cell-state column)
-        translate (use-translate)
-        [focused? set-focused!] (hooks/use-state false)
-        $float (css
-                 :border-0
-                 :outline-0
-                 :text-sm
-                 :py-2)]
-    ($ e/autosize-input
-       {:className $float
-        :value (if value
-                 (if focused? 
-                   (str value) 
-                   (translate value))
-                 "")
-        :placeholder placeholder
-        :read-only read-only
-        :disabled disabled
-        :onFocus #(set-focused! true)
-        :onBlur #(set-focused! false)
-        :onChange (fn [e] 
-                    (let [number (.. e -target -value)]
-                      (when-some [value (try
-                                          (js/parseFloat number)
-                                          (catch js/Error _ nil))]
-                        (set-value! value))))})))
+(letfn [(text->number [text]
+          (if (empty? text) nil
+            (let [number (js/parseFloat text)]
+              (when-not (js/Number.isNaN number) number))))]
+  (defnc float-cell
+    []
+    (let [{:keys [placeholder read-only disabled label] :as column} (table/use-column)
+          [value set-value!] (table/use-cell-state column)
+          translate (use-translate)
+          [input set-input!] (hooks/use-state (when value (translate value)))
+          [focused? set-focused!] (hooks/use-state false)
+          $float (css
+                   :border-0
+                   :outline-0
+                   :text-sm
+                   :py-2)]
+      (hooks/use-effect
+        [focused?]
+        (set-input! (str value)))
+      (hooks/use-effect
+        [value]
+        (when-not (= (text->number input) value)
+          (set-input! (when value (translate value)))))
+      (d/input
+        {:className $float
+         :value (if value
+                  (if focused? 
+                    input
+                    (translate value))
+                  "")
+         :placeholder (or placeholder label)
+         :read-only read-only
+         :disabled disabled
+         :onFocus #(set-focused! true)
+         :onBlur #(set-focused! false)
+         :onChange (fn [e]
+                     (let [text (str/replace
+                                  (.. e -target -value)
+                                  #"[\.\,]+" ".")
+                           number (js/parseFloat text)
+                           dot? (#{\.} (last text))]
+                       (if (empty? text) (set-value! nil)
+                         (when-not (js/Number.isNaN number)
+                           (when (or (not= number value) dot?)
+                             (set-input! text))
+                           (when-not dot? (set-value! number))))))}))))
 
 
 
@@ -606,7 +623,7 @@
                   :border-0
                   :w-full
                   :font-thin
-                  :text-xs)]
+                  :text-sm)]
     (d/div
       {:class [$header className]}
       (d/div
@@ -721,7 +738,7 @@
     (d/div
       {:class [$header $alignment className (css :flex-row)]}
       (d/div 
-        {:class [$filter ]}
+        {:class [$filter]}
         (d/div
           {:class ["header"]}
           ($ table/SortElement {& props})
@@ -734,7 +751,7 @@
                        #_(when opened? 
                            (.preventDefault e)))}
            ($ e/checkbox
-              {:active (if (nil? v) nil (boolean (not-empty v)))})
+              {:value (if (nil? v) nil (boolean (not-empty v)))})
            (when (and (not-empty options) opened?) 
              ($ popup/Element
                 {:ref popup
@@ -744,20 +761,28 @@
                    {:value v
                     :multiselect? true
                     :options options 
+                    :className (css
+                                 ["& .row"
+                                  :flex
+                                  :items-center
+                                  :cursor-pointer
+                                  :mx-2
+                                  :my-3
+                                  :text-gray-500
+                                  {:transition "all .2s ease-in-out"}]
+                                 ["& .row .icon" :hidden]
+                                 ["& .row.selected" :text-white]
+                                 ["& .row.disabled" :pointer-events-none]
+                                 ["& .row .name"
+                                  :ml-2
+                                  :select-none
+                                  :text-sm
+                                  :font-bold
+                                  :uppercase])
                     :onChange #(dispatch
                                  {:type :table.column/filter
                                   :column column
-                                  :value (when (not-empty %) %)})}))))))))
-
-; (defstyled enum-header table/EnumHeader 
-;   nil
-;   #_(deep-merge
-;       header-style
-;       {:justify-content "flex-start"
-;        :align-items "center"
-;        ; ".header" {:margin-left "-1em"}
-;        })
-;   )
+                                  :value (when (not-empty %) (set %))})}))))))))
 
 
 (defnc timestamp-header [])
@@ -770,7 +795,6 @@
 ;        :align-items "center"
 ;        ; ".header" {:margin-left "-1em"}
 ;        }))
-
 
 
 (defnc table

@@ -511,7 +511,30 @@
                   :mx-2
                   :my-3
                   :text-gray-500]
+                 ["& .row .icon"
+                  :text-white
+                  :bg-gray-400
+                  {:cursor "pointer"
+                   :transition "color .2s ease-in"
+                   :width "1.5em" 
+                   :height "1.5em"
+                   :border-radius "4px"
+                   :border-color "transparent"
+                   :padding "0px"
+                   :display "flex"
+                   :justify-content "center"
+                   :outline "none"
+                   :align-items "center"}]
+                 ["& .row.selected .icon" :text-white :bg-green-500]
+                 ["& .row.disabled" :pointer-events-none]
                  ["& .row .name"
+                   :ml-2
+                   :select-none
+                   :text-sm
+                   :font-bold
+                   :uppercase
+                   {:transition "all .3s ease-in-out"}]
+                 ["& .row.selected .name"
                    :ml-2
                    :select-none
                    :text-sm
@@ -521,7 +544,8 @@
     ($ field
        {& props}
        ($ e/checklist
-          {& (dissoc props :className)}))))
+          {:className $style
+           & (dissoc props :className)}))))
 
 
 
