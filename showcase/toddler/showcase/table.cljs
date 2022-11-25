@@ -120,7 +120,7 @@
    (loop [c cnt
           r []]
       (if (zero? c) r
-         (recur (dec c) (conj r (generate-row))))))
+         (recur (dec c) (conj r (assoc (generate-row) :idx (count r)))))))
 
 
 (comment
@@ -148,7 +148,7 @@
 
 
 (defn reducer
-   [state
+   [{:keys [data] :as state}
     ;;
     {:keys [type idx value]
      {:keys [cursor]
@@ -160,8 +160,6 @@
                                       (fn [{f :filter c :cursor}]
                                          (when f
                                             (fn [row]
-                                               (println "CHECKING ROW: " row)
-                                               (println "F: " f)
                                                (f (get row c)))))
                                       columns))]
                  (assoc state :data (filter (apply every-pred filters) rows))
@@ -169,7 +167,9 @@
       (->
          (case type
             :table.element/change
-            (assoc-in state [:rows idx cursor] value)
+            (do
+               (println "IDX: " idx (nth data idx))
+               (assoc-in state [:rows (:idx (nth data idx)) cursor] value))
             :table.column/filter
             (assoc-in state [:columns cidx :filter]  value)
             state)

@@ -785,7 +785,29 @@
                                   :value (when (not-empty %) (set %))})}))))))))
 
 
-(defnc timestamp-header [])
+(defnc timestamp-header
+  [{{:keys [filter]
+     :as column} :column
+    :as props}]
+  (let [{from  :_ge
+         to :_le} filter
+        dispatch (use-dispatch)]
+    (d/div
+      {:className (:className header)}
+      (d/div
+        {:className "header"}
+        ($ SortElement {& header})
+        ($ ColumnNameElement {& header}))
+      ($ ui/dropdown #_toddler/PeriodDropdownElement
+         {:value [from to]
+          :placeholder "Filter period..."
+          :className "filter"
+          ;FIXME
+          :onChange (fn [[from to]] 
+                      (dispatch
+                        {:type :table.column/filter
+                         :column column
+                         :value (when (or to from) [from to])}))}))))
 
 ; (defstyled timestamp-header table/TimestampHeader
 ;   nil
