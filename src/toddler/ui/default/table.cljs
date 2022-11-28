@@ -38,13 +38,15 @@
     {:ref _ref
      :className (str/join
                   " "
-                  (remove
-                    empty?
-                    [className
-                     (css
-                       :my-1
-                       {:min-height "2em"})]))
-
+                  ["trow"
+                   className
+                   (css
+                     :my-1
+                     :border-b
+                     :border-transparent
+                     {:min-height "2em"
+                      :transition "all .5s ease-in-out"}
+                     ["&:hover" :border-b :border-neutral-400])])
      & (dissoc props :className :class)}))
 
 
@@ -204,7 +206,6 @@
         :placeholder (or placeholder label)})))
 
 
-
 (defnc timestamp-cell
   []
   (let [{:keys [placeholder label format disabled read-only show-time] :as column} (table/use-column)
@@ -359,9 +360,10 @@
          :onFocus #(set-focused! true)
          :onBlur #(set-focused! false)
          :onChange (fn [e]
-                     (let [text (str/replace
-                                  (.. e -target -value)
-                                  #"[\.\,]+" ".")
+                     (let [text (as-> (.. e -target -value) t
+                                  (re-find #"[\d\.,]*" t)
+                                  (str/replace t #"\.(?=[^.]*\.)" "")
+                                  (str/replace t #"[\.\,]+" "."))
                            number (js/parseFloat text)
                            dot? (#{\.} (last text))]
                        (if (empty? text) (set-value! nil)
@@ -389,11 +391,11 @@
                   :rounded-sm
                   :justify-center
                   :items-center
-                  {:transition "background-color .3s ease-in-out"})
-        $active (css :bg-green-400
-                     :text-white)
-        $inactive (css :bg-gray-200
-                       :text-white)]
+                  {:transition "color .3s ease-in-out"})
+        $active (css #_:bg-green-400
+                     :text-neutral-900)
+        $inactive (css #_:bg-gray-200
+                       :text-neutral-400)]
     (d/div
       {:className (css
                     :justify-center
@@ -484,49 +486,10 @@
                :render/wrapper e/dropdown-wrapper}))))))
 
 
-; (defstyled action-cell table/ActionCell
-;   {:padding 5
-;    :font-size "0.8em"
-;    :border-radius 3
-;    :display "flex"
-;    :justify-content "center"
-;    :transition "box-shadow .3s ease-in,background .3s ease-in"
-;    :border "2px solid transparent"
-;    :align-items "center"
-;    :cursor "pointer"
-;    ":focus" {:outline "none"}}
-;   )
-
-
 (defnc delete-cell [])
-
-; (defstyled delete-cell table/DeleteCell
-;   {:display "flex"
-;    :justify-content "center"
-;    :align-content "center"
-;    :min-height 25
-;    :min-width 30
-;    :max-height 30
-;    :font-size "1em"
-;    :align-items "center"
-;    ; :margin-top 3
-;    ".delete-marker"
-;    {:cursor "pointer"
-;     :margin "1px 3px"
-;     :transition "color .3s ease-in"}}
-;   )
 
 
 (defnc expand-cell [])
-
-; (defstyled expand-cell table/ExpandCell
-;   {:display "flex"
-;    :flex-grow "1"
-;    :justify-content "center"
-;    :cursor "pointer"
-;    :svg {:transition "transform .3s ease-in-out"}}
-;   )
-
 
 
 ;; Styled headers
@@ -596,20 +559,6 @@
 (defnc identity-header [])
 
 
-; (defstyled identity-header table/IdentityHeader
-;   nil
-;   #_(deep-merge
-;     header-style
-;     {".filter"
-;      {:line-height 12
-;       :padding 0
-;       ; :flex-grow "1"
-;       :justify-self "center"
-;       :resize "none"
-;       :border "none"
-;       :width "100%"}}))
-
-
 (defnc text-header
   [{{:keys [filter :filter/placeholder] :as column
      :or {placeholder "Filter..."}} :column
@@ -645,44 +594,6 @@
                              :column column
                              :value (not-empty value)})))})))))
 
-; (defstyled text-header table/TextHeader 
-;   nil
-;   #_(deep-merge
-;     header-style
-;     {".filter"
-;      {:line-height 12
-;       :padding 0
-;       ; :flex-grow "1"
-;       :justify-self "center"
-;       :resize "none"
-;       :border "none"
-;       :width "100%"}}))
-
-
-
-(defnc boolean-popup [])
-
-; (defstyled boolean-popup table/BooleanFilter 
-;   {:display "flex"
-;    :flex-direction "row"
-;    (str ui/checkbox) {:margin "1px 2px"}})
-
-
-(defnc boolean-header [])
-
-; (defstyled boolean-header table/BooleanHeader 
-;   nil
-;   #_(deep-merge 
-;     header-style
-;     {:align-items "center"}))
-
-
-
-(defnc enum-popup [])
-
-; (defstyled enum-popup popup/element
-;   {(str ui/checklist " .name") {:font-size "1em"}})
-
 
 (def popup-menu-preference
   [#{:bottom :center} 
@@ -699,7 +610,7 @@
                   :flex-col
                   :m-0
                   :p-2
-                  :bg-gray-800
+                  :bg-gray-100
                   :shadow-xl
                   :rounded-xl
                   :border-2
@@ -718,6 +629,74 @@
       (c/children props))))
 
 
+(defnc boolean-header
+  [{:keys [className] :as props
+    {:keys [filter] :as column} :column}]
+  (let [v filter
+        [opened? set-opened!] (hooks/use-state nil)
+        options [{:name "true" :value true}
+                 {:name "false" :value false}
+                 {:name "null" :value nil}]
+        dispatch (table/use-dispatch) 
+        area (hooks/use-ref nil)
+        popup (hooks/use-ref nil)
+        $alignment (use-header-alignment-css column)
+        $filter (css
+                  :flex
+                  :flex-col
+                  :items-center
+                  ["& .filter" :flex :justify-center :text-neutral-300 :cursor-pointer]
+                  ["&.selected .filter" :text-cyan-500])]
+    (popup/use-outside-action
+      opened? area popup
+      #(set-opened! false))
+    (d/div
+      {:class [$header $alignment className (css :flex-row)]}
+      (d/div 
+        {:class [$filter (when (not-empty v) "selected")]}
+        (d/div
+          {:class ["header"]}
+          ($ table/SortElement {& props})
+          ($ table/ColumnNameElement {& props}))
+        ($ popup/Area
+           {:ref area
+            :className "filter"
+            :onClick (fn [] (set-opened! true))}
+           ($ icon/enumFilter
+              {:value (if (nil? v) nil (boolean (not-empty v)))})
+           (when opened? 
+             ($ popup/Element
+                {:ref popup
+                 :wrapper header-popup-wrapper
+                 :preference popup-menu-preference}
+                ($ e/checklist
+                   {:value v
+                    :options options
+                    :multiselect? true
+                    :className (css
+                                 ["& .row"
+                                  :flex
+                                  :items-center
+                                  :cursor-pointer
+                                  :mx-2
+                                  :my-3
+                                  :text-neutral-400
+                                  {:transition "all .2s ease-in-out"}]
+                                 ["& .row .icon" :hidden]
+                                 ["& .row.selected" :text-neutral-900]
+                                 ["& .row.disabled" :pointer-events-none]
+                                 ["& .row .name"
+                                  :ml-2
+                                  :select-none
+                                  :text-sm
+                                  :font-bold
+                                  :uppercase])
+                    :onChange #(dispatch
+                                 {:type :table.column/filter
+                                  :column column
+                                  :value (when (not-empty %) (set %))})}))))))))
+
+
 (defnc enum-header
   [{:keys [className] :as props
     {:keys [filter options] :as column} :column }]
@@ -731,14 +710,15 @@
                   :flex
                   :flex-col
                   :items-center
-                  ["& .filter" :flex :justify-center])]
+                  ["& .filter" :flex :justify-center :text-neutral-300 :cursor-pointer]
+                  ["&.selected .filter" :text-cyan-500])]
     (popup/use-outside-action
       opened? area popup
       #(set-opened! false))
     (d/div
       {:class [$header $alignment className (css :flex-row)]}
       (d/div 
-        {:class [$filter]}
+        {:class [$filter (when (not-empty v) "selected")]}
         (d/div
           {:class ["header"]}
           ($ table/SortElement {& props})
@@ -750,7 +730,7 @@
                        (set-opened! true)
                        #_(when opened? 
                            (.preventDefault e)))}
-           ($ e/checkbox
+           ($ icon/enumFilter
               {:value (if (nil? v) nil (boolean (not-empty v)))})
            (when (and (not-empty options) opened?) 
              ($ popup/Element
@@ -768,10 +748,10 @@
                                   :cursor-pointer
                                   :mx-2
                                   :my-3
-                                  :text-gray-500
+                                  :text-neutral-400
                                   {:transition "all .2s ease-in-out"}]
                                  ["& .row .icon" :hidden]
-                                 ["& .row.selected" :text-white]
+                                 ["& .row.selected" :text-neutral-900]
                                  ["& .row.disabled" :pointer-events-none]
                                  ["& .row .name"
                                   :ml-2
@@ -786,37 +766,92 @@
 
 
 (defnc timestamp-header
-  [{{:keys [filter]
-     :as column} :column
-    :as props}]
-  (let [{from  :_ge
-         to :_le} filter
-        dispatch (use-dispatch)]
+  [{:keys [className disabled read-only show-time] :as props
+    {:keys [filter] :as column} :column }]
+  (let [[start end :as v] (or filter [nil nil])
+        [opened? set-opened!] (hooks/use-state nil)
+        dispatch (table/use-dispatch) 
+        area (hooks/use-ref nil)
+        popup (hooks/use-ref nil)
+        $alignment (use-header-alignment-css column)
+        $filter (css
+                  :flex
+                  :flex-col
+                  :items-center
+                  ["& .filter" :flex :justify-center :cursor-pointer])
+        $filtered (css :text-cyan-500)
+        $unfiltered (css :text-neutral-300)]
+    (popup/use-outside-action
+      opened? area popup
+      #(set-opened! false))
     (d/div
-      {:className (:className header)}
-      (d/div
-        {:className "header"}
-        ($ SortElement {& header})
-        ($ ColumnNameElement {& header}))
-      ($ ui/dropdown #_toddler/PeriodDropdownElement
-         {:value [from to]
-          :placeholder "Filter period..."
-          :className "filter"
-          ;FIXME
-          :onChange (fn [[from to]] 
-                      (dispatch
-                        {:type :table.column/filter
-                         :column column
-                         :value (when (or to from) [from to])}))}))))
-
-; (defstyled timestamp-header table/TimestampHeader
-;   nil
-;   #_(deep-merge
-;       header-style
-;       {:justify-content "flex-start"
-;        :align-items "center"
-;        ; ".header" {:margin-left "-1em"}
-;        }))
+      {:class [$header $alignment className (css :flex-row)]}
+      (d/div 
+        {:class [$filter]}
+        (d/div
+          {:class ["header"]}
+          ($ table/SortElement {& props})
+          ($ table/ColumnNameElement {& props}))
+        ($ popup/Area
+           {:ref area
+            :className (str/join " " ["filter" (if (or start end) $filtered $unfiltered)])
+            :onClick (fn []
+                       (set-opened! true))}
+           ($ icon/timeFilter
+              {:value (if (nil? v) nil (boolean (not-empty v)))})
+           (when opened? 
+             ($ popup/Element
+                {:ref popup
+                 :wrapper header-popup-wrapper
+                 :preference popup-menu-preference}
+                (d/div
+                  {:className (css :flex :justify-end)}
+                  (d/span
+                    {:className (css
+                                  :text-neutral-300
+                                  :cursor-pointer
+                                  ["&:hover" :text-neutral-900])
+                     :onClick (fn [v]
+                                (set-opened! false)
+                                (dispatch
+                                  {:type :table.column/filter
+                                   :column column
+                                   :value nil}))}
+                    ($ icon/clear)))
+                ($ e/period-calendar
+                   {:value (or v [nil nil])
+                    :onChange (fn [v]
+                                (dispatch
+                                  {:type :table.column/filter
+                                   :column column
+                                   :value v}))})
+                (when show-time
+                  (d/div
+                    {:class (css
+                              :flex
+                              :justify-around)}
+                    ($ e/timestamp-time
+                       {:key "start"
+                        :value start
+                        :disabled (if-not start true
+                                    disabled)
+                        :read-only read-only
+                        :onChange (fn [x]
+                                    (dispatch
+                                      {:type :table.column/filter
+                                       :column column
+                                       :value (assoc v 0 x)}))})
+                    ($ e/timestamp-time
+                       {:key "end"
+                        :value end
+                        :disabled (if-not end true
+                                    disabled)
+                        :read-only read-only
+                        :onChange (fn [x]
+                                    (dispatch
+                                      {:type :table.column/filter
+                                       :column column
+                                       :value (assoc v 1 x)}))}))))))))))
 
 
 (defnc table
@@ -854,6 +889,9 @@
               (.removeEventListener @body "scroll" sync-body-scroll))
             (when @header
               (.removeEventListener @header "scroll" sync-header-scroll))))))
+    (.log js/console "HHH: " @header header-height)
+    ; (println "BODY STYLE: " body-style)
+    ; (println "HEADER STYLE: " header-style)
     ($ table/TableProvider
        {& props}
        (d/div
@@ -862,7 +900,7 @@
          ($ layout/Container
             {:style header-style}
             ($ table/Header
-               {:ref (fn [el] (reset! header el))
+               {:ref (fn [el] (.log js/console "SETTING HEADER: " el) (reset! header el))
                 :className (css :flex
                                 :grow
                                 :p-3
@@ -881,10 +919,11 @@
                                :column
                                :grow
                                :p-3
-                               :bg-gray-100
+                               :text-neutral-700
+                               :bg-gray-200
                                :border
                                :border-solid
-                               :border-gray-300
+                               :border-slate-600
                                :shadow-lg
                                :rounded-md)})))))))
 

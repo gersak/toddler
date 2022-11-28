@@ -56,13 +56,13 @@
      :style {:width 100}}
     {:cursor :timestamp
      :cell ui/timestamp-cell
-     :header ui/plain-header
+     :header ui/timestamp-header
      :label "Timestamp"
-     :show-time true
+     :show-time false
      :style {:width 120}}
     {:cursor :boolean
      :cell ui/boolean-cell
-     :header ui/plain-header
+     :header ui/boolean-header
      :label "Boolean"
      :type "boolean"
      :style {:width 50}}])
@@ -152,26 +152,34 @@
     ;;
     {:keys [type idx value]
      {:keys [cursor]
-      cidx :idx} :column}]
+      cidx :idx} :column
+     :as evnt}]
    (letfn [(apply-filters
               [{:keys [rows columns] :as state}]
               (if-some [filters (not-empty
                                    (keep
                                       (fn [{f :filter c :cursor}]
                                          (when f
-                                            (fn [row]
-                                               (f (get row c)))))
+                                            (case c
+                                               :timestamp
+                                               (let [[from to] f]
+                                                  (fn [{t :timestamp}]
+                                                     (cond
+                                                        (every? some? [from to]) (<= from t to)
+                                                        (some? from) (<= from t)
+                                                        (some? to) (<= t to))))
+                                               :enum (comp f :enum) 
+                                               (constantly true))))
                                       columns))]
                  (assoc state :data (filter (apply every-pred filters) rows))
                  (assoc state :data rows)))]
       (->
          (case type
             :table.element/change
-            (do
-               (println "IDX: " idx (nth data idx))
-               (assoc-in state [:rows (:idx (nth data idx)) cursor] value))
+            (assoc-in state [:rows (:idx (nth data idx)) cursor] value)
             :table.column/filter
-            (assoc-in state [:columns cidx :filter]  value)
+            (assoc-in state [:columns cidx :filter] value)
+            
             state)
          ;;
          apply-filters)))
@@ -220,30 +228,26 @@
    (defnc TableGrid
       []
       (let [{:keys [height width]} (layout/use-container-dimensions)]
-         ($ ui/simplebar
-            {:style {:height height
-                     :width width
-                     :boxSizing "border-box"}}
-            ($ grid/GridLayout
-               {:width width
-                :row-height (/ height 2)
-                :columns grid-columns
-                :layouts layouts}
-               ($ ui/table
-                  {:key "top"
-                   :rows data
-                   :columns columns
-                   :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))})
-               ($ ui/table
-                  {:key "bottom-left"
-                   :rows data
-                   :columns columns
-                   :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))})
-               ($ ui/table
-                  {:key "bottom-right"
-                   :rows data
-                   :columns columns
-                   :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))}))))))
+         ($ grid/GridLayout
+            {:width width
+             :row-height (/ height 2)
+             :columns grid-columns
+             :layouts layouts}
+            ($ ui/table
+               {:key "top"
+                :rows data
+                :columns columns
+                :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))})
+            ($ ui/table
+               {:key "bottom-left"
+                :rows data
+                :columns columns
+                :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))})
+            ($ ui/table
+               {:key "bottom-right"
+                :rows data
+                :columns columns
+                :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))})))))
 
 
 (dev/add-component

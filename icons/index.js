@@ -1,7 +1,7 @@
 import {FaTimes, FaCheck, FaSearch, FaChevronDown, FaQuoteLeft, FaMinus,
         FaAngleRight, FaAngleLeft, FaSquare, FaCheckSquare, FaPlus, FaBarcode,
         FaEdit, FaCaretUp, FaCaretDown, FaCaretRight, FaAngleDoubleLeft,
-        FaAngleDoubleRight, FaExclamationTriangle} from 'react-icons/fa';
+        FaAngleDoubleRight, FaExclamationTriangle, FaList, FaCalendarWeek} from 'react-icons/fa';
 
 
 let icons = {
@@ -29,7 +29,10 @@ let icons = {
   paginationFarNext: FaAngleDoubleRight,
   paginationFarPrevious: FaAngleDoubleLeft,
   paginationNext: FaAngleRight,
-  paginationPrevious: FaAngleLeft
+  paginationPrevious: FaAngleLeft,
+  // Header filters
+  timeFilter: FaCalendarWeek,
+  enumFilter: FaList
 }
 
 export default icons;

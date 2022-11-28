@@ -12,7 +12,6 @@
     [toddler.input
      :as input
      :refer [AutosizeInput
-             NumberInput
              TextAreaElement]]
     [toddler.i18n :as i18n]
     [toddler.hooks :refer [use-translate]]
@@ -23,8 +22,7 @@
      :refer [use-multiselect]]
     [toddler.ui :as ui]
     [toddler.popup :as popup]
-    ["toddler-icons$default" :as icon]
-    ["react" :as react]))
+    ["toddler-icons$default" :as icon]))
 
 
 (defnc field
@@ -135,54 +133,133 @@
               & (dissoc props :onChange :name :className :style)})))))
 
 
-(defnc integer-field
-  [{:keys [onChange]
-    :or {onChange identity}
-    :as props}]
-  (let [input (hooks/use-ref nil)]
-    ($ field
-       {:onClick (fn [] (when @input (.focus @input)))
-        & props}
-       ($ field-wrapper
-          ($ NumberInput
-             {:ref input
-              :className [(css ["& input" :border-0])]
-              & (->
-                  props
-                  (dissoc :name :className :style)
-                  (assoc :onChange
-                         (fn [e]
-                           (some->>
-                             (.. e -target -value)
-                             not-empty
-                             (re-find #"-?\d+[\.|,]*\d*")
-                             (js/parseFloat)
-                             onChange))))})))))
+
+(letfn [(text->number [text]
+          (if (empty? text) nil
+            (let [number (js/parseInt text)]
+              (when-not (js/Number.isNaN number) number))))]
+  (defnc integer-field
+    [{:keys [onChange value placeholder read-only disabled]
+      :as props}]
+    (let [translate (use-translate)
+          [input set-input!] (hooks/use-state (when value (translate value)))
+          [focused? set-focused!] (hooks/use-state false)
+          _ref (hooks/use-ref nil)
+          $float (css
+                   :border-0
+                   :outline-0
+                   :text-sm
+                   :py-2)]
+      (hooks/use-effect
+        [focused?]
+        (set-input! (str value)))
+      (hooks/use-effect
+        [value]
+        (when-not (= (text->number input) value)
+          (set-input! (when value (translate value)))))
+      ($ field
+         {:onClick (fn [] (when @_ref (.focus @_ref)))
+          & props}
+         ($ field-wrapper
+            (d/input
+              {:ref _ref
+               :className $float
+               :value (if value
+                        (if focused? 
+                          input
+                          (translate value))
+                        "")
+               :placeholder placeholder 
+               :read-only read-only
+               :disabled disabled
+               :onFocus #(set-focused! true)
+               :onBlur #(set-focused! false)
+               :onChange (fn [e]
+                           (let [text (as-> (.. e -target -value) t
+                                        (re-find #"\d*" t))
+                                 number (js/parseInt text)]
+                             (if (empty? text) (onChange nil)
+                               (when-not (js/Number.isNaN number)
+                                 (set-input! text)
+                                 (when (fn? onChange) (onChange number))))))}))))))
 
 
-(defnc float-field
-  [{:keys [onChange]
-    :or {onChange identity}
-    :as props}]
-  (let [input (hooks/use-ref nil)]
-    ($ field
-       {:onClick (fn [] (when @input (.focus @input)))
-        & props}
-       ($ field-wrapper
-          ($ NumberInput
-             {:ref input
-              :className (css ["& input" :border-0])
-              & (->
-                  props
-                  (dissoc :name :className :style)
-                  (assoc :onChange
-                         (fn [e]
-                           (some->>
-                             (.. e -target -value)
-                             not-empty
-                             (re-find #"-?\d+[\.|,]*\d*")
-                             (js/parseFloat)
-                             onChange))))})))))
+
+(letfn [(text->number [text]
+          (if (empty? text) nil
+            (let [number (js/parseFloat text)]
+              (when-not (js/Number.isNaN number) number))))]
+  (defnc float-field
+    [{:keys [onChange value placeholder read-only disabled]
+      :as props}]
+    (let [translate (use-translate)
+          [input set-input!] (hooks/use-state (when value (translate value)))
+          [focused? set-focused!] (hooks/use-state false)
+          _ref (hooks/use-ref nil)
+          $float (css
+                   :border-0
+                   :outline-0
+                   :text-sm
+                   :py-2)]
+      (hooks/use-effect
+        [focused?]
+        (set-input! (str value)))
+      (hooks/use-effect
+        [value]
+        (when-not (= (text->number input) value)
+          (set-input! (when value (translate value)))))
+      ($ field
+         {:onClick (fn [] (when @_ref (.focus @_ref)))
+          & props}
+         ($ field-wrapper
+            (d/input
+              {:ref _ref
+               :className $float
+               :value (if value
+                        (if focused? 
+                          input
+                          (translate value))
+                        "")
+               :placeholder placeholder 
+               :read-only read-only
+               :disabled disabled
+               :onFocus #(set-focused! true)
+               :onBlur #(set-focused! false)
+               :onChange (fn [e]
+                           (let [text (as-> (.. e -target -value) t
+                                        (re-find #"[\d\.,]*" t)
+                                        (str/replace t #"\.(?=[^.]*\.)" "")
+                                        (str/replace t #"[\.\,]+" "."))
+                                 number (js/parseFloat text)]
+                             (if (empty? text) (onChange nil)
+                               (when-not (js/Number.isNaN number)
+                                 (set-input! text)
+                                 (when (fn? onChange) (onChange number))))))}))))))
+
+
+; (defnc float-field
+;   [{:keys [onChange]
+;     :or {onChange identity}
+;     :as props}]
+;   (let [input (hooks/use-ref nil)]
+;     ($ field
+;        {:onClick (fn [] (when @input (.focus @input)))
+;         & props}
+;        ($ field-wrapper
+;           ($ NumberInput
+;              {:ref input
+;               :className (css ["& input" :border-0])
+;               & (->
+;                   props
+;                   (dissoc :name :className :style)
+;                   (assoc :onChange
+;                          (fn [e]
+;                            (some->>
+;                              (.. e -target -value)
+;                              not-empty
+;                              (re-find #"-?\d+[\.|,]*\d*")
+;                              (js/parseFloat)
+;                              onChange))))})))))
 
 
 (defnc dropdown-field
@@ -664,7 +741,8 @@
 
 (defnc currency-field
   [{:keys [disabled onChange value placeholder name
-           onFocus on-focus onBlur on-blur className]
+           onFocus on-focus onBlur on-blur className
+           read-only]
     :or {onChange identity}}]
   (let [{:keys [currency amount]} value
         ;;
@@ -682,10 +760,11 @@
         on-blur (or onBlur on-blur identity)
         on-focus (or onFocus on-focus identity)
         [focused? set-focused!] (hooks/use-state nil)
+        [state set-state!] (hooks/use-state (when amount (i18n/translate amount value)))
         amount (if (some? amount)
                  (if (not focused?)
-                   (i18n/translate amount currency)
-                   (str amount))
+                   (when amount (i18n/translate amount currency))
+                   (str state))
                  "")
         $clear (css
                  :text-gray-400
@@ -717,30 +796,29 @@
                  ($ dropdown/Popup
                     {:render/option e/dropdown-option
                      :render/wrapper e/dropdown-wrapper}))))
-          ($ AutosizeInput
-             {:ref input
-              :value amount
-              :placeholder placeholder
-              :disabled (or disabled (not currency))
-              :className (css ["& input" :border-0])
-              :onBlur (fn [e]
-                        (set-focused! false)
-                        (on-blur e))
-              :onFocus (fn [e]
-                         (set-focused! true)
-                         (on-focus e))
-              :onChange (fn [e]
-                          (if-some [amount (some->>
-                                               (.. e -target -value)
-                                               not-empty
-                                               (re-find #"-?\d+[\.|,]*\d*")
-                                               (js/parseFloat))]
-                            (onChange
-                              {:amount amount
-                               :currency currency})
-                            (onChange
-                              {:amount nil
-                               :currency currency})))})
+          (d/input
+            {:ref input
+             :value amount 
+             :placeholder placeholder 
+             :read-only read-only
+             :disabled (or disabled (not currency))
+             :onFocus (fn [e] (set-focused! true) (on-focus e))
+             :onBlur (fn [e] (set-focused! false) (on-blur e))
+             :onChange (fn [e]
+                         (when (some? currency)
+                           (let [text (as-> (.. e -target -value) t
+                                        (re-find #"[\d\.,]*" t)
+                                        (str/replace t #"\.(?=[^.]*\.)" "")
+                                        (str/replace t #"[\.\,]+" "."))
+                                 number (js/parseFloat text)]
+                             (if (empty? text) (onChange {:amount nil
+                                                          :currency currency})
+                               (when-not (js/Number.isNaN number)
+                                 (set-state! text)
+                                 (when (fn? onChange)
+                                   (onChange
+                                     {:amount number
+                                      :currency currency})))))))})
           (when value
             (d/span
               {:class $clear

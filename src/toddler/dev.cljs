@@ -6,11 +6,9 @@
     [helix.hooks :as hooks]
     [helix.dom :as d]
     [helix.children :as c]
-    [helix.styled-components
-     :refer [global-style defstyled --themed]]
     [toddler.theme :as theme]
-    [toddler.dev.themes.default]
-    [toddler.themes.default]
+    ; [toddler.dev.themes.default]
+    ; [toddler.themes.default]
     [toddler.dev.context
      :refer [*components*]]
     [toddler.router.dom :as router]
@@ -33,6 +31,7 @@
     ["toddler-icons$default" :as icon]
     [toddler.app :as app]
     [toddler.i18n :as i18n]
+    [shadow.css :refer [css]]
     [clojure.string :as str]))
 
 
@@ -40,13 +39,20 @@
 (defonce component-db (atom nil))
 
 
-(defnc Component
-  [{:keys [className component]}]
+(defnc component
+  [{:keys [component]}]
   (let [[{:keys [rendered] :as query} set-query!] (router/use-search-params)
-        selected? (= rendered (:key component))]
+        selected? (= rendered (:key component))
+        $component (css :mx-3 :my-2
+                        :flex
+                        :items-center
+                        ["& .name" :text-gray-500 {:text-decoration "none"}]
+                        ["& .icon" :w-5 :text-transparent :mr-1]
+                        ["&.selected .icon" :text-gray-900]
+                        ["&.selected .name" :text-gray-900])]
     (d/div
-      {:className (cond-> className
-                    selected? (str " selected"))}
+      {:class [$component
+               (when selected? "selected")]}
       ($ icon/selectedRow {:className "icon"})
       (d/a
         {:className "name"
@@ -54,23 +60,27 @@
         (:name component)))))
 
 
-(defstyled component Component
-  {:margin "7px 3px"
-   :display "flex"
-   :align-items "center"
-   ".icon" {:width 8
-            :color "transparent"
-            :margin-right 4}})
 
-
-(defnc Navbar
-  [{:keys [className]} _ref]
+(defnc navbar
+  [_ _ref]
   {:wrap [(react/forwardRef)]}
   (let [components (hooks/use-context *components*)
-        {:keys [height]} (use-window-dimensions)]
+        {:keys [height]} (use-window-dimensions)
+        $navbar (css
+                  :flex
+                  :flex-col
+                  {:background "#d3e9eb"
+                   :color "#2c2c2c"}
+                  ["& .title"
+                   :flex
+                   :h-28
+                   :items-center
+                   :text-2xl
+                   :justify-center
+                   {:font-family "Audiowide"}])]
     ($ ui/simplebar
        {:ref _ref
-        :className className
+        :className $navbar
         :style {:height height 
                 :min-width 300
                 :max-width 500}}
@@ -89,22 +99,6 @@
              components))))))
 
 
-(defstyled navbar Navbar
-  {:min-width 350 :max-width 400
-   :display "flex"
-   :flex-direction "column"
-   ".title" {:font-family "Audiowide"
-             :justify-content "center"
-             :font-size "1.5em"
-             :align-items "center"
-             :display "flex"
-             :height 50}
-   ".components-wrapper"
-   {:display "flex"
-    ; :justify-content "center"
-    :padding "20px 10px 10px 10px"}}
-  --themed)
-
 
 (defnc LocaleDropdown
   []
@@ -120,16 +114,24 @@
        :style pressed-button}
       (str/upper-case (name locale)))))
 
-(defnc Header
-  [{:keys [className]} _ref]
+(defnc header
+  [_ _ref]
   {:wrap [(react/forwardRef)]}
   (let [[{{locale :locale} :settings} set-user!] (use-current-user)
         window (use-window-dimensions)
         layout (use-layout)
         header-height 50
-        header-width (- (:width window) (get-in layout [:navbar :width]))]
+        header-width (- (:width window) (get-in layout [:navbar :width]))
+        $header (css
+                  :flex
+                  :h-15
+                  :flex-row-reverse
+                  :pr-3
+                  :box-border
+                  {:background "#d3e9eb"
+                   :color "#2c2c2c"})]
     (d/div
-      {:className className
+      {:className $header 
        :ref _ref 
        :style {:height header-height
                :width header-width}}
@@ -142,35 +144,26 @@
          ($ dropdown/Popup)))))
 
 
-(defstyled header Header
-  {:display "flex"
-   :height "50px"
-   :background "#d3e9eb"
-   :flex-direction "row-reverse"
-   :padding-right "15px"
-   :box-sizing "border-box"}
-  --themed)
 
 
-(defnc EmptyContent
-  [{:keys [className]}]
-  (let [window (use-window-dimensions)]
+(defnc empty-content
+  []
+  (let [window (use-window-dimensions)
+        $empty (css :flex
+                    :justify-center
+                    :items-center)]
     ($ ui/row
-       {:className className
+       {:className $empty
         :position :center}
        ($ ui/row
           {:position :center
            :style #js {:height (:height window)}}
           "Select a component from the list"))))
 
-(defstyled empty-content EmptyContent
-  {:display "flex"
-   :justify-content "center"
-   :align-items "center"})
 
 
-(defnc Content
-  [{:keys [className]}]
+(defnc content
+  []
   {:wrap [(react/forwardRef)]}
   (let [components (hooks/use-context *components*)
         [{:keys [rendered]}] (router/use-search-params)
@@ -186,7 +179,9 @@
         content-dimensions (hooks/use-memo
                              [content-height content-width]
                              {:width content-width
-                              :height content-height})]
+                              :height content-height})
+        $content (css
+                   :bg-neutral-100)]
     (if render
       (provider
         {:context layout/*container-dimensions*
@@ -195,33 +190,22 @@
           {:style
            {:height content-height
             :width content-width}
-           :className (str className " render-zone")}
+           :class [$content "render-zone"]}
           ($ render)))
       ($ empty-content))))
 
 
-(defstyled content Content
-  nil)
-
-
-(def global-css
-  (global-style
-    #js [theme/global]))
-
-
-(def simplebar-css
-  (global-style
-    #js [theme/simplebar]))
-
-
-(defnc Playground
-  [{:keys [className]}]
+(defnc playground
+  []
   (let [[components set-components!] (hooks/use-state @component-db)
         [user set-user!] (hooks/use-state {:settings {:locale i18n/*locale*}})
         window (use-window-dimensions)
         [{_navbar :navbar
           _header :header
-          _content :content} layout] (use-dimensions [:navbar :header :content])]
+          _content :content} layout] (use-dimensions [:navbar :header :content])
+        $playground (css
+                      :flex
+                      ["& .content" :flex :flex-col])]
     ; (println "LAYOUT: " layout)
     (hooks/use-effect
       :once
@@ -246,11 +230,11 @@
              ($ UI
                 {:components default/components}
                 ($ popup/Container
-                   ($ global-css)
-                   ($ simplebar-css)
+                   ; ($ global-css)
+                   ; ($ simplebar-css)
                    ($ window/DimensionsProvider
                       (d/div
-                        {:className className}
+                        {:className $playground}
                         ($ navbar {:ref _navbar})
                         (let [header-height 50
                               header-width (- (:width window) (get-in layout [:navigation :width]))
@@ -268,12 +252,6 @@
                                         :width content-width}})))))))))))))
 
 
-(defstyled playground Playground
-  {:display "flex"
-   ".content"
-   {:display "flex"
-    :flex-direction "column"}})
-
 
 (defn add-component
   [c]
@@ -289,24 +267,14 @@
 
 ;; Component wrappers
 
-(defnc CenteredComponent
-  [{:keys [className] :as props}]
-  (let [window (use-window-dimensions)
-        {:keys [navbar]} (use-layout)]
-    (d/div
-      {:className className
-       :style {:width (- (:width window) (:width navbar))
-               :minHeight (:height navbar)}}
-      (d/div
-        {:className "track"}
-        (c/children props)))))
-
-
-(defstyled centered-component CenteredComponent
-  {:display "flex"
-   :justify-content "center"
-   :align-items "center"
-   :flex-grow "1"
-   ".track" {:display "flex"
-             :flex-direction "column"
-             :justify-content "center"}})
+; (defnc centered-compnoent
+;   [{:keys [className] :as props}]
+;   (let [window (use-window-dimensions)
+;         {:keys [navbar]} (use-layout)]
+;     (d/div
+;       {:className className
+;        :style {:width (- (:width window) (:width navbar))
+;                :minHeight (:height navbar)}}
+;       (d/div
+;         {:className "track"}
+;         (c/children props)))))

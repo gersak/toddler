@@ -1,9 +1,8 @@
 (ns toddler.grid
   (:require
     [vura.core :refer [round-number]]
-    [toddler.elements :refer [*container-dimensions*]]
+    [toddler.layout :refer [*container-dimensions*]]
     [helix.core :refer [defnc defhook $ provider memo]]
-    [helix.styled-components :refer [defstyled]]
     [helix.hooks :as hooks]
     [helix.children :as c]
     [helix.dom :as d]))
@@ -30,6 +29,7 @@
     [dx dy] :margin
     :or {dx 10 dy 10}
     :as props}]
+  (println "GRID ITEM: " [x y width height])
   (let [{:keys [x y width height]
          :as container-dimensions}
         (hooks/use-memo
@@ -45,12 +45,10 @@
          :style {:position "absolute"
                  :transform (str "translate(" x "px," y "px)")
                  :width width
-                 :height height}}
+                 :height height
+                 :transition "transform .2s ease-in"}}
         (c/children props)))))
 
-
-(defstyled grid-item GridItem
-  {:transition "transform .2s ease-in"})
 
 
 (defhook use-grid-data
@@ -156,7 +154,7 @@
           (map
             (fn [component]
               (let [k (.-key component)]
-                ($ grid-item
+                ($ GridItem
                    {:key k :margin margin & (get layout k)}
                    component)))
             (c/children props)))))))

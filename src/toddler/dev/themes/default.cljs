@@ -21,7 +21,7 @@
    {".icon" {:color (default :gray)}
     ".name" {:color (default :gray/dark)
              :font-weight "600"}}
-   ".name:hover" {:color (default :gray/dar)
+   ".name:hover" {:color (default :gray/dark)
                   :font-weight "600"
                   :text-decoration "none"}})
 
