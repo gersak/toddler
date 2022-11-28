@@ -836,16 +836,14 @@
         rows (use-rows)
         style {:minWidth table-width}
         columns (use-columns)]
-    ; (when (nil? container-dimensions)
-    ;   (.error js/console "Wrap Table Header in container"))
-    (when (and container-width container-height (some :header columns))
+    (when (some :header columns)
       ($ ui/simplebar
          {:key :thead/simplebar
           :ref _ref 
           :className (str/join " " ["thead" className])
           :style (cond->
-                   {:minWidth container-width
-                    :height "100%"}
+                   {:width container-width
+                    :maxHeight 500}
                    (empty? rows) (assoc :visible "hidden"))}
          ($ ui/row
             {:key :thead/row

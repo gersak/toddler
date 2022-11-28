@@ -897,35 +897,37 @@
        (d/div
          {:style {:display "flex"
                   :flex-direction "column"}}
-         ($ layout/Container
-            {:style header-style}
-            ($ table/Header
-               {:ref (fn [el] (.log js/console "SETTING HEADER: " el) (reset! header el))
-                :className (css :flex
-                                :grow
-                                :p-3
-                                :border-1
-                                :border-transparent
-                                ["& .simplebar-scrollbar:before"
-                                 {:visibility "hidden"}]
-                                ["& .trow" :items-start])}))
-         (when body-style
-           ($ layout/Container
-              {:style body-style}
-              ($ table/Body
-                 {:ref (fn [el] (reset! body el))
-                  :className (css
-                               :flex
-                               :column
+         (provider
+           {:context layout/*container-dimensions*
+            :value header-style}
+           ($ table/Header
+              {:ref (fn [el] #_(.log js/console "SETTING HEADER: " el) (reset! header el))
+               :className (css :flex
                                :grow
                                :p-3
-                               :text-neutral-700
-                               :bg-gray-200
-                               :border
-                               :border-solid
-                               :border-slate-600
-                               :shadow-lg
-                               :rounded-md)})))))))
+                               :border-1
+                               :border-transparent
+                               ["& .simplebar-scrollbar:before"
+                                {:visibility "hidden"}]
+                               ["& .trow" :items-start])}))
+         (when body-style
+           (provider
+             {:context layout/*container-dimensions*
+              :value body-style}
+             ($ table/Body
+                {:ref (fn [el] (reset! body el))
+                 :className (css
+                              :flex
+                              :column
+                              :grow
+                              :p-3
+                              :text-neutral-700
+                              :bg-gray-200
+                              :border
+                              :border-solid
+                              :border-slate-600
+                              :shadow-lg
+                              :rounded-md)})))))))
 
 
 (def components
