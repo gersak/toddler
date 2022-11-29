@@ -206,7 +206,6 @@
         $playground (css
                       :flex
                       ["& .content" :flex :flex-col])]
-    ; (println "LAYOUT: " layout)
     (hooks/use-effect
       :once
       (.log js/console "Adding playground watcher!")

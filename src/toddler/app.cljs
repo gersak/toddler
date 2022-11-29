@@ -6,6 +6,7 @@
 
 
 (def ^:dynamic ^js *user* (create-context))
+(def ^:dynamic ^js *currency* (create-context))
 (def ^:dynamic ^js *subscription* (create-context))
 (def ^:dynamic ^js *window* (create-context))
 (def ^:dynamic ^js *layout* (create-context))
@@ -17,6 +18,7 @@
   ([k] (get (hooks/use-context *layout*) k)))
 
 (defhook use-window [] (hooks/use-context *window*))
+(defhook use-currency-options [] (hooks/use-context *currency*))
 
 
 (defonce signal-channel (async/chan 100))

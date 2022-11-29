@@ -29,7 +29,6 @@
     [dx dy] :margin
     :or {dx 10 dy 10}
     :as props}]
-  (println "GRID ITEM: " [x y width height])
   (let [{:keys [x y width height]
          :as container-dimensions}
         (hooks/use-memo

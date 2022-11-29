@@ -187,7 +187,6 @@
             (.observe @observer @node)
             (set-dimensions! (util/bounding-client-rect @node))
             nil)))
-      (.log js/console "RETURNING DIMENSIONS: " @node dimensions)
       (hooks/use-effect
         :once
         (fn [] (when @observer (.disconnect @observer))))

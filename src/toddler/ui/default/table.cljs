@@ -50,6 +50,43 @@
      & (dissoc props :className :class)}))
 
 
+(let [$default (css :flex :grow :justify-start :items-start)
+      $top-center (css :flex :grow :justify-center :items-start)
+      $top-right (css :flex :grow :justify-end :items-start)
+      $center-left (css :flex :grow :justify-start :items-center)
+      $center (css :flex :grow :justify-center :items-center)
+      $center-right (css :flex :grow :justify-end :items-center)
+      $bottom-left (css :flex :grow :justify-start :items-end)
+      $bottom-center (css :flex :grow :justify-center :items-end)
+      $bottom-right (css :flex :grow :justify-end :items-end)]
+
+  (defhook use-cell-alignment-css
+    "Pass in column and function will return css class for aligment"
+    [{:keys [align]}]
+    (case align
+      (:center #{:top :center}) $top-center
+      (:right #{:top :right}) $top-right
+      #{:center :left} $center-left
+      #{:center :right} $center-right
+      #{:center} $center
+      (:bottom  #{:bottom-left}) $bottom-left
+      #{:bottom :center} $bottom-center
+      #{:bottom :right} $bottom-right
+      $default))
+  (defhook use-header-alignment-css
+    "Pass in column and function will return css class for aligment"
+    [{:keys [align]}]
+    (if (set? align)
+      (condp some? align
+        :center $top-center
+        :right $top-right
+        $default)
+      (case align
+        :center $top-center
+        :right $top-right
+        $default))))
+
+
 (defnc uuid-cell
   []
   (let [[visible? set-visible!] (hooks/use-state nil)
@@ -79,11 +116,15 @@
                    :font-bold
                    {:background-color "#333333ee"})
         $copied (css
-                  :text-green-300)]
+                  :text-green-300)
+        $alignment (use-cell-alignment-css column)]
     ($ popup/Area
        {:ref area
-        :className (css
-                     {:padding-top "0.4em"})
+        :className (str/join " "
+                             [$alignment
+                              (css
+                                :grow
+                                {:padding-top "0.4em"})])
         :onMouseLeave (fn [] (set-visible! false))
         :onMouseEnter (fn [] 
                         (set-copied! nil)
@@ -134,7 +175,8 @@
              :onChange set-value!}
             (assoc column
                    :value value
-                   :area-position area-position)))]
+                   :area-position area-position)))
+        $alignment (use-cell-alignment-css column)]
     (provider
       {:context popup/*area-position*
        :value [area-position set-area-position!]}
@@ -144,10 +186,9 @@
         ($ popup/Area
            {:ref area
             :onClick toggle!
-            :className (css
-                         :flex
-                         :justify-start
-                         :text-sm)}
+            :className (str/join " "
+                                 [$alignment
+                                  (css :text-sm)])}
            (d/div
              {:className (css
                            :flex
@@ -191,10 +232,11 @@
                 :outline-none
                 :py-2
                 :w-full
-                {:resize "none"})] 
+                {:resize "none"})
+        $alignment (use-cell-alignment-css column)]
     ($ TextAreaElement
        {:value value 
-        :class $text
+        :class [$text $alignment]
         :read-only read-only
         :spellCheck false
         :auto-complete "off"
@@ -214,7 +256,8 @@
         [opened set-opened!] (hooks/use-state false)
         translate (use-translate)
         area (hooks/use-ref nil)
-        popup (hooks/use-ref nil)]
+        popup (hooks/use-ref nil)
+        $alignment (use-cell-alignment-css column)]
     (popup/use-outside-action
       opened area popup
       (fn [e]
@@ -225,20 +268,20 @@
         :onClick (fn []
                    (when (and (not disabled) (not read-only))
                      (set-opened! true)))
-        :className (css
-                     ; :flex
-                     ; :grow
-                     :items-center
-                     :py-2
-                     {:display "flex"
-                      :flex-grow "1"}
-                     ["& .clear"
-                      :text-transparent
-                      {:transition "color .2s ease-in-out"
-                       :position "absolute"
-                       :right "0px"}]
-                     ["&:hover .clear " :text-gray-400]
-                     ["& .clear:hover" :text-gray-900 :cursor-pointer])}
+        :className (str/join " "
+                             [$alignment
+                              (css
+                                :items-center
+                                :py-2
+                                {:display "flex"
+                                 :flex-grow "1"}
+                                ["& .clear"
+                                 :text-transparent
+                                 {:transition "color .2s ease-in-out"
+                                  :position "absolute"
+                                  :right "0px"}]
+                                ["&:hover .clear " :text-gray-400]
+                                ["& .clear:hover" :text-gray-900 :cursor-pointer])])}
        (d/input
          {:className (css :text-sm)
           :readOnly true
@@ -295,7 +338,8 @@
                    :border-0
                    :text-sm
                    :w-full
-                   :py-2)]
+                   :py-2)
+          $alignment (use-cell-alignment-css column)]
       (hooks/use-effect
         [focused?]
         (set-input! (str value)))
@@ -303,25 +347,27 @@
         [value]
         (when-not (= (text->number input) value)
           (set-input! (when value (translate value)))))
-      (d/input
-        {:value (if value
-                  (if focused? 
-                    input
-                    (translate value))
-                  "")
-         :class [$input]
-         :placeholder (or placeholder label)
-         :read-only read-only
-         :disabled disabled
-         :onFocus #(set-focused! true)
-         :onBlur #(set-focused! false)
-         :onChange (fn [e]
-                     (let [text (.. e -target -value)
-                           number (js/parseInt text)]
-                       (if (empty? text) (set-value! nil)
-                         (when-not (js/Number.isNaN number)
-                           (when-not (= number value) (set-input! text))
-                           (set-value! number)))))}))))
+      (d/div
+        {:class $alignment}
+        (d/input
+          {:value (if value
+                    (if focused? 
+                      input
+                      (translate value))
+                    "")
+           :class [$input]
+           :placeholder (or placeholder label)
+           :read-only read-only
+           :disabled disabled
+           :onFocus #(set-focused! true)
+           :onBlur #(set-focused! false)
+           :onChange (fn [e]
+                       (let [text (.. e -target -value)
+                             number (js/parseInt text)]
+                         (if (empty? text) (set-value! nil)
+                           (when-not (js/Number.isNaN number)
+                             (when-not (= number value) (set-input! text))
+                             (set-value! number)))))})))))
 
 
 (letfn [(text->number [text]
@@ -339,7 +385,8 @@
                    :border-0
                    :outline-0
                    :text-sm
-                   :py-2)]
+                   :py-2)
+          $alignment (use-cell-alignment-css column)]
       (hooks/use-effect
         [focused?]
         (set-input! (str value)))
@@ -347,30 +394,32 @@
         [value]
         (when-not (= (text->number input) value)
           (set-input! (when value (translate value)))))
-      (d/input
-        {:className $float
-         :value (if value
-                  (if focused? 
-                    input
-                    (translate value))
-                  "")
-         :placeholder (or placeholder label)
-         :read-only read-only
-         :disabled disabled
-         :onFocus #(set-focused! true)
-         :onBlur #(set-focused! false)
-         :onChange (fn [e]
-                     (let [text (as-> (.. e -target -value) t
-                                  (re-find #"[\d\.,]*" t)
-                                  (str/replace t #"\.(?=[^.]*\.)" "")
-                                  (str/replace t #"[\.\,]+" "."))
-                           number (js/parseFloat text)
-                           dot? (#{\.} (last text))]
-                       (if (empty? text) (set-value! nil)
-                         (when-not (js/Number.isNaN number)
-                           (when (or (not= number value) dot?)
-                             (set-input! text))
-                           (when-not dot? (set-value! number))))))}))))
+      (d/div
+        {:className $alignment}
+        (d/input
+          {:className $float
+           :value (if value
+                    (if focused? 
+                      input
+                      (translate value))
+                    "")
+           :placeholder (or placeholder label)
+           :read-only read-only
+           :disabled disabled
+           :onFocus #(set-focused! true)
+           :onBlur #(set-focused! false)
+           :onChange (fn [e]
+                       (let [text (as-> (.. e -target -value) t
+                                    (re-find #"[\d\.,]*" t)
+                                    (str/replace t #"\.(?=[^.]*\.)" "")
+                                    (str/replace t #"[\.\,]+" "."))
+                             number (js/parseFloat text)
+                             dot? (#{\.} (last text))]
+                         (if (empty? text) (set-value! nil)
+                           (when-not (js/Number.isNaN number)
+                             (when (or (not= number value) dot?)
+                               (set-input! text))
+                             (when-not dot? (set-value! number))))))})))))
 
 
 
@@ -395,11 +444,12 @@
         $active (css #_:bg-green-400
                      :text-neutral-900)
         $inactive (css #_:bg-gray-200
-                       :text-neutral-400)]
+                       :text-neutral-400)
+        $alignment (use-cell-alignment-css column)]
     (d/div
-      {:className (css
-                    :justify-center
-                    :py-2)}
+      {:className [(css
+                     :py-2)
+                   $alignment]}
       (d/button
         {:disabled disabled
          :read-only read-only
@@ -433,7 +483,8 @@
         (dropdown/use-dropdown (assoc column
                                       :value value
                                       :area-position area-position
-                                      :search-fn :name))]
+                                      :search-fn :name))
+        $alignment (use-cell-alignment-css column)]
     (provider
       {:context popup/*area-position*
        :value [area-position set-area-position!]}
@@ -443,10 +494,10 @@
         ($ popup/Area
            {:ref area
             :onClick toggle!
-            :className (css
-                         :flex
-                         :justify-start
-                         :text-sm)}
+            :className (str/join
+                         " "
+                         [$alignment
+                          (css :text-sm)])}
            (d/div
              {:className (css
                            :flex
@@ -502,47 +553,10 @@
     :h-full
     :justify-between
     :m-1
-    {:flex-grow "1"}
+    :grow
     ["& .header" :flex :row]
     ["& .header .row" :cursor-pointer :font-bold]
     ["& .sort-marker.hidden" {:opacity "0"}]))
-
-
-(let [$default (css :justify-start :items-start)
-      $top-center (css :justify-center :items-start)
-      $top-right (css :justify-end :items-start)
-      $center-left (css :justify-start :items-center)
-      $center (css :justify-center :items-center)
-      $center-right (css :justify-end :items-center)
-      $bottom-left (css :justify-start :items-end)
-      $bottom-center (css :justify-center :items-end)
-      $bottom-right (css :justify-end :items-end)]
-
-  (defhook use-cell-alignment-css
-    "Pass in column and function will return css class for aligment"
-    [{:keys [align]}]
-    (case align
-      (:center #{:top :center}) $top-center
-      (:right #{:top :right}) $top-right
-      #{:center :left} $center-left
-      #{:center :right} $center-right
-      #{:center} $center
-      (:bottom  #{:bottom-left}) $bottom-left
-      #{:bottom :center} $bottom-center
-      #{:bottom :right} $bottom-right
-      $default))
-  (defhook use-header-alignment-css
-    "Pass in column and function will return css class for aligment"
-    [{:keys [align]}]
-    (if (set? align)
-      (condp some? align
-        :center $top-center
-        :right $top-right
-        $default)
-      (case align
-        :center $top-center
-        :right $top-right
-        $default))))
 
 
 (defnc plain-header
@@ -812,6 +826,7 @@
                                   :cursor-pointer
                                   ["&:hover" :text-neutral-900])
                      :onClick (fn [v]
+                                (println "CLEARING")
                                 (set-opened! false)
                                 (dispatch
                                   {:type :table.column/filter
@@ -889,7 +904,6 @@
               (.removeEventListener @body "scroll" sync-body-scroll))
             (when @header
               (.removeEventListener @header "scroll" sync-header-scroll))))))
-    (.log js/console "HHH: " @header header-height)
     ; (println "BODY STYLE: " body-style)
     ; (println "HEADER STYLE: " header-style)
     ($ table/TableProvider
@@ -903,7 +917,6 @@
            ($ table/Header
               {:ref (fn [el] #_(.log js/console "SETTING HEADER: " el) (reset! header el))
                :className (css :flex
-                               :grow
                                :p-3
                                :border-1
                                :border-transparent

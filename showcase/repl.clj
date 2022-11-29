@@ -82,7 +82,7 @@
 
 (comment
   (-> css-ref deref keys)
-  (-> css-ref deref :aliases keys)
+  (-> css-ref deref :aliases )
   (-> css-ref deref :colors)
   (-> css-ref deref )
   (-> css-ref deref :namespaces keys)

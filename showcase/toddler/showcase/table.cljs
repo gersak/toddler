@@ -17,6 +17,7 @@
 (def columns
    [{:cursor :euuid
      :label "UUID"
+     :align :center
      :cell ui/uuid-cell
      :header ui/plain-header
      :style {:width 50}}
@@ -40,6 +41,11 @@
      :cell ui/text-cell
      :label "Text"
      :style {:width 250}}
+    {:cursor :currency
+     :header ui/currency-header
+     :cell ui/currency-cell
+     :style {:width 150}
+     :label "Money"}
     {:cursor :enum
      :label "ENUM"
      :cell ui/enum-cell
@@ -228,26 +234,29 @@
    (defnc TableGrid
       []
       (let [{:keys [height width]} (layout/use-container-dimensions)]
-         ($ grid/GridLayout
-            {:width width
-             :row-height (/ height 2)
-             :columns grid-columns
-             :layouts layouts}
-            ($ ui/table
-               {:key "top"
-                :rows data
-                :columns columns
-                :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))})
-            ($ ui/table
-               {:key "bottom-left"
-                :rows data
-                :columns columns
-                :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))})
-            ($ ui/table
-               {:key "bottom-right"
-                :rows data
-                :columns columns
-                :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))})))))
+         ($ ui/simplebar
+            {:style {:height height
+                     :width width}}
+            ($ grid/GridLayout
+               {:width width
+                :row-height (/ height 2)
+                :columns grid-columns
+                :layouts layouts}
+               ($ ui/table
+                  {:key "top"
+                   :rows data
+                   :columns columns
+                   :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))})
+               ($ ui/table
+                  {:key "bottom-left"
+                   :rows data
+                   :columns columns
+                   :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))})
+               ($ ui/table
+                  {:key "bottom-right"
+                   :rows data
+                   :columns columns
+                   :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))}))))))
 
 
 (dev/add-component
