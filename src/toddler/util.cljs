@@ -8,45 +8,12 @@
 (set! *warn-on-infer* true)
 
 
-(defn get-event-target-value
-  "Function that returns target value or nil if \"\" provided"
-  [e]
-  (let [v (.. e -target -value)]
-    (when (seq v) v)))
-
-(defn link [key]
-  (fn [id]
-    (when id {key id})))
-
-(defn pull-keys [data & keys]
-  (assert (map? data) "Cannot pull from this type of data. Use map")
-  (reduce
-   (fn [r k]
-     (conj
-      r
-      (if (vector? k)
-        (get-in data k nil)
-        (get data k nil))))
-   []
-   keys))
-
-(defn compose-user 
-  [{:keys [fname lname]}]
-  (when (and fname lname)
-    (str fname " " lname)))
-
 (defn open-new-tab
   ([link] (open-new-tab link true))
   ([link focus]
    (when-let [w (.open js/window link)]
      (when focus (.focus w)))))
 
-(defn convert-time
-  ([t] (convert-time t "hr"))
-  ([t locale] (convert-time t locale "LL"))
-  ([t locale format]
-   (.locale js/moment locale)
-   (.format (js/moment t) format)))
 
 (defn match-words? [search-expression text]
   (let [words (clojure.string/split search-expression #"\s+")
@@ -88,13 +55,7 @@
        :letter-spacing (.-letterSpacing style)
        :text-transform (.-textTransform style)})))
 
-(defn check-requirements
-  "A list to describe which requirements have been met so far"
-  [value requirements]
-  (->> requirements
-       (filter (fn [req] (not ((:check-fn req) value))))
-       (doall)
-       (map (fn [req] ^{:key req} (:message req)))))
+
 
 (defn mouse-relative-coordinates
   "Function returns coordinates from in form [x,y] that are relative

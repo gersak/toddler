@@ -10,7 +10,6 @@
     [helix.dom :as d]
     [helix.children :as c]
     [vura.core :refer [round-number]]
-    [helix.styled-components :refer [defstyled --themed]]
     [toddler.scroll :refer [SimpleBar]]
     [toddler.hooks :refer [use-delayed]]
     [toddler.util :as util]))
@@ -451,13 +450,13 @@
          (c/children props)))))
 
 
-(defstyled element "div"
-  {:display "flex"
-   :justify-content "start"
-   :flex-wrap "wrap"
-   :border-radius 3
-   :padding 7}
-  --themed)
+; (defstyled element "div"
+;   {:display "flex"
+;    :justify-content "start"
+;    :flex-wrap "wrap"
+;    :border-radius 3
+;    :padding 7}
+;   --themed)
 
 
 (defnc Element

@@ -5,10 +5,6 @@
      :refer [defnc $ provider]]
     [helix.hooks :as hooks]
     [helix.dom :as d]
-    [helix.children :as c]
-    [toddler.theme :as theme]
-    ; [toddler.dev.themes.default]
-    ; [toddler.themes.default]
     [toddler.dev.context
      :refer [*components*]]
     [toddler.router.dom :as router]

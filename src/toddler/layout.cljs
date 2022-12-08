@@ -7,7 +7,6 @@
     [helix.hooks :as hooks]
     [helix.dom :as d]
     [helix.children :as c]
-    [helix.styled-components :refer [defstyled]]
     [vura.core :as vura]
     [toddler.ui :refer [forward-ref]]
     [toddler.app :as app]
@@ -76,53 +75,29 @@
      :height h}))
 
 
-(defnc Column
-  [{:keys [label className position] :as props} _ref]
-  {:wrap [(forward-ref)]}
-  (d/div
-    {:ref _ref
-     :className className
-     :position position}
-    (when label
-      (d/div
-        {:className "label"}
-        (d/label label)))
-    (c/children props)))
+; (defnc Column
+;   [{:keys [label className position] :as props} _ref]
+;   {:wrap [(forward-ref)]}
+;   (d/div
+;     {:ref _ref
+;      :className className
+;      :position position}
+;     (when label
+;       (d/div
+;         {:className "label"}
+;         (d/label label)))
+;     (c/children props)))
 
 
-(defstyled column Column
-  {:display "flex"
-   :flex-direction "column"
-   :flex-grow "1"})
-
-
-(defnc Row
-  [{:keys [label className position] :as props} _ref]
-  {:wrap [(forward-ref)]}
-  (d/div
-    {:ref _ref
-     :className className
-     :position position}
-    (when label
-      (d/div
-        {:className "label"}
-        (d/label label)))
-    (c/children props)))
-
-
-(defstyled row Row
-  {:display "flex"
-   :flex-direction "row"
-   :align-items "center"
-   :flex-grow "1"})
-
-
-(defn --flex-position
-  [{:keys [position]}]
-  (when-some [jc (case position
-                   :center "center"
-                   :end "flex-end"
-                   :explode "space-between"
-                   nil)]
-    {:justify-content jc
-     ".wrapper" {:justify-content jc}}))
+; (defnc Row
+;   [{:keys [label className position] :as props} _ref]
+;   {:wrap [(forward-ref)]}
+;   (d/div
+;     {:ref _ref
+;      :className className
+;      :position position}
+;     (when label
+;       (d/div
+;         {:className "label"}
+;         (d/label label)))
+;     (c/children props)))

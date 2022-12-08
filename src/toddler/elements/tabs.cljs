@@ -13,7 +13,6 @@
     [helix.core :refer [defnc $ defhook]]
     [helix.hooks :as hooks]))
 
-
 (defhook use-slide-containers
   [options selected]
   (let [previous (use-delayed selected 500)

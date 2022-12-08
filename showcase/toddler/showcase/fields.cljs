@@ -3,6 +3,7 @@
    [helix.core :refer [$ defnc]]
    [helix.hooks :as hooks]
    ; [helix.dom :as d]
+   [shadow.css :refer [css]]
    [toddler.ui :as ui]
    [toddler.avatar :as a]
    [toddler.layout :as layout]
@@ -25,6 +26,7 @@
                                              :period-input 123213213})
         {:keys [height width]} (layout/use-container-dimensions)]
      ($ a/Generator
+        {:className (css {:visibility "hidden" :position "fixed" :top "0px" :left "0px"})}
         ($ default/Provider
            ($ ui/simplebar
               {:className "fields"

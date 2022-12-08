@@ -6,7 +6,6 @@
     [helix.dom :as d]
     [helix.children :as c]
     [helix.hooks :as hooks]
-    [helix.styled-components :refer-macros [defstyled]]
     [toddler.hooks :refer [use-delayed]]
     [toddler.popup :as popup]))
 
@@ -54,10 +53,6 @@
                :className (str className " animated fadeIn")}
               (d/div {:class "info-tooltip"} message))))
       (c/children props))))
-
-
-(defstyled action-tooltip ActionTooltip
-  (assoc basic ".info-tooltip" basic-content))
 
 
 (comment

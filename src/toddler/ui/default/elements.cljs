@@ -108,9 +108,8 @@
         ;;
         $stale
         (css
-          {:color :gray
-           :background-color :gray/light}
-          [:hover {:background-color "#d9d9d9"}])
+          :bg-neutral-300
+          [:hover :bg-neutral-200])
         ;;
         $disabled
         (css 
@@ -121,8 +120,8 @@
            :user-select "none"})
         ;;
         $default
-        (css :text-teal-900
-             :bg-cyan-400
+        (css :text-neutral-800
+             :bg-neutral-200
              [:hover :bg-cyan-300])]
     (case context
       :positive $positive

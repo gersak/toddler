@@ -218,13 +218,6 @@
       (c/children props))))
 
 
-; (defstyled hidden-generator GeneratorStage
-;   {:visibility "hidden"
-;    :position "fixed"
-;    :top 0
-;    :left 0})
-
-
 (def ^:dynamic ^js *generator-queue* (create-context))
 
 (defhook use-generator-queue [] (hooks/use-context *generator-queue*))

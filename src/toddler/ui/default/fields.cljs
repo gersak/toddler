@@ -74,7 +74,7 @@
 (defnc textarea-field
   [props]
   (let [$style (css
-                 ["& textarea" {:font-family "Robot"}])
+                 ["& textarea" {:font-family "Roboto"}])
         _input (hooks/use-ref nil)]
     ($ field
        {:className [$style]
