@@ -15,7 +15,10 @@
 
 
 (def columns
-   [{:cursor :euuid
+   [{:cursor [:ui :expand]
+     :cell ui/expand-cell
+     :style {:width 20}}
+    {:cursor :euuid
      :label "UUID"
      :align :center
      :cell ui/uuid-cell
@@ -105,7 +108,9 @@
                                           "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.jUhREZmYLBkJCe7cmSdevwHaEX%26pid%3DApi&f=1"
                                           "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.w2kZvvrVVyFG0JNVzdYhbwHaEK%26pid%3DApi&f=1"
                                           "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.iBbhCR5cHpgkHsABbNeVtQHaEK%26pid%3DApi&f=1"])}
-            ui/enum-cell (rand-nth (get-in columns [5 :options]))
+            ui/currency-cell {:amount (vura/round-number (* 1000 (rand)) 0.25)
+                              :currency (rand-nth ["EUR" "USD" "HRK"])}
+            ui/enum-cell (rand-nth (get-in columns [7 :options]))
             ui/timestamp-cell (rand-date)
             ui/text-cell (apply str (repeatedly 20 #(rand-nth "abcdefghijklmnopqrstuvwxyz0123456789")))
             ui/boolean-cell (rand-nth [true false])
@@ -179,16 +184,18 @@
                                       columns))]
                  (assoc state :data (filter (apply every-pred filters) rows))
                  (assoc state :data rows)))]
-      (->
-         (case type
-            :table.element/change
-            (assoc-in state [:rows (:idx (nth data idx)) cursor] value)
-            :table.column/filter
-            (assoc-in state [:columns cidx :filter] value)
-            
-            state)
-         ;;
-         apply-filters)))
+      (let [cursor' (if (sequential? cursor) cursor
+                       [cursor])]
+         (->
+            (case type
+               :table.element/change
+               (assoc-in state (into [:rows (:idx (nth data idx))] cursor') value)
+               :table.column/filter
+               (assoc-in state [:columns cidx :filter] value)
+
+               state)
+            ;;
+            apply-filters))))
 
 
 (defnc Table

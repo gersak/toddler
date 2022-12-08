@@ -9,7 +9,6 @@
     [helix.dom :as d]
     [helix.konva :as konva]
     [helix.children :as c]
-    [helix.styled-components :refer [defstyled]]
     [helix.image :refer [use-image]]))
 
 
@@ -219,11 +218,11 @@
       (c/children props))))
 
 
-(defstyled hidden-generator GeneratorStage
-  {:visibility "hidden"
-   :position "fixed"
-   :top 0
-   :left 0})
+; (defstyled hidden-generator GeneratorStage
+;   {:visibility "hidden"
+;    :position "fixed"
+;    :top 0
+;    :left 0})
 
 
 (def ^:dynamic ^js *generator-queue* (create-context))
@@ -232,7 +231,7 @@
 
 
 (defnc Generator
-  [{:keys [palette]
+  [{:keys [palette className]
     :or {palette ["#FB8B24"
                   "#EA4746"
                   "#E22557"
@@ -274,15 +273,17 @@
       :always
       (let [[request] @requests]
         (when (and @stage request)
-          (async/put! request (.toDataURL @stage))
-          (swap! requests (comp vec rest))
-          (when (not-empty @requests)
-            (async/go (set-color! (rand-nth (remove #{color} palette))))))))
+          (let [img (.toDataURL @stage)]
+            (async/put! request img)
+            (swap! requests (comp vec rest))
+            (when (not-empty @requests)
+              (async/go (set-color! (rand-nth (remove #{color} palette)))))))))
     (provider
       {:context *generator-queue*
        :value queue}
-      ($ hidden-generator
+      ($ GeneratorStage
          {:color color 
+          :className className
           :background "white"
           :ref stage})
       (c/children props))))

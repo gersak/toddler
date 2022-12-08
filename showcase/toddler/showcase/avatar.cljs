@@ -2,15 +2,15 @@
   (:require
    [helix.core :refer [$ defnc]]
    [helix.hooks :as hooks]
-   [helix.styled-components :refer [defstyled]]
+   [helix.dom :as d]
    ; [helix.dom :as d]
+   [shadow.css :refer [css]]
    [toddler.ui :as ui]
    [toddler.ui.provider :refer [UI]]
    [toddler.ui.default :as default]
    [toddler.avatar :as a]
    [toddler.layout :as layout]
    [toddler.dev :as dev]))
-
 
 
 (defnc Editor 
@@ -25,17 +25,6 @@
     :name "Avatar Editor"
     :render Editor})
 
-
-
-(defstyled generator-row ui/row
-  {:margin-top 10
-   :justify-content "center"
-   :align-items "center"})
-
-(defstyled generator-stage a/GeneratorStage
-  {:margin-top 10
-   :justify-content "center"
-   :display "flex"})
 
 (defnc Generator
   []
@@ -56,28 +45,24 @@
         [color set-color!] (hooks/use-state (rand-nth palette))]
     ($ UI
        {:components default/components}
-       ($ generator-stage
+       ($ a/GeneratorStage
           {:color color 
+           :className (css
+                         :mt-5
+                         :justify-center
+                         :flex)
            :background "white"}
-          ($ generator-row
+          ($ ui/row
+             {:className (css :mt-5 :flex :justify-center)}
              ($ ui/button
                 {:onClick (fn [] (set-color! (rand-nth palette)))}
                 "Generate"))))))
+
 
 (dev/add-component
    {:key ::generator
     :name "Avatar Generator"
     :render Generator})
-
-
-(defstyled avatar a/Avatar
-   {:width 144})
-
-
-(defstyled avatars-row ui/row
-   {:display "flex"
-    :flex-wrap "wrap"
-    :flex-grow "1"})
 
 
 (defnc Avatars
@@ -88,13 +73,18 @@
          ($ ui/simplebar
             {:style #js {:width width :height height}}
             ($ a/Generator
-               (map
-                  (fn [x] ($ avatar {:key x}))
-                  (range 100)))))))
+               {:className (css
+                              {:top "0" :left "0"
+                               :position :fixed
+                               :visibility "hidden"})}
+               (d/div
+                  {:className (css :flex :flex-row :flex-wrap)}
+                  (map
+                     (fn [x] ($ a/Avatar {:key x :className (css {:width "144px"})}))
+                     (range 100))))))))
+
 
 (dev/add-component
    {:key ::avatar
     :name "Avatars"
     :render Avatars})
-
-

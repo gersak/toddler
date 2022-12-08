@@ -24,6 +24,7 @@ let icons = {
   sortDesc: FaCaretUp,
   sortAsc: FaCaretDown,
   expand: FaCaretRight,
+  expanded: FaCaretDown,
   selectedRow: FaAngleRight,
   // Pagination
   paginationFarNext: FaAngleDoubleRight,

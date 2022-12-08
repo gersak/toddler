@@ -74,8 +74,8 @@
 (defcomponent table-row :table/row)
 (defcomponent table-header-row :table/header-row)
 
-
 (defcomponent enum-header :header/enum)
+(defcomponent currency-header :header/currency)
 (defcomponent boolean-header :header/boolean)
 (defcomponent text-header :header/text)
 (defcomponent user-header :header/user)

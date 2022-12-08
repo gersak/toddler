@@ -1,6 +1,5 @@
 (ns toddler.table
   (:require
-    [cljs-bean.core :refer [->clj]]
     [clojure.string :as str]
     goog.string
     [helix.dom :as d]
@@ -12,13 +11,6 @@
     [helix.children :as c]
     [toddler.ui :as ui]
     [toddler.layout :as layout]
-    [toddler.hooks
-     :refer [use-delayed
-             use-translate]]
-    [toddler.input
-     :refer [TextAreaElement]]
-    [toddler.popup :as popup]
-    ["react" :as react]
     ["toddler-icons$default" :as icon]))
 
 
@@ -30,14 +22,9 @@
 (def ^:dynamic ^js *row-record* (create-context))
 (def ^:dynamic ^js *rows* (create-context))
 (def ^:dynamic ^js *dispatch* (create-context))
-(def ^:dynamic ^js *cell-renderer* (create-context))
-(def ^:dynamic ^js *header-renderer* (create-context))
-(def ^:dynamic ^js *pagination* (create-context))
 
 
 
-(defhook use-pagination [] (hooks/use-context *pagination*))
-(defhook use-actions [] (hooks/use-context *actions*))
 (defhook use-columns [] (hooks/use-context *columns*))
 (defhook use-column [] (hooks/use-context *column*))
 (defhook use-rows [] (hooks/use-context *rows*))
@@ -68,7 +55,7 @@
     (d/div
       {:class className
        :style (merge
-                (->clj style)
+                style
                 {:display "flex"
                  :flex (str w  \space 0 \space "auto")
                  :position "relative"
@@ -89,7 +76,7 @@
 
 (defnc FRow
   [{:keys [className] :as props} _ref]
-  {:wrap [(react/forwardRef)]}
+  {:wrap [(ui/forward-ref)]}
   (let [min-width (use-table-width)] 
     (d/div
       {:className className
@@ -163,112 +150,112 @@
             :previous? (>= (inc page) 1)})))
 
 
-(defnc Pagination
-  [{:keys [className]}]
-  (let [{:keys [page page-size
-                next? previous? options
-                page-count total-count]
-         :as pagination} (use-pagination)
-        dispatch (use-dispatch)
-        set-pagination! (hooks/use-memo
-                          [dispatch]
-                          (fn [v] 
-                            (dispatch 
-                              {:type :pagination/update
-                               :pagination v})))
-        rows (use-rows)]
-    (d/div
-      {:class className}
-      (when (and pagination (pos? rows) (> total-count (count rows)))
-        (d/button
-          {:onClick #(set-pagination! {:page 0})
-           :className "start"
-           :disabled (not previous?)}
-          ($ icon/paginationFarPrevious))
-        (d/button
-          {:onClick #(set-pagination! {:page (dec page)})
-           :className "previous"
-           :disabled (not previous?)}
-          ($ icon/paginationPrevious))
-        (d/button
-          {:onClick #(set-pagination! {:page (inc page)})
-           :className "next"
-           :disabled (not next?)}
-          ($ icon/paginationNext))
-        (d/button
-          {:onClick #(set-pagination! {:page (dec page-count)})
-           :className "end"
-           :disabled (not next?)}
-          ($ icon/paginationFarNext))
-        (d/span 
-          (goog.string/format
-            "Showing %d - %d of %d results" 
-            (* page page-size)
-            (+ (* page page-size) (count rows))
-            total-count))
-        (d/select
-          {:value page-size
-           :className "view-size"
-           :onChange (fn [e] (set-pagination! {:page-size (js/Number (.. e -target -value))}))}
-          (map
-            (fn [option]
-              (d/option
-                {:key option
-                 :value option}
-                (str "Show " option)))
-            (or options (range 10 60 10))))
-        (d/span (str "| Page: "))
-        ($ ui/idle-input
-           {:placeholder "?"
-            :className "pag"
-            :spell-check false
-            :auto-complete "off"
-            :type "number"
-            :value (inc page)
-            :onChange (fn [page] 
-                        (let [page (if page page 0)
-                              np (min (max 0 (dec page)) page-count)]
-                          (set-pagination! {:page np})))})))))
+; (defnc Pagination
+;   [{:keys [className]}]
+;   (let [{:keys [page page-size
+;                 next? previous? options
+;                 page-count total-count]
+;          :as pagination} (use-pagination)
+;         dispatch (use-dispatch)
+;         set-pagination! (hooks/use-memo
+;                           [dispatch]
+;                           (fn [v] 
+;                             (dispatch 
+;                               {:type :pagination/update
+;                                :pagination v})))
+;         rows (use-rows)]
+;     (d/div
+;       {:class className}
+;       (when (and pagination (pos? rows) (> total-count (count rows)))
+;         (d/button
+;           {:onClick #(set-pagination! {:page 0})
+;            :className "start"
+;            :disabled (not previous?)}
+;           ($ icon/paginationFarPrevious))
+;         (d/button
+;           {:onClick #(set-pagination! {:page (dec page)})
+;            :className "previous"
+;            :disabled (not previous?)}
+;           ($ icon/paginationPrevious))
+;         (d/button
+;           {:onClick #(set-pagination! {:page (inc page)})
+;            :className "next"
+;            :disabled (not next?)}
+;           ($ icon/paginationNext))
+;         (d/button
+;           {:onClick #(set-pagination! {:page (dec page-count)})
+;            :className "end"
+;            :disabled (not next?)}
+;           ($ icon/paginationFarNext))
+;         (d/span 
+;           (goog.string/format
+;             "Showing %d - %d of %d results" 
+;             (* page page-size)
+;             (+ (* page page-size) (count rows))
+;             total-count))
+;         (d/select
+;           {:value page-size
+;            :className "view-size"
+;            :onChange (fn [e] (set-pagination! {:page-size (js/Number (.. e -target -value))}))}
+;           (map
+;             (fn [option]
+;               (d/option
+;                 {:key option
+;                  :value option}
+;                 (str "Show " option)))
+;             (or options (range 10 60 10))))
+;         (d/span (str "| Page: "))
+;         ($ ui/idle-input
+;            {:placeholder "?"
+;             :className "pag"
+;             :spell-check false
+;             :auto-complete "off"
+;             :type "number"
+;             :value (inc page)
+;             :onChange (fn [page] 
+;                         (let [page (if page page 0)
+;                               np (min (max 0 (dec page)) page-count)]
+;                           (set-pagination! {:page np})))})))))
 
 
-(defnc AddRowAction
-  [{:keys [tooltip render name]
-    :or {render ui/action}}]
-  (let [dispatch (use-dispatch)]
-    ($ render 
-       {:onClick #(dispatch {:type :table.row/add})
-        :tooltip tooltip
-        :icon icon/add}
-       name)))
+; (defnc AddRowAction
+;   [{:keys [tooltip render name]
+;     :or {render ui/action}}]
+;   (let [dispatch (use-dispatch)]
+;     ($ render 
+;        {:onClick #(dispatch {:type :table.row/add})
+;         :tooltip tooltip
+;         :icon icon/add}
+;        name)))
 
 
-(defnc Actions
-  [{:keys [className]}]
-  (let [actions (use-actions)]
-    (d/div
-      {:className className}
-      (map
-        (fn [{:keys [id render]}]
-          ($ render 
-            {:key id 
-             :className "action" 
-             & (dissoc ui/action :render)}))
-        actions))))
+; (defnc Actions
+;   [{:keys [className]}]
+;   (let [actions (use-actions)]
+;     (d/div
+;       {:className className}
+;       (map
+;         (fn [{:keys [id render]}]
+;           ($ render 
+;             {:key id 
+;              :className "action" 
+;              & (dissoc ui/action :render)}))
+;         actions))))
 
 
-(defnc ClearButton
-  [{:keys [className]}]
-  (let [dispatch (use-dispatch)
-        column (use-column)
-        row (use-row)]
-    (when row 
-      (d/span
-        {:className className
-         :onClick #(dispatch
-                     {:type :table.cell/clear
-                      :row row
-                      :column column})}
-        ($ icon/clear)))))
+; (defnc ClearButton
+;   [{:keys [className]}]
+;   (let [dispatch (use-dispatch)
+;         column (use-column)
+;         row (use-row)]
+;     (when row 
+;       (d/span
+;         {:className className
+;          :onClick #(dispatch
+;                      {:type :table.cell/clear
+;                       :row row
+;                       :column column})}
+;         ($ icon/clear)))))
 
 
 (defhook use-cell-state
@@ -290,261 +277,6 @@
                           :column el
                           :value value})))]
     [value set-value!]))
-
-
-(defnc UUIDCell
-  [{:keys [className] :as props}]
-  (let [[visible? set-visible!] (hooks/use-state nil)
-        hidden? (use-delayed (not visible?) 300)
-        area (hooks/use-ref nil)
-        popup (hooks/use-ref nil)
-        [copied? set-copied!] (hooks/use-state false)
-        column (use-column)
-        [value] (use-cell-state column)]
-    ($ popup/Area
-       {:ref area
-        :onMouseLeave (fn [] (set-visible! false))
-        :onMouseEnter (fn [] 
-                        (set-copied! nil)
-                        (set-visible! true))}
-       ($ ui/button
-          {:className className
-           :context :fun
-           :onClick (fn [] 
-                      (when-not copied?
-                        (.writeText js/navigator.clipboard (str value))
-                        (set-copied! true)))}
-          ($ icon/uuid))
-       (when visible?
-         ($ popup/Element
-            {:ref popup
-             :$copied copied?
-             :style {:visibility (if hidden? "hidden" "visible")
-                     :animationDuration ".5s"
-                     :animationDelay ".3s"}
-             :preference popup/cross-preference
-             :className (str  "uuid-popup" (when copied? " copied"))}
-            (d/div {:class "info-tooltip"} (str value)))))))
-
-
-(defnc HashedCell
-  [{:keys [className]}]
-  (let [{:keys [placeholder] :as element} (use-column)
-        [value set-value!] (use-cell-state element)] 
-    (d/input
-      {:className className
-       :placeholder placeholder
-       :spell-check false
-       :auto-complete "off"
-       :type "password"
-       :value (or value "") 
-       :onChange (fn [e] (set-value! (not-empty (.. e -target -value))))})))
-
-
-;; TODO - this should be better
-(defnc EnumCell
-  [{:keys [className]}]
-  (let [{:keys [placeholder options] :as column} (use-column)
-        [value set-value!] (use-cell-state column)
-        [options' om vm] 
-        (hooks/use-memo
-          [options]
-          (let [options' (range (count options))]
-            [options'
-             (reduce
-               (fn [r idx]
-                 (assoc r idx (get options idx)))
-               nil
-               options')
-             (reduce
-               (fn [r idx]
-                 (assoc r (get-in options [idx :value]) idx))
-               nil
-               options')]))]
-    ($ ui/dropdown
-       {:value (get vm value) 
-        :className className
-        :searchable? false
-        :search-fn #(get-in om [% :name])
-        :onChange #(set-value! (get-in om [% :value]))
-        :options options' 
-        :placeholder placeholder})))
-
-
-(defnc TextCell
-  [{:keys [className]}]
-  (let [{:keys [placeholder options read-only] 
-         {:keys [width]} :style
-         :as column} (use-column)
-        [value set-value!] (use-cell-state column)] 
-    ($ TextAreaElement
-       {:value value 
-        :className className
-        :read-only read-only
-        :spellCheck false
-        :auto-complete "off"
-        :style {:maxWidth width}
-        :onChange (fn [e] 
-                    (set-value! 
-                      (not-empty (.. e -target -value))))
-        :options options 
-        :placeholder placeholder})))
-
-
-(defnc TimestampCell
-  [{:keys [className]}]
-  (let [{:keys [placeholder format read-only disabled] 
-         :or {format :datetime}
-         :as column} (use-column)
-        [value set-value!] (use-cell-state column)] 
-    ($ ui/dropdown #_toddler/TimestampDropdownElement
-       {:value value
-        :onChange (fn [v] (when-not read-only (set-value! v)))
-        :format format
-        :read-only read-only
-        :placeholder placeholder 
-        :className className
-        :disabled disabled})))
-
-
-(defnc IntegerCell
-  [{:keys [className]}]
-  (let [{:keys [placeholder read-only disabled] :as column} (use-column)
-        [value set-value!] (use-cell-state column)
-        translate (use-translate)
-        [focused? set-focused!] (hooks/use-state false)]
-    ($ ui/autosize-input
-       {:className className
-        :value (if value
-                 (if focused? 
-                   (str value) 
-                   (translate value))
-                 "")
-        :placeholder placeholder
-        :read-only read-only
-        :disabled disabled
-        :onFocus #(set-focused! true)
-        :onBlur #(set-focused! false)
-        :onChange (fn [e] 
-                    (let [number (.. e -target -value)]
-                      (when-some [value (try
-                                          (js/parseInt number)
-                                          (catch js/Error _ nil))]
-                        (set-value! value))))})))
-
-
-(defnc FloatCell
-  [{:keys [className]}]
-  (let [{:keys [placeholder read-only disabled] :as column} (use-column)
-        [value set-value!] (use-cell-state column)
-        translate (use-translate)
-        [focused? set-focused!] (hooks/use-state false)]
-    ($ ui/autosize-input
-      {:className className
-       :value (if value
-                (if focused? 
-                  (str value) 
-                  (translate value))
-                "")
-       :placeholder placeholder
-       :read-only read-only
-       :disabled disabled
-       :onFocus #(set-focused! true)
-       :onBlur #(set-focused! false)
-       :onChange (fn [e] 
-                   (let [number (.. e -target -value)]
-                     (when-some [value (try
-                                         (js/parseFloat number)
-                                         (catch js/Error _ nil))]
-                       (set-value! value))))})))
-
-
-(defnc CurrencyCell
-  [{:keys [className]}]
-  (let [{:keys [placeholder] :as column} (use-column)
-        [value set-value!] (use-cell-state column)] 
-    #_($ toddler/CurrencyElement
-       {:className className
-        :placeholder placeholder
-        :value value
-        :currency/options nil
-        :onChange set-value!})))
-
-
-
-(defnc BooleanCell
-  [{:keys [className]}]
-  (let [{:keys [read-only disabled] :as column} (use-column)
-        [value set-value!] (use-cell-state column)] 
-    (d/button
-      {:disabled disabled
-       :read-only read-only
-       :className (str className 
-                       (case value
-                         true " active"
-                         (nil false) " inactive"))
-       :onClick #(set-value! (not value))}
-      ($ (case value
-           nil icon/checkboxDefault
-           icon/checkbox)))))
-
-
-(defnc AvatarCell [{:keys [className]}]
-  (let [column (use-column)
-        [avatar] (use-cell-state column)]
-    ($ ui/avatar
-       {:avatar avatar
-        :size :small
-        :className className})))
-
-
-; ;; ACTION CELLS
-(defnc DeleteCell
-  [{:keys [className]}]
-  (let [[row] (use-row)
-        dispatch (use-dispatch)]
-    (d/div
-      {:className className 
-       :onClick (fn [e] (.stopPropagation e)
-                  (dispatch
-                    {:type :table.row/delete
-                     :row row}))}
-      ($ icon/clear
-         {:className "delete-marker"}))))
-
-
-(defnc ActionCell
-  [{:keys [icon]
-    :or {icon icon/edit}
-    :as props}]
-  (d/button
-    {& props}
-    ($ icon)
-    (c/children props)))
-
-
-(defnc SelectedCell
-  [{:keys [className icon]
-    :or {icon icon/selectedRow}}]
-  (let [column (use-column)
-        [value _] (use-cell-state column)]
-    (d/div
-      {:className className}
-      ($ icon
-         {:className (str "selected-marker" (when value " selected"))}))))
-
-
-(defnc ExpandCell
-  [{:keys [className]}]
-  (let [column (use-column)
-        [value set-value!] (use-cell-state column)]
-    (d/div
-      {:className className 
-       :onClick (fn [e] (.stopPropagation e) (set-value! (not value)))}
-      ($ icon/expand
-         {:className (if value
-                       "icon expanded"
-                       "icon")}))))
 
 
 ;;;;;;;;;;;;;;;;
@@ -588,208 +320,6 @@
       column-name)))
 
 
-(defnc IdentityHeader
-  [{{:keys [filter] :as column} :column
-    :as header}]
-  (let [{v :_ilike
-         :or {v ""}} filter
-        dispatch (use-dispatch)] 
-    (d/div
-      {:className (:className header)}
-      (d/div
-        {:className "header"}
-        ($ SortElement {& header})
-        ($ ColumnNameElement {& header}))
-      (d/div
-        {:className "filter"}
-        ($ ui/idle-input
-           {:placeholder "Filter..."
-            :className "filter"
-            :spellCheck false
-            :auto-complete "off"
-            :value (or v "")
-            :onChange (fn [value]
-                        (when dispatch
-                          (dispatch
-                            {:type :table.column/filter
-                             :column column
-                             :value (if (empty? value) nil 
-                                      {:name
-                                       {:_ilike (str \% (str/replace value #"\s+" "%") \%)}})})))})))))
-
-
-(defnc TextHeader
-  [{{:keys [filter] :as column} :column
-    :as header}]
-  (let [v filter
-        dispatch (use-dispatch)] 
-    (d/div
-      {:className (:className header)}
-      (d/div
-        {:className "header"}
-        ($ SortElement {& header})
-        ($ ColumnNameElement {& header}))
-      (d/div
-        {:className "filter"}
-        ($ ui/idle-input
-           {:placeholder "Filter..."
-            :className "filter"
-            :spellCheck false
-            :auto-complete "off"
-            :value (or v "")
-            :onChange (fn [value]
-                        (when dispatch
-                          (dispatch
-                            {:type :table.column/filter
-                             :column column
-                             :value (not-empty value)})))})))))
-
-
-(defnc TimestampHeader
-  [{{:keys [filter]
-     :as column} :column
-    :as header}]
-  (let [{from  :_ge
-         to :_le} filter
-        dispatch (use-dispatch)]
-    (d/div
-      {:className (:className header)}
-      (d/div
-        {:className "header"}
-        ($ SortElement {& header})
-        ($ ColumnNameElement {& header}))
-      ($ ui/dropdown
-         {:value [from to]
-          :placeholder "Filter period..."
-          :className "filter"
-          ;FIXME
-          :onChange (fn [v] 
-                      (dispatch
-                        {:type :table.column/filter
-                         :column column
-                         :value v}))}))))
-
-
-(def popup-menu-preference
-  [#{:bottom :center} 
-   #{:left :center} 
-   #{:right :center} 
-   #{:top :center}])
-
-
-(defnc BooleanFilter
-  [{:keys [onChange className]}]
-  (d/div
-    {:className className}
-    ($ icon/checkbox
-       {:className "active" 
-        :onClick #(onChange true)})
-    ($ icon/checkbox
-       {:className "inactive"
-        :onClick #(onChange false)})
-    ($ icon/checkboxDefault
-       {:className "inactive" 
-        :onClick #(onChange nil)})))
-
-
-(defnc BooleanHeader
-  [{{:keys [filter] :as column} :column
-    :as header}]
-  (let [{v :_eq} filter
-        [opened? set-opened!] (hooks/use-state nil)
-        dispatch (use-dispatch) 
-        area (hooks/use-ref nil)
-        popup (hooks/use-ref nil)]
-    (popup/use-outside-action
-      opened? area popup
-      #(set-opened! false))
-    (letfn [(toggle [v]
-              (set-opened! false)
-              (dispatch
-                {:type :table.column/filter
-                 :column column
-                 :value (when (some? v) {:_eq v})}))] 
-      (d/div
-        {:className (:className header)}
-        (d/div 
-          {:className "header"}
-          ($ SortElement {& header})
-          ($ ColumnNameElement {& header}))
-        ($ popup/Area
-           {:ref area}
-           (d/div
-             {:className "filter"
-              :onClick (fn [] (set-opened! true))}
-             ($ (if (some? v) icon/checkbox icon/checkboxDefault)
-                {:className (if v "active" "inactive")}))
-           (when opened?
-             ($ popup/Element
-                {:ref popup
-                 :preference popup-menu-preference
-                 ; FIXME
-                 ; :wrapper toddler/dropdown-popup
-                 }
-                ($ ui/popup {:onChange toggle}))))))))
-
-
-
-(defnc EnumHeader
-  [{{:keys [filter]
-     :as column} :column
-    :as header}]
-  (let [{v :_in} filter
-        options (map 
-                  (comp keyword :name) 
-                  (get-in column [:configuration :values]))
-        [opened? set-opened!] (hooks/use-state nil)
-        dispatch (use-dispatch) 
-        area (hooks/use-ref nil)
-        popup (hooks/use-ref nil)]
-    (popup/use-outside-action
-      opened? area popup
-      #(set-opened! false))
-    (d/div
-      {:className (:className header)}
-      (d/div 
-        {:className "header"}
-        ($ SortElement {& header})
-        ($ ColumnNameElement {& header}))
-      ($ popup/Area
-         {:ref area
-          :onClick (fn [e]
-                     (when opened? 
-                       (.preventDefault e)))}
-         (d/div
-           {:className "filter"
-            :onClick #(set-opened! true)}
-           ($ ui/checkbox
-              {:active (if (nil? v) nil (boolean (not-empty v)))}))
-         (when (and (not-empty options) opened?) 
-           ($ popup/Element
-              {:ref popup
-               :wrapper ui/wrapper
-               :preference popup-menu-preference}
-              ($ ui/checklist
-                 {:value v
-                  :multiselect? true
-                  :options options 
-                  :display-fn name
-                  :onChange #(dispatch
-                               {:type :table.column/filter
-                                :column column
-                                :value (when (not-empty %) {:_in (map keyword %)})})})))))))
-
-
-(defnc PlainHeader
-  [header]
-  (d/div
-    {:className (:className header)}
-    (d/div 
-      {:className "header"}
-      ($ SortElement {& header})
-      ($ ColumnNameElement {& header}))))
-
-
 ;; Styled headers
 (defn column-default-style
   [{{:keys [width] 
@@ -830,8 +360,7 @@
 (defnc Header
   [{:keys [className]} _ref]
   {:wrap [(ui/forward-ref)]}
-  (let [{container-width :width
-         container-height :height} (layout/use-container-dimensions)
+  (let [{container-width :width} (layout/use-container-dimensions)
         table-width (use-table-width)
         rows (use-rows)
         style {:minWidth table-width}

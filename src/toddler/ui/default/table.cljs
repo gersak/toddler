@@ -8,18 +8,17 @@
     [helix.hooks :as hooks]
     [helix.children :as c]
     [shadow.css :refer [css]]
-    ; [toddler.elements :as toddler]
     [toddler.hooks :refer [use-delayed
                            use-translate
                            use-dimensions]]
     [toddler.table :as table]
     [toddler.popup :as popup]
     [toddler.layout :as layout]
-    ; [toddler.tooltip :as tip]
     [toddler.dropdown :as dropdown]
     [toddler.input :refer [TextAreaElement]]
     [toddler.ui.default.elements :as e]
     [toddler.ui :as ui]
+    [toddler.i18n :as i18n]
     ["toddler-icons$default" :as icon]))
 
 
@@ -271,11 +270,12 @@
         :className (str/join " "
                              [$alignment
                               (css
-                                :items-center
                                 :py-2
-                                {:display "flex"
-                                 :flex-grow "1"}
+                                :grow
+                                :flex
+                                :text-sm
                                 ["& .clear"
+                                 :self-center
                                  :text-transparent
                                  {:transition "color .2s ease-in-out"
                                   :position "absolute"
@@ -425,7 +425,121 @@
 
 (defnc currency-cell
   []
-  nil)
+  (let [{:keys [disabled placeholder label
+           onFocus on-focus onBlur on-blur
+           read-only]
+         :as column} (table/use-column)
+        [{:keys [currency amount] :as value} set-value!]
+        (table/use-cell-state column)
+        ;;
+        [area-position set-area-position!] (hooks/use-state nil)
+        ;;
+        {:keys [input area toggle!] :as dropdown}
+        (dropdown/use-dropdown
+          (->
+            (hash-map
+              :value currency
+              :area-position area-position
+              :options ["EUR" "USD" "JPY" "AUD" "CAD" "CHF"]
+              :onChange #(set-value! (assoc value :currency %)))
+            (dissoc :className)))
+        on-blur (or onBlur on-blur identity)
+        on-focus (or onFocus on-focus identity)
+        [focused? set-focused!] (hooks/use-state nil)
+        [state set-state!] (hooks/use-state (when amount (i18n/translate amount currency)))
+        $alignment (use-cell-alignment-css column)]
+    (hooks/use-effect
+      [value]
+      (if focused?
+        (set-state! (str amount))
+        (if (and amount currency)
+          (i18n/translate amount currency)
+          (set-state! ""))))
+    (provider
+      {:context dropdown/*dropdown*
+       :value dropdown}
+      (provider
+        {:context popup/*area-position*
+         :value [area-position set-area-position!]}
+        (d/div
+          {:class (str/join " "
+                            [$alignment
+                             (css
+                               :py-2
+                               :flex
+                               :grow
+                               :text-sm
+                               ["& .clear"
+                                :text-md
+                                 :self-center
+                                :text-transparent
+                                {:transition "color .2s ease-in-out"
+                                 :position "absolute"
+                                 :right "0px"}]
+                               ["&:hover .clear " :text-gray-400]
+                               ["& .clear:hover" :text-gray-900 :cursor-pointer])])
+           :onClick (fn [] 
+                      (when (and currency @input)
+                        (set-state! (str amount))
+                        (.focus @input)))}
+          ($ popup/Area
+             {:ref area}
+             (d/input
+               {:value (or currency "")
+                :className (css
+                             :w-10
+                             :font-bold
+                             :cursor-pointer)
+                :read-only true
+                :onClick toggle!
+                :placeholder "VAL"})
+             ($ dropdown/Popup
+                {:render/option e/dropdown-option
+                 :render/wrapper e/dropdown-wrapper}))
+          (d/input
+            {:ref input
+             :value state
+             :placeholder (or placeholder label)
+             :read-only read-only
+             :disabled (or disabled (not currency))
+             :onFocus (fn [e]
+                        (set-focused! true)
+                        (when (and currency amount)
+                          (set-state! (i18n/translate amount currency)))
+                        (on-focus e))
+             :onBlur (fn [e]
+                       (set-focused! false)
+                       (when amount
+                         (set-state! (i18n/translate amount currency)))
+                       (on-blur e))
+             :onChange (fn [e]
+                         (when (some? currency)
+                           (let [text (as-> (.. e -target -value) t
+                                        (re-find #"[\d\.,]*" t)
+                                        (str/replace t #"\.(?=[^.]*\.)" "")
+                                        (str/replace t #"[\.\,]+" "."))
+                                 number (js/parseFloat text)
+                                 dot? (#{\.} (last text))]
+                             (if (empty? text)
+                               (set-value! {:amount nil
+                                            :currency currency})
+                               (when-not (js/Number.isNaN number)
+                                 (when (or (not= number value) dot?)
+                                   (set-state! text))
+                                 (when-not dot?
+                                   (set-value!
+                                     {:amount number
+                                      :currency currency})))))))})
+          (when value
+            (d/span
+              {:class (cond-> ["clear"]
+                        focused? (conj "opened"))
+               :onClick (fn [e]
+                          (.stopPropagation e)
+                          (.preventDefault e)
+                          (set-value! nil)
+                          (set-focused! false))}
+              ($ icon/clear))))))))
 
 
 (defnc boolean-cell
@@ -537,10 +651,25 @@
                :render/wrapper e/dropdown-wrapper}))))))
 
 
+
 (defnc delete-cell [])
 
 
-(defnc expand-cell [])
+(defnc expand-cell
+  []
+  (let [column (table/use-column)
+        [value set-value!] (table/use-cell-state column)
+        $expand (css
+                  :text-sm
+                  :outline-none
+                  :w-full
+                  {:resize "none"
+                   :padding-top "0.7em"})]
+    (d/div
+      {:class [$expand]}
+      (if value
+        ($ icon/expanded {:onClick #(set-value! (not value))})
+        ($ icon/expand {:onClick #(set-value! (not value))})))))
 
 
 ;; Styled headers
@@ -779,6 +908,18 @@
                                   :value (when (not-empty %) (set %))})}))))))))
 
 
+
+(defnc currency-header
+  [{:keys [className column] :as props}]
+  (let [$alignment (use-header-alignment-css column)]
+    (d/div
+      {:class [$header className]}
+      (d/div 
+        {:class [$alignment "header"]}
+        ($ table/SortElement {& props})
+        ($ table/ColumnNameElement {& props})))))
+
+
 (defnc timestamp-header
   [{:keys [className disabled read-only show-time] :as props
     {:keys [filter] :as column} :column }]
@@ -825,8 +966,7 @@
                                   :text-neutral-300
                                   :cursor-pointer
                                   ["&:hover" :text-neutral-900])
-                     :onClick (fn [v]
-                                (println "CLEARING")
+                     :onClick (fn []
                                 (set-opened! false)
                                 (dispatch
                                   {:type :table.column/filter
@@ -953,7 +1093,7 @@
             :currency currency-cell
             :enum enum-cell
             :float float-cell
-            :hashed table/HashedCell
+            ; :hashed table/HashedCell
             :integer integer-cell
             :uuid uuid-cell
             :text text-cell
@@ -963,5 +1103,6 @@
               :enum enum-header
               :boolean boolean-header
               :text text-header
+              :currency currency-header
               ; :identity identity-header
               :timestamp timestamp-header}))
