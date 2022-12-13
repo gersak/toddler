@@ -2,17 +2,14 @@
   (:require
    clojure.string
    clojure.edn
-   [vura.core :as vura]
    ["react" :as react]
    [cljs.core.async :as async]
-   [helix.core :refer [defnc $ <> create-context]]
+   [helix.core :refer [defnc $ <>]]
    [helix.hooks :as hooks]
    [helix.dom :as d]
-   [toddler.ui :as ui]
    [toddler.util :as util]
    [toddler.mask :refer [use-mask]]
-   [toddler.hooks :refer [use-translate use-idle]]
-   [toddler.i18n.number :refer [number-formatter]]))
+   [toddler.hooks :refer [use-translate use-idle use-delayed]]))
 
 
 (defnc IdleInput
@@ -55,113 +52,98 @@
                     (set-value! v)))
       & (dissoc props :on-change :onChange :timeout :value)})))
 
-(defnc InputElement [{:keys [value placeholder class on-change]
-                      :or {on-change identity}
-                      :as props}]
-  (let [[{:keys [width
-                 style]} update-state!] (hooks/use-state nil)
-        input (hooks/use-ref nil)
-        dummy (hooks/use-ref nil)
-        value (or value "")
-        placeholder (or placeholder " ")
-        class' (clojure.string/join
-                " "
-                (cond-> ["element"]
-                  (seq? class) (concat class)
-                  (string? class) (conj class)))]
-    (hooks/use-effect
-     :always
-     (when @input
-       (let [style' (merge
-                     (util/get-font-style @input)
-                     (util/css-attributes  @input :padding :margin))]
-         (when (not= style style')
-           (update-state! assoc :style style')))))
-    ; (hooks/use-layout-effect
-    (hooks/use-effect
-     :always
-     (when @dummy
-       (update-state! assoc :width (+ 8 (.-scrollWidth @dummy)))))
-    (d/div
-     {:class (clojure.string/join
-              " "
-              (cond-> ["autoresize-input"]
-                (:disabled props) (conj "disabled")))}
-     (d/input
-      {:value (or value "")
-       :placeholder placeholder
-       :autoComplete "off"
-       :autoCorrect "off"
-       :spellCheck "false"
-       :autoCapitalize "false"
-       :className class'
-       :ref #(reset! input %)
-       :style {:width width}
-       :on-change on-change
-       & (dissoc props :value :class :placeholder :style :autoresize "autoresize")})
-     (d/div
-      {:ref #(reset! dummy %)
-       :style (merge
-               style
-               {:position "absolute"
-                :top 0 :left 0
-                :visibility "hidden"
-                :height 0 :overflow "scroll"
-                :white-space "pre"})
-       & (dissoc props :value :class :placeholder :style :autoresize "autoresize")}
-      (cond
-        ((every-pred string? not-empty) value) value
-        (number? value) value
-        :else placeholder)))))
-
 
 (defnc AutosizeInput
-  [{:keys [value placeholder] :as props} _ref]
+  [{:keys [value placeholder onBlur onFocus] :as props} _ref]
   {:wrap [(react/forwardRef)]}
-  (let [[{:keys [width
-                 style]
-          :or {width 30}} update-state!] (hooks/use-state nil)
+  (let [[[width] set-size!] (hooks/use-state nil)
         _input (hooks/use-ref nil)
         input (or _ref _input)
         dummy (hooks/use-ref nil)
+        dummy-style (hooks/use-ref nil) 
+        ;;
+        [state set-state!] (hooks/use-state #{})
+        ;;
         value (or value "")
-        placeholder (or placeholder " ")]
-    (hooks/use-effect
-     :always
-     (when @input
-       (let [style' (merge
-                     (util/get-font-style @input)
-                     (util/css-attributes  @input :padding :margin))]
-         (when (not= style style')
-           (update-state! assoc :style style'))))
-     (when @dummy
-       (let [width' (+ 8 (.-scrollWidth @dummy))]
-         (when-not (= width width')
-           (update-state! assoc :width width')))))
-    (<>
-     (d/input
-      {:value (or value "")
-       :placeholder placeholder
-       :ref #(reset! (or _ref input) %)
-       & (->
-          props
-          (dissoc :value :placeholder :ref :autoresize)
-          (assoc-in [:style :width] width))})
-     (d/div
-      {:ref #(reset! dummy %)
-       :style (merge
-               style
-               {:position "absolute"
-                :font-familly "inherit"
-                :top 0 :left 0
-                :visibility "hidden"
-                :height 0 :overflow "scroll"
-                :white-space "pre"})
-       & (dissoc props :value :autoresize :className)}
-      (cond
-        ((every-pred string? not-empty) value) value
-        (number? value) value
-        :else placeholder)))))
+        placeholder (or placeholder " ")
+        [dw dh] (when @dummy
+                  [(.-scrollWidth @dummy)
+                   (.-scrollHeight @dummy)])
+        focused? (contains? state :focused)
+        was-focused? (use-delayed focused?)
+        initialized? (contains? state :initialized)
+        not-initialized? (not initialized?)]
+    (letfn [(maybe-resize [target]
+              (when target
+                (let [[w h] [(.-scrollWidth target)
+                             (.-scrollHeight target)]]
+                  (when-not (< -5 (- width w) 5)
+                    (set-size! [w h])))))]
+      (hooks/use-effect
+        [value]
+        (.log js/console "Resizing " @dummy " for new value " value)
+        (maybe-resize @dummy))
+      (hooks/use-effect
+        :once
+        (when @input
+          (reset!
+            dummy-style
+            (merge
+              (util/get-font-style @input)
+              (util/css-attributes @input
+                                   :padding :margin
+                                   :padding-left :padding-top
+                                   :padding-right :padding-bottom)))))
+      (<>
+        (when initialized?
+          (d/input
+            {:value (or value "")
+             :placeholder placeholder
+             :ref #(reset! (or _ref input) %)
+             :onBlur (fn [e]
+                       (set-state! disj :focused)
+                       (when (fn? onBlur) (onBlur e)))
+             :onFocus (fn [e]
+                        (set-state! conj :focused)
+                        (when (fn? onFocus) (onFocus e)))
+             :onInput (fn [e]
+                        (let [t (.-target e)
+                              w (.-scrollWidth t)
+                              h (.-scrollHeight t)]
+                          (when (or
+                                  (not (< -5 (- w dw) 5))
+                                  (not (< -5 (- h dh) 5)))
+                            (set-size! [w h]))))
+             & (->
+                 props
+                 (dissoc :value :placeholder :ref :autoresize)
+                 (assoc-in [:style :width] width))}))
+        (when (or not-initialized?
+                  focused?
+                  (and was-focused? (not focused?)))
+          (d/div
+            {:ref (fn [e]
+                    (when not-initialized?
+                      (maybe-resize e)
+                      (set-state! conj :initialized))
+                    (reset! dummy e))
+             :style (merge
+                      @dummy-style
+                      {:position "absolute"
+                       :font-familly "inherit"
+                       :top 0 :left 0
+                       :visibility "hidden"
+                       :height 0 :overflow "scroll"
+                       :white-space "pre"})
+             :autoComplete "off"
+             :autoCorrect "off"
+             :spellCheck "false"
+             :autoCapitalize "false"
+             & (dissoc props :value :autoresize :className)}
+            (cond
+              ((every-pred string? not-empty) value) value
+              (number? value) value
+              :else placeholder)))))))
 
 (defn ->number [x]
   (let [x' (if (number? x) x
@@ -239,102 +221,97 @@
         :else placeholder)))))
 
 
-(defnc NumberElement
-  [{:keys [disabled autoresize locale value on-blur on-focus]
-    :or {locale "en"
-         on-blur identity
-         on-focus identity}
-    :as props}]
-  (let [[focused? set-focused!] (hooks/use-state nil)
-        formatter (hooks/use-memo
-                   [locale]
-                   (number-formatter locale))
-        props' (if focused?
-                 props
-                 (assoc props :value
-                        (if (some? value)
-                          (formatter value)
-                          "")))
-        props'' (cond->
-                 (dissoc props' :formatter)
-                  ;;
-                  (not disabled)
-                  (assoc
-                   :on-blur #(do
-                               (set-focused! false)
-                               (on-blur %))
-                   :on-focus #(do
-                                (set-focused! true)
-                                (on-focus %))))]
-    (if autoresize
-      ($ InputElement
-         {& (dissoc props'' :autoresize)})
-      (d/input
-       {& (dissoc props'' :autoresize)}))))
-
-
 (defnc TextAreaElement [{:keys [value
                                 placeholder
                                 onChange
+                                onFocus
+                                onBlur
                                 className]
                          :or {onChange identity}
                          :as props} _ref]
   {:wrap [(react/forwardRef)]}
-  (let [[{:keys [height
-                 style]} update-state!] (hooks/use-state nil)
+  (let [[[width height] set-size!] (hooks/use-state nil)
+        [dummy-style set-dummy-style!] (hooks/use-state nil)
+        ; [{:keys [height style]} update-state!] (hooks/use-state nil)
         _input (hooks/use-ref nil)
         input (or _ref _input)
         dummy (hooks/use-ref nil)
         ;;
+        [focused? set-focused!] (hooks/use-state nil)
+        ;;
         [_ pr _ pl]
         (hooks/use-memo
-         [style]
-         (when style
+         [dummy-style]
+         (when dummy-style
            (map
             #(js/parseInt (re-find #"\d+" %))
-            [(:padding-top style)
-             (:padding-right style)
-             (:padding-bottom style)
-             (:padding-left style)])))]
+            [(:padding-top dummy-style)
+             (:padding-right dummy-style)
+             (:padding-bottom dummy-style)
+             (:padding-left dummy-style)])))
+        [dw dh] (when @dummy
+                  [(.-scrollWidth @dummy)
+                   (.-scrollHeight @dummy)])]
     (hooks/use-effect
      :always
-     (when @dummy
-       (let [scroll-height (vura/round-number (.-scrollHeight @dummy) 1 :up)]
-         (when-not (= height scroll-height)
-           (update-state!
-            assoc
-            :height scroll-height
-            :style (merge
-                    (util/get-font-style @input)
-                    (util/css-attributes @input
-                                         :padding :margin
-                                         :padding-left :padding-top
-                                         :padding-right :padding-bottom)))))))
+     (when (and height @dummy)
+       (let [dh (.-scrollHeight @dummy)
+             dw (.-scrollWidth @dummy)]
+         (when-not (< -5 (- height dh) 5)
+           (set-size! [dw dh])))))
+    (hooks/use-effect
+      :once
+      (when @input
+        (let [[w h] [(.-scrollWidth @input)
+                     (.-scrollHeight @input)]]
+          (set-size! [w h]))
+        (set-dummy-style!
+          (merge
+            (util/get-font-style @input)
+            (util/css-attributes @input
+                                 :padding :margin
+                                 :padding-left :padding-top
+                                 :padding-right :padding-bottom)))))
     (<>
      (d/textarea
       {:className className
        :onChange onChange
+       :style {:width width :height height}
+       :onInput (fn [e]
+                  (let [t (.-target e)
+                        w (.-scrollWidth t)
+                        h (.-scrollHeight t)]
+                    (when (or
+                            (not (< -5 (- w dw) 5))
+                            (not (< -5 (- h dh) 5)))
+                      (set-size! [w h]))))
+       :onBlur (fn [e]
+                 (set-focused! false)
+                 (when (fn? onBlur) (onBlur e)))
+       :onFocus (fn [e]
+                  (set-focused! true)
+                  (when (fn? onFocus) (onFocus e)))
        :value (or value "")
-       :style style
        :ref #(reset! input %)
        & (->
           props
           (dissoc :style :value :className :ref :onChange)
           (update :style merge {:height (inc height)
                                 :overflow "hidden"}))})
-     (d/pre
-      {:ref #(reset! dummy %)
-       :className className
-       :style (merge
-               style
-               (cond-> {:position "fixed"
-                        :top 0 :left 0
-                        :visibility "hidden"
-                        :white-space "pre-wrap"
-                        :word-break "break-word"
-                        :font-family "inherit"}
-                 @input (assoc :width (- (.-scrollWidth @input) pl pr))))}
-      (str (if (not-empty value) value  placeholder) \space)))))
+     (when focused?
+       (d/pre
+         {:ref #(reset! dummy %)
+          :className className
+          :style (merge
+                   dummy-style
+                   (cond-> {:position "fixed"
+                            :top 0 :left 0
+                            :visibility "hidden"
+                            :white-space "pre-wrap"
+                            :word-break "break-word"
+                            :font-family "inherit"}
+                     @input (assoc :width (- (.-scrollWidth @input) pl pr))))}
+         (str (if (not-empty value) value  placeholder) \space))))))
 
 
 (defnc SliderElement
@@ -359,54 +336,6 @@
       :onFocus onFocus
       :onChange onChange})))
 
-
-(defnc CurrencyElement
-  [{:keys [currency amount
-           options placeholder
-           className onChange
-           onBlur on-blur onFocus on-focus]}]
-  (let [on-blur (or onBlur on-blur identity)
-        on-focus (or onFocus on-focus identity)
-        [focused? set-focused!] (hooks/use-state nil)
-        value (if (some? amount)
-                (if (not focused?)
-                  (str amount)
-                  ; (format-currency currency amount)
-                  (str amount))
-                "")]
-    (d/div
-      {:className className}
-      ($ ui/dropdown
-         {:options options
-          :value currency
-          :placeholder "VAL"
-          :onChange (fn [currency]
-                      (onChange {:currency currency
-                                 :amount amount}))
-          :className "dropdown"})
-      (d/input
-        {:value value
-         :autoComplete "off"
-         :autoCorrect "off"
-         :spellCheck "false"
-         :autoCapitalize "false"
-         :placeholder placeholder
-         :disabled (nil? amount)
-         :onChange (fn [e]
-                     (some->>
-                       (.. e -target -value)
-                       not-empty
-                       (re-find #"-?\d+[\.|,]*\d*")
-                       (js/parseFloat)
-                       onChange))
-         :className "input"
-         :onBlur (fn [e]
-                   (set-focused! false)
-                   (on-blur e))
-         ;;
-         :onFocus (fn [e]
-                    (set-focused! true)
-                    (on-focus e))}))))
 
 
 (defnc Mask [props]

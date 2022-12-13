@@ -22,7 +22,6 @@
      :label "UUID"
      :align :center
      :cell ui/uuid-cell
-     :header ui/plain-header
      :style {:width 50}}
     {:cursor :user
      :label "User"

@@ -42,10 +42,10 @@
         $component (css :mx-3 :my-2
                         :flex
                         :items-center
-                        ["& .name" :text-gray-500 {:text-decoration "none"}]
+                        ["& .name" {:color "#7ead92" :text-decoration "none"}]
                         ["& .icon" :w-5 :text-transparent :mr-1]
-                        ["&.selected .icon" :text-gray-900]
-                        ["&.selected .name" :text-gray-900])]
+                        ["&.selected .icon" {:color "#6fcc96"}]
+                        ["&.selected .name" {:color "#6fcc96"}])]
     (d/div
       {:class [$component
                (when selected? "selected")]}
@@ -65,8 +65,7 @@
         $navbar (css
                   :flex
                   :flex-col
-                  {:background "#d3e9eb"
-                   :color "#2c2c2c"}
+                  {:color "#7ead92"}
                   ["& .title"
                    :flex
                    :h-28
@@ -124,8 +123,7 @@
                   :flex-row-reverse
                   :pr-3
                   :box-border
-                  {:background "#d3e9eb"
-                   :color "#2c2c2c"})]
+                  {:color "#2c2c2c"})]
     (d/div
       {:className $header 
        :ref _ref 
@@ -170,14 +168,17 @@
                   components)
         window (use-window-dimensions)
         layout (use-layout)
-        content-height (- (:height window) (get-in layout [:header :height]))
-        content-width (- (:width window) (get-in layout [:navbar :width]))
+        content-height (- (:height window) (get-in layout [:header :height]) 10)
+        content-width (- (:width window) (get-in layout [:navbar :width]) 10)
         content-dimensions (hooks/use-memo
                              [content-height content-width]
                              {:width content-width
                               :height content-height})
         $content (css
-                   :bg-neutral-100)]
+                   :bg-neutral-100
+                   ; :border-4
+                   :border-teal-600
+                   :rounded-md)]
     (if render
       (provider
         {:context layout/*container-dimensions*
@@ -225,8 +226,6 @@
              ($ UI
                 {:components default/components}
                 ($ popup/Container
-                   ; ($ global-css)
-                   ; ($ simplebar-css)
                    ($ window/DimensionsProvider
                       (d/div
                         {:className $playground}

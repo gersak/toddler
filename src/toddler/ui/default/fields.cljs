@@ -30,14 +30,16 @@
     :as props}]
   (let [$style (css
                  :flex :flex-col
-                 :mx-2 :my-1
+                 :mx-2 :my-1 :grow
                  ["& .field-name"
-                  :text-gray-500
-                  :text-sm
+                  :text-neutral-400
+                  :text-xs
                   :font-bold
                   :uppercase
                   {:user-select "none"
-                   :transition "all .3s ease-in-out"}])]
+                   :transition "all .3s ease-in-out"}]
+                 ["&:hover .field-name" :text-neutral-600]
+                 ["& input,& textarea" :text-neutral-600])]
     (d/div
       {:class [className $style]
        :style style 
@@ -52,19 +54,10 @@
   (let [$style (css
                  :flex
                  :items-center
-                 :border-3
-                 :border-gray-400
                  :rounded-md
-                 :px-3 :py-1
                  :cursor-text
-                 :text-gray-800
-                 :bg-gray-200
-                 {:transition "all .3s ease-in-out"
-                  :min-height "2.25em"}
-                 ["&:focus-within"
-                  {:border-color "#2cc8c8 !important"
-                   :box-shadow "0 0 3px #2cc8c8"
-                   :background-color "transparent"}])]
+                 :grow
+                 {:transition "all .3s ease-in-out"})]
   (d/div
     {:class [className
              $style]}
@@ -77,21 +70,18 @@
                  ["& textarea" {:font-family "Roboto"}])
         _input (hooks/use-ref nil)]
     ($ field
-       {:className [$style]
+       {:className $style
         :onClick (fn [] (when @_input (.focus @_input)))
         & props}
        ($ field-wrapper
           {:className (css
                         :grow
-                        :py-1
                         ["& textarea"
-                         :text-gray-800
                          {:overflow "hidden"
-                          :min-height "2em"
+                          ; :min-height "2em"
                           :border "none"
                           :resize "none"
                           :box-sizing "border-box"
-                          :margin-top "6px" 
                           :padding "0"
                           :font-size "1em"}])}
           ($ TextAreaElement
@@ -122,8 +112,8 @@
           ($ AutosizeInput
              {:ref _input
               :className (css
-                            {:outline "none"
-                             :border "none"})
+                           {:outline "none"
+                            :border "none"})
               :autoComplete "off"
               :autoCorrect "off"
               :spellCheck "false"
@@ -148,8 +138,7 @@
           $float (css
                    :border-0
                    :outline-0
-                   :text-sm
-                   :py-2)]
+                   :text-sm)]
       (hooks/use-effect
         [focused?]
         (set-input! (str value)))
@@ -199,8 +188,7 @@
           $float (css
                    :border-0
                    :outline-0
-                   :text-sm
-                   :py-2)]
+                   :text-sm)]
       (hooks/use-effect
         [focused?]
         (set-input! (str value)))
@@ -277,7 +265,7 @@
                    :justify-between
                    :items-center)
         $decorator (css
-                     :text-gray-400
+                     :text-neutral-400
                      ["&.opened" :text-transparent]
                      {:transition "color .2s ease-in-out"})]
     (provider
@@ -356,6 +344,14 @@
                           :render/wrapper e/dropdown-wrapper})))))))))
 
 
+(def $clear
+  (css
+    ["& .clear" :text-transparent :cursor-pointer
+     {:transition "color .3s ease-in-out"}]
+    ["&:hover .clear" :text-neutral-400]
+    ["& .clear:hover" :text-neutral-600]))
+
+
 (defnc timestamp-dropdown
   [{:keys [value placeholder disabled className
            read-only onChange format name time?]
@@ -364,13 +360,7 @@
   (let [[opened set-opened!] (hooks/use-state false)
         translate (use-translate)
         area (hooks/use-ref nil)
-        popup (hooks/use-ref nil)
-        $clear (css
-                 :text-gray-400
-                 ["&:hover"
-                  :text-gray-900
-                  {:cursor "pointer"}]
-                 {:transition "color .2s ease-in-out"})]
+        popup (hooks/use-ref nil)]
     (popup/use-outside-action
       opened area popup
       (fn [e]
@@ -378,6 +368,7 @@
           (set-opened! false))))
     ($ field
        {:name name
+        :className (str/join " " [className $clear])
         :onClick (fn []
                    (when (and (not disabled) (not read-only))
                      (set-opened! true)))}
@@ -417,7 +408,7 @@
                         :onChange onChange}))))
              (when value
                (d/span
-                 {:class (cond-> [$clear]
+                 {:class (cond-> ["clear"]
                            opened (conj "opened"))
                   :onClick (fn [e]
                              (.stopPropagation e)
@@ -450,13 +441,7 @@
         [opened set-opened!] (hooks/use-state false)
         translate (use-translate)
         area (hooks/use-ref nil)
-        popup (hooks/use-ref nil)
-        $clear (css
-                 :text-gray-400
-                 ["&:hover"
-                  :text-gray-900
-                  {:cursor "pointer"}]
-                 {:transition "color .2s ease-in-out"})]
+        popup (hooks/use-ref nil)]
     (popup/use-outside-action
       opened area popup
       (fn [e]
@@ -464,6 +449,7 @@
           (set-opened! false))))
     ($ field
        {:name name
+        :className (str/join " " [className $clear])
         :onClick (fn []
                    (when (and (not disabled) (not read-only))
                      (set-opened! true)))}
@@ -530,7 +516,7 @@
                                       (onChange (assoc value 1 x)))})))))
              (when (some some? value)
                (d/span
-                 {:class (cond-> [$clear]
+                 {:class (cond-> ["clear"]
                            opened (conj "opened"))
                   :onClick (fn [e]
                              (.stopPropagation e)
@@ -562,7 +548,7 @@
                    :items-center
                    :mx-2
                    :my-3
-                   :text-gray-500
+                   :text-neutral-500
                    ["& .field-name"
                     :ml-2
                     :select-none
@@ -587,22 +573,19 @@
                   :cursor-pointer
                   :mx-2
                   :my-3
-                  :text-gray-500]
-                 ["& .row .icon"
-                  :text-white
-                  :bg-gray-400
-                  {:cursor "pointer"
-                   :transition "color .2s ease-in"
-                   :width "1.5em" 
-                   :height "1.5em"
-                   :border-radius "4px"
-                   :border-color "transparent"
-                   :padding "0px"
-                   :display "flex"
-                   :justify-content "center"
-                   :outline "none"
-                   :align-items "center"}]
-                 ["& .row.selected .icon" :text-white :bg-green-500]
+                  :text-neutral-600]
+                 ["& .icon"
+                  :cursor-pointer
+                  :text-neutral-300
+                  :w-4
+                  :h-4
+                  :flex
+                  :justify-center
+                  :items-center
+                  :outline-none]
+                 ["& path" :cursor-pointer]
+                 ["&:active" :border-transparent]
+                 ["& .row.selected .icon" :text-neutral-600]
                  ["& .row.disabled" :pointer-events-none]
                  ["& .row .name"
                    :ml-2
@@ -765,16 +748,10 @@
                  (if (not focused?)
                    (when amount (i18n/translate amount currency))
                    (str state))
-                 "")
-        $clear (css
-                 :text-gray-400
-                 ["&:hover"
-                  :text-gray-900
-                  {:cursor "pointer"}]
-                 {:transition "color .2s ease-in-out"})]
+                 "")]
     ($ field
        {:name name
-        :className className}
+        :className (str/join " " [className $clear])}
        ($ field-wrapper
           (provider
             {:context dropdown/*dropdown*
@@ -821,7 +798,7 @@
                                       :currency currency})))))))})
           (when value
             (d/span
-              {:class $clear
+              {:class ["clear"]
                :onClick (fn [e]
                           (.stopPropagation e)
                           (.preventDefault e)

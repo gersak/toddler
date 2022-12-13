@@ -81,48 +81,114 @@
       (c/children props))))
 
 
+;(defn button-color
+;  [{:keys [context disabled]}]
+;  (let [context (if disabled :disabled context)
+;        $positive
+;        (css :text-green-200
+;             :bg-green-600
+;             [:hover :text-white :bg-green-500])
+;        ;;
+;        $negative
+;        (css
+;          :text-red-600
+;          :bg-red-200
+;          [:hover :bg-red-400 :text-red-900])
+;        $fun
+;        (css 
+;          :bg-cyan-500
+;          :text-cyan-100
+;          [:hover :bg-cyan-400])
+;        ;;
+;        $fresh
+;        (css
+;          :text-yellow-900
+;          :bg-yellow-300
+;          [:hover :text-black :bg-yellow-400]) 
+;        ;;
+;        $stale
+;        (css
+;          :bg-neutral-300
+;          [:hover :bg-neutral-200])
+;        ;;
+;        $disabled
+;        (css 
+;          {:color "white"
+;           :background-color "#bbbbbb"
+;           :cursor "initial"
+;           :pointer-events "none"
+;           :user-select "none"})
+;        ;;
+;        $default
+;        (css :text-neutral-800
+;             :bg-neutral-200
+;             [:hover :bg-cyan-300])]
+;    (case context
+;      :positive $positive
+;      :negative $negative
+;      :fun $fun
+;      :fresh $fresh
+;      :stale $stale
+;      :disabled $disabled
+;      $default)))
+
+
+
 (defn button-color
   [{:keys [context disabled]}]
   (let [context (if disabled :disabled context)
         $positive
-        (css :text-green-200
-             :bg-green-600
-             [:hover :text-white :bg-green-500])
+        (css
+          ; :text-green-700
+          :text-neutral-600
+          ["&:hover"
+           :text-green-600
+           {:text-shadow "0px 0px 12px #2bff3d"}])
         ;;
         $negative
         (css
-          :text-red-600
-          :bg-red-200
-          [:hover :bg-red-400 :text-red-900])
+          ; :text-green-700
+          :text-neutral-600
+          ["&:hover"
+           :text-red-500
+           {:text-shadow "0px 0px 12px #ff8989"}])
         $fun
-        (css 
-          :bg-cyan-500
-          :text-cyan-100
-          [:hover :bg-cyan-400])
+        (css
+          ; :text-green-700
+          :text-neutral-600
+          ["&:hover"
+           :text-cyan-600
+           {:text-shadow "0px 0px 12px #06b7d4"}])
         ;;
         $fresh
         (css
-          :text-yellow-900
-          :bg-yellow-300
-          [:hover :text-black :bg-yellow-400]) 
+          ; :text-green-700
+          :text-neutral-600
+          ["&:hover"
+           {:color "#ff4ed9"
+            :text-shadow "0px 0px 12px #ff4ed9"}])
         ;;
         $stale
         (css
-          :bg-neutral-300
-          [:hover :bg-neutral-200])
+          :text-neutral-600
+          ["&:hover"
+           {:color "#686eba"
+            :text-shadow "0px 0px 12px #686eba"}])
         ;;
         $disabled
         (css 
-          {:color "white"
-           :background-color "#bbbbbb"
-           :cursor "initial"
-           :pointer-events "none"
-           :user-select "none"})
+          :text-neutral-400
+          :cursor-default
+          :select-none
+          :pointer-events-none)
         ;;
         $default
-        (css :text-neutral-800
-             :bg-neutral-200
-             [:hover :bg-cyan-300])]
+        (css :text-neutral-600
+             :bg-transparent
+             {:transition "all .2s ease-in"}
+             ["&:hover"
+              :text-neutral-700
+              {:text-shadow "0px 0px 12px #b3b3b3"}])]
     (case context
       :positive $positive
       :negative $negative
@@ -138,64 +204,53 @@
   (let [$color (button-color props) 
         $layout (css 
                   :flex
+                  :font-extrabold
                   :border-2
                   :border-transparent
                   :rounded-sm
-                  ; :px-18
-                  ; :py-4
+                  :justify-center
+                  :items-center
+                  :px-4
+                  :py-4
+                  :leading-loose
+                  :mx-3
+                  :my-2
+                  {:transition "all .2s ease-in"}
                   {:justify-content "center"
-                   :padding "8px 18px"
-                   :align-items "center"
                    :max-height "30px"
                    :min-width "80px"
                    :font-size "1em"
-                   :line-height "1.33"
-                   :text-align "center"
-                   :vertical-align "center"
-                   :margin "3px 2px"
-                   :transition "box-shadow .3s ease-in,background .3s ease-in"
-                   :cursor "pointer"}
-                  ["&:hover" {:transition "background .3s ease-in"}]
-                  ["&:focus" {:outline "none"}]
-                  ["&:active" {:transform "translate(0px,2px)" :box-shadow "none"}])
-        $shadow (css
-                  ["&:hover" {:box-shadow "0px 2px 4px 0px #aeaeae"}])
+                   :cursor "pointer"})
         $disabled (css :pointer-events "none")]
     (d/button
       {:class (cond-> [$layout
                        $color
-                       $shadow
                        className]
                 disabled (conj $disabled))
        & (dissoc props :className)}
       (c/children props))))
 
 
+
+
+
 (defnc checkbox
   [{:keys [value disabled] :as props}]
-  (let [$layout (css
-                  {:cursor "pointer"
-                   :transition "color .2s ease-in"
-                   :width "1.5em" 
-                   :height "1.5em"
-                   :border-radius "4px"
-                   :border-color "transparent"
-                   :padding "0px"
-                   :display "flex"
-                   :justify-content "center"
-                   :outline "none"
-                   :align-items "center"}
-                  ["& path" {:cursor "pointer"}]
-                  ["&:active" {:border-color "transparent"}])
-        $active (css
-                  :text-white
-                  :bg-green-500)
-        $inactive (css
-                    :text-white
-                    :bg-gray-400)
+  (let [$checkbox (css
+                    :cursor-pointer
+                    :w-4
+                    :h-4
+                    :flex
+                    :justify-center
+                    :items-center
+                    :outline-none
+                    ["& path" :cursor-pointer]
+                    ["&:active" :border-transparent])
+        $active (css :text-neutral-600)
+        $inactive (css :text-neutral-300)
         $disabled (css :pointer-events "none")]
     (d/button
-      {:class [$layout
+      {:class [$checkbox
                (if value $active $inactive)
                (when disabled $disabled)]
        & (dissoc props :value)}
@@ -260,16 +315,11 @@
   {:wrap [(forward-ref)]}
   (let [$layout (css
                   :text-gray-800
+                  :m-1
                   {:display "flex"
                    :flex-direction "row"
                    :align-items "center"
-                   :flex-grow "1"}
-                  ["& .label"
-                   {:margin "4px 4px 4px 4px"
-                    :padding-bottom "2px"
-                    :text-transform "uppercase"
-                    :font-size "1em"
-                    :color :text-gray-800}])
+                   :flex-grow "1"})
         $start (css {:justify-content "flex-start"})
         $center (css {:justify-content "center"})
         $end (css {:justify-content "flex-end"})
@@ -279,17 +329,32 @@
                     :end $end
                     :explode $explode
                     $start)]
-    (d/div
-      {:ref _ref
-       :class [$layout
-               $position
-               className]
-       :position position}
-      (when label
+    (if label
+      (d/div
+        {:className (css :flex :flex-col
+                         ["& .label"
+                          :text-neutral-400
+                          :font-bold
+                          :m-1
+                          {:text-transform "uppercase"
+                           :font-size "1em"}])}
         (d/div
           {:className "label"}
-          (d/label label)))
-      (c/children props))))
+          (d/label label))
+        (d/div
+          {:ref _ref
+           :class [$layout
+                   $position
+                   className]
+           :position position}
+          (c/children props)))
+      (d/div
+        {:ref _ref
+         :class [$layout
+                 $position
+                 className]
+         :position position}
+        (c/children props)))))
 
 
 (defnc column
@@ -463,11 +528,12 @@
   [props]
   (let [$style (css
                  :text-white
-                 :bg-cyan-500
+                 ; :bg-cyan-500
                  :rounded-sm
                  :px-2
                  :py-1
-                 {:margin "3px"
+                 {:background-color "#63b6a5"
+                  :margin "3px"
                   :display "flex"
                   :flex-direction "row"
                   :justify-content "start"

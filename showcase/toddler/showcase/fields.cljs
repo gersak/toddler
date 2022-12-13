@@ -2,7 +2,7 @@
   (:require
    [helix.core :refer [$ defnc]]
    [helix.hooks :as hooks]
-   ; [helix.dom :as d]
+   [helix.dom :as d]
    [shadow.css :refer [css]]
    [toddler.ui :as ui]
    [toddler.avatar :as a]
@@ -35,7 +35,7 @@
                        :boxSizing "border-box"}}
               ($ ui/row
                  {:label "Buttons"}
-                 ($ ui/button "DEFAULT")
+                 ($ ui/button "Default")
                  ($ ui/button {:context :positive} "Positive")
                  ($ ui/button {:context :negative} "Negative")
                  ($ ui/button {:context :fun} "Fun")
