@@ -9,7 +9,7 @@
    [toddler.popup :as popup]
    [toddler.ui :as ui]
    [toddler.input :refer [AutosizeInput]]
-   ["toddler-icons$default" :as icon]))
+   ["toddler-icons" :as icon]))
 
 (defn get-available-options
   ([search options search-fn]
@@ -231,9 +231,7 @@
 
 
 (defnc Input
-  [{:keys [onSearchChange placeholder]
-    rinput :render/input
-    :or {rinput AutosizeInput}} _ref]
+  [{:keys [className onSearchChange placeholder]} _ref]
   (let [{:keys [input
                 search
                 on-change
@@ -247,18 +245,18 @@
       [search]
       (when (ifn? onSearchChange)
         (onSearchChange search)))
-    ($ rinput
-       {:ref input
-        :className "input"
-        :value search
-        :read-only (or read-only (not searchable?))
-        :disabled disabled
-        :spellCheck false
-        :auto-complete "off"
-        :placeholder placeholder
-        :onChange on-change
-        :onBlur sync-search!
-        :onKeyDown on-key-down})))
+    (d/input
+      {:ref input
+       :className className 
+       :value search
+       :read-only (or read-only (not searchable?))
+       :disabled disabled
+       :spellCheck false
+       :auto-complete "off"
+       :placeholder placeholder
+       :onChange on-change
+       :onBlur sync-search!
+       :onKeyDown on-key-down})))
 
 
 (defnc Popup

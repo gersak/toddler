@@ -4,36 +4,35 @@ import {FaTimes, FaCheck, FaSearch, FaChevronDown, FaQuoteLeft, FaMinus,
         FaAngleDoubleRight, FaExclamationTriangle, FaList, FaCalendarWeek} from 'react-icons/fa';
 
 
-let icons = {
-  close: FaTimes,
-  clear: FaTimes,
-  checkboxDefault: FaMinus,
-  checkbox: FaCheck,
-  search: FaSearch,
-  dropdownDecorator: FaChevronDown,
-  info: FaQuoteLeft,
-  next: FaAngleRight,
-  previous: FaAngleLeft,
-  checklistSelected: FaCheckSquare,
-  checklistEmpty: FaSquare,
-  warning: FaExclamationTriangle,
-  // Table
-  uuid: FaBarcode,
-  add: FaPlus,
-  edit: FaEdit,
-  sortDesc: FaCaretUp,
-  sortAsc: FaCaretDown,
-  expand: FaCaretRight,
-  expanded: FaCaretDown,
-  selectedRow: FaAngleRight,
-  // Pagination
-  paginationFarNext: FaAngleDoubleRight,
-  paginationFarPrevious: FaAngleDoubleLeft,
-  paginationNext: FaAngleRight,
-  paginationPrevious: FaAngleLeft,
-  // Header filters
-  timeFilter: FaCalendarWeek,
-  enumFilter: FaList
-}
+export const close = FaTimes;
+export const clear = FaTimes;
+export const checkboxDefault = FaMinus;
+export const checkbox = FaCheck;
+export const search = FaSearch;
+export const dropdownDecorator = FaChevronDown;
+export const info = FaQuoteLeft;
+export const next = FaAngleRight;
+export const previous = FaAngleLeft;
+export const checklistSelected = FaCheckSquare;
+export const checklistEmpty = FaSquare;
+export const warning = FaExclamationTriangle;
 
-export default icons;
+// Table
+export const uuid = FaBarcode;
+export const add = FaPlus;
+export const edit = FaEdit;
+export const sortDesc = FaCaretUp;
+export const sortAsc = FaCaretDown;
+export const expand = FaCaretRight;
+export const expanded = FaCaretDown;
+export const selectedRow = FaAngleRight;
+
+// Pagination
+export const paginationFarNext = FaAngleDoubleRight;
+export const paginationFarPrevious = FaAngleDoubleLeft;
+export const paginationNext = FaAngleRight;
+export const paginationPrevious = FaAngleLeft;
+
+// Header filters
+export const timeFilter = FaCalendarWeek;
+export const enumFilter = FaList;;

@@ -10,7 +10,8 @@
   camel-snake-kebab/camel-snake-kebab        {:mvn/version "0.4.3"}
   ; com.github.gersak/vura                     {:mvn/version "0.5.7-SNAPSHOT"}
   com.thheller/shadow-css                    {:mvn/version "0.4.2"} 
-  com.github.gersak/vura                     {:local/root "../vura/core/"}
+  com.github.gersak/vura                     {:git/url "https://github.com/gersak/vura.git"
+                                              :sha "04404174b94294d15d000ecbb13e0acdfa6e320c"}
   lilactown/helix                            {:mvn/version "0.1.6"}}
  :aliases
  {:shadow

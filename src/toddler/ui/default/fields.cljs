@@ -2,6 +2,7 @@
   (:require
     clojure.set
     [clojure.string :as str]
+    [clojure.core.async :as async]
     [shadow.css :refer [css]]
     [goog.string.format]
     [helix.core
@@ -11,8 +12,7 @@
     [helix.hooks  :as hooks]
     [toddler.input
      :as input
-     :refer [AutosizeInput
-             TextAreaElement]]
+     :refer [TextAreaElement]]
     [toddler.i18n :as i18n]
     [toddler.hooks :refer [use-translate]]
     [toddler.ui.default.elements :as e]
@@ -22,15 +22,18 @@
      :refer [use-multiselect]]
     [toddler.ui :as ui]
     [toddler.popup :as popup]
-    ["toddler-icons$default" :as icon]))
+    ["toddler-icons" :as icon]))
 
 
 (defnc field
   [{:keys [name className style]
-    :as props}]
+    :as props} _ref]
+  {:wrap [(ui/forward-ref)]}
   (let [$style (css
                  :flex :flex-col
                  :mx-2 :my-1 :grow
+                 {:border-bottom "1px solid transparent"
+                  :transition "all .3s ease-in-out"}
                  ["& .field-name"
                   :text-neutral-400
                   :text-xs
@@ -38,10 +41,14 @@
                   :uppercase
                   {:user-select "none"
                    :transition "all .3s ease-in-out"}]
+                 ["&.empty:hover" :border-neutral-600]
                  ["&:hover .field-name" :text-neutral-600]
-                 ["& input,& textarea" :text-neutral-600])]
+                 ["& input,& textarea" :text-neutral-600 :border-neutral-600 {:flex-grow "1"}]
+                 ["&.empty" :border-neutral-400 {:border-bottom "1px solid"}])]
     (d/div
-      {:class [className $style]
+      {:ref _ref
+       :class (cond-> [className $style]
+                (:empty? props) (conj "empty"))
        :style style 
        & (select-keys props [:onClick])}
       (when name (d/label {:className "field-name"} name))
@@ -109,7 +116,7 @@
         & props}
        ($ field-wrapper
           {:class [$wrapper]}
-          ($ AutosizeInput
+          (d/input
              {:ref _input
               :className (css
                            {:outline "none"
@@ -129,7 +136,7 @@
             (let [number (js/parseInt text)]
               (when-not (js/Number.isNaN number) number))))]
   (defnc integer-field
-    [{:keys [onChange value placeholder read-only disabled]
+    [{:keys [onChange value read-only disabled]
       :as props}]
     (let [translate (use-translate)
           [input set-input!] (hooks/use-state (when value (translate value)))
@@ -148,6 +155,7 @@
           (set-input! (when value (translate value)))))
       ($ field
          {:onClick (fn [] (when @_ref (.focus @_ref)))
+          :empty? (nil? value)
           & props}
          ($ field-wrapper
             (d/input
@@ -158,7 +166,6 @@
                           input
                           (translate value))
                         "")
-               :placeholder placeholder 
                :read-only read-only
                :disabled disabled
                :onFocus #(set-focused! true)
@@ -179,7 +186,7 @@
             (let [number (js/parseFloat text)]
               (when-not (js/Number.isNaN number) number))))]
   (defnc float-field
-    [{:keys [onChange value placeholder read-only disabled]
+    [{:keys [onChange value read-only disabled]
       :as props}]
     (let [translate (use-translate)
           [input set-input!] (hooks/use-state (when value (translate value)))
@@ -198,6 +205,7 @@
           (set-input! (when value (translate value)))))
       ($ field
          {:onClick (fn [] (when @_ref (.focus @_ref)))
+          :empty? (nil? value)
           & props}
          ($ field-wrapper
             (d/input
@@ -208,7 +216,6 @@
                           input
                           (translate value))
                         "")
-               :placeholder placeholder 
                :read-only read-only
                :disabled disabled
                :onFocus #(set-focused! true)
@@ -278,6 +285,7 @@
            {:onClick (fn []
                        (toggle!)
                        (when @input (.focus @input)))
+            :empty? (nil? (:value props))
             & props}
            ($ field-wrapper
               {:className $wrapper}
@@ -321,6 +329,7 @@
          :value [area-position set-area-position!]}
            ($ field
               {:onClick (fn [] (toggle!))
+               :empty? (empty? (:value props))
                & props}
               ($ field-wrapper
                  {:className $wrapper}
@@ -353,7 +362,7 @@
 
 
 (defnc timestamp-dropdown
-  [{:keys [value placeholder disabled className
+  [{:keys [value disabled className
            read-only onChange format name time?]
     :or {format :full-date
          time? true}}]
@@ -369,6 +378,7 @@
     ($ field
        {:name name
         :className (str/join " " [className $clear])
+        :empty? (nil? value)
         :onClick (fn []
                    (when (and (not disabled) (not read-only))
                      (set-opened! true)))}
@@ -378,14 +388,14 @@
              {:className (str className 
                               (when opened " opened")
                               (when disabled " disabled"))}
-             ($ AutosizeInput
+             (d/input
                 {:className "input"
                  :readOnly true
-                 :value (when (some? value) (translate value format))
+                 :value (if-not (some? value) ""
+                          (translate value format))
                  :spellCheck false
                  :auto-complete "off"
-                 :disabled disabled
-                 :placeholder placeholder})
+                 :disabled disabled})
              (when opened
                ($ popup/Element
                   {:ref popup
@@ -433,7 +443,7 @@
 
 
 (defnc period-dropdown
-  [{:keys [value placeholder disabled className
+  [{:keys [value disabled className
            read-only onChange format name time?]
     :or {format :full-date
          time? true}}]
@@ -450,6 +460,7 @@
     ($ field
        {:name name
         :className (str/join " " [className $clear])
+        :empty? (every? nil? value)
         :onClick (fn []
                    (when (and (not disabled) (not read-only))
                      (set-opened! true)))}
@@ -459,12 +470,13 @@
              {:className (str className 
                               (when opened " opened")
                               (when disabled " disabled"))}
-             ($ AutosizeInput
+             (d/input
                 {:className "input"
                  :readOnly true
-                 :value (when (or
-                                (some? start)
-                                (some? end))
+                 :value (if-not (or
+                                  (some? start)
+                                  (some? end))
+                          ""
                           (cond
                             (and start end)
                             (str (translate start format) " - " (translate end format))
@@ -480,8 +492,7 @@
                               (translate end format))))
                  :spellCheck false
                  :auto-complete "off"
-                 :disabled disabled
-                 :placeholder placeholder})
+                 :disabled disabled})
              (when opened
                ($ popup/Element
                   {:ref popup
@@ -610,7 +621,7 @@
 
 
 (defnc identity-field
-  [props]
+  [{:keys [className] :as props}]
   (let [[area-position set-area-position!] (hooks/use-state nil)
         ;;
         {:keys [value input area toggle! opened] :as dropdown}
@@ -623,7 +634,8 @@
         $wrapper (css
                    :flex
                    :justify-between
-                   :items-center)
+                   :items-center
+                   :h-8)
         $decorator (css
                      :text-gray-400
                      ["&.opened" :text-transparent]
@@ -634,32 +646,36 @@
       (provider
         {:context popup/*area-position*
          :value [area-position set-area-position!]}
-        ($ popup/Area
-           {:ref area
-            & (select-keys props [:className])}
-           ($ field
-              {:onClick (fn []
-                          (toggle!)
-                          (when @input (.focus @input)))
-               & props}
-              ($ field-wrapper
-                 {:className $wrapper}
-                 ($ e/avatar
-                    {:className (css :mr-2
-                                     :border
-                                     :border-solid
-                                     :border-gray-500)
-                     :size :small}
-                    value)
-                 ($ dropdown/Input {& props})
+        ($ field
+           {:onClick (fn []
+                       (toggle!)
+                       (when @input (.focus @input)))
+            :empty? (nil? (:value props))
+            & props}
+           ($ field-wrapper
+              {:className $wrapper}
+              ($ e/avatar
+                 {:className (css :mr-2
+                                  :border
+                                  :border-solid
+                                  :border-gray-500)
+                  :size :small}
+                 value)
+              ($ popup/Area
+                 {:ref area
+                  :className (str/join " " [className (css :grow
+                                                           :flex
+                                                           :items-center)])}
+                 ($ dropdown/Popup
+                    {:className "dropdown-popup"
+                     :render/option e/identity-dropdown-option
+                     :render/wrapper e/dropdown-wrapper})
+                 ($ dropdown/Input
+                    {:className (css :flex :grow) & props})
                  (d/span
                    {:class (cond-> [$decorator]
                              opened (conj "opened"))}
-                   ($ icon/dropdownDecorator))))
-           ($ dropdown/Popup
-              {:className "dropdown-popup"
-               :render/option e/identity-dropdown-option
-               :render/wrapper e/dropdown-wrapper}))))))
+                   ($ icon/dropdownDecorator)))))))))
 
 
 (defnc IdentityMultiselectOption
@@ -699,6 +715,7 @@
          :value [area-position set-area-position!]}
            ($ field
               {:onClick (fn [] (toggle!))
+               :empty? (every? nil? (:value props))
                & props}
               ($ field-wrapper
                  {:className $wrapper}
@@ -723,15 +740,15 @@
 
 
 (defnc currency-field
-  [{:keys [disabled onChange value placeholder name
-           onFocus on-focus onBlur on-blur className
+  [{:keys [disabled onChange value name
+           onFocus on-focus className
            read-only]
     :or {onChange identity}}]
   (let [{:keys [currency amount]} value
         ;;
         [area-position set-area-position!] (hooks/use-state nil)
         ;;
-        {:keys [input area toggle!] :as dropdown}
+        {:keys [input area toggle! close!] :as dropdown}
         (use-dropdown
           (->
             (hash-map
@@ -740,18 +757,38 @@
               :options ["EUR" "USD" "JPY" "AUD" "CAD" "CHF"]
               :onChange (fn [x] (onChange {:amount amount :currency x})))
             (dissoc :className)))
-        on-blur (or onBlur on-blur identity)
         on-focus (or onFocus on-focus identity)
         [focused? set-focused!] (hooks/use-state nil)
         [state set-state!] (hooks/use-state (when amount (i18n/translate amount value)))
-        amount (if (some? amount)
+        amount' (if (some? amount)
                  (if (not focused?)
                    (when amount (i18n/translate amount currency))
                    (str state))
-                 "")]
+                 "")
+        field-ref (hooks/use-ref nil)]
+      (hooks/use-effect
+        [focused?]
+        (when focused?
+          (letfn [(check-focus [e]
+                    (when (and
+                            (some? @field-ref)
+                            (not (.contains @field-ref (.-target e))))
+                      (println "REMOVING FOCUS")
+                      (set-focused! false)))]
+            (.addEventListener js/document "click" check-focus)
+            (fn []
+              (.removeEventListener js/document "click" check-focus)))))
+      (hooks/use-effect
+        [currency]
+        (async/go
+          (async/<! (async/timeout 300))
+          (.focus @input)))
     ($ field
-       {:name name
-        :className (str/join " " [className $clear])}
+       {:ref #(reset! field-ref %)
+        :name name
+        :className (str/join " " [className $clear])
+        :empty? (nil? amount)
+        :onClick (fn [] (toggle!))}
        ($ field-wrapper
           (provider
             {:context dropdown/*dropdown*
@@ -760,27 +797,39 @@
               {:context popup/*area-position*
                :value [area-position set-area-position!]}
               ($ popup/Area
-                 {:ref area}
+                 {:ref area
+                  :className (css :flex :items-center)}
                  (d/input
                    {:value (or currency "")
+                    :disabled true
                     :className (css
-                                 :w-10
+                                 :w-8
                                  :font-bold
+                                 :text-sm
                                  :cursor-pointer)
-                    :read-only true
-                    :onClick toggle!
-                    :placeholder "VAL"})
+                    :read-only true})
                  ($ dropdown/Popup
                     {:render/option e/dropdown-option
                      :render/wrapper e/dropdown-wrapper}))))
           (d/input
             {:ref input
-             :value amount 
-             :placeholder placeholder 
+             :value amount'
              :read-only read-only
              :disabled (or disabled (not currency))
-             :onFocus (fn [e] (set-focused! true) (on-focus e))
-             :onBlur (fn [e] (set-focused! false) (on-blur e))
+             :onFocus (fn [e] (println "INPUT FOCUSED") (set-focused! true) (on-focus e))
+             :onKeyDown (fn [e]
+                          (case (.-keyCode e)
+                            ;; ESCAPE or ENTER
+                            (13 27) (do
+                                      (.blur @input)
+                                      (close!)
+                                      (set-focused! false))
+                            ;; TAB
+                            9 (do
+                                (close!)
+                                (set-focused! false))
+                            ;; EVERYTHING ELSE
+                            "default"))
              :onChange (fn [e]
                          (when (some? currency)
                            (let [text (as-> (.. e -target -value) t

@@ -16,7 +16,7 @@
     [toddler.popup
      :as popup]
     [toddler.ui :as ui]
-    ["toddler-icons$default" :as icon]))
+    ["toddler-icons" :as icon]))
 
 (defn get-available-options 
   ([search value options search-fn]
@@ -242,16 +242,12 @@
 
 (defnc Option
   [{:keys [value
-           context
            on-remove
-           onRemove
-           disabled
-           className]
+           onRemove]
     :as props}]
   (let [on-remove (some #(when (fn? %) %) [onRemove on-remove])]
     (d/div
-      {:context (if disabled :stale context)
-       :className className}
+      {& props}
       (if-some [children (c/children props)]
         children
         value)

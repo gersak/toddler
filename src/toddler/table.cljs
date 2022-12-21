@@ -11,7 +11,7 @@
     [helix.children :as c]
     [toddler.ui :as ui]
     [toddler.layout :as layout]
-    ["toddler-icons$default" :as icon]))
+    ["toddler-icons" :as icon]))
 
 
 

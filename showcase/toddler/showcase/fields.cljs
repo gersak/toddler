@@ -79,14 +79,12 @@
               ($ ui/row
                  ($ ui/currency-field
                     {:name "Currency field"
-                     :placeholder "Price"
                      :value (:currency-field state)
                      :onChange (fn [v] (set-state! assoc :currency-field v))}))
               ($ ui/row
                  ($ ui/multiselect-field
                     {:name "Multi-select field"
                      :value (:multiselect-field state)
-                     :placeholder "Add item"
                      :options ["sto" "dvijesto" "tristo"]
                      :onRemove (fn [v] (set-state! assoc :multiselect-field v))
                      :onChange (fn [v] (set-state! assoc :multiselect-field v))}))
@@ -95,7 +93,6 @@
                     {:name "Dropdown field"
                      :value (:dropdown-field state)
                      :new-fn identity
-                     :placeholder "Maybe pick item"
                      :options ["sto" "dvijesto" "tristo"]
                      :onRemove (fn [v] (set-state! assoc :dropdown-field v))
                      :onChange (fn [v] (set-state! assoc :dropdown-field v))}))
@@ -104,35 +101,30 @@
                     {:name "Text area field"
                      :value (:textarea-field state)
                      :onChange (fn [e] (set-state! assoc :textarea-field (.. e -target -value)))}))
-
+              (println "DOING DATE: " (:date-field state))
               ($ ui/row
                  ($ ui/date-field
                     {:name "Date field"
                      :value (:date-field state)
-                     :placeholder "Click to open calendar"
                      :onChange #(set-state! assoc :date-field %)}))
               ($ ui/row
                  ($ ui/timestamp-field
                     {:name "Timestamp field"
                      :value (:timestamp-field state)
-                     :placeholder "Click to open timestamp calendar"
                      :onChange #(set-state! assoc :timestamp-field %)}))
               ($ ui/row
                  ($ ui/date-period-field
                     {:name "Period Field"
-                     :placeholder "Click to open period dropdown"
                      :value (:date-period-field state)
                      :onChange (fn [v] (set-state! assoc :date-period-field v))}))
               ($ ui/row
                  ($ ui/timestamp-period-field
                     {:name "Timestamp Period Field"
-                     :placeholder "Click to open timestamp period dropdown"
                      :value (:timestamp-period-field state)
                      :onChange (fn [v] (set-state! assoc :timestamp-period-field v))}))
               ($ ui/row
                  ($ ui/identity-field
                     {:name "Identity Field"
-                     :placeholder "Click select identity"
                      :value (:identity-field state)
                      :options [{:name "John"}
                                {:name "Harry"}
@@ -141,7 +133,6 @@
               ($ ui/row
                  ($ ui/identity-multiselect-field
                     {:name "Identity Multiselect Field"
-                     :placeholder "Click select identity"
                      :value (:identity-multiselect-field state)
                      :options [{:name "John"}
                                {:name "Harry"}

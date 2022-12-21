@@ -68,11 +68,7 @@
         placeholder (or placeholder " ")
         [dw dh] (when @dummy
                   [(.-scrollWidth @dummy)
-                   (.-scrollHeight @dummy)])
-        focused? (contains? state :focused)
-        was-focused? (use-delayed focused?)
-        initialized? (contains? state :initialized)
-        not-initialized? (not initialized?)]
+                   (.-scrollHeight @dummy)])]
     (letfn [(maybe-resize [target]
               (when target
                 (let [[w h] [(.-scrollWidth target)
@@ -81,7 +77,6 @@
                     (set-size! [w h])))))]
       (hooks/use-effect
         [value]
-        (.log js/console "Resizing " @dummy " for new value " value)
         (maybe-resize @dummy))
       (hooks/use-effect
         :once
@@ -95,55 +90,41 @@
                                    :padding-left :padding-top
                                    :padding-right :padding-bottom)))))
       (<>
-        (when initialized?
-          (d/input
-            {:value (or value "")
-             :placeholder placeholder
-             :ref #(reset! (or _ref input) %)
-             :onBlur (fn [e]
-                       (set-state! disj :focused)
-                       (when (fn? onBlur) (onBlur e)))
-             :onFocus (fn [e]
-                        (set-state! conj :focused)
-                        (when (fn? onFocus) (onFocus e)))
-             :onInput (fn [e]
-                        (let [t (.-target e)
-                              w (.-scrollWidth t)
-                              h (.-scrollHeight t)]
-                          (when (or
-                                  (not (< -5 (- w dw) 5))
-                                  (not (< -5 (- h dh) 5)))
-                            (set-size! [w h]))))
-             & (->
-                 props
-                 (dissoc :value :placeholder :ref :autoresize)
-                 (assoc-in [:style :width] width))}))
-        (when (or not-initialized?
-                  focused?
-                  (and was-focused? (not focused?)))
-          (d/div
-            {:ref (fn [e]
-                    (when not-initialized?
-                      (maybe-resize e)
-                      (set-state! conj :initialized))
-                    (reset! dummy e))
-             :style (merge
-                      @dummy-style
-                      {:position "absolute"
-                       :font-familly "inherit"
-                       :top 0 :left 0
-                       :visibility "hidden"
-                       :height 0 :overflow "scroll"
-                       :white-space "pre"})
-             :autoComplete "off"
-             :autoCorrect "off"
-             :spellCheck "false"
-             :autoCapitalize "false"
-             & (dissoc props :value :autoresize :className)}
-            (cond
-              ((every-pred string? not-empty) value) value
-              (number? value) value
-              :else placeholder)))))))
+        (d/input
+          {:value (or value "")
+           :placeholder placeholder
+           :ref #(reset! (or _ref input) %)
+           :onInput (fn [e]
+                      (let [t (.-target e)
+                            w (.-scrollWidth t)
+                            h (.-scrollHeight t)]
+                        (when (or
+                                (not (< -5 (- w dw) 5))
+                                (not (< -5 (- h dh) 5)))
+                          (set-size! [w h]))))
+           & (->
+               props
+               (dissoc :value :placeholder :ref :autoresize)
+               (assoc-in [:style :width] width))})
+        (d/div
+          {:ref (fn [e] (reset! dummy e))
+           :style (merge
+                    @dummy-style
+                    {:position "absolute"
+                     :font-familly "inherit"
+                     :top 0 :left 0
+                     :visibility "hidden"
+                     :height 0 :overflow "scroll"
+                     :white-space "pre"})
+           :autoComplete "off"
+           :autoCorrect "off"
+           :spellCheck "false"
+           :autoCapitalize "false"
+           & (dissoc props :value :autoresize :className)}
+          (cond
+            ((every-pred string? not-empty) value) value
+            (number? value) value
+            :else placeholder))))))
 
 (defn ->number [x]
   (let [x' (if (number? x) x

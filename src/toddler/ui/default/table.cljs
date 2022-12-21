@@ -19,7 +19,7 @@
     [toddler.ui.default.elements :as e]
     [toddler.ui :as ui]
     [toddler.i18n :as i18n]
-    ["toddler-icons$default" :as icon]))
+    ["toddler-icons" :as icon]))
 
 
 

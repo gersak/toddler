@@ -24,16 +24,18 @@
     [toddler.dropdown :as dropdown
      :refer [*dropdown*]]
     ["react" :as react]
-    ["toddler-icons$default" :as icon]
+    ["toddler-icons" :as icon]
     [toddler.app :as app]
     [toddler.i18n :as i18n]
     [shadow.css :refer [css]]
     [clojure.string :as str]))
 
 
+(.log js/console icon)
 
 (defonce component-db (atom nil))
 
+;; #67fda7 
 
 (defnc component
   [{:keys [component]}]
@@ -42,10 +44,10 @@
         $component (css :mx-3 :my-2
                         :flex
                         :items-center
-                        ["& .name" {:color "#7ead92" :text-decoration "none"}]
+                        ["& .name" :toddler/menu-link]
                         ["& .icon" :w-5 :text-transparent :mr-1]
-                        ["&.selected .icon" {:color "#6fcc96"}]
-                        ["&.selected .name" {:color "#6fcc96"}])]
+                        ["&.selected .icon" :toddler/menu-link-selected]
+                        ["&.selected .name" :toddler/menu-link-selected])]
     (d/div
       {:class [$component
                (when selected? "selected")]}
@@ -65,7 +67,7 @@
         $navbar (css
                   :flex
                   :flex-col
-                  {:color "#7ead92"}
+                  :toddler/menu-link-selected
                   ["& .title"
                    :flex
                    :h-28

@@ -1,5 +1,6 @@
 (ns toddler.ui.default.elements
   (:require
+    toddler
     [clojure.set :as set]
     [cljs-bean.core :refer [->js]]
     [goog.string :as gstr]
@@ -23,7 +24,7 @@
     [toddler.scroll :as scroll]
     [toddler.popup :as popup]
     [toddler.ui.provider :refer [ExtendUI UI]]
-    ["toddler-icons$default" :as icon]))
+    ["toddler-icons" :as icon]))
 
 
 (defnc simplebar
@@ -269,9 +270,9 @@
              (when value "selected")
              (when disabled "disabled")]
      :onClick #(onChange (not value))}
-    (d/div 
-      {:class "icon"}
-      ($ icon/checkbox))
+    ; (d/div 
+    ;   {:class "icon"}
+    ;   ($ icon/checkbox))
     (d/div 
       {:class "name"}
       cname)))
@@ -288,9 +289,13 @@
                  (set options)
                  (if multiselect? 
                    (set value)
-                   #{value}))] 
+                   #{value}))
+        $checklist (css
+                     ["& .row .name" :text-neutral-400]
+                     ["& .row.selected .name, & .row:hover .name" :text-neutral-600])]
     (d/div
-      {:className className}
+      {:class [className
+               $checklist]}
       (d/div
         {:class "list"}
         (map
@@ -482,7 +487,8 @@
            {:ref area
             :onClick (fn [] (toggle!))
             :className $wrapper}
-           ($ dropdown/Input)
+           ($ dropdown/Input
+              {:className (css :flex :w-28 {:text-align "right"})})
            ($ dropdown/Popup
               {:className "dropdown-popup"
                :render/option dropdown-option
@@ -517,7 +523,7 @@
             :onClick (fn [] (toggle!))
             :className $wrapper}
            ($ dropdown/Input
-              {& props})
+              {:className (css :w-12) & props})
            ($ dropdown/Popup
               {:className "dropdown-popup"
                :render/option dropdown-option
@@ -525,33 +531,13 @@
 
 
 (defnc multiselect-option 
-  [props]
-  (let [$style (css
-                 :text-white
-                 ; :bg-cyan-500
-                 :rounded-sm
-                 :px-2
-                 :py-1
-                 {:background-color "#63b6a5"
-                  :margin "3px"
-                  :display "flex"
-                  :flex-direction "row"
-                  :justify-content "start"
-                  :align-items "center"
-                  :font-size "1em"}
-                 ["& svg" {:margin "0 5px"
-                           :padding-right "3px"}]
-                 ["& .remove:hover" :text-black]
-                 ["& .remove"
-                  :text-cyan-700
-                  :cursor-pointer
-                  :flex
-                  :items-center
-                  :justify-center
-                  {:transition "color .2s ease-in"}]
-                 ["& .remove path" :cursor-pointer])]
-    ($ multiselect/Option
-       {:className $style & props})))
+  [{:keys [context] :as props}]
+  ($ multiselect/Option
+    {:class [toddler/$tag
+             (case context
+               :positive toddler/$tag-positive
+               :negative toddler/$tag-negative
+               toddler/$tag-default)] & props}))
 
 
 (defnc multiselect-wrapper
@@ -764,10 +750,11 @@
                  ; (str popup/dropdown-container) {:overflow "hidden"}
                  ["& .header-wrapper" {:display "flex" :justify-content "center" :flex-grow "1"}]
                  ["& .header"
-                  {:display "flex"
-                   :justify-content "space-between"
-                   :width "200px"
-                   :height "38px"}]
+                  :flex
+                  :grow
+                  :justify-between
+                  :w-24
+                  :h-14]
                  ["& .header .years"
                   {:position "relative"
                    :display "flex"

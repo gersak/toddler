@@ -399,25 +399,25 @@
 
 
 (defhook use-outside-action
-  [opened area popup handler]
-  (hooks/use-effect
-    [opened]
-    (when opened
-      (letfn [(handle [e] 
-                (cond
-                  (and (some? @area) (.contains @area (.-target e))) nil
-                  ;; When clicke on popup do nothing
-                  (and (some? @popup) (.contains @popup (.-target e))) nil
-                  ;; Else call outside action handler
-                  (and (some? @area) (some? @popup))
-                  (handler e)
-                  ;;
-                  :else nil))]
-        (.addEventListener js/document "click" handle)
-        (.addEventListener js/document "wheel" handle)
-        (fn []
-          (.removeEventListener js/document "click" handle)
-          (.removeEventListener js/document "wheel" handle))))))
+  ([opened area popup handler]
+    (hooks/use-effect
+      [opened]
+      (when opened
+        (letfn [(handle [e] 
+                  (cond
+                    (and (some? @area) (.contains @area (.-target e))) nil
+                    ;; When clicke on popup do nothing
+                    (and (some? @popup) (.contains @popup (.-target e))) nil
+                    ;; Else call outside action handler
+                    (and (some? @area) (some? @popup))
+                    (handler e)
+                    ;;
+                    :else nil))]
+          (.addEventListener js/document "click" handle)
+          (.addEventListener js/document "wheel" handle)
+          (fn []
+            (.removeEventListener js/document "click" handle)
+            (.removeEventListener js/document "wheel" handle)))))))
 
 
 (defnc Container

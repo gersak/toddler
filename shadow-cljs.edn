@@ -19,15 +19,4 @@
    :modules {:showcase
              {:entries [toddler.showcase]
               :exports {default toddler.showcase/start!}
-              :init-fn toddler.showcase/start!}}}
-  :showcase
-  {:target :browser
-   :output-dir "release/js"
-   :output-to "release/js/main.js"
-   :compiler-options {:optimizations :advanced}
-   :devtools {:http-root "release"
-              :http-port 3000
-              :preloads []}
-   :modules {:showcase
-             {:entries [toddler.showcase]
               :init-fn toddler.showcase/start!}}}}}
