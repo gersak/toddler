@@ -1,4 +1,4 @@
-(ns toddler.ui.default.color)
+(ns toddler.ui.color)
 
 
 (def color

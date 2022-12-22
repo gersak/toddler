@@ -5,8 +5,8 @@
    [vura.core :as vura]
    ; [helix.dom :as d]
    [toddler.ui :as ui]
-   [toddler.ui.default :as default]
-   [toddler.ui.default.elements :as e]
+   [toddler.ui.components :as default]
+   [toddler.ui.elements :as e]
    [toddler.layout :as layout]
    [toddler.dev :as dev]))
 
@@ -27,9 +27,9 @@
             {:style {:height height
                      :width width
                      :boxSizing "border-box"}}
-            ($ ui/row
-               {:label "Day"}
-               ($ ui/calendar-day {& context}))
+            ; ($ ui/row
+            ;    {:label "Day"}
+            ;    ($ ui/calendar-day {& context}))
             ($ ui/row
                {:label "Week"}
                ($ ui/calendar-week {:week week :days week-context}))

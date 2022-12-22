@@ -16,7 +16,7 @@
     [toddler.i18n.default]
     [toddler.ui :as ui]
     [toddler.ui.provider :refer [UI]]
-    [toddler.ui.default :as default]
+    [toddler.ui.components :as default]
     [toddler.layout :as layout
      :refer [use-layout]]
     [toddler.window :as window]

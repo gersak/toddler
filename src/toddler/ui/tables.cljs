@@ -1,6 +1,7 @@
-(ns toddler.ui.default.table
+(ns toddler.ui.tables
   (:require
     goog.string
+    toddler
     [clojure.string :as str]
     [helix.dom :as d]
     [helix.core 
@@ -16,7 +17,7 @@
     [toddler.layout :as layout]
     [toddler.dropdown :as dropdown]
     [toddler.input :refer [TextAreaElement]]
-    [toddler.ui.default.elements :as e]
+    [toddler.ui.elements :as e]
     [toddler.ui :as ui]
     [toddler.i18n :as i18n]
     ["toddler-icons" :as icon]))
@@ -35,17 +36,7 @@
   {:wrap [(ui/forward-ref)]}
   ($ table/Row
     {:ref _ref
-     :className (str/join
-                  " "
-                  ["trow"
-                   className
-                   (css
-                     :my-1
-                     :border-b
-                     :border-transparent
-                     {:min-height "2em"
-                      :transition "all .5s ease-in-out"}
-                     ["&:hover" :border-b :border-neutral-400])])
+     :className "trow" 
      & (dissoc props :className :class)}))
 
 
@@ -561,9 +552,9 @@
                        :text-neutral-400)
         $alignment (use-cell-alignment-css column)]
     (d/div
-      {:className [(css
-                     :py-2)
-                   $alignment]}
+      {:class [(css
+                 :py-2)
+               $alignment]}
       (d/button
         {:disabled disabled
          :read-only read-only
@@ -663,6 +654,8 @@
                   :text-sm
                   :outline-none
                   :w-full
+                  :flex
+                  :justify-center
                   {:resize "none"
                    :padding-top "0.7em"})]
     (d/div
@@ -1069,18 +1062,7 @@
               :value body-style}
              ($ table/Body
                 {:ref (fn [el] (reset! body el))
-                 :className (css
-                              :flex
-                              :column
-                              :grow
-                              :p-3
-                              :text-neutral-700
-                              :bg-gray-200
-                              :border
-                              :border-solid
-                              :border-slate-600
-                              :shadow-lg
-                              :rounded-md)})))))))
+                 :className toddler/$table-default})))))))
 
 
 (def components

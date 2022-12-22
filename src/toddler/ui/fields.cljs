@@ -1,4 +1,4 @@
-(ns toddler.ui.default.fields
+(ns toddler.ui.fields
   (:require
     clojure.set
     [clojure.string :as str]
@@ -15,7 +15,7 @@
      :refer [TextAreaElement]]
     [toddler.i18n :as i18n]
     [toddler.hooks :refer [use-translate]]
-    [toddler.ui.default.elements :as e]
+    [toddler.ui.elements :as e]
     [toddler.dropdown :as dropdown
      :refer [use-dropdown]]
     [toddler.multiselect
@@ -35,16 +35,17 @@
                  {:border-bottom "1px solid transparent"
                   :transition "all .3s ease-in-out"}
                  ["& .field-name"
-                  :text-neutral-400
                   :text-xs
                   :font-bold
                   :uppercase
-                  {:user-select "none"
+                  {:color "#235568"
+                   :user-select "none"
                    :transition "all .3s ease-in-out"}]
-                 ["&.empty:hover" :border-neutral-600]
-                 ["&:hover .field-name" :text-neutral-600]
+                 ["&.empty:hover" :border-neutral-400]
+                 ["&:hover .field-name,&:focus-within .field-name" {:text-shadow "0px 0px 11px #01282f73"
+                                                                    :color "#235568"}]
                  ["& input,& textarea" :text-neutral-600 :border-neutral-600 {:flex-grow "1"}]
-                 ["&.empty" :border-neutral-400 {:border-bottom "1px solid"}])]
+                 ["&.empty" :border-neutral-300 {:border-bottom "1px solid"}])]
     (d/div
       {:ref _ref
        :class (cond-> [className $style]

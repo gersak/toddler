@@ -1,4 +1,4 @@
-(ns toddler.ui.default.elements
+(ns toddler.ui.elements
   (:require
     toddler
     [clojure.set :as set]
@@ -82,157 +82,60 @@
       (c/children props))))
 
 
-;(defn button-color
-;  [{:keys [context disabled]}]
-;  (let [context (if disabled :disabled context)
-;        $positive
-;        (css :text-green-200
-;             :bg-green-600
-;             [:hover :text-white :bg-green-500])
-;        ;;
-;        $negative
-;        (css
-;          :text-red-600
-;          :bg-red-200
-;          [:hover :bg-red-400 :text-red-900])
-;        $fun
-;        (css 
-;          :bg-cyan-500
-;          :text-cyan-100
-;          [:hover :bg-cyan-400])
-;        ;;
-;        $fresh
-;        (css
-;          :text-yellow-900
-;          :bg-yellow-300
-;          [:hover :text-black :bg-yellow-400]) 
-;        ;;
-;        $stale
-;        (css
-;          :bg-neutral-300
-;          [:hover :bg-neutral-200])
-;        ;;
-;        $disabled
-;        (css 
-;          {:color "white"
-;           :background-color "#bbbbbb"
-;           :cursor "initial"
-;           :pointer-events "none"
-;           :user-select "none"})
-;        ;;
-;        $default
-;        (css :text-neutral-800
-;             :bg-neutral-200
-;             [:hover :bg-cyan-300])]
-;    (case context
-;      :positive $positive
-;      :negative $negative
-;      :fun $fun
-;      :fresh $fresh
-;      :stale $stale
-;      :disabled $disabled
-;      $default)))
-
-
-
-(defn button-color
-  [{:keys [context disabled]}]
-  (let [context (if disabled :disabled context)
-        $positive
-        (css
-          ; :text-green-700
-          :text-neutral-600
-          ["&:hover"
-           :text-green-600
-           {:text-shadow "0px 0px 12px #2bff3d"}])
-        ;;
-        $negative
-        (css
-          ; :text-green-700
-          :text-neutral-600
-          ["&:hover"
-           :text-red-500
-           {:text-shadow "0px 0px 12px #ff8989"}])
-        $fun
-        (css
-          ; :text-green-700
-          :text-neutral-600
-          ["&:hover"
-           :text-cyan-600
-           {:text-shadow "0px 0px 12px #06b7d4"}])
-        ;;
-        $fresh
-        (css
-          ; :text-green-700
-          :text-neutral-600
-          ["&:hover"
-           {:color "#ff4ed9"
-            :text-shadow "0px 0px 12px #ff4ed9"}])
-        ;;
-        $stale
-        (css
-          :text-neutral-600
-          ["&:hover"
-           {:color "#686eba"
-            :text-shadow "0px 0px 12px #686eba"}])
-        ;;
-        $disabled
-        (css 
-          :text-neutral-400
-          :cursor-default
-          :select-none
-          :pointer-events-none)
-        ;;
-        $default
-        (css :text-neutral-600
-             :bg-transparent
-             {:transition "all .2s ease-in"}
-             ["&:hover"
-              :text-neutral-700
-              {:text-shadow "0px 0px 12px #b3b3b3"}])]
-    (case context
-      :positive $positive
-      :negative $negative
-      :fun $fun
-      :fresh $fresh
-      :stale $stale
-      :disabled $disabled
-      $default)))
+(def $button
+  (css 
+    :flex
+    :font-extrabold
+    :border-2
+    :border-transparent
+    :rounded-sm
+    :justify-center
+    :items-center
+    :px-4
+    :py-4
+    :leading-loose
+    :mx-3
+    :my-2
+    {:transition "all .2s ease-in"}
+    {:justify-content "center"
+     :max-height "30px"
+     :min-width "80px"
+     :font-size "1em"
+     :cursor "pointer"
+     :user-select "none"}
+    ;; default
+    :text-neutral-600
+    ["&:hover"
+     :text-neutral-700
+     {:text-shadow "0px 0px 12px #b3b3b3"}]
+    ;;
+    ["&.positive:hover"
+     :text-green-600
+     {:text-shadow "0px 0px 12px #2bff3d"}]
+    ;;
+    ["&.negative:hover"
+     :text-red-500
+     {:text-shadow "0px 0px 12px #ff8989"}]
+    ["&.fun:hover"
+     :text-cyan-600
+     {:text-shadow "0px 0px 12px #06b7d4"}]
+    ;;
+    ["&.fresh:hover" {:color "#ff4ed9"
+                      :text-shadow "0px 0px 12px #ff4ed9"}]
+    ;;
+    ["&.stale:hover" {:color "#686eba"
+                      :text-shadow "0px 0px 12px #686eba"}]
+    ;;
+    ["&[disabled]" :text-neutral-400 :cursor-default :pointer-events-none]))
 
 
 (defnc button
-  [{:keys [disabled className] :as props}]
-  (let [$color (button-color props) 
-        $layout (css 
-                  :flex
-                  :font-extrabold
-                  :border-2
-                  :border-transparent
-                  :rounded-sm
-                  :justify-center
-                  :items-center
-                  :px-4
-                  :py-4
-                  :leading-loose
-                  :mx-3
-                  :my-2
-                  {:transition "all .2s ease-in"}
-                  {:justify-content "center"
-                   :max-height "30px"
-                   :min-width "80px"
-                   :font-size "1em"
-                   :cursor "pointer"})
-        $disabled (css :pointer-events "none")]
-    (d/button
-      {:class (cond-> [$layout
-                       $color
-                       className]
-                disabled (conj $disabled))
-       & (dissoc props :className)}
-      (c/children props))))
-
-
-
+  [{:keys [context]
+   :or {context "default"} :as props}]
+  (d/button
+    {:class [$button (name context)] 
+     & props}
+    (c/children props)))
 
 
 (defnc checkbox
@@ -438,7 +341,8 @@
                   :bg-white
                   {:transition "color .2s ease-in,background-color .2s ease-in"
                    :padding "4px 6px 4px 4px"}
-                  [:hover :text-gray-600 :bg-cyan-100]
+                  [:hover :text-neutral-600
+                   {:background-color "#e2f1fc"}]
                   ["&:last-child" {:border-bottom "none"}])]
     (d/div
       {:class [$layout]
@@ -534,10 +438,8 @@
   [{:keys [context] :as props}]
   ($ multiselect/Option
     {:class [toddler/$tag
-             (case context
-               :positive toddler/$tag-positive
-               :negative toddler/$tag-negative
-               toddler/$tag-default)] & props}))
+             (when context (name context))]
+     & props}))
 
 
 (defnc multiselect-wrapper
@@ -571,51 +473,6 @@
        {& props})))
 
 
-(defnc calendar-day
-  [props]
-  (let [$style (css
-                 :border
-                 :border-transparent
-                 :text-gray-500
-                 ;;
-                 ["& .day"
-                  {:text-align "center"
-                   :font-size "0.8em"
-                   :user-select "none"
-                   :padding "3px"
-                   :width "25px"
-                   :border-collapse "collapse"
-                   :border "1px solid transparent"
-                   :cursor "pointer"}]
-                 ["& .day.today"
-                  :border
-                  :border-teal-600
-                  :text-gray-800
-                  :bg-cyan-300]
-                 ;;
-                 ["& .day.weekend" :text-rose-700]
-                 ;;
-                 ["& .day.empty" {:cursor "default"}]
-                 ;;
-                 ["& .day.disabled, & .day:hover.disabled"
-                  :border
-                  :border-solid
-                  :border-transparent
-                  :text-gray-500
-                  :cursor-default]
-                 ;;
-                 ["& .day:hover:not(.empty), & .day.selected"
-                  :text-white
-                  :border
-                  :rounded-sm
-                  :border-cyan-800
-                  :bg-cyan-500
-                  :font-bold])]
-    ($ date/CalendarDay
-       {:className $style
-        & (dissoc props :className :class)})))
-
-
 (defnc calendar-month-header
   [{:keys [className days]}]
   (let [$style (css
@@ -623,7 +480,7 @@
                  :flex-row
                  :cursor-default
                  {:cursor "default"}
-                 ["& .day-wrapper .day" :text-gray-500]
+                 ["& .day-wrapper .day" :text-neutral-600]
                  ["& .day.weekend" :text-rose-700]
                  ["& .day-wrapper"
                   {:border-collapse "collapse"
@@ -661,13 +518,14 @@
   (let [$month (css
                  :flex
                  :flex-col
+                 :items-center
                  {:width "220px"})
         $week (css :flex :flex-row)
         weeks (sort-by key (group-by :week days))
         $day (css
                :border
                :border-transparent
-               :text-gray-500
+               :text-neutral-600
                ;;
                ["& .day"
                 {:text-align "center"
@@ -680,9 +538,8 @@
                  :cursor "pointer"}]
                ["& .day.today"
                 :border
-                :border-teal-600
-                :text-gray-800
-                :bg-cyan-300]
+                :text-neutral-800
+                :font-bold]
                ;;
                ["& .day.weekend" :text-rose-700]
                ;;
@@ -692,7 +549,7 @@
                 :border
                 :border-solid
                 :border-transparent
-                :text-gray-500
+                :text-neutral-400
                 :cursor-default]
                ;;
                ["& .day:hover:not(.empty), & .day.selected"
@@ -700,8 +557,11 @@
                 :border
                 :rounded-sm
                 :border-cyan-800
-                :bg-cyan-500
-                :font-bold])
+                :font-bold
+                :text-neutral-100
+                ; {:background-color "#5986bc"}
+                {:background-color "#354a6a"}
+                ])
         today (-> (vura/date)
                   vura/time->value
                   vura/day-time-context)

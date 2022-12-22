@@ -7,7 +7,7 @@
    [toddler.ui :as ui]
    [toddler.avatar :as a]
    [toddler.layout :as layout]
-   [toddler.ui.default :as default]
+   [toddler.ui.components :as components]
    [toddler.dev :as dev]))
 
 
@@ -27,7 +27,7 @@
         {:keys [height width]} (layout/use-container-dimensions)]
      ($ a/Generator
         {:className (css {:visibility "hidden" :position "fixed" :top "0px" :left "0px"})}
-        ($ default/Provider
+        ($ components/Provider
            ($ ui/simplebar
               {:className "fields"
                :style {:height height
