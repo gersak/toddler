@@ -11,6 +11,6 @@
 (add-translations
   (merge
     #:time.before {:hr "prije"
-                   :en "before"}
+                   :default "before"}
     #:time.after {:hr "poslije"
-                  :en "after"}))
+                  :default "after"}))

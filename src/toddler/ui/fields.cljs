@@ -774,7 +774,6 @@
                     (when (and
                             (some? @field-ref)
                             (not (.contains @field-ref (.-target e))))
-                      (println "REMOVING FOCUS")
                       (set-focused! false)))]
             (.addEventListener js/document "click" check-focus)
             (fn []
@@ -817,7 +816,7 @@
              :value amount'
              :read-only read-only
              :disabled (or disabled (not currency))
-             :onFocus (fn [e] (println "INPUT FOCUSED") (set-focused! true) (on-focus e))
+             :onFocus (fn [e] (set-focused! true) (on-focus e))
              :onKeyDown (fn [e]
                           (case (.-keyCode e)
                             ;; ESCAPE or ENTER

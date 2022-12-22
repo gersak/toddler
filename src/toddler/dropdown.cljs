@@ -226,7 +226,7 @@
        :value [area-position set-area-position!]}
       ($ popup/Area
          {:ref area
-          & (select-keys props [:className])}
+          & (select-keys props [:class :className])}
          (c/children props))))))
 
 
@@ -283,7 +283,10 @@
           :items options
           :wrapper rwrapper
           :onChange (fn [{:keys [position]}]
-                      (when (some? position) (set-area-position! position)))
+                      (when (some? position)
+                        (if-not (fn? set-area-position!)
+                          (.error js/console "Can't set area position. Function not provided!")
+                          (set-area-position! position))))
           :className className}
          (map
            (fn [option]

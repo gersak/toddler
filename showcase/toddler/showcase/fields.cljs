@@ -2,13 +2,48 @@
   (:require
    [helix.core :refer [$ defnc]]
    [helix.hooks :as hooks]
-   [helix.dom :as d]
    [shadow.css :refer [css]]
    [toddler.ui :as ui]
    [toddler.avatar :as a]
    [toddler.layout :as layout]
    [toddler.ui.components :as components]
+   [toddler.hooks :refer [use-translate]]
+   [toddler.i18n.keywords :refer [add-translations]]
    [toddler.dev :as dev]))
+
+
+(add-translations
+   (merge
+      #:button.default {:default "Default"
+                        :hr "Normalan"}
+      ;;
+      #:button.positive {:hr "Pozitivan"
+                         :default "Positive"}
+      ;;
+      #:button.negative {:hr "Negativan"
+                         :default "Negative"}
+      ;;
+      #:button.fun {:hr "Fora"
+                    :default "Fun"}
+      ;;
+      #:button.fresh {:hr "Svježe"
+                      :default "Fresh"}
+      ;;
+      #:button.stale {:hr "Ustajalo"
+                      :default "Stale"}
+      ;;
+      #:button.disabled {:hr "Onemogućeno"
+                         :default "Disabled"}
+
+
+      #:checklist.horse {:default "Horse"
+                         :hr "Konj"}
+      #:checklist.sheep {:default "Sheep"
+                         :hr "Ovca"}
+      #:checklist.cow {:default "Cow"
+                       :hr "Krava"}
+      #:checklist.boar {:default "Boar"
+                        :hr "Vepar"}))
 
 
 (defnc Fields
@@ -24,7 +59,8 @@
                                              :multiselect-field ["jedan" "dva" "tri"]
                                              :textarea-field "I am text"
                                              :period-input 123213213})
-        {:keys [height width]} (layout/use-container-dimensions)]
+        {:keys [height width]} (layout/use-container-dimensions)
+        translate (use-translate)]
      ($ a/Generator
         {:className (css {:visibility "hidden" :position "fixed" :top "0px" :left "0px"})}
         ($ components/Provider
@@ -35,13 +71,13 @@
                        :boxSizing "border-box"}}
               ($ ui/row
                  {:label "Buttons"}
-                 ($ ui/button "Default")
-                 ($ ui/button {:context :positive} "Positive")
-                 ($ ui/button {:context :negative} "Negative")
-                 ($ ui/button {:context :fun} "Fun")
-                 ($ ui/button {:context :fresh} "Fresh")
-                 ($ ui/button {:context :stale} "Stale")
-                 ($ ui/button {:disabled true} "Disabled"))
+                 ($ ui/button (translate :button.default))
+                 ($ ui/button {:context :positive} (translate :button.positive))
+                 ($ ui/button {:context :negative} (translate :button.negative))
+                 ($ ui/button {:context :fun} (translate :button.fun))
+                 ($ ui/button {:context :fresh} (translate :button.fresh))
+                 ($ ui/button {:context :stale} (translate :button.stale))
+                 ($ ui/button {:disabled true} (translate :button.disabled)))
               ($ ui/row
                  ($ ui/input-field
                     {:name "Auto-size free input"
@@ -57,13 +93,13 @@
                     {:name "Checklist field"
                      :value (:checklist-field state)
                      :multiselect? true
-                     :options [{:name "Konj"
+                     :options [{:name (translate :checklist.horse)
                                 :value :konj}
-                               {:name "Ovca"
+                               {:name (translate :checklist.sheep)
                                 :value :ovca}
-                               {:name "Krava"
+                               {:name (translate :checklist.cow)
                                 :value :krava}
-                               {:name "Vepar"
+                               {:name (translate :checklist.boar)
                                 :value :vepar}]
                      :onChange (fn [v] (set-state! assoc :checklist-field v))}))
               ($ ui/row
@@ -101,7 +137,6 @@
                     {:name "Text area field"
                      :value (:textarea-field state)
                      :onChange (fn [e] (set-state! assoc :textarea-field (.. e -target -value)))}))
-              (println "DOING DATE: " (:date-field state))
               ($ ui/row
                  ($ ui/date-field
                     {:name "Date field"

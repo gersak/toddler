@@ -35,7 +35,9 @@
      (assert (not (qualified-keyword? this))
              "Keyword is qualified. Remove locale from arguments since it is already contained in qualified keyword")
      (assert (keyword? locale) "Locale shoudld be keyword")
-     (get @translations (keyword (name this) (name locale))))))
+     (if-let [w (get @translations (keyword (name this) (name locale)))]
+       w
+       (get @translations (keyword (name this) :default))))))
 
 
 (extend-protocol toddler.i18n/Locale

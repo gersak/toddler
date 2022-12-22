@@ -434,7 +434,7 @@
 
 
 (defnc Area
-  [{:keys [render className] 
+  [{:keys [render] 
     :or {render "div"} 
     :as props} ref]
   {:wrap [(react/forwardRef)]}
@@ -442,21 +442,12 @@
         area' (or ref area)]
     ($ render
        {:ref #(reset! area' %)
-        :className className
         & props}
        (provider
          {:context *area-element*
           :value @area'} 
          (c/children props)))))
 
-
-; (defstyled element "div"
-;   {:display "flex"
-;    :justify-content "start"
-;    :flex-wrap "wrap"
-;    :border-radius 3
-;    :padding 7}
-;   --themed)
 
 
 (defnc Element
@@ -555,7 +546,7 @@
 
 
 (defnc Tooltip
-  [{:keys [message preference className disabled] 
+  [{:keys [message preference disabled] 
     :or {preference cross-preference}
     :as props} ref]
   {:wrap [(react/forwardRef)]}
@@ -577,7 +568,7 @@
                        :animationDuration ".5s"
                        :animationDelay ".3s"}
                :preference preference
-               :className (str className " animated fadeIn")}
+               & (select-keys props [:class :className])}
               (d/div {:class "info-tooltip"} message))))
       (c/children props))))
 
