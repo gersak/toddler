@@ -97,12 +97,11 @@
 (defmethod compute-candidate #{:bottom :right}
   [{:keys [popup-height
            popup-width
-           window-width
            window-height
            right
            bottom]
     :as data}]
-  (let [dl (- window-width right popup-width)
+  (let [dl (- right popup-width)
         bp (+ popup-height bottom *offset*)
         db (- window-height bp)] 
     (assoc data
@@ -139,12 +138,11 @@
 (defmethod compute-candidate #{:top :right}
   [{:keys [popup-height
            popup-width
-           window-width
            top
            right]
     :as data}]
   (let [dt (- top popup-height *offset*)
-        dl (- window-width right popup-width)] 
+        dl (- right popup-width)] 
     (assoc data
            :position/left dl
            :position/top dt 
@@ -354,24 +352,26 @@
 (defn compute-container-props 
   ([target el] (compute-container-props target el default-preference))
   ([target el preference]
-   (when-let [props (computation-props target el)]
-     (let [candidates (map 
-                        #(compute-candidate (assoc props :position %))
-                        preference)]
-       (when (empty? candidates)
-         (throw
-           (ex-info 
-             "Coulnd't find suitable candidate"
-             {:candidates candidates
-              :target @target
-              :element @el
-              :preference preference})))
-       (merge
-         (if-let [prefered-candidate (some ok-candidate? candidates)]
-           prefered-candidate 
-           ;; There was no full size candidate
-           (best-candidate candidates))
-         (padding-data el))))))
+   (let [preference (or preference default-preference)]
+     (when-let [props (computation-props target el)]
+       (let [candidates (map 
+                          #(compute-candidate (assoc props :position %))
+                          preference)]
+         (println "CANDIDATES: " candidates)
+         (when (empty? candidates)
+           (throw
+             (ex-info 
+               "Coulnd't find suitable candidate"
+               {:candidates candidates
+                :target @target
+                :element @el
+                :preference preference})))
+         (merge
+           (if-let [prefered-candidate (some ok-candidate? candidates)]
+             prefered-candidate 
+             ;; There was no full size candidate
+             (best-candidate candidates))
+           (padding-data el)))))))
 
 ;; DROPDOWN CONTAINER
 ; (defstyled dropdown-container

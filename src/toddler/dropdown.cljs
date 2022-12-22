@@ -260,7 +260,7 @@
 
 
 (defnc Popup
-  [{:keys [className]
+  [{:keys [className preference]
     rwrapper :render/wrapper
     roption :render/option
     :or {rwrapper "div"
@@ -282,6 +282,7 @@
          {:ref popup
           :items options
           :wrapper rwrapper
+          :preference preference
           :onChange (fn [{:keys [position]}]
                       (when (some? position)
                         (if-not (fn? set-area-position!)

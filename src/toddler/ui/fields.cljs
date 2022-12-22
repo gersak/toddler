@@ -233,31 +233,6 @@
                                  (when (fn? onChange) (onChange number))))))}))))))
 
 
-; (defnc float-field
-;   [{:keys [onChange]
-;     :or {onChange identity}
-;     :as props}]
-;   (let [input (hooks/use-ref nil)]
-;     ($ field
-;        {:onClick (fn [] (when @input (.focus @input)))
-;         & props}
-;        ($ field-wrapper
-;           ($ NumberInput
-;              {:ref input
-;               :className (css ["& input" :border-0])
-;               & (->
-;                   props
-;                   (dissoc :name :className :style)
-;                   (assoc :onChange
-;                          (fn [e]
-;                            (some->>
-;                              (.. e -target -value)
-;                              not-empty
-;                              (re-find #"-?\d+[\.|,]*\d*")
-;                              (js/parseFloat)
-;                              onChange))))})))))
-
-
 (defnc dropdown-field
   [props]
   (let [[area-position set-area-position!] (hooks/use-state nil)

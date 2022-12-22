@@ -96,41 +96,45 @@
 
 
 
-(defnc LocaleDropdown
-  []
-  (let [[area-position set-area-position!] (hooks/use-state #{:bottom :center})
-        ;;
-        [{{locale :locale} :settings} set-user!] (use-current-user)
-        ;;
-        {:keys [area toggle! opened] :as dropdown}
-        (dropdown/use-dropdown
-          {:value locale
-           :options [:en :hr :fr :fa]
-           :search-fn name
-           :area-position #{:bottom :center}
-           :onChange (fn [v] (set-user! assoc-in [:settings :locale] v))})]
-    ;;
-    (provider
-      {:context dropdown/*dropdown*
-       :value dropdown}
+(let [popup-preference
+      [#{:bottom :center}
+       #{:bottom :right}]]
+  (defnc LocaleDropdown
+    []
+    (let [[area-position set-area-position!] (hooks/use-state #{:bottom :center})
+          ;;
+          [{{locale :locale} :settings} set-user!] (use-current-user)
+          ;;
+          {:keys [area toggle! opened] :as dropdown}
+          (dropdown/use-dropdown
+            {:value locale
+             :options [:en :hr :fr :fa]
+             :search-fn name
+             :area-position #{:bottom :center}
+             :onChange (fn [v] (set-user! assoc-in [:settings :locale] v))})]
+      ;;
       (provider
-        {:context popup/*area-position*
-         :value [area-position set-area-position!]}
-        ($ popup/Area
-           {:ref area
-            :class (css :flex :items-center :mr-4)}
-           (d/button
-             {:onClick toggle!
-              :class [(css
-                        :toddler/menu-link
-                        :items-center
-                        ["&:hover" :toddler/menu-link-selected])
-                      (when opened (css :toddler/menu-link-selected))]}
-             (str/upper-case (name locale)))
-           ($ dropdown/Popup
-              {:className "dropdown-popup"
-               :render/option e/dropdown-option
-               :render/wrapper e/dropdown-wrapper}))))))
+        {:context dropdown/*dropdown*
+         :value dropdown}
+        (provider
+          {:context popup/*area-position*
+           :value [area-position set-area-position!]}
+          ($ popup/Area
+             {:ref area
+              :class (css :flex :items-center)}
+             (d/button
+               {:onClick toggle!
+                :class [(css
+                          :toddler/menu-link
+                          :items-center
+                          ["&:hover" :toddler/menu-link-selected])
+                        (when opened (css :toddler/menu-link-selected))]}
+               (str/upper-case (name locale)))
+             ($ dropdown/Popup
+                {:className "dropdown-popup"
+                 :preference popup-preference
+                 :render/option e/dropdown-option
+                 :render/wrapper e/dropdown-wrapper})))))))
 
 (defnc header
   [_ _ref]
