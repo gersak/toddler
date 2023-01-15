@@ -1,8 +1,6 @@
 (ns toddler.ui.elements
   (:require
-    toddler
     [clojure.set :as set]
-    [cljs-bean.core :refer [->js]]
     [goog.string :as gstr]
     [vura.core :as vura]
     [clojure.string :as str]
@@ -23,7 +21,7 @@
     [toddler.date :as date]
     [toddler.scroll :as scroll]
     [toddler.popup :as popup]
-    [toddler.ui.provider :refer [ExtendUI UI]]
+    [toddler.provider :refer [ExtendUI UI]]
     ["toddler-icons" :as icon]))
 
 
@@ -434,11 +432,50 @@
                :render/wrapper dropdown-wrapper}))))))
 
 
+(def $tag
+  (css
+    :rounded-sm
+    :px-2
+    :py-1
+    :m-1
+    :flex
+    :justify-center
+    :items-center
+    :text-neutral-600
+    ["& svg" :ml-2 :pr-1]
+    ["& .remove"
+     :cursor-pointer
+     :flex
+     :items-center
+     :justify-center
+     {:transition "color .2s ease-in"}]
+    ;; Colors
+    :text-neutral-100
+    ; :bg-gray-600
+    ; :font-semibold
+    {:background-color "#344a6a"}
+    ["& .remove:hover" :text-rose-400]
+    ["& .remove" {:color "#647288"}]
+    ["& .remove path" :cursor-pointer]
+    ;;
+    ["&.positive"
+     :text-neutral-600
+     {:background-color "#c4ed7c"}]
+    ["&.positive .remove:hover" :text-black]
+    ["&.positive .remove" :text-cyan-600]
+    ;;
+    ["&.negative"
+     :text-neutral-50
+     :bg-rose-400
+     {:background-color "#d64242"}]
+    ["&.negative .remove:hover" :text-black]
+    ["&.negative .remove" {:color "#a10303"}]))
+
+
 (defnc multiselect-option 
   [{:keys [context] :as props}]
   ($ multiselect/Option
-    {:class [toddler/$tag
-             (when context (name context))]
+    {:class [$tag (when context (name context))]
      & props}))
 
 

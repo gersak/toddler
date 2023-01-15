@@ -21,6 +21,7 @@
 (defcomponent option :option)
 (defcomponent input :input)
 (defcomponent clear :clear)
+(defcomponent close :close)
 (defcomponent field :field)
 (defcomponent wrapper :wrapper)
 (defcomponent discard :discard)
@@ -28,7 +29,7 @@
 (defcomponent img :img)
 (defcomponent header :header)
 (defcomponent identity :identity)
-(defcomponent tooltip tooltip)
+(defcomponent tooltip :tooltip)
 (defcomponent autosize-input :input/autosize)
 (defcomponent idle-input :input/idle)
 (defcomponent action :action)
@@ -72,6 +73,7 @@
 
 (defcomponent table :table)
 (defcomponent table-row :table/row)
+(defcomponent table-cell :table/cell)
 (defcomponent table-header-row :table/header-row)
 
 (defcomponent enum-header :header/enum)

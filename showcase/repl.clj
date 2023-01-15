@@ -37,18 +37,22 @@
         (recur (conj dirs (.getName entry)))
         dirs))))
 
+
+(defn init []
+  (-> 
+    (cb/init)
+    (update :aliases merge aliases)
+    (cb/start)
+    (cb/index-path (io/file "src") {})
+    (cb/index-path (io/file "showcase") {})))
+
+
 (defn start
   {:shadow/requires-server true}
   []
 
   ;; first initialize my css
-  (reset! css-ref
-          (-> 
-            (cb/init)
-            (update :aliases merge aliases)
-            (cb/start)
-            (cb/index-path (io/file "src") {})
-            (cb/index-path (io/file "showcase") {})))
+  (reset! css-ref (init))
 
   ;; then build it once
   (generate-css)

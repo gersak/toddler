@@ -1,4 +1,4 @@
-(ns toddler.ui.provider
+(ns toddler.provider
   (:require
     [helix.core :refer [provider defnc]]
     [helix.children :as c]

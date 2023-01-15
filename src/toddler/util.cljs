@@ -8,43 +8,6 @@
 (set! *warn-on-infer* true)
 
 
-(defn open-new-tab
-  ([link] (open-new-tab link true))
-  ([link focus]
-   (when-let [w (.open js/window link)]
-     (when focus (.focus w)))))
-
-
-(defn match-words? [search-expression text]
-  (let [words (clojure.string/split search-expression #"\s+")
-        blacklist-patterns (->>
-                            words
-                            (keep (fn [w]
-                                    (when
-                                     (and
-                                      (> (count w) 2)
-                                      (clojure.string/starts-with? w "!")
-                                      (apply str (rest w))))))
-                            (map (comp re-pattern #(apply str "(?i)" %))))
-        whitelist-patterns (->>
-                            words
-                            (remove (fn [w] (clojure.string/starts-with? w "!")))
-                            (map (comp re-pattern #(apply str "(?i)" %))))
-        blacklist? (fn [text]
-                     (some
-                      (fn [word]
-                        (boolean (re-find word text)))
-                      blacklist-patterns))
-        all-words? (fn [text]
-                     (every?
-                      (fn [word]
-                        (re-find word text))
-                      whitelist-patterns))]
-    (and
-     (not (blacklist? text))
-     (all-words? text))))
-
-
 (defn get-font-style [node]
   (when node
     (let [style (.getComputedStyle js/window node)]
@@ -65,6 +28,7 @@
         [xc yc] (map #(/ % 2) (drop 2 element-frame))]
     [(- dx xc) (- yc dy)]))
 
+
 (defn calculate-view-frame
   "Calculates view-frame based on input coordinates in regular
    Euclidian coordinate-system in respect to scale and component
@@ -75,6 +39,7 @@
         xmin (- x dx)
         ymin (+ dy y)]
     (into [xmin ymin] view-frame)))
+
 
 (defn calculate-frame-coordinates
   "Calculates frame start and end coordinates"
@@ -240,11 +205,11 @@
          (update 3 - scroll-top))))))
 
 
-
 (defn mouse-position 
   "Returns mouse position from event"
   [e]
   [(.-pageX e) (.-pageY e)])
+
 
 (defn not-in-area? 
   "Returns true if position is in area"
@@ -253,7 +218,9 @@
    (<= x l) (<= y t)
    (>= x (+ w l)) (>= y (+ t h))))
 
+
 (def in-area? (complement not-in-area?))
+
 
 (defn check-drag-leave 
   "Checks if mouse has really left component and all of its children"
@@ -262,18 +229,23 @@
         area (dom-dimensions el)]
     (not-in-area? area position)))
 
+
 ;; Caret position
 (defn selection-start [e]
   (.. e -target -selectionStart))
 
+
 (defn selection-end [e]
   (.. e -target -selectionEnd))
+
 
 (defn selection [e]
   ((juxt selection-start selection-end) e))
 
+
 (defn selection? [e]
   (apply not= (selection e)))
+
 
 (defn partition-selection [e]
   (let [value (.. e -target -value)

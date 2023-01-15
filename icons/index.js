@@ -1,7 +1,7 @@
 import {FaTimes, FaCheck, FaSearch, FaChevronDown, FaQuoteLeft, FaMinus,
         FaAngleRight, FaAngleLeft, FaSquare, FaCheckSquare, FaPlus, FaBarcode,
         FaEdit, FaCaretUp, FaCaretDown, FaCaretRight, FaAngleDoubleLeft,
-        FaAngleDoubleRight, FaExclamationTriangle, FaList, FaCalendarWeek} from 'react-icons/fa';
+        FaAngleDoubleRight, FaExclamation, FaExclamationTriangle, FaList, FaCalendarWeek} from 'react-icons/fa';
 
 
 export const close = FaTimes;
@@ -16,6 +16,8 @@ export const previous = FaAngleLeft;
 export const checklistSelected = FaCheckSquare;
 export const checklistEmpty = FaSquare;
 export const warning = FaExclamationTriangle;
+export const success = FaCheck;
+export const error = FaExclamation;
 
 // Table
 export const uuid = FaBarcode;

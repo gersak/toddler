@@ -4,7 +4,6 @@
       [toddler.layout :as layout]
       [toddler.grid :as grid]
       [toddler.ui :as ui]
-      [toddler.ui.provider :refer [UI]]
       [toddler.ui.components :as components]
       toddler.elements.table.theme
       [vura.core :as vura]

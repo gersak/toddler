@@ -8,7 +8,6 @@
    [toddler.hooks :refer [use-idle]]
    [toddler.popup :as popup]
    [toddler.ui :as ui]
-   [toddler.input :refer [AutosizeInput]]
    ["toddler-icons" :as icon]))
 
 (defn get-available-options
@@ -106,7 +105,9 @@
 
 
 (defhook use-dropdown
-  [{:keys [value options on-change onChange new-fn search-fn area area-position disabled]
+  [{:keys [value options on-change onChange
+           new-fn search-fn area area-position disabled
+           read-only]
     :or {search-fn str}}]
   (let [on-change (or onChange on-change identity)
         [search set-search!] (use-idle
@@ -157,6 +158,7 @@
      :area area
      :search-fn search-fn
      :ref-fn ref-fn
+     :read-only read-only
      :discard! #(on-change nil)
      :sync-search! #(when-not (fn? new-fn) (set-search! (search-fn value)))
      :toggle! (fn [] (when-not disabled (maybe-focus input) (set-opened! not)))

@@ -9,21 +9,19 @@
      :refer [*components*]]
     [toddler.router.dom :as router]
     [toddler.hooks
-     :refer [use-current-user
-             use-current-locale
+     :refer [use-user
              use-window-dimensions
              use-dimensions]]
     [toddler.i18n.default]
     [toddler.ui :as ui]
     [toddler.ui.elements :as e]
-    [toddler.ui.provider :refer [UI]]
+    [toddler.provider :refer [UI]]
     [toddler.ui.components :as default]
     [toddler.layout :as layout
      :refer [use-layout]]
     [toddler.window :as window]
     [toddler.popup :as popup]
-    [toddler.dropdown :as dropdown
-     :refer [*dropdown*]]
+    [toddler.dropdown :as dropdown]
     ["react" :as react]
     ["toddler-icons" :as icon]
     [toddler.app :as app]
@@ -103,7 +101,7 @@
     []
     (let [[area-position set-area-position!] (hooks/use-state #{:bottom :center})
           ;;
-          [{{locale :locale} :settings} set-user!] (use-current-user)
+          [{{locale :locale} :settings} set-user!] (use-user)
           ;;
           {:keys [area toggle! opened] :as dropdown}
           (dropdown/use-dropdown
@@ -121,7 +119,7 @@
            :value [area-position set-area-position!]}
           ($ popup/Area
              {:ref area
-              :class (css :flex :items-center)}
+              :class (css :flex :items-center :font-bold)}
              (d/button
                {:onClick toggle!
                 :class [(css
@@ -197,7 +195,6 @@
                               :height content-height})
         $content (css
                    :bg-neutral-100
-                   ; :border-4
                    :border-teal-600
                    :rounded-md)]
     (if render

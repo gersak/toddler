@@ -26,18 +26,18 @@
   (let [shape-ref (hooks/use-ref nil)]
     (when image
       (<>
-       (konva/Image
-        {:& avatar
-         :onClick (fn [^js e] (onSelect (.. e -target)))
-         :ref #(reset! shape-ref %)
-         :draggable true
-         :onDragMove (fn [^js e]
-                       (let [node ^js @shape-ref]
-                         (onChange
-                          {:width (.width node)
-                           :height (.height node)
-                           :x (.x (.-target e))
-                           :y (.y (.-target e))})))})))))
+        (konva/Image
+          {:& avatar
+           :onClick (fn [^js e] (onSelect (.. e -target)))
+           :ref #(reset! shape-ref %)
+           :draggable true
+           :onDragMove (fn [^js e]
+                         (let [node ^js @shape-ref]
+                           (onChange
+                             {:width (.width node)
+                              :height (.height node)
+                              :x (.x (.-target e))
+                              :y (.y (.-target e))})))})))))
 
 
 (defn download-uri [^js uri, name, mime]
@@ -52,7 +52,6 @@
     (.removeChild body link)))
 
 
-
 (def ^:dynamic ^js *stage* (create-context))
 
 
@@ -60,7 +59,7 @@
   (hooks/use-context *stage*))
 
 
-(defnc EditorStage [{:keys [image className size]
+(defnc EditorStage [{:keys [image size]
                :or {size 144}
                :as props} _ref]
   {:wrap [(ui/forward-ref)]}
@@ -103,36 +102,35 @@
            :y (if (= image js/undefined) 0
                 half-size)})))
     (<>
-      (d/div
-        {:className className}
-        (konva/Stage
-          {:width size
-           :height size 
-           :ref stage-ref
+      (konva/Stage
+        {:width size
+         :height size 
+         :ref stage-ref
+         :onWheel (fn [^js e]
+                    (let [evt (.-evt e)]
+                      (.preventDefault evt)
+                      (.stopPropagation evt)))
+         :& (select-keys props [:class :className])}
+        (konva/Layer
+          {:x half-size
+           :y half-size
+           :offsetX half-size
+           :offsetY half-size 
+           :scaleX layer-zoom
+           :scaleY layer-zoom
            :onWheel (fn [^js e]
-                      (let [evt (.-evt e)]
-                        (.preventDefault evt)
-                        (.stopPropagation evt)))}
-          (konva/Layer
-            {:x half-size
-             :y half-size
-             :offsetX half-size
-             :offsetY half-size 
-             :scaleX layer-zoom
-             :scaleY layer-zoom
-             :onWheel (fn [^js e]
-                        (let [scale-by 1.02
-                              old-scale layer-zoom
-                              new-scale (if (< (.-deltaY (.-evt e)) 0)
-                                          (* old-scale scale-by)
-                                          (/ old-scale scale-by))]
-                          (set-layer-zoom new-scale)))}
-            ($ Image
-               {:avatar avatar
-                :onChange (fn [delta] (set-avatar! merge delta))}))
-          (konva/Layer
-            (konva/Rect
-              {& frame-props}))))
+                      (let [scale-by 1.02
+                            old-scale layer-zoom
+                            new-scale (if (< (.-deltaY (.-evt e)) 0)
+                                        (* old-scale scale-by)
+                                        (/ old-scale scale-by))]
+                        (set-layer-zoom new-scale)))}
+          ($ Image
+             {:avatar avatar
+              :onChange (fn [delta] (set-avatar! merge delta))}))
+        (konva/Layer
+          (konva/Rect
+            {:& frame-props})))
       (provider
         {:context *stage*
          :value stage-ref}
@@ -149,17 +147,17 @@
         :image image
         :size size}
        (<>
-         ($ ui/button
-            {:onClick (fn []
-                        (let [[layer1 layer2] (.-children @stage)
-                              [_ ^js transformer] ^js (.-children layer1)
-                              frame ^js (.-children layer2)]
-                          (doseq [^js el frame] (.hide el))
-                          (when transformer (.hide transformer))
-                          (download-uri (.toDataURL @stage), "user-avatar.png", "image/png")
-                          (doseq [^js el frame] (.show el))
-                          (when transformer (.show transformer))))}
-            (str "Download/log URI"))
+         ; ($ ui/button
+         ;    {:onClick (fn []
+         ;                (let [[layer1 layer2] (.-children @stage)
+         ;                      [_ ^js transformer] ^js (.-children layer1)
+         ;                      frame ^js (.-children layer2)]
+         ;                  (doseq [^js el frame] (.hide el))
+         ;                  (when transformer (.hide transformer))
+         ;                  (download-uri (.toDataURL @stage), "user-avatar.png", "image/png")
+         ;                  (doseq [^js el frame] (.show el))
+         ;                  (when transformer (.show transformer))))}
+         ;    (str "Download/log URI"))
          (d/input {:id "input"
                    :name "input"
                    :type "file"
@@ -205,7 +203,13 @@
     (<>
       (d/div
         {:className className
-         :style style}
+         :style style
+         ;; FIXME - className is not propagated properly... WHY i don't know
+         ;; There should be no forcing hidden and position
+         ; :style (assoc style
+         ;               :visibility "hidden"
+         ;               :top 0 :left 0 :position "fixed")
+         }
         (konva/Stage
           {:width size
            :height size
@@ -213,12 +217,13 @@
           (konva/Layer
             (map
               (fn [square]
-                (konva/Rect {& square}))
+                (konva/Rect {:& square}))
               squares))))
       (c/children props))))
 
 
 (def ^:dynamic ^js *generator-queue* (create-context))
+
 
 (defhook use-generator-queue [] (hooks/use-context *generator-queue*))
 
@@ -280,7 +285,6 @@
           :background "white"
           :ref stage})
       (c/children props))))
-
 
 
 (defnc Avatar

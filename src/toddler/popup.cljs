@@ -357,7 +357,6 @@
        (let [candidates (map 
                           #(compute-candidate (assoc props :position %))
                           preference)]
-         (println "CANDIDATES: " candidates)
          (when (empty? candidates)
            (throw
              (ex-info 

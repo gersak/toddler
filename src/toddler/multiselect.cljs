@@ -117,7 +117,7 @@
 
 
 (defhook use-multiselect
-  [{:keys [value options on-change onChange new-fn search-fn area area-position]
+  [{:keys [value options on-change onChange new-fn search-fn area area-position read-only]
     :or {search-fn str}
     :as props}]
   (let [on-change (or onChange on-change identity)
@@ -165,6 +165,7 @@
            :area area
            :popup popup
            :ref-fn ref-fn
+           :read-only read-only
            :toggle! (fn []
                       (when @input (.focus @input))
                       (set-opened! not))

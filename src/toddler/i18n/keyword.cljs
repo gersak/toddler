@@ -1,7 +1,8 @@
-(ns toddler.i18n.keywords
+(ns toddler.i18n.keyword
   (:require
    [toddler.i18n :as i18n]
-   [toddler.i18n.time :as t]))
+   [toddler.i18n.time :as t]
+   [helix.placenta.util :refer [deep-merge]]))
 
 
 (defonce translations (atom nil))
@@ -9,7 +10,7 @@
 
 (defn add-translations
   [mapping]
-  (swap! translations merge mapping))
+  (swap! translations deep-merge mapping))
 
 
 (defn remove-translations
@@ -43,7 +44,7 @@
 (extend-protocol toddler.i18n/Locale
   cljs.core.Keyword
   (locale [this subject]
-    (let [symbols (t/get-date-symbols this)]
+    (let [^js symbols (t/get-date-symbols this)]
       (case subject
         :months (.-MONTHS symbols)
         :months/standalone (.-STANDALONEMONTHS symbols)

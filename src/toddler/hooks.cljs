@@ -10,17 +10,71 @@
 
 (.log js/console "Loading toddler.hooks")
 
-(defhook use-current-user
+
+(defhook use-url
+  "Returns root application root URL"
+  []
+  (hooks/use-context app/url))
+
+
+(defhook use-user
   "Returns value in app/*user* context"
   []
-  (hooks/use-context app/*user*))
+  (hooks/use-context app/user))
+
+
+(defhook use-token
+  "Returns current app token if any."
+  []
+  (hooks/use-context app/token))
+
+
+(defhook use-avatar
+  [{:keys [name avatar path]}]
+  (let [avatars (hooks/use-context app/avatars)
+        [_avatar set-avatar!] (hooks/use-state (get @avatars avatar))
+        [token] (hooks/use-context app/token)
+        refresh (hooks/use-callback
+                  [avatar path]
+                  (fn []
+                    (when avatar
+                      (let [xhr (new js/XMLHttpRequest)]
+                        (.open xhr "GET" path true)
+                        (when token (.setRequestHeader xhr "Authorization" (str "Bearer " token)))
+                        (.setRequestHeader xhr "Accept" "application/octet-stream")
+                        (.setRequestHeader xhr "Cache-Control" "no-cache")
+                        (.addEventListener
+                          xhr "load"
+                          (fn [evt]
+                            (let [status (.. evt -target -status)
+                                  avatar' (.. evt -currentTarget -responseText)]
+                              (case status
+                                200
+                                (when (not= avatar' (get @avatars avatar))
+                                  (swap! avatars assoc avatar avatar')
+                                  (set-avatar! avatar'))
+                                ;; otherwise
+                                nil
+                                (async/put! app/signal-channel
+                                  {:type :toddler.notifications/error
+                                   :message (str "Couldn't fetch avatar for user " name)
+                                   :visible? true
+                                   :hideable? true
+                                   :adding? true
+                                   :autohide true})))))
+                        (.send xhr)))))]
+    (hooks/use-effect
+      [avatar]
+      (when (nil? _avatar)
+        (refresh)))
+    [_avatar refresh]))
 
 
 (defhook use-current-locale
   "Returns value for :locale in current user settings"
   []
   (let [[{{locale :locale
-           :or {locale :en}} :settings}] (use-current-user)]
+           :or {locale :default}} :settings}] (use-user)]
     locale))
 
 
@@ -152,7 +206,7 @@
   "Function will return browser window dimensions that
   should be instantiated in app/*window* context"
   []
-  (hooks/use-context app/*window*))
+  (hooks/use-context app/window))
 
 
 

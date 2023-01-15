@@ -1,7 +1,6 @@
 (ns toddler.ui.tables
   (:require
     goog.string
-    toddler
     [clojure.string :as str]
     [helix.dom :as d]
     [helix.core 
@@ -32,11 +31,20 @@
 
 
 (defnc row
-  [{:keys [className] :as props} _ref]
+  [props _ref]
   {:wrap [(ui/forward-ref)]}
   ($ table/Row
     {:ref _ref
      :className "trow" 
+     & (dissoc props :className :class)}))
+
+
+(defnc cell
+  [props _ref]
+  {:wrap [(ui/forward-ref)]}
+  ($ table/Cell
+    {:ref _ref
+     :className "tcell" 
      & (dissoc props :className :class)}))
 
 
@@ -614,11 +622,12 @@
                              :position "absolute"
                              :right "0px"}]
                            ["&:hover .decorator" :text-gray-400])}
-             ($ e/avatar
+             ($ ui/avatar
                 {:className (css :mr-2
                                  :border
                                  :border-solid
-                                 :border-gray-500)
+                                 :border-gray-500
+                                 {:border-radius "20px"})
                  :size :small
                  & value})
              (d/input
@@ -1002,6 +1011,29 @@
                                        :value (assoc v 1 x)}))}))))))))))
 
 
+(def $table
+  (css
+    :flex
+    :column
+    :grow
+    :text-neutral-600
+    :border
+    :border-solid
+    :rounded-md
+    :shadow-lg
+    {:background-color "#e2f1fc"
+     :border-color "#8daeca"}
+    ["& .trow"
+     :my-1
+     :border-b
+     :border-transparent
+     {:min-height "2em"
+      :transition "all .5s ease-in-out"}]
+    ["& .trow:hover, & .trow:focus-within" :border-b
+     {:border-color "#69b5f3"
+      :background-color "#d0e9fb"}]))
+
+
 (defnc table
   [props]
   (let [[header {header-height :height}] (use-dimensions) 
@@ -1037,8 +1069,6 @@
               (.removeEventListener @body "scroll" sync-body-scroll))
             (when @header
               (.removeEventListener @header "scroll" sync-header-scroll))))))
-    ; (println "BODY STYLE: " body-style)
-    ; (println "HEADER STYLE: " header-style)
     ($ table/TableProvider
        {& props}
        (d/div
@@ -1062,13 +1092,14 @@
               :value body-style}
              ($ table/Body
                 {:ref (fn [el] (reset! body el))
-                 :className toddler/$table-default})))))))
+                 :className $table})))))))
 
 
 (def components
   (merge
     {:table table}
-    #:table {:row row}
+    #:table {:row row
+             :cell cell}
     #:cell {:expand expand-cell
             :delete delete-cell
             :boolean boolean-cell

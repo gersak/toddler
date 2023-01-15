@@ -5,7 +5,7 @@
     [toddler.ui.fields :as fields]
     [toddler.ui.elements :as elements]
     [toddler.ui.tables :as tables]
-    [toddler.ui.provider :as ui.provider]))
+    [toddler.provider :as provider]))
 
 
 (def components
@@ -16,6 +16,6 @@
 
 
 (defnc Provider [props]
-  ($ ui.provider/UI
+  ($ provider/UI
     {:components components
      & props}))
