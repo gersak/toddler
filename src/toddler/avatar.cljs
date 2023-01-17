@@ -101,6 +101,7 @@
                 half-size)
            :y (if (= image js/undefined) 0
                 half-size)})))
+    (println "STYLE: " (select-keys props [:class :className]))
     (<>
       (konva/Stage
         {:width size
@@ -110,7 +111,7 @@
                     (let [evt (.-evt e)]
                       (.preventDefault evt)
                       (.stopPropagation evt)))
-         :& (select-keys props [:class :className])}
+         & (select-keys props [:class :className])}
         (konva/Layer
           {:x half-size
            :y half-size

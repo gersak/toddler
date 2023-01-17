@@ -1,11 +1,16 @@
 (ns toddler.hooks
   (:require
-   [clojure.core.async :as async :refer-macros [go-loop]]
-   [helix.core :refer-macros [defhook]]
-   [helix.hooks :as hooks]
-   [toddler.app :as app]
-   [toddler.util :as util]
-   [toddler.i18n :as i18n :refer [translate]]))
+    [goog.string :as gstr]
+    [goog.string.format]
+    [clojure.core.async :as async :refer-macros [go-loop]]
+    [helix.core :refer-macros [defhook]]
+    [helix.hooks :as hooks]
+    [toddler.app :as app]
+    [toddler.util :as util]
+    [toddler.i18n :as i18n :refer [translate]]
+    [toddler.i18n.keyword]
+    [toddler.i18n.time]
+    [toddler.i18n.number]))
 
 
 (.log js/console "Loading toddler.hooks")
@@ -86,6 +91,25 @@
                    (fn
                      ([data] (translate data locale))
                      ([data options]  (translate data locale options))))]
+    translate))
+
+
+(comment
+  (apply gstr/format
+         (translate :reacher.delete.dialog :hr)
+         ["Biljana"]))
+
+
+(defhook use-translatef
+  []
+  (let [locale (use-current-locale)
+        translate (hooks/use-memo
+                   [locale]
+                   (fn
+                     ([data & args]
+                       (let [template (translate data locale)]
+                         (println "Translating: " template args)
+                         (apply gstr/format template args)))))]
     translate))
 
 
