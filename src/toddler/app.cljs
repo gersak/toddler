@@ -28,7 +28,7 @@
 
 (defnc Avatars
   [props]
-  (let [avatars_ (hooks/use-ref nil)]
+  (let [avatars_ (atom nil)]
     (provider
       {:context avatars
        :value avatars_}

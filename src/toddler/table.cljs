@@ -217,7 +217,6 @@
 ;                           (set-pagination! {:page np})))})))))
 
 (defhook use-cell-state
-
   [el]
   (let [{:keys [idx] :as row} (hooks/use-context *row-record*)
         {k :cursor} el
@@ -235,8 +234,17 @@
                            {:type :table.element/change
                             :idx idx 
                             :column el
-                            :value value}))))]
-    [value set-value!]))
+                            :value value}))))
+        select-value! (hooks/use-memo
+                        [idx dispatch]
+                        (fn [value]
+                          (when dispatch
+                            (dispatch
+                              {:type :table.element/select
+                               :idx idx 
+                               :column el
+                               :value value}))))]
+    [value set-value! select-value!]))
 
 
 ;;;;;;;;;;;;;;;;

@@ -56,8 +56,7 @@
                               (case status
                                 200
                                 (when (not= avatar' (get @avatars avatar))
-                                  (swap! avatars assoc avatar avatar')
-                                  (set-avatar! avatar'))
+                                  (swap! avatars assoc avatar avatar'))
                                 ;; otherwise
                                 nil
                                 (async/put! app/signal-channel
@@ -70,8 +69,22 @@
                         (.send xhr)))))]
     (hooks/use-effect
       [avatar]
-      (when (nil? _avatar)
-        (refresh)))
+      (cond
+        (nil? _avatar) (refresh)))
+    (hooks/use-effect
+      [avatar]
+      (let [uuid (random-uuid)]
+        (when (and avatars avatar)
+          (println "AVATARS: " (pr-str avatars))
+          (add-watch avatars uuid
+                     (fn [_ _ o n]
+                       (let [old (get o avatar)
+                             new (get n avatar)]
+                         (when (not= old new)
+                           ; (println "Noticed avatar change: " avatar)
+                           (set-avatar! new))))))
+        (fn []
+          (when avatars (remove-watch avatars uuid)))))
     [_avatar refresh]))
 
 
