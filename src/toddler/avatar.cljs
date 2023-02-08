@@ -71,7 +71,7 @@
         stage-ref (hooks/use-memo
                     :once
                     (or _ref (fn [el] (reset! local-ref el))))
-        [layer-zoom set-layer-zoom] (hooks/use-state 0.5)
+        [layer-zoom set-layer-zoom] (hooks/use-state 1)
         frame-props (hooks/use-memo
                       [size]
                       {:x (* -1 0.1 size)
@@ -86,7 +86,7 @@
                        :style {:z-index "10"}})]
     (hooks/use-effect
       [image]
-      (set-layer-zoom 0.5)
+      (set-layer-zoom 1)
       (when image
         (set-avatar!
           {:image image
@@ -110,7 +110,7 @@
                     (let [evt (.-evt e)]
                       (.preventDefault evt)
                       (.stopPropagation evt)))
-         & (select-keys props [:class :className])}
+         :& (select-keys props [:class :className])}
         (konva/Layer
           {:x half-size
            :y half-size
@@ -137,6 +137,23 @@
         (c/children props)))))
 
 
+(defn stage->base64
+  [stage]
+  (let [[layer1 layer2] (.-children @stage)
+        [_ ^js transformer] ^js (.-children layer1)
+        frame ^js (.-children layer2)]
+    ;; remove frames
+    (doseq [^js el frame] (.hide el))
+    (when transformer (.hide transformer))
+    ;; memorize result
+    (let [result (.toDataURL @stage)]
+      ;; return frames
+      (doseq [^js el frame] (.show el))
+      (when transformer (.show transformer))
+      ;; 
+      result)))
+
+
 (defnc Editor [{:keys [size]
                 :or {size 250}}]
   (let [stage (hooks/use-ref nil)
@@ -147,17 +164,17 @@
         :image image
         :size size}
        (<>
-         ; ($ ui/button
-         ;    {:onClick (fn []
-         ;                (let [[layer1 layer2] (.-children @stage)
-         ;                      [_ ^js transformer] ^js (.-children layer1)
-         ;                      frame ^js (.-children layer2)]
-         ;                  (doseq [^js el frame] (.hide el))
-         ;                  (when transformer (.hide transformer))
-         ;                  (download-uri (.toDataURL @stage), "user-avatar.png", "image/png")
-         ;                  (doseq [^js el frame] (.show el))
-         ;                  (when transformer (.show transformer))))}
-         ;    (str "Download/log URI"))
+         ($ ui/button
+            {:onClick (fn []
+                        (let [[layer1 layer2] (.-children @stage)
+                              [_ ^js transformer] ^js (.-children layer1)
+                              frame ^js (.-children layer2)]
+                          (doseq [^js el frame] (.hide el))
+                          (when transformer (.hide transformer))
+                          (download-uri (.toDataURL @stage), "user-avatar.png", "image/png")
+                          (doseq [^js el frame] (.show el))
+                          (when transformer (.show transformer))))}
+            (str "Download/log URI"))
          (d/input {:id "input"
                    :name "input"
                    :type "file"
@@ -174,7 +191,7 @@
 
 (defnc GeneratorStage
   [{:keys [className size squares color background style]
-    :or {size 500
+    :or {size 250
          squares 16
          color "gray"
          background "white"}
@@ -275,6 +292,7 @@
             (async/put! request img)
             (swap! requests (comp vec rest))
             (when (not-empty @requests)
+              ;; chose some other color
               (async/go (set-color! (rand-nth (remove #{color} palette)))))))))
     (provider
       {:context *generator-queue*

@@ -690,6 +690,20 @@
     ["& .sort-marker.hidden" {:opacity "0"}]))
 
 
+(defnc SortElement
+  [{{:keys [order]} :column}]
+  (case order
+    :desc
+    ($ icon/sortDesc
+       {:className "sort-marker"})
+    :asc
+    ($ icon/sortAsc
+       {:className "sort-marker"})
+    ;;
+    ($ icon/sortDesc 
+       {:className "sort-marker hidden"})))
+
+
 (defnc plain-header
   [{:keys [className column] :as props}]
   (let [$alignment (use-header-alignment-css column)]
@@ -697,7 +711,7 @@
       {:class [$header className]}
       (d/div 
         {:class [$alignment "header"]}
-        ($ table/SortElement {& props})
+        ($ SortElement {& props})
         ($ table/ColumnNameElement {& props})))))
 
 
@@ -722,7 +736,7 @@
       {:class [$header className]}
       (d/div
         {:class [$alignment "header"]}
-        ($ table/SortElement {& props})
+        ($ SortElement {& props})
         ($ table/ColumnNameElement {& props}))
       (d/div
         {:className $filter}
@@ -801,7 +815,7 @@
         {:class [$filter (when (not-empty v) "selected")]}
         (d/div
           {:class ["header"]}
-          ($ table/SortElement {& props})
+          ($ SortElement {& props})
           ($ table/ColumnNameElement {& props}))
         ($ popup/Area
            {:ref area
@@ -866,7 +880,7 @@
         {:class [$filter (when (not-empty v) "selected")]}
         (d/div
           {:class ["header"]}
-          ($ table/SortElement {& props})
+          ($ SortElement {& props})
           ($ table/ColumnNameElement {& props}))
         ($ popup/Area
            {:ref area
@@ -918,7 +932,7 @@
       {:class [$header className]}
       (d/div 
         {:class [$alignment "header"]}
-        ($ table/SortElement {& props})
+        ($ SortElement {& props})
         ($ table/ColumnNameElement {& props})))))
 
 
@@ -947,7 +961,7 @@
         {:class [$filter]}
         (d/div
           {:class ["header"]}
-          ($ table/SortElement {& props})
+          ($ SortElement {& props})
           ($ table/ColumnNameElement {& props}))
         ($ popup/Area
            {:ref area

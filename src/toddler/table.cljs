@@ -10,8 +10,7 @@
     [helix.hooks :as hooks]
     [helix.children :as c]
     [toddler.ui :as ui]
-    [toddler.layout :as layout]
-    ["toddler-icons" :as icon]))
+    [toddler.layout :as layout]))
 
 
 
@@ -251,19 +250,6 @@
 ;;   HEADERS  ;;
 ;;;;;;;;;;;;;;;;
 
-
-(defnc SortElement
-  [{{:keys [order]} :column}]
-  (case order
-    :desc
-    ($ icon/sortDesc
-       {:className "sort-marker"})
-    :asc
-    ($ icon/sortAsc
-       {:className "sort-marker"})
-    ;;
-    ($ icon/sortDesc 
-       {:className "sort-marker hidden"})))
 
 
 (defnc ColumnNameElement

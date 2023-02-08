@@ -15,8 +15,7 @@
      :refer [*dropdown*]]
     [toddler.popup
      :as popup]
-    [toddler.ui :as ui]
-    ["toddler-icons" :as icon]))
+    [toddler.ui :as ui]))
 
 (defn get-available-options 
   ([search value options search-fn]
@@ -251,10 +250,4 @@
       {& props}
       (if-some [children (c/children props)]
         children
-        value)
-      (when on-remove
-        ($ icon/clear
-           {:className "remove"
-            :onClick (fn [e]
-                       (.stopPropagation e)
-                       (on-remove value))})))))
+        value))))

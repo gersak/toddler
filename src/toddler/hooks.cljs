@@ -40,7 +40,7 @@
         [_avatar set-avatar!] (hooks/use-state (get @avatars avatar))
         [token] (hooks/use-context app/token)
         refresh (hooks/use-callback
-                  [avatar path]
+                  [_avatar avatar path]
                   (fn []
                     (when avatar
                       (let [xhr (new js/XMLHttpRequest)]
@@ -55,8 +55,17 @@
                                   avatar' (.. evt -currentTarget -responseText)]
                               (case status
                                 200
-                                (when (not= avatar' (get @avatars avatar))
-                                  (swap! avatars assoc avatar avatar'))
+                                (cond
+                                  ;; if avatar has changed than swap avatars
+                                  ;; this should trigger updates for all hooks
+                                  ;; with target avatar
+                                  (not= avatar' (get @avatars avatar))
+                                  (swap! avatars assoc avatar avatar')
+                                  ;; Otherwise if avatar is cached properly, but
+                                  ;; current _avatar doesn't match current state
+                                  ;; update current _avatar
+                                  (not= _avatar avatar')
+                                  (set-avatar! avatar'))
                                 ;; otherwise
                                 nil
                                 (async/put! app/signal-channel
@@ -69,19 +78,19 @@
                         (.send xhr)))))]
     (hooks/use-effect
       [avatar]
-      (cond
-        (nil? _avatar) (refresh)))
+      (when (some? avatar)
+        (if-let [cached (get @avatars avatar)]
+          (set-avatar! cached)
+          (refresh))))
     (hooks/use-effect
       [avatar]
       (let [uuid (random-uuid)]
         (when (and avatars avatar)
-          (println "AVATARS: " (pr-str avatars))
           (add-watch avatars uuid
                      (fn [_ _ o n]
                        (let [old (get o avatar)
                              new (get n avatar)]
                          (when (not= old new)
-                           ; (println "Noticed avatar change: " avatar)
                            (set-avatar! new))))))
         (fn []
           (when avatars (remove-watch avatars uuid)))))
@@ -121,7 +130,7 @@
                    (fn
                      ([data & args]
                        (let [template (translate data locale)]
-                         (println "Translating: " template args)
+                         ; (println "Translating: " template args)
                          (apply gstr/format template args)))))]
     translate))
 

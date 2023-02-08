@@ -7,8 +7,7 @@
    [helix.children :as c]
    [toddler.hooks :refer [use-idle]]
    [toddler.popup :as popup]
-   [toddler.ui :as ui]
-   ["toddler-icons" :as icon]))
+   [toddler.ui :as ui]))
 
 (defn get-available-options
   ([search options search-fn]
@@ -189,15 +188,14 @@
 
 
 (defnc Decorator
-  [{:keys [className]}]
+  [{:keys [className] :as props}]
   (let [{:keys [options opened disabled]} (hooks/use-context *dropdown*)]
-    (when (and (not disabled) (pos? (count options))
-               icon/dropdownDecorator)
+    (when (and (not disabled) (pos? (count options)))
       (d/span
        {:className (str
                     className
                     (when opened " opened"))}
-       ($ icon/dropdownDecorator)))))
+       (c/children props)))))
 
 
 (defnc Discard
@@ -233,7 +231,7 @@
 
 
 (defnc Input
-  [{:keys [className onSearchChange placeholder]} _ref]
+  [{:keys [onSearchChange placeholder] :as props} _ref]
   (let [{:keys [input
                 search
                 on-change
@@ -249,8 +247,7 @@
         (onSearchChange search)))
     (d/input
       {:ref input
-       :className className 
-       :value search
+       :value (or search "")
        :read-only (or read-only (not searchable?))
        :disabled disabled
        :spellCheck false
@@ -258,7 +255,8 @@
        :placeholder placeholder
        :onChange on-change
        :onBlur sync-search!
-       :onKeyDown on-key-down})))
+       :onKeyDown on-key-down
+       & (select-keys props [:className :class])})))
 
 
 (defnc Popup
@@ -266,7 +264,8 @@
     rwrapper :render/wrapper
     roption :render/option
     :or {rwrapper "div"
-         roption "div"}}]
+         roption "div"}
+    :as props}]
   (let [[area-position set-area-position!] (hooks/use-context popup/*area-position*)
         {:keys [options
                 popup
@@ -290,7 +289,7 @@
                         (if-not (fn? set-area-position!)
                           (.error js/console "Can't set area position. Function not provided!")
                           (set-area-position! position))))
-          :className className}
+          & (select-keys props [:className :class])}
          (map
            (fn [option]
              ($ roption

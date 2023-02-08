@@ -1,6 +1,4 @@
 (ns toddler.notifications
-  {:shadow.css/include
-   ["css/toddler_notifications.css"]}
   (:require
     clojure.string
     goog.string.format
@@ -8,11 +6,9 @@
     [clojure.core.async :as async]
     [helix.core :refer [defnc $ <> memo]]
     [helix.children :refer [children]]
-    [toddler.hooks :refer [use-toddler-listener
-                           use-window-dimensions]]
+    [toddler.hooks :refer [use-toddler-listener]]
     [helix.hooks :as hooks]
-    [helix.dom :as d]
-    ["toddler-icons" :as icon]))
+    [helix.dom :as d]))
 
 
 (defonce notification-channel (async/chan 1000))
@@ -70,108 +66,6 @@
 (defmethod render-notification :default
   [{:keys [type]}]
   (.error js/console "Unknown notifcation renderer for: " type))
-
-
-(defmethod render-notification ::error
-  [{:keys [visible? hideable? message idx dispatch hidding? adding?]}]
-  (d/div 
-    {:key idx
-     :class (cond-> ["notification" "error"]
-              (and visible? adding? (not hidding?)) 
-              (conj "new")
-              ;;
-              (and visible? (not adding?) (not hidding?)) 
-              (conj "show") 
-              ;;
-              hidding? (conj "hide"))}
-    (d/div 
-      {:class "close"
-       :style {:visibility 
-               (if (or
-                     (not hideable?)
-                     (not visible?))
-                 "hidden"
-                 "visible")}}
-      ($ icon/close
-         {:onClick #(dispatch
-                      {:type :notification/hide
-                       :idx idx})}))
-    (d/div 
-      {:class "type"}
-      ($ icon/error))
-    (d/div 
-      {:class "content"} 
-      (d/div {:class "message"} (d/span message)))))
-
-
-(defmethod render-notification ::warning 
-  [{:keys [visible? hidding? hideable? message idx dispatch adding?]}]
-  (d/div 
-    {:key idx
-     :class (clojure.string/join
-              " " 
-              (cond-> ["notification" "warning"]
-                (and visible? adding? (not hidding?)) 
-                (conj "new")
-                ;;
-                (and visible? (not adding?) (not hidding?)) 
-                (conj "show") 
-                ;;
-                hidding? (conj "hide")))}
-    (d/div 
-      {:class "close"
-       :style {:visibility 
-               (if (or
-                     (not hideable?)
-                     (not visible?))
-                 "hidden"
-                 "visible")}}
-      ($ icon/close
-         {:onClick #(dispatch
-                      {:type :notification/hide
-                       :idx idx})}))
-    (d/div 
-      {:class "type"}
-      ($ icon/warning))
-    (d/div 
-      {:class "content"} 
-      (d/div {:class "message"} (d/span message)))))
-
-
-(defmethod render-notification ::success 
-  [{:keys [visible? hideable? hidding? message idx dispatch adding?]}]
-  (d/div 
-    {:key idx
-     :class (clojure.string/join 
-              " " 
-              (cond-> ["notification" "success"]
-                (and visible? adding? (not hidding?)) 
-                (conj "new")
-                ;;
-                (and visible? (not adding?) (not hidding?)) 
-                (conj "show") 
-                ;;
-                hidding? (conj "hide")))}
-    (d/div 
-      {:class "close"
-       :style {:visibility 
-               (if (or
-                     (not hideable?)
-                     (not visible?))
-                 "hidden"
-                 "visible")}}
-      ($ icon/close
-        {:onClick #(dispatch
-                     {:type :notification/hide
-                      :idx idx})}))
-    (d/div 
-      {:class "type"}
-      ($ icon/success))
-    (d/div 
-      {:class "content"} 
-      (d/div 
-        {:class "message"}
-        (d/span message)))))
 
 
 (defn notification-reducer
@@ -246,7 +140,6 @@
            :notifications notifications
            :opened? opened?})
         ; opened? true
-        dimensions (use-window-dimensions)
         ;;
         control-channel (async/chan)
         notifications (if opened? (reverse notifications) notifications)]
@@ -297,7 +190,7 @@
                      {:idx idx
                       :key idx
                       :dispatch dispatch
-                      & (cond-> 
+                      :& (cond-> 
                           notification
                           opened? (assoc 
                                     ; :hideable? false

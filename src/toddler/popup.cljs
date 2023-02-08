@@ -433,13 +433,13 @@
 
 
 (defnc Area
-  [{:keys [render] 
-    :or {render "div"} 
+  [{;:keys [render] 
+    ; :or {render "div"} 
     :as props} ref]
   {:wrap [(react/forwardRef)]}
   (let [area (hooks/use-ref nil)
         area' (or ref area)]
-    ($ render
+    (d/div
        {:ref #(reset! area' %)
         & props}
        (provider
