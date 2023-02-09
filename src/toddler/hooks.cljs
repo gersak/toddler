@@ -34,6 +34,18 @@
   (hooks/use-context app/token))
 
 
+(defhook use-local-storage
+  ([location] (use-local-storage location identity))
+  ([location transform]
+    (let [[local set-local!] (hooks/use-state
+                               (transform
+                                 (.getItem js/localStorage location)))]
+      (hooks/use-effect
+        [local]
+        (.setItem js/localStorage location local))
+      [local set-local!])))
+
+
 (defhook use-avatar
   [{:keys [name avatar path]}]
   (let [avatars (hooks/use-context app/avatars)
