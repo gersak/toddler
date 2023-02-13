@@ -284,29 +284,30 @@
      (case position
        ;;
        (#{:top :left}
-         #{:bottom :left})
+        #{:bottom :left})
        (update data :position/right move-right)
        ;;
        (#{:top :center}
-         #{:bottom :center}
-         #{:right :center})
+        #{:bottom :center}
+        #{:right :center})
        (->
          data
          (update :position/left center-left)
          (update :position/right center-right))
        ;;
        (#{:top :right}
-         #{:bottom :right}
-         #{:left :center})
+        #{:bottom :right}
+        #{:left :center})
        (update data :position/left move-left)
        :else data))))
 
 
 (defn update-dropdown-size
   [data]
-  (assoc  data
-         :popup-width (- (:position/right data) (:position/left data))
-         :popup-height (- (:position/bottom data) (:position/top data))))
+  (assoc 
+    data
+    :popup-width (- (:position/right data) (:position/left data))
+    :popup-height (- (:position/bottom data) (:position/top data))))
 
 (defn best-candidate
   [candidates]
