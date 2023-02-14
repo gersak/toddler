@@ -9,16 +9,16 @@
     [helix.hooks :as hooks]
     [helix.dom :as d]
     [helix.children :as c]
-    [vura.core :refer [round-number]]
-    [toddler.scroll :refer [SimpleBar]]
+    ; [vura.core :refer [round-number]]
+    ; [toddler.scroll :refer [SimpleBar]]
+    [toddler.layout :refer [*container-dimensions*]]
     [toddler.hooks :refer [use-delayed]]
     [toddler.util :as util]))
 
 (def ^:dynamic ^js *area-element* (create-context))
-(def ^:dynamic ^js *dimensions* (create-context))
+(def ^:dynamic ^js *position* (create-context))
 (def ^:dynamic ^js *container* (create-context))
 (def ^:dynamic ^js *outside-action-channel* (create-context))
-(def ^:dynamic ^js *area-position* (create-context))
 
 
 (def default-preference
@@ -253,6 +253,7 @@
 (defn computation-props [target el]
   (when-let [[top left right bottom] (util/window-element-position target)]
     (when-let [[_ _ _ _ popup-width popup-height] (util/get-element-rect el)]
+
       {:top top :left left :right right :bottom bottom
        :popup-width popup-width 
        :popup-height popup-height
@@ -333,7 +334,7 @@
         (neg? left) (assoc :position/left 3)
         (neg? right) (assoc :position/right (- window-width 3)))
       (adjust-scroll-width 15)
-      update-dropdown-size)))
+      #_update-dropdown-size)))
 
 (defn padding-data [el]
   (when el
@@ -434,9 +435,7 @@
 
 
 (defnc Area
-  [{;:keys [render] 
-    ; :or {render "div"} 
-    :as props} ref]
+  [props ref]
   {:wrap [(react/forwardRef)]}
   (let [area (hooks/use-ref nil)
         area' (or ref area)]
@@ -451,132 +450,48 @@
 
 
 (defnc Element
-  [{:keys [preference style className offset onChange items wrapper]
+  [{:keys [preference style offset onChange]
     :or {preference default-preference
          offset 5}
     :as props} ref]
   {:helix/features {:fast-refresh true}
    :wrap [(react/forwardRef)]}
-  (let [[{:keys [position/top position/left
-                 popup-width
-                 popup-height
-                 padding-top
-                 padding-left
-                 padding-right
-                 padding-bottom]
+  (let [[{:keys [position/top position/left position]
           :as computed
           :or {left -10000
-               top -10000
-               padding-left 0
-               padding-right 0
-               padding-bottom 0
-               padding-top 0}}
+               top -10000}}
          set-state!] (hooks/use-state nil)
         ;;
-        dummy (hooks/use-ref nil)
         el (hooks/use-ref nil)
+        _el (or ref el)
         target (hooks/use-context *area-element*)
         container-node (hooks/use-context *container*)]
-    (hooks/use-effect
-      [items]
+    (hooks/use-layout-effect
+      ; :always
+      :once
       (binding [*offset* offset] 
-        (let [computed (compute-container-props target @dummy preference)]
+        (let [computed (compute-container-props target @_el preference)]
           (set-state! computed)
           (when (ifn? onChange) (onChange computed)))))
     (when (nil? container-node)
       (.error js/console "Popup doesn't know where to render. Specify popup container. I.E. instantiate toddler.elements.popup/Container"))
     (rdom/createPortal
       (provider
-        {:context *dimensions*
-         :value computed}
-        (<>
-          (if wrapper
-            ($ wrapper
-               {:ref #(reset! dummy %)
-                :className className
-                :style (merge
-                         style
-                         {:top -10000 :left -10000 
-                          :position "fixed"
-                          :zIndex "1000"
-                          :visibility "hidden"})}
-               ;; TODO - think about what happens when height is limited by css
-               ;; or style properties. Than commented line doesn't work well
-               ;; on the other hand with current line simplebar is always present
-               ;; even for small popups.... this is not goood
-               ; (if (and computed (not (ok-candidate? computed)))
-               (c/children props))
-            (d/div
-              {:ref #(reset! dummy %)
-               :className className
-               :style (merge
-                        style
-                        {:top -10000 :left -10000 
-                         :position "fixed"
-                         :zIndex "1000"
-                         :visibility "hidden"})}
-              (c/children props)))
-          (when computed
-            (if wrapper
-              ($ wrapper
-                 {:ref #(reset! (or ref el) %)
-                  :className className
-                  :style (merge
-                           style
-                           {:top top :left left
-                            :position "fixed"
-                            :zIndex "1000"})}
-                 ($ SimpleBar
-                    {:style {:width (round-number (- popup-width padding-left padding-right) 1 :ceil)
-                             :height (round-number (- popup-height padding-top padding-bottom) 1 :ceil)}}
-                    (c/children props)))
-              (d/div
-                {:ref #(reset! (or ref el) %)
-                 :className className
-                 :style (merge
-                          style
-                          {:top top :left left
-                           :position "fixed"
-                           :zIndex "1000"})}
-                ($ SimpleBar
-                   {:style {:width (round-number (- popup-width padding-left padding-right) 1 :ceil)
-                            :height (round-number (- popup-height padding-top padding-bottom) 1 :ceil)}}
-                   (c/children props)))))))
+        {:context *position*
+         :value position}
+        (provider
+          {:context *container-dimensions*
+           :value computed}
+          (d/div
+            {:ref #(reset! _el %)
+             :style (merge
+                      style
+                      {:top top :left left
+                       :position "fixed"
+                       :box-sizing "border-box"
+                       ;; TODO - add border box
+                       :zIndex "1000"
+                       :visibility (if computed "visible" "hidden")})
+             & (select-keys props [:class :className])}
+            (c/children props))))
       @container-node)))
-
-
-(defnc Tooltip
-  [{:keys [message preference disabled] 
-    :or {preference cross-preference}
-    :as props} ref]
-  {:wrap [(react/forwardRef)]}
-  (let [[visible? set-visible!] (hooks/use-state nil)
-        hidden? (use-delayed (not visible?) 300)
-        area (hooks/use-ref nil)
-        popup (hooks/use-ref nil)]
-    (if (and (some? message) (not disabled)) 
-      ($ Area
-         {:ref area
-          :className "popup_area"
-          :onMouseLeave (fn [] (set-visible! false))
-          :onMouseEnter (fn [] (set-visible! true))}
-         (c/children props)
-         (when visible?
-           ($ Element
-              {:ref (or ref popup)
-               :style {:visibility (if hidden? "hidden" "visible")
-                       :animationDuration ".5s"
-                       :animationDelay ".3s"}
-               :preference preference
-               & (select-keys props [:class :className])}
-              (d/div {:class "info-tooltip"} message))))
-      (c/children props))))
-
-
-;; TODO implement menu
-
-
-
-(comment
-  (def els (array-seq (.getElementsByClassName js/document "tooltip-container")))
-  (def el (first els)))

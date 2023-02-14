@@ -204,40 +204,35 @@
   [{:keys [context-fn search-fn disabled placeholder]
     :or {search-fn str}
     :as props}]
-  (let [[area-position set-area-position!] (hooks/use-state nil)
-        {:keys [open!
+  (let [{:keys [open!
                 remove!
                 options
                 new-fn
                 area]
          :as multiselect} (use-multiselect
                             (assoc props
-                                   :search-fn search-fn
-                                   :area-position area-position))]
+                                   :search-fn search-fn))]
     (provider
       {:context *dropdown*
        :value multiselect}
-      (provider
-        {:context popup/*area-position*
-         :value [area-position set-area-position!]}
-        (<>
-          (map
-            (fn [option]
-              ($ ui/option
-                {:key (search-fn option)
-                 :value option
-                 :onRemove #(remove! option)
-                 :context (if disabled :stale
-                            (when (fn? context-fn)
-                              (context-fn option)))}))
-            (:value props))
-          ($ popup/Area
-             {:ref area
-              :onClick #(when-not (empty? options) (open!))
-              :className "dropdown"}
-             (when (or (fn? new-fn) (not-empty options))
-               ($ ui/input {:placeholder placeholder}))
-             ($ ui/popup)))))))
+      (<>
+        (map
+          (fn [option]
+            ($ ui/option
+              {:key (search-fn option)
+               :value option
+               :onRemove #(remove! option)
+               :context (if disabled :stale
+                          (when (fn? context-fn)
+                            (context-fn option)))}))
+          (:value props))
+        ($ popup/Area
+           {:ref area
+            :onClick #(when-not (empty? options) (open!))
+            :className "dropdown"}
+           (when (or (fn? new-fn) (not-empty options))
+             ($ ui/input {:placeholder placeholder}))
+           ($ ui/popup))))))
 
 
 (defnc Option

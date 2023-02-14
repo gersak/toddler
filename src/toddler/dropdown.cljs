@@ -208,28 +208,6 @@
        (c/children props)))))
 
 
-(defnc Area
-  [props]
-  (let [[area-position set-area-position!] (hooks/use-state nil)
-        ;;
-        {:keys [area] :as dropdown}
-        (use-dropdown
-         (->
-          props
-          (assoc :area-position area-position)
-          (dissoc :className)))]
-    (provider
-     {:context *dropdown*
-      :value dropdown}
-     (provider
-      {:context popup/*area-position*
-       :value [area-position set-area-position!]}
-      ($ popup/Area
-         {:ref area
-          & (select-keys props [:class :className])}
-         (c/children props))))))
-
-
 (defnc Input
   [{:keys [onSearchChange placeholder] :as props} _ref]
   (let [{:keys [input
@@ -259,58 +237,46 @@
        & (select-keys props [:className :class])})))
 
 
-(defnc Popup
-  [{:keys [className preference]
-    rwrapper :render/wrapper
-    roption :render/option
-    :or {rwrapper "div"
-         roption "div"}
-    :as props}]
-  (let [[area-position set-area-position!] (hooks/use-context popup/*area-position*)
-        {:keys [options
-                popup
-                disabled
-                opened
-                read-only
+(defnc Options
+  [{:keys [render]}]
+  (let [{:keys [options
                 search-fn
                 ref-fn
                 cursor
                 select!
                 close!]
-         :or {search-fn str}} (hooks/use-context *dropdown*)]
+         :or {search-fn str}} (hooks/use-context *dropdown*)
+        popup-position (hooks/use-context popup/*position*)]
+    (map
+      (fn [option]
+        ($ render
+          {:key (search-fn option)
+           :ref (ref-fn option)
+           :option option
+           :selected (= option cursor)
+           :onMouseDown (fn []
+                          (select! option)
+                          (close!))
+           & (cond-> nil
+               (nil? option) (assoc :style #js {:color "transparent"}))}
+          (if (nil? option) "nil" (search-fn option))))
+      (if (:top popup-position)
+        (reverse options)
+        options))))
+
+
+(defnc Popup
+  [{:keys [preference]
+    :as props}]
+  (let [{:keys [options
+                popup
+                disabled
+                opened
+                read-only]} (hooks/use-context *dropdown*)]
     (when (and (not read-only) (not disabled) (pos? (count options)) opened)
       ($ popup/Element
          {:ref popup
           :items options
-          :wrapper rwrapper
           :preference preference
-          :onChange (fn [{:keys [position]}]
-                      (when (some? position)
-                        (if-not (fn? set-area-position!)
-                          (.error js/console "Can't set area position. Function not provided!")
-                          (set-area-position! position))))
           & (select-keys props [:className :class])}
-         (map
-           (fn [option]
-             ($ roption
-               {:key (search-fn option)
-                :ref (ref-fn option)
-                :option option
-                :selected (= option cursor)
-                :onMouseDown (fn []
-                               (select! option)
-                               (close!))
-                & (cond-> nil
-                    (nil? option) (assoc :style #js {:color "transparent"}))}
-               (if (nil? option) "nil" (search-fn option))))
-           (if (:top area-position)
-             (reverse options)
-             options))))))
-
-
-(defnc Element
-  [props]
-  ($ Area
-    {& props}
-    ($ ui/input {& props})
-    ($ ui/popup)))
+         (c/children props)))))
