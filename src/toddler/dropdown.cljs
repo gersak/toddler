@@ -15,8 +15,8 @@
          regex (when (not-empty search)
                  (re-pattern (apply str "(?i)" (clojure.string/replace search #"\s+" ".*"))))
          available-options (if regex
-                             (let [predicate (comp (partial re-find regex) search-fn)]
-                               (if (some (comp (partial = search) search-fn) options)
+                             (let [predicate (comp (partial re-find regex) str search-fn)]
+                               (if (some (comp (partial = search) str search-fn) options)
                                  options
                                  (filter predicate options)))
                              options)]

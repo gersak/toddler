@@ -1,5 +1,6 @@
 (ns toddler.hooks
   (:require
+    [clojure.set]
     [goog.string :as gstr]
     [goog.string.format]
     [clojure.core.async :as async :refer-macros [go-loop]]
@@ -10,7 +11,8 @@
     [toddler.i18n :as i18n :refer [translate]]
     [toddler.i18n.keyword]
     [toddler.i18n.time]
-    [toddler.i18n.number]))
+    [toddler.i18n.number]
+    [toddler.graphql :as graphql]))
 
 
 (.log js/console "Loading toddler.hooks")
@@ -20,6 +22,15 @@
   "Returns root application root URL"
   []
   (hooks/use-context app/url))
+
+(defhook use-graphql-url
+  "Returns GraphQL endpoint URL"
+  []
+  (let [root (use-url)
+        from-context (hooks/use-context app/graphql-url)]
+    (hooks/use-memo
+      [root from-context]
+      (or from-context (str root "/graphql")))))
 
 
 (defhook use-user
@@ -124,7 +135,7 @@
                    [locale]
                    (fn
                      ([data] (translate data locale))
-                     ([data options]  (translate data locale options))))]
+                     ([data options] (translate data locale options))))]
     translate))
 
 
@@ -141,9 +152,9 @@
                    [locale]
                    (fn
                      ([data & args]
-                       (let [template (translate data locale)]
-                         ; (println "Translating: " template args)
-                         (apply gstr/format template args)))))]
+                       (if-let [template (translate data locale)]
+                         (apply gstr/format template args)
+                         (throw (js/Error. (str "Couldn't find translation for " data ". Locale: " locale)))))))]
     translate))
 
 
@@ -461,3 +472,114 @@
                    (fn [data]
                      (async/put! app/signal-channel data)))]
     publisher))
+
+
+(defhook use-query
+  ([{query-name :query
+     selection :selection
+     args :args
+     :keys [on-loaded on-error]}]
+    (let [[token] (use-token)
+          url (use-graphql-url)]
+      (hooks/use-memo
+        [(name query-name) args selection]
+        (fn send
+          []
+          (let [query-name (name query-name)
+                query-key (keyword query-name)
+                query (graphql/wrap-queries
+                        (graphql/->graphql 
+                          (graphql/->GraphQLQuery
+                            query-name nil selection args)))]
+            (async/go
+              (let [{:keys [errors]
+                     {data query-key} :data
+                     :as response}
+                    (async/<! 
+                      (graphql/send-query 
+                        query 
+                        :url url
+                        :token token
+                        :on-loaded on-loaded 
+                        :on-error on-error))]
+                (if (some? errors)
+                  (ex-info "Remote query failed"
+                           {:query query
+                            :args args
+                            :selection selection
+                            :response response})
+                  data)))))))))
+
+
+(defhook use-queries
+  ([queries] (use-queries queries nil))
+  ([queries {:keys [on-loaded on-error]}]
+    (let [[token] (use-token)
+          url (use-graphql-url)]
+      (hooks/use-memo
+        [queries]
+        (fn send
+          []
+          (let [
+                query (apply
+                        graphql/wrap-queries
+                        (map
+                          (fn [{query-name :query
+                                selection :selection
+                                args :args}]
+                            (let [query-name (name query-name)]
+                              (graphql/->graphql 
+                                (graphql/->GraphQLQuery
+                                  query-name nil selection args))))
+                          queries))]
+            (async/go
+              (let [{:keys [errors]
+                     data :data
+                     :as response}
+                    (async/<! 
+                      (graphql/send-query 
+                        query 
+                        :url url
+                        :token token
+                        :on-loaded on-loaded 
+                        :on-error on-error))]
+                (if (some? errors)
+                  (ex-info "Remote query failed"
+                           {:queries queries
+                            :response response})
+                  data)))))))))
+
+
+(defhook use-mutation
+  ([{:keys [mutation selection variables]
+     {:keys [on-loaded on-error]} :handlers}]
+    (let [[token] (use-token)
+          [mutation-fragment type-declarations variable-mapping]
+          (hooks/use-memo
+            [mutation variables selection]
+            (graphql/gen-mutation mutation variables selection))
+          ;;
+          url (use-graphql-url)]
+      (hooks/use-memo
+        [mutation-fragment]
+        (fn [data]
+          (async/go
+            (let [query (binding [toddler.graphql/*variable-bindings* type-declarations]
+                          (graphql/wrap-mutations mutation-fragment))
+                  {:keys [errors]
+                   {data mutation} :data}
+                  (async/<! 
+                    (graphql/send-query 
+                      query 
+                      :url url
+                      :token token
+                      :variables (clojure.set/rename-keys data variable-mapping)
+                      :on-load on-loaded
+                      :on-error on-error))]
+              (if (some? errors)
+                (ex-info
+                  (str "Mutation " mutation " failed")
+                  {:query query
+                   :variables variables
+                   :errors errors})
+                data))))))))

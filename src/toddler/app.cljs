@@ -14,6 +14,7 @@
 (def layout (create-context))
 (def box (create-context))
 (def avatars (create-context))
+(def graphql-url (create-context))
 (.log js/console "Loading toddler.app")
 
 

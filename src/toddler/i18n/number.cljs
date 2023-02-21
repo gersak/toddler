@@ -146,7 +146,7 @@
 
 
 (defn number-formatter [locale]
-  (let [^js symbols (get symbols locale)
+  (let [^js symbols (get symbols locale (:en symbols))
         number-formatter-pattern
         (goog.i18n.NumberFormat.
          (.-DECIMAL_PATTERN symbols)

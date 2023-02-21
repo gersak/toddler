@@ -274,12 +274,39 @@
 (defn wrap-mutations [& mutations]
   (if (not-empty *variable-bindings*)
     (letfn [(print-binding [[a b]]
-              (str "$" (name a) ":" (name b)))]
+              (str "$" (name a) ":" (if (vector? b) [(name b)] (name b))))]
       (str "mutation(" 
            (clojure.string/join " " (map print-binding (partition 2 *variable-bindings*)))
            "){\n"
            (clojure.string/join "" mutations) \}))
     (str "mutation {\n" (clojure.string/join "" mutations) \})))
+
+
+(defn gen-mutation
+  ([mutation selection] (gen-mutation mutation nil selection))
+  ([mutation variables selection]
+   (let [vm (reduce-kv
+              (fn [r k _]
+                (assoc r k (gensym "var__")))
+              nil
+              variables)
+         tm (reduce-kv
+              (fn [r k v]
+                (if-let [t (get variables k)]
+                  (conj r v t)
+                  r))
+              []
+              vm)
+         mutation (->graphql 
+                    (->GraphQLMutation
+                      mutation nil
+                      (reduce-kv
+                        (fn [r k v]
+                          (assoc r k (keyword (str \$ v))))
+                        vm
+                        vm)
+                      selection))]
+     [mutation tm vm])))
 
 
 #?(:cljs

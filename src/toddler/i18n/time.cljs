@@ -135,7 +135,7 @@
 (defn get-date-symbols
   "Supported localizations"
   [locale]
-  (get symbols locale goog.i18n.DateTimeSymbols_eu))
+  (get symbols locale goog.i18n.DateTimeSymbols_en))
 
 
 (def date-formatter
