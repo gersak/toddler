@@ -1,5 +1,5 @@
 {;; REPL
- :paths ["src" "showcase" "resources"]
+ :paths ["src" "resources" "gen"]
  :deps
  {org.clojure/clojurescript                  {:mvn/version "1.11.54"}
   org.clojure/core.async                     {:mvn/version "1.5.648"}
@@ -15,6 +15,10 @@
  {:shadow
   {:extra-deps
    {thheller/shadow-cljs {:mvn/version "2.20.2"}}}
+  :icons
+  {:extra-paths ["icons"]
+   :extra-deps {babashka/fs {:mvn/version "0.2.16"}}}
   :cider
   {:extra-deps
-   {cider/cider-nrepl {:mvn/version "0.28.5"}}}}}
+   {cider/cider-nrepl {:mvn/version "0.30.0"}}
+   :main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}}}

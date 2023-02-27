@@ -274,7 +274,7 @@
 (defn wrap-mutations [& mutations]
   (if (not-empty *variable-bindings*)
     (letfn [(print-binding [[a b]]
-              (str "$" (name a) ":" (if (vector? b) [(name b)] (name b))))]
+              (str "$" (name a) ":" (if (vector? b) [(symbol (name (first b)))] (name b))))]
       (str "mutation(" 
            (clojure.string/join " " (map print-binding (partition 2 *variable-bindings*)))
            "){\n"

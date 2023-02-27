@@ -10,3 +10,5 @@ node_modules/
 dev/js/
 release/js/
 .calva/
+
+icons/.repos

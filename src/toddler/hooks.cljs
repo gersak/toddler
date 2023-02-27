@@ -53,7 +53,9 @@
                                  (.getItem js/localStorage location)))]
       (hooks/use-effect
         [local]
-        (.setItem js/localStorage location local))
+        (if (some? local)
+          (.setItem js/localStorage location local)
+          (.removeItem js/localStorage location)))
       [local set-local!])))
 
 
@@ -132,10 +134,10 @@
   []
   (let [locale (use-current-locale)
         translate (hooks/use-memo
-                   [locale]
-                   (fn
-                     ([data] (translate data locale))
-                     ([data options] (translate data locale options))))]
+                    [locale]
+                    (fn
+                      ([data] (translate data locale))
+                      ([data options] (translate data locale options))))]
     translate))
 
 
@@ -175,7 +177,7 @@
   ([period f]
    (assert (and (number? period) (pos? period)) "Timeout period should be positive number.")
    (assert (fn? f) "Function not provided. No point if no action is taken on idle timeout.")
-   (let [idle-channel (async/chan)]
+   (let [idle-channel (async/chan (async/sliding-buffer 2))]
      ;; When some change happend
      (async/go-loop [v (async/<! idle-channel)]
        (if (nil? v)
