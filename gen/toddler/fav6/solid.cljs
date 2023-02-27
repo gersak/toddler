@@ -1,4 +1,22 @@
-(ns toddler.fav6.solid (:require [helix.core] [helix.dom]))
+(ns
+ toddler.fav6.solid
+ (:refer-clojure
+  :exclude
+  [map
+   clone
+   comment
+   list
+   repeat
+   divide
+   key
+   mask
+   filter
+   shuffle
+   atom
+   cat
+   print
+   sort])
+ (:require [helix.core] [helix.dom]))
 
 
 (helix.core/defnc
@@ -5264,7 +5282,7 @@
 
 
 (helix.core/defnc
- 9
+ _9
  [props]
  (helix.dom/svg
   {:viewBox "0 0 320 512",
@@ -6512,7 +6530,7 @@
 
 
 (helix.core/defnc
- 8
+ _8
  [props]
  (helix.dom/svg
   {:viewBox "0 0 320 512",
@@ -11216,7 +11234,7 @@
 
 
 (helix.core/defnc
- 0
+ _0
  [props]
  (helix.dom/svg
   {:viewBox "0 0 320 512",
@@ -12176,7 +12194,7 @@
 
 
 (helix.core/defnc
- 1
+ _1
  [props]
  (helix.dom/svg
   {:viewBox "0 0 256 512",
@@ -12576,7 +12594,7 @@
 
 
 (helix.core/defnc
- 3
+ _3
  [props]
  (helix.dom/svg
   {:viewBox "0 0 320 512",
@@ -13632,7 +13650,7 @@
 
 
 (helix.core/defnc
- 2
+ _2
  [props]
  (helix.dom/svg
   {:viewBox "0 0 320 512",
@@ -14016,7 +14034,7 @@
 
 
 (helix.core/defnc
- 6
+ _6
  [props]
  (helix.dom/svg
   {:viewBox "0 0 320 512",
@@ -15152,7 +15170,7 @@
 
 
 (helix.core/defnc
- 7
+ _7
  [props]
  (helix.dom/svg
   {:viewBox "0 0 320 512",
@@ -15376,7 +15394,7 @@
 
 
 (helix.core/defnc
- 5
+ _5
  [props]
  (helix.dom/svg
   {:viewBox "0 0 320 512",
@@ -16592,7 +16610,7 @@
 
 
 (helix.core/defnc
- 4
+ _4
  [props]
  (helix.dom/svg
   {:viewBox "0 0 384 512",

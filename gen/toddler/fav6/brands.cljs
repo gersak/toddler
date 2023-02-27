@@ -1,4 +1,7 @@
-(ns toddler.fav6.brands (:require [helix.core] [helix.dom]))
+(ns
+ toddler.fav6.brands
+ (:refer-clojure :exclude [meta])
+ (:require [helix.core] [helix.dom]))
 
 
 (helix.core/defnc
@@ -1570,7 +1573,7 @@
 
 
 (helix.core/defnc
- 500px
+ _500px
  [props]
  (helix.dom/svg
   {:viewBox "0 0 448 512",
@@ -2018,7 +2021,7 @@
 
 
 (helix.core/defnc
- 42-group
+ _42-group
  [props]
  (helix.dom/svg
   {:viewBox "0 0 640 512",

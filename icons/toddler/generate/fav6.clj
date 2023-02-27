@@ -67,7 +67,10 @@
 (defn process-svg
   [path]
   (let [xml (xml/parse (str path))
-        [icon] (fs/split-ext (fs/file-name path))]
+        [icon] (fs/split-ext (fs/file-name path))
+        icon (if (re-find #"^\d" (name icon))
+               (str "_" (name icon))
+               (name icon))]
     `(helix.core/defnc ~(symbol icon) [~'props] ~(gen-el xml))))
 
 
@@ -82,6 +85,17 @@
         (fn [r path]
           (conj r (process-svg path)))
         [`(~'ns ~(symbol (str "toddler.fav6." style)) 
+            ~(case style
+               "brands" `(:refer-clojure
+                          :exclude [~'meta])
+               "regular" `(:refer-clojure
+                            :exclude [~'map ~'comment ~'clone])
+               "solid" `(:refer-clojure
+                          :exclude [~'map ~'clone ~'comment ~'list
+                                    ~'repeat ~'divide ~'key ~'mask
+                                    ~'filter ~'shuffle ~'atom ~'cat
+                                    ~'print ~'sort]))
+            
             (:require
               [~'helix.core]
               [~'helix.dom]))]
@@ -98,6 +112,7 @@
 
 
 (comment
+  (def x (generate-fa "brands"))
   (generate)
   (clone-repo)
   (def style "regular")

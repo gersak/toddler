@@ -1,4 +1,7 @@
-(ns toddler.fav6.regular (:require [helix.core] [helix.dom]))
+(ns
+ toddler.fav6.regular
+ (:refer-clojure :exclude [map comment clone])
+ (:require [helix.core] [helix.dom]))
 
 
 (helix.core/defnc
