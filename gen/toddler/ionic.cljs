@@ -236,8 +236,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -245,8 +244,7 @@
     "M384,240H96V136a40.12,40.12,0,0,1,40-40H376a40.12,40.12,0,0,1,40,40V240Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -254,8 +252,7 @@
     "M48,416V304a64.19,64.19,0,0,1,64-64H400a64.19,64.19,0,0,1,64,64V416"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -263,8 +260,7 @@
     "M48,416v-8a24.07,24.07,0,0,1,24-24H440a24.07,24.07,0,0,1,24,24v8"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -272,8 +268,7 @@
     "M112,240V224a32.09,32.09,0,0,1,32-32h80a32.09,32.09,0,0,1,32,32v16"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -355,8 +350,7 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -472,8 +466,7 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -525,16 +518,14 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M336,112a80,80,0,0,0-160,0v96"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -559,22 +550,15 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d "M388,288a76,76,0,1,0,76,76,76.24,76.24,0,0,0-76-76Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d "M124,288a76,76,0,1,0,76,76,76.24,76.24,0,0,0-76-76Z"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -687,10 +671,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/path
@@ -747,16 +728,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M221.09,64A157.09,157.09,0,1,0,378.18,221.09,157.1,157.1,0,0,0,221.09,64Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -811,16 +788,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
     :points "112 268 256 412 400 268"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -878,8 +853,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -887,8 +861,7 @@
     "M85.57,446.25H426.43a32,32,0,0,0,28.17-47.17L284.18,82.58c-12.09-22.44-44.27-22.44-56.36,0L57.4,399.08A32,32,0,0,0,85.57,446.25Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -927,8 +900,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "40px"},
@@ -969,8 +941,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -980,8 +951,7 @@
     :x1 "160"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -991,8 +961,7 @@
     :x1 "160"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -1002,8 +971,7 @@
     :x1 "160"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -1012,8 +980,7 @@
     :cx "80"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -1022,8 +989,7 @@
     :cx "80"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -1196,8 +1162,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -1205,24 +1170,21 @@
     "M126,192H56a8,8,0,0,0-8,8V312a8,8,0,0,0,8,8h69.65a15.93,15.93,0,0,1,10.14,3.54l91.47,74.89A8,8,0,0,0,240,392V120a8,8,0,0,0-12.74-6.43l-91.47,74.89A15,15,0,0,1,126,192Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M320,320c9.74-19.38,16-40.84,16-64,0-23.48-6-44.42-16-64"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M368,368c19.48-33.92,32-64.06,32-112s-12-77.74-32-112"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -1242,16 +1204,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
     :points "268 112 412 256 268 400"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -1290,8 +1250,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -1299,16 +1258,14 @@
     "M384,224V408a40,40,0,0,1-40,40H104a40,40,0,0,1-40-40V168a40,40,0,0,1,40-40H271.48"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "336 64 448 64 448 176"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -1331,16 +1288,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "352 144 464 144 464 256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -1396,24 +1351,21 @@
    :& props}
   (helix.dom/polygon
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "32 192 256 64 480 192 256 320 32 192"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "112 240 112 368 256 448 400 368 400 240"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -1423,8 +1375,7 @@
     :x1 "480"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -1501,8 +1452,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -1510,8 +1460,7 @@
     "M192,218v-6c0-14.84,10-27,24.24-30.59l174.59-46.68A20,20,0,0,1,416,154V176"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -1535,16 +1484,14 @@
     "157.65 176.1 64 176.1 64 335.9 157.65 335.9 288 440 288 72 157.65 176.1"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M352,320c9.74-19.41,16-40.81,16-64,0-23.51-6-44.4-16-64"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -1673,8 +1620,7 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "44px"},
@@ -1694,24 +1640,19 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M90.61,306.85A16.07,16.07,0,0,0,104,293.6C116.09,220.17,169.63,176,232,176c57.93,0,96.62,37.75,112.2,77.74a15.84,15.84,0,0,0,12.2,9.87c50,8.15,91.6,41.54,91.6,99.59C448,422.6,399.4,464,340,464H106c-49.5,0-90-24.7-90-79.2C16,336.33,54.67,312.58,90.61,306.85Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M384.8,271.4a80,80,0,1,0-123.55-92"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -1721,8 +1662,7 @@
     :x1 "464"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -1732,8 +1672,7 @@
     :x1 "336"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -1743,8 +1682,7 @@
     :x1 "222.86"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -1767,10 +1705,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M400,240c-8.89-89.54-71-144-144-144-69,0-113.44,48.2-128,96C68,198,16,235.59,16,304c0,66,54,112,120,112H396c55,0,100-27.44,100-88C496,268.18,443,242.24,400,240Z"})))
 
@@ -1820,8 +1755,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -1831,8 +1765,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -1903,8 +1836,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -1912,8 +1844,7 @@
     "M431,320.6c-1-3.6,1.2-8.6,3.3-12.2a33.68,33.68,0,0,1,2.1-3.1A162,162,0,0,0,464,215c.3-92.2-77.5-167-173.7-167C206.4,48,136.4,105.1,120,180.9a160.7,160.7,0,0,0-3.7,34.2c0,92.3,74.8,169.1,171,169.1,15.3,0,35.9-4.6,47.2-7.7s22.5-7.2,25.4-8.3a26.44,26.44,0,0,1,9.3-1.7,26,26,0,0,1,10.1,2L436,388.6a13.52,13.52,0,0,0,3.9,1,8,8,0,0,0,8-8,12.85,12.85,0,0,0-.5-2.7Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -1987,16 +1918,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "40px"},
     :points "196 220 260 220 260 392"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "40px"},
@@ -2076,16 +2005,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "176 249.38 256 170 336 249.38"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2095,10 +2022,7 @@
     :x1 "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})))
 
@@ -2116,8 +2040,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2125,8 +2048,7 @@
     "M352,200V440a40.12,40.12,0,0,1-40,40H136a40.12,40.12,0,0,1-40-40V224"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -2134,8 +2056,7 @@
     "M352,224h40a56.16,56.16,0,0,1,56,56v80a56.16,56.16,0,0,1-56,56H352"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2145,8 +2066,7 @@
     :x1 "224"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2156,8 +2076,7 @@
     :x1 "288"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2167,8 +2086,7 @@
     :x1 "160"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2176,16 +2094,14 @@
     "M320,112a48,48,0,0,1,0,96c-13.25,0-29.31-7.31-38-16H160c-8,22-27,32-48,32a48,48,0,0,1,0-96,47.91,47.91,0,0,1,26,9"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :d "M91.86,132.43a40,40,0,1,1,60.46-52S160,91,160,96"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -2206,16 +2122,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M64,256c0,106,86,192,192,192s192-86,192-192S362,64,256,64,64,150,64,256Z"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2283,32 +2195,28 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "320 120 368 168 320 216"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M352,168H144a80.24,80.24,0,0,0-80,80v16"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "192 392 144 344 192 296"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2372,8 +2280,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2381,24 +2288,21 @@
     "M407.94,52.22S321.3,160,240,160H80a16,16,0,0,0-16,16v96a16,16,0,0,0,16,16H240c81.3,0,167.94,108.23,167.94,108.23,6.06,8,24.06,2.52,24.06-9.83V62C432,49.69,415,43.18,407.94,52.22Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M64,256s-16-6-16-32,16-32,16-32"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M448,246s16-4.33,16-22-16-22-16-22"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2408,8 +2312,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2419,8 +2322,7 @@
     :x1 "112"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2514,8 +2416,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2523,16 +2424,14 @@
     "M304,336v40a40,40,0,0,1-40,40H104a40,40,0,0,1-40-40V136a40,40,0,0,1,40-40H256c22.09,0,48,17.91,48,40v40"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "368 336 448 256 368 176"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2555,8 +2454,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -2591,26 +2489,21 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "28px"},
     :d "M288,193s12.18-6-32-6a80,80,0,1,0,80,80"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "28px"},
     :points "256 149 296 189 256 229"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M256,64C150,64,64,150,64,256s86,192,192,192,192-86,192-192S362,64,256,64Z"})))
 
@@ -2628,16 +2521,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "400 160 464 224 400 288"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2657,8 +2548,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2667,8 +2557,7 @@
     :cx "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2676,8 +2565,7 @@
     "M461.43,271.44c-5.09.37-8.24.56-13.43.56-114.88,0-208-93.12-208-208,0-5.37.2-8.69.6-14"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2767,8 +2655,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2776,8 +2663,7 @@
     "M304,384V360c0-29,31.54-56.43,52-76,28.84-27.57,44-64.61,44-108,0-80-63.73-144-144-144A143.6,143.6,0,0,0,112,176c0,41.84,15.81,81.39,44,108,20.35,19.21,52,46.7,52,76v24"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2787,8 +2673,7 @@
     :x1 "224"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2798,8 +2683,7 @@
     :x1 "208"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2809,8 +2693,7 @@
     :x1 "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2849,16 +2732,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
     :points "112 244 256 100 400 244"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -2881,24 +2762,19 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M248,64C146.39,64,64,146.39,64,248s82.39,184,184,184,184-82.39,184-184S349.61,64,248,64Z"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "220 220 252 220 252 336"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -2923,16 +2799,14 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M32,32V464a16,16,0,0,0,16,16H480"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2944,8 +2818,7 @@
     :x "96"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -2957,8 +2830,7 @@
     :x "240"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -3040,10 +2912,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "16",
     :rx "16",
     :height "368",
@@ -3052,8 +2921,7 @@
     :x "32"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -3063,8 +2931,7 @@
     :x1 "112"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -3074,10 +2941,7 @@
     :x1 "112"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "16",
     :rx "16",
     :height "304",
@@ -3086,10 +2950,7 @@
     :x "112"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "16",
     :rx "16",
     :height "416",
@@ -3098,10 +2959,7 @@
     :x "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M422.46,96.11l-40.4,4.25c-11.12,1.17-19.18,11.57-17.93,23.1l34.92,321.59c1.26,11.53,11.37,20,22.49,18.84l40.4-4.25c11.12-1.17,19.18-11.57,17.93-23.1L445,115C443.69,103.42,433.58,94.94,422.46,96.11Z"})))
 
@@ -3150,11 +3008,11 @@
    :fill "currentColor",
    :& props}
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d
     "M296,64H216a7.91,7.91,0,0,0-8,8V96h96V72A7.91,7.91,0,0,0,296,64Z"})
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d "M292,64H220a4,4,0,0,0-4,4V96h80V68A4,4,0,0,0,292,64Z"})
   (helix.dom/path
    {:d
@@ -3206,10 +3064,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "48",
     :rx "48",
     :height "288",
@@ -3218,10 +3073,7 @@
     :x "48"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M411.36,144V114A50,50,0,0,0,352,64.9L88.64,109.85A50,50,0,0,0,48,159v49"})
   (helix.dom/path
@@ -3241,8 +3093,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -3254,8 +3105,7 @@
     :x "32"})
   (helix.dom/rect
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "square",
+    {:stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :ry "4",
@@ -3266,8 +3116,7 @@
     :x "85.69"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -3290,16 +3139,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M256,64C150,64,64,150,64,256s86,192,192,192,192-86,192-192S362,64,256,64Z"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -3335,8 +3180,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -3346,8 +3190,7 @@
     :x1 "120"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -3357,8 +3200,7 @@
     :x1 "136"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -3368,8 +3210,7 @@
     :x1 "400"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -3379,16 +3220,14 @@
     :x1 "416"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "208 304 192 400 240 400 240 480 320 368 272 368 288 304"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -3466,8 +3305,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -3477,8 +3315,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -3581,32 +3418,28 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "42px"},
     :points "160 368 32 256 160 144"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "42px"},
     :points "352 368 480 256 352 144"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "42px"},
     :points "192 288.1 256 352 320 288.1"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "42px"},
@@ -3645,8 +3478,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -3656,8 +3488,7 @@
     :x1 "102"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -3667,8 +3498,7 @@
     :x1 "102"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -3829,8 +3659,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -3869,18 +3698,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M419.1,337.45a3.94,3.94,0,0,0-6.1,0c-10.5,12.4-45,46.55-45,77.66,0,27,21.5,48.89,48,48.89h0c26.5,0,48-22,48-48.89C464,384,429.7,349.85,419.1,337.45Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M387,287.9,155.61,58.36a36,36,0,0,0-51,0l-5.15,5.15a36,36,0,0,0,0,51l52.89,52.89,57-57L56.33,263.2a28,28,0,0,0,.3,40l131.2,126a28.05,28.05,0,0,0,38.9-.1c37.8-36.6,118.3-114.5,126.7-122.9,5.8-5.8,18.2-7.1,28.7-7.1h.3A6.53,6.53,0,0,0,387,287.9Z"})))
 
@@ -3960,10 +3783,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/path
@@ -4022,8 +3842,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -4102,8 +3921,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -4115,8 +3933,7 @@
     :x "32"})
   (helix.dom/rect
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "square",
+    {:stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :ry "4",
@@ -4127,8 +3944,7 @@
     :x "85.69"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -4151,8 +3967,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -4160,8 +3975,7 @@
     "M256,80c-8.66,0-16.58,7.36-16,16l8,216a8,8,0,0,0,8,8h0a8,8,0,0,0,8-8l8-216C272.58,87.36,264.66,80,256,80Z"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -4205,8 +4019,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -4216,8 +4029,7 @@
     :x "176"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -4256,10 +4068,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/path
@@ -4280,24 +4089,21 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M332.41,310.59a115,115,0,0,0-152.8,0"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M393.46,249.54a201.26,201.26,0,0,0-274.92,0"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -4338,8 +4144,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -4347,8 +4152,7 @@
     "M112,320c0-93,124-165,96-272,66,0,192,96,192,272a144,144,0,0,1-288,0Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -4369,10 +4173,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M408,64H104a56.16,56.16,0,0,0-56,56V312a56.16,56.16,0,0,0,56,56h40v80l93.72-78.14a8,8,0,0,1,5.13-1.86H408a56.16,56.16,0,0,0,56-56V120A56.16,56.16,0,0,0,408,64Z"})))
 
@@ -4412,8 +4213,7 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -4528,8 +4328,7 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -4568,8 +4367,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -4579,8 +4377,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -4590,8 +4387,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -4601,19 +4397,13 @@
     :x1 "132"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "32",
     :cy "272",
     :cx "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d "M256,96A176,176,0,1,0,432,272,176,176,0,0,0,256,96Z"})))
 
 
@@ -4682,16 +4472,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "464 208 352 96 240 208"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -4701,16 +4489,14 @@
     :x1 "352"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "48 304 160 416 272 304"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -4733,16 +4519,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "464 128 240 384 144 288"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -4752,8 +4536,7 @@
     :x1 "144"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -4779,10 +4562,7 @@
     "M273.77,169.57,184.68,243.7a16,16,0,0,0,0,24.6l89.09,74.13A16,16,0,0,0,300,330.14V181.86A16,16,0,0,0,273.77,169.57Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})))
 
@@ -4800,8 +4580,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -4811,8 +4590,7 @@
     :x1 "102"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -4822,8 +4600,7 @@
     :x1 "102"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -4846,16 +4623,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "400 352 464 288 400 224"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -4875,10 +4650,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M240,424V328c116.4,0,159.39,33.76,208,96,0-119.23-39.57-240-208-240V88L64,256Z"})))
 
@@ -4973,16 +4745,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "44px"},
     :points "465 127 241 384 149 292"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "44px"},
@@ -4992,8 +4762,7 @@
     :x1 "140"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "44px"},
@@ -5016,8 +4785,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5025,8 +4793,7 @@
     "M314.56,48S291.78,56,256,56s-58.56-8-58.56-8a31.94,31.94,0,0,0-10.57,1.8L32,104l16.63,88,48.88,5.52A24,24,0,0,1,118.8,222.1L112,464H400l-6.8-241.9a24,24,0,0,1,21.29-24.58L463.37,192,480,104,325.13,49.8A31.94,31.94,0,0,0,314.56,48Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5079,10 +4846,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/circle {:r "144", :cy "256", :cx "256"})))
@@ -5152,8 +4916,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5165,8 +4928,7 @@
     :x "80"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5178,8 +4940,7 @@
     :x "80"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5187,42 +4948,33 @@
     "M400,112H112A32.09,32.09,0,0,1,80,80h0a32.09,32.09,0,0,1,32-32H400a32.09,32.09,0,0,1,32,32h0A32.09,32.09,0,0,1,400,112Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M144,432v22a10,10,0,0,1-10,10H106a10,10,0,0,1-10-10V432Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M416,432v22a10,10,0,0,1-10,10H378a10,10,0,0,1-10-10V432Z"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :r "16",
     :cy "368",
     :cx "368"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :r "16",
     :cy "368",
     :cx "144"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5232,8 +4984,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5243,8 +4994,7 @@
     :x1 "80"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5267,8 +5017,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5278,8 +5027,7 @@
     :x1 "294.25"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5289,8 +5037,7 @@
     :x1 "317.13"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5300,8 +5047,7 @@
     :x1 "355.89"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5311,8 +5057,7 @@
     :x1 "403.4"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5321,16 +5066,14 @@
     :cx "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M432.94,255.05A192,192,0,0,1,256.63,74.35"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5340,8 +5083,7 @@
     :x1 "108.54"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5351,8 +5093,7 @@
     :x1 "156.05"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5362,8 +5103,7 @@
     :x1 "194.81"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5373,8 +5113,7 @@
     :x1 "217.69"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5517,8 +5256,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -5530,8 +5268,7 @@
     :x "31"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -5606,8 +5343,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5615,16 +5351,12 @@
     "M402,168c-2.93,40.67-33.1,72-66,72s-63.12-31.32-66-72c-3-42.31,26.37-72,66-72S405,126.46,402,168Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M336,304c-65.17,0-127.84,32.37-143.54,95.41-2.08,8.34,3.15,16.59,11.72,16.59H467.83c8.57,0,13.77-8.25,11.72-16.59C463.85,335.36,401.18,304,336,304Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5632,8 +5364,7 @@
     "M200,185.94C197.66,218.42,173.28,244,147,244S96.3,218.43,94,185.94C91.61,152.15,115.34,128,147,128S202.39,152.77,200,185.94Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -5698,17 +5429,13 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M456.64,162.86,349.12,55.36c-13.15-13.14-28.68-7.17-41.82,6l-11.95,12c-26.13,26.13-27.62,58.38-29.42,83.31-.89,12.24-9.78,27.55-18.51,36.28L58.58,381.67C42.23,398,45.89,421.09,62.31,437.51l12.17,12.17c16.36,16.35,39.43,20.16,55.86,3.74l188.83-188.8c8.74-8.74,24-17.55,36.29-18.52,24.87-1.86,58.62-4.85,83.26-29.49l11.94-11.94C463.81,191.53,469.78,176,456.64,162.86Z"})
   (helix.dom/circle {:r "20", :cy "287.28", :cx "224.68"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -5731,8 +5458,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5752,7 +5478,7 @@
    :fill "currentColor",
    :& props}
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d "M336,80H176a16,16,0,0,0-16,16v16H352V96A16,16,0,0,0,336,80Z"})
   (helix.dom/path
    {:d
@@ -5775,8 +5501,7 @@
    :& props}
   (helix.dom/polygon
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5784,8 +5509,7 @@
     "364.13 125.25 87 403 64 448 108.99 425 386.75 147.87 364.13 125.25"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5887,10 +5611,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/circle {:r "144", :cy "256", :cx "256"})))
@@ -5909,8 +5630,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5922,8 +5642,7 @@
     :x "128"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -5997,8 +5716,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -6006,8 +5724,7 @@
     "M307.72,302.27a8,8,0,0,1-3.72-6.75V80a48,48,0,0,0-48-48h0a48,48,0,0,0-48,48V295.52a8,8,0,0,1-3.71,6.74,97.51,97.51,0,0,0-44.19,86.07A96,96,0,0,0,352,384,97.49,97.49,0,0,0,307.72,302.27Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -6064,8 +5781,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -6129,18 +5845,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M336,64h32a48,48,0,0,1,48,48V432a48,48,0,0,1-48,48H144a48,48,0,0,1-48-48V112a48,48,0,0,1,48-48h32"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "26.13",
     :rx "26.13",
     :height "64",
@@ -6194,19 +5904,13 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :r "128",
     :cy "256",
     :cx "368"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "128",
     :rx "128",
     :height "256",
@@ -6228,8 +5932,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -6237,16 +5940,14 @@
     "M80,212V448a16,16,0,0,0,16,16h96V328a24,24,0,0,1,24-24h80a24,24,0,0,1,24,24V464h96a16,16,0,0,0,16-16V212"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M480,256,266.89,52c-5-5.28-16.69-5.34-21.78,0L32,256"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -6338,10 +6039,7 @@
     "M336.76,161,150.23,243.35c-10.47,4.8-6.95,20.67,4.57,20.67H244a4,4,0,0,1,4,4V357.2c0,11.52,16,15,20.78,4.56L351,175.24A10.73,10.73,0,0,0,336.76,161Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})))
 
@@ -6359,32 +6057,28 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "400 304 448 352 400 400"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "400 112 448 160 400 208"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M64,352h85.19a80,80,0,0,0,66.56-35.62L256,256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -6392,8 +6086,7 @@
     "M64,160h85.19a80,80,0,0,1,66.56,35.62l80.5,120.76A80,80,0,0,0,362.81,352H416"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -6432,16 +6125,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "32 415.5 152 95.5 272 415.5"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -6451,16 +6142,14 @@
     :x1 "230"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M326,239.5c12.19-28.69,41-48,74-48h0c46,0,80,32,80,80v144"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -6497,16 +6186,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M48,336v96a48.14,48.14,0,0,0,48,48H416a48.14,48.14,0,0,0,48-48V336"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -6516,8 +6201,7 @@
     :x1 "48"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -6527,24 +6211,19 @@
     :x1 "320"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M192,336a64,64,0,0,0,128,0"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M384,32H128c-26,0-43,14-48,40L48,192v96a48.14,48.14,0,0,0,48,48H416a48.14,48.14,0,0,0,48-48V192L432,72C427,45,409,32,384,32Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -6554,8 +6233,7 @@
     :x1 "48"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -6565,8 +6243,7 @@
     :x1 "320"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -6602,10 +6279,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})))
 
@@ -6645,8 +6319,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -6654,8 +6327,7 @@
     "M256,48c-79.5,0-144,61.39-144,137,0,87,96,224.87,131.25,272.49a15.77,15.77,0,0,0,25.5,0C304,409.89,400,272.07,400,185,400,109.39,335.5,48,256,48Z"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -6677,10 +6349,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :r "208",
     :cy "256",
     :cx "256"})
@@ -6734,8 +6403,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -6744,8 +6412,7 @@
     :cx "104"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -6754,16 +6421,14 @@
     :cx "104"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :d "M157,175,146,190,183,205s3.46-6.42,7-10Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -6771,8 +6436,7 @@
     "M154.17,334.43,460,162c-2.5-6.7-28-12-64-4-29.12,6.47-121.16,29.05-159.16,56.05C205.85,236.06,227,272,192,298c-25.61,19-44.43,22.82-44.43,22.82Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -6780,10 +6444,7 @@
     "M344.47,278.24,295,306.67c14.23,6.74,65.54,33.27,117,36.33,14.92.89,30,.39,39-6Z"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "32",
     :cy "240",
     :cx "256"})))
@@ -6802,16 +6463,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "304 48 416 160 304 272"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -6821,16 +6480,14 @@
     :x1 "398.87"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "208 464 96 352 208 240"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -6853,16 +6510,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "40px"},
     :points "196 220 260 220 260 392"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "40px"},
@@ -6887,18 +6542,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M128,80V64a48.14,48.14,0,0,1,48-48H400a48.14,48.14,0,0,1,48,48V432l-80-64"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M320,96H112a48.14,48.14,0,0,0-48,48V496L216,368,368,496V144A48.14,48.14,0,0,0,320,96Z"})))
 
@@ -6916,10 +6565,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "24",
     :rx "24",
     :height "320",
@@ -6941,16 +6587,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M416,221.25V416a48,48,0,0,1-48,48H144a48,48,0,0,1-48-48V96a48,48,0,0,1,48-48h98.75a32,32,0,0,1,22.62,9.37L406.63,198.63A32,32,0,0,1,416,221.25Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -6970,10 +6612,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})))
 
@@ -7007,16 +6646,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M256,64C150,64,64,150,64,256s86,192,192,192,192-86,192-192S362,64,256,64Z"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7055,8 +6690,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7064,8 +6698,7 @@
     "M469.71,234.6c-7.33-9.73-34.56-16.43-46.08-33.94s-20.95-55.43-50.27-70S288,112,256,112s-88,4-117.36,18.63-38.75,52.52-50.27,70S49.62,224.87,42.29,234.6,29.8,305.84,32.94,336s9,48,9,48h86c14.08,0,18.66-5.29,47.46-8C207,373,238,372,256,372s50,1,81.58,4c28.8,2.73,33.53,8,47.46,8h85s5.86-17.84,9-48S477,244.33,469.71,234.6Z"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7075,8 +6708,7 @@
     :x "400"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7095,8 +6727,7 @@
     "M80.43,243.05a3.23,3.23,0,0,1,3.1-3c11.81-.42,23.8.42,45.07,6.69a93.88,93.88,0,0,1,30.08,15.06c2.28,1.78,1.47,6.59-1.39,7.1A455.32,455.32,0,0,1,104.47,272c-10.59,0-21.52-3-23.55-12.44A52.41,52.41,0,0,1,80.43,243.05Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7106,8 +6737,7 @@
     :x1 "432"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7117,8 +6747,7 @@
     :x1 "64"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7287,8 +6916,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7296,8 +6924,7 @@
     "M112,112l20,320c.95,18.49,14.4,32,32,32H348c17.67,0,30.87-13.51,32-32l20-320"})
   (helix.dom/line
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "round",
+    {:stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :y2 "112",
@@ -7306,8 +6933,7 @@
     :x1 "80"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7315,8 +6941,7 @@
     "M192,112V72h0a23.93,23.93,0,0,1,24-24h80a23.93,23.93,0,0,1,24,24h0v40"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7326,8 +6951,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7337,8 +6961,7 @@
     :x1 "184"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7389,8 +7012,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7398,8 +7020,7 @@
     "M80,224l37.78-88.15C123.93,121.5,139.6,112,157.11,112H354.89c17.51,0,33.18,9.5,39.33,23.85L432,224"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7409,24 +7030,21 @@
     :x "80"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "112 368 112 400 80 400 80 368"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "432 368 432 400 400 400 400 368"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7435,8 +7053,7 @@
     :cx "144"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7457,7 +7074,7 @@
    :fill "currentColor",
    :& props}
   (helix.dom/ellipse
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :ry "46",
     :rx "46.29",
     :cy "219.33",
@@ -7483,8 +7100,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7492,8 +7108,7 @@
     "M461.81,53.81a4.4,4.4,0,0,0-3.3-3.39c-54.38-13.3-180,34.09-248.13,102.17a294.9,294.9,0,0,0-33.09,39.08c-21-1.9-42-.3-59.88,7.5-50.49,22.2-65.18,80.18-69.28,105.07a9,9,0,0,0,9.8,10.4l81.07-8.9a180.29,180.29,0,0,0,1.1,18.3,18.15,18.15,0,0,0,5.3,11.09l31.39,31.39a18.15,18.15,0,0,0,11.1,5.3,179.91,179.91,0,0,0,18.19,1.1l-8.89,81a9,9,0,0,0,10.39,9.79c24.9-4,83-18.69,105.07-69.17,7.8-17.9,9.4-38.79,7.6-59.69a293.91,293.91,0,0,0,39.19-33.09C427.82,233.76,474.91,110.9,461.81,53.81ZM298.66,213.67a42.7,42.7,0,1,1,60.38,0A42.65,42.65,0,0,1,298.66,213.67Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7514,10 +7129,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "48",
     :rx "48",
     :height "416",
@@ -7526,16 +7138,14 @@
     :x "32"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "96 112 176 176 96 240"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7609,8 +7219,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -7666,10 +7275,7 @@
     "M333.88,240.59a8,8,0,0,1-6.66-6.66C320.68,192.78,290.82,168,256,168c-32.37,0-53.93,21.22-62.48,43.58a7.92,7.92,0,0,1-6.16,5c-27.67,4.35-50.82,22.56-51.35,54.3-.52,31.53,25.51,57.11,57,57.11H326c27.5,0,50-13.72,50-44C376,256.77,354,243.58,333.88,240.59Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})))
 
@@ -7703,8 +7309,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7712,8 +7317,7 @@
     "M321.89,171.42C233,114,141,155.22,56,65.22c-19.8-21-8.3,235.5,98.1,332.7C231.89,468.92,352,461,392.5,392S410.78,228.83,321.89,171.42Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7733,10 +7337,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M451,374c-15.88-16-54.34-39.35-73-48.76C353.7,313,351.7,312,332.6,326.19c-12.74,9.47-21.21,17.93-36.12,14.75s-47.31-21.11-75.68-49.39-47.34-61.62-50.53-76.48,5.41-23.23,14.79-36c13.22-18,12.22-21,.92-45.3-8.81-18.9-32.84-57-48.9-72.8C119.9,44,119.9,47,108.83,51.6A160.15,160.15,0,0,0,83,65.37C67,76,58.12,84.83,51.91,98.1s-9,44.38,23.07,102.64,54.57,88.05,101.14,134.49S258.5,406.64,310.85,436c64.76,36.27,89.6,29.2,102.91,23s22.18-15,32.83-31a159.09,159.09,0,0,0,13.8-25.8C465,391.17,468,391.17,451,374Z"})))
 
@@ -7770,8 +7371,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7779,16 +7379,14 @@
     "M314.21,482.32,257.44,367.58l-44.89-57.39a72.82,72.82,0,0,1-10.13-37.05V144h15.67a40.22,40.22,0,0,1,40.23,40.22V367.58"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M127.9,293.05V218.53S165.16,144,202.42,144"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7798,8 +7396,7 @@
     :x1 "370.1"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7809,8 +7406,7 @@
     :x1 "170.53"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7864,8 +7460,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7874,8 +7469,7 @@
     :cx "256"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7884,8 +7478,7 @@
     :cx "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7893,8 +7486,7 @@
     "M147,323,41.84,159.32a32,32,0,0,1-1.7-31.61l31-62A32,32,0,0,1,99.78,48H412.22a32,32,0,0,1,28.62,17.69l31,62a32,32,0,0,1-1.7,31.61L365,323"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7904,8 +7496,7 @@
     :x1 "371"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7915,8 +7506,7 @@
     :x1 "428.74"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -7987,28 +7577,19 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "32",
     :cy "256",
     :cx "256"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "32",
     :cy "256",
     :cx "416"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "32",
     :cy "256",
     :cx "96"})))
@@ -8043,16 +7624,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "176 112 256 32 336 112"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -8062,32 +7641,28 @@
     :x1 "255.98"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "176 400 256 480 336 400"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "400 176 480 256 400 336"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "112 176 32 256 112 336"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -8132,16 +7707,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "112 160 48 224 112 288"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -8177,8 +7750,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -8186,8 +7758,7 @@
     "M208,208V472a23.73,23.73,0,0,0,24,24h0a23.73,23.73,0,0,0,24-24"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -8195,8 +7766,7 @@
     "M256,336V472a23.73,23.73,0,0,0,24,24h0a23.73,23.73,0,0,0,24-24V208"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -8204,8 +7774,7 @@
     "M208,192v88a23.72,23.72,0,0,1-24,24h0a23.72,23.72,0,0,1-24-24V192a48,48,0,0,1,48-48h96a48,48,0,0,1,48,48v88a23.72,23.72,0,0,1-24,24h0a23.72,23.72,0,0,1-24-24V192"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -8293,8 +7862,7 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -8314,16 +7882,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M114.61,162.85A16.07,16.07,0,0,0,128,149.6C140.09,76.17,193.63,32,256,32c57.93,0,96.62,37.75,112.2,77.74a15.84,15.84,0,0,0,12.2,9.87c50,8.15,91.6,41.54,91.6,99.59C472,278.6,423.4,320,364,320H130c-49.5,0-90-24.7-90-79.2C40,192.33,78.67,168.58,114.61,162.85Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -8333,8 +7897,7 @@
     :x1 "144"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -8344,8 +7907,7 @@
     :x1 "224"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -8355,8 +7917,7 @@
     :x1 "304"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -8379,16 +7940,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "352 144 464 144 464 256"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -8424,8 +7983,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -8462,8 +8020,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -8473,8 +8030,7 @@
     :x1 "192"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -8482,8 +8038,7 @@
     "M384,208v32c0,70.4-57.6,128-128,128h0c-70.4,0-128-57.6-128-128V208"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -8493,8 +8048,7 @@
     :x1 "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -8556,11 +8110,11 @@
    {:d
     "M56,320l156.05,12-23,89.4c-6.08,26.6.7,41.87,22.39,48.62l34.69,9.85a4,4,0,0,0,4.4-1.72l129-202.34a8,8,0,0,1,6.81-3.81H496V64H378.39a48,48,0,0,1-15.18-2.46l-76.3-25.43A80,80,0,0,0,261.61,32H83.68c-19,0-31.5,13.52-35.23,32.16L16,206.42V280C16,302.06,34,318,56,320Z"})
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d
     "M378.45,273.93A15.84,15.84,0,0,1,386,272h0a15.93,15.93,0,0,0-7.51,1.91Z"})
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d
     "M337.86,343.22l-.13.22a2.53,2.53,0,0,1,.13-.22c20.5-35.51,30.36-55,33.82-62h0C368.21,288.28,358.34,307.73,337.86,343.22Z"})
   (helix.dom/path
@@ -8619,8 +8173,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -8630,8 +8183,7 @@
     :x1 "176"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -8639,8 +8191,7 @@
     "M80,32H272a32,32,0,0,1,32,32V476a4,4,0,0,1-4,4H48a0,0,0,0,1,0,0V64A32,32,0,0,1,80,32Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -8713,24 +8264,21 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :d "M256,104v56h56a56,56,0,1,0-56-56Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :d "M256,104c0,15.46,0,56,0,56H200a56,56,0,1,1,56-56Z"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -8742,16 +8290,14 @@
     :x "64"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M416,272V416a48,48,0,0,1-48,48H144a48,48,0,0,1-48-48V272"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -8777,10 +8323,7 @@
     "M238.23,342.43l89.09-74.13a16,16,0,0,0,0-24.6l-89.09-74.13A16,16,0,0,0,212,181.86V330.14A16,16,0,0,0,238.23,342.43Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})))
 
@@ -8935,89 +8478,59 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "32",
     :cy "448",
     :cx "256"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "32",
     :cy "320",
     :cx "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d "M288,192a32,32,0,1,1-32-32A32,32,0,0,1,288,192Z"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "32",
     :cy "64",
     :cx "256"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "32",
     :cy "320",
     :cx "384"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "32",
     :cy "192",
     :cx "384"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "32",
     :cy "64",
     :cx "384"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "32",
     :cy "320",
     :cx "128"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "32",
     :cy "192",
     :cx "128"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "32",
     :cy "64",
     :cx "128"})))
@@ -9060,8 +8573,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -9073,8 +8585,7 @@
     :x "31"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -9097,8 +8608,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -9108,8 +8618,7 @@
     :x1 "112"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -9133,7 +8642,7 @@
   (helix.dom/polygon
    {:points "330 16 287.32 58.7 453.3 224.68 496 182 330 16"})
   (helix.dom/ellipse
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :ry "19.96",
     :rx "20.03",
     :cy "287.3",
@@ -9156,8 +8665,7 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -9205,10 +8713,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "28",
     :rx "28",
     :height "320",
@@ -9217,10 +8722,7 @@
     :x "48"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "28",
     :rx "28",
     :height "80",
@@ -9229,10 +8731,7 @@
     :x "384"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "28",
     :rx "28",
     :height "80",
@@ -9241,10 +8740,7 @@
     :x "384"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "28",
     :rx "28",
     :height "80",
@@ -9253,10 +8749,7 @@
     :x "384"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "28",
     :rx "28",
     :height "80",
@@ -9265,10 +8758,7 @@
     :x "384"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "28",
     :rx "28",
     :height "80",
@@ -9277,10 +8767,7 @@
     :x "48"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "28",
     :rx "28",
     :height "80",
@@ -9289,10 +8776,7 @@
     :x "48"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "28",
     :rx "28",
     :height "80",
@@ -9301,10 +8785,7 @@
     :x "48"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "28",
     :rx "28",
     :height "80",
@@ -9313,10 +8794,7 @@
     :x "48"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "28",
     :rx "28",
     :height "160",
@@ -9325,10 +8803,7 @@
     :x "128"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "28",
     :rx "28",
     :height "160",
@@ -9366,8 +8841,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -9377,8 +8851,7 @@
     :x1 "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -9386,16 +8859,14 @@
     "M313.72,80A111.47,111.47,0,0,1,256,96a111.47,111.47,0,0,1-57.72-16"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M198.28,432a112.11,112.11,0,0,1,115.44,0"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -9405,24 +8876,21 @@
     :x1 "449.99"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M437.27,218a112.09,112.09,0,0,1-57.71-100"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M74.73,294a112.09,112.09,0,0,1,57.71,100"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -9432,16 +8900,14 @@
     :x1 "62.01"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M74.73,218a112.09,112.09,0,0,0,57.71-100"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -9464,10 +8930,7 @@
   (helix.dom/circle {:r "26", :cy "256", :cx "166"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})))
 
@@ -9502,8 +8965,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -9512,8 +8974,7 @@
     :cx "160"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -9522,8 +8983,7 @@
     :cx "160"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -9533,8 +8993,7 @@
     :x1 "160"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -9543,8 +9002,7 @@
     :cx "352"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -9580,41 +9038,30 @@
    :fill "currentColor",
    :& props}
   (helix.dom/circle
-   {:style
-    {:stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "10px"},
+   {:style {:stroke-miterlimit "10", :stroke-width "10px"},
     :r "26",
     :cy "256",
     :cx "256"})
   (helix.dom/circle
-   {:style
-    {:stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "10px"},
+   {:style {:stroke-miterlimit "10", :stroke-width "10px"},
     :r "26",
     :cy "256",
     :cx "346"})
   (helix.dom/circle
-   {:style
-    {:stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "10px"},
+   {:style {:stroke-miterlimit "10", :stroke-width "10px"},
     :r "26",
     :cy "256",
     :cx "166"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "42px"},
     :points "160 368 32 256 160 144"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "42px"},
@@ -9690,24 +9137,17 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "44px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "44px"},
     :d
     "M256,48C141.13,48,48,141.13,48,256s93.13,208,208,208,208-93.13,208-208S370.87,48,256,48Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "44px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "44px"},
     :d
     "M256,48c-58.07,0-112.67,93.13-112.67,208S197.93,464,256,464s112.67-93.13,112.67-208S314.07,48,256,48Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -9715,8 +9155,7 @@
     "M117.33,121.33c38.24,27.15,86.38,43.34,138.67,43.34s100.43-16.19,138.67-43.34"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -9724,20 +9163,14 @@
     "M394.67,390.67c-38.24-27.15-86.38-43.34-138.67-43.34s-100.43,16.19-138.67,43.34"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "44px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "44px"},
     :y2 "464",
     :x2 "256",
     :y1 "48",
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "44px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "44px"},
     :y2 "256",
     :x2 "48",
     :y1 "256",
@@ -9757,38 +9190,28 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "48px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "48px"},
     :y2 "144",
     :x2 "464",
     :y1 "144",
     :x1 "144"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "48px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "48px"},
     :y2 "256",
     :x2 "464",
     :y1 "256",
     :x1 "144"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "48px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "48px"},
     :y2 "368",
     :x2 "464",
     :y1 "368",
     :x1 "144"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -9798,8 +9221,7 @@
     :x "64"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -9809,8 +9231,7 @@
     :x "64"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -9833,10 +9254,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M480,208H308L256,48,204,208H32l140,96L118,464,256,364,394,464,340,304Z"})))
 
@@ -9905,10 +9323,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M256,448c106,0,192-86,192-192S362,64,256,64,64,150,64,256,150,448,256,448Z"})
   (helix.dom/path
@@ -9943,16 +9358,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448.08,256.08c0-106-86-192-192-192s-192,86-192,192,86,192,192,192S448.08,362.11,448.08,256.08Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "28px"},
@@ -9973,8 +9384,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -9983,8 +9393,7 @@
     :cx "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -9994,8 +9403,7 @@
     :x1 "448"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10005,24 +9413,21 @@
     :x1 "176"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "464 128 464 48 384 48"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "48 128 48 48 128 48"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10032,8 +9437,7 @@
     :x1 "464"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10043,8 +9447,7 @@
     :x1 "48"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10099,8 +9502,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10109,8 +9511,7 @@
     :cx "256"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10119,8 +9520,7 @@
     :cx "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10130,8 +9530,7 @@
     :x1 "208"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10141,8 +9540,7 @@
     :x1 "296"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10152,8 +9550,7 @@
     :x1 "208"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10163,8 +9560,7 @@
     :x1 "296"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10174,8 +9570,7 @@
     :x1 "458"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10185,8 +9580,7 @@
     :x1 "326"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10196,8 +9590,7 @@
     :x1 "54"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10252,8 +9645,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10261,8 +9653,7 @@
     "M262.51,204.22,70,396.69C57.56,409.15,48,464,48,464s54.38-9.09,67.31-22L307.8,249.51"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10275,8 +9666,7 @@
     :x "211.72"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10284,8 +9674,7 @@
     "M289.91,141s20.57,8.57,37.22-8.08L381.8,62.29c18.5-19.41,49.26-18.69,67.94,0h0c18.68,18.68,19.34,48.81,0,67.93l-70.68,54.67c-15.65,15.65-8.08,37.22-8.08,37.22"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10360,8 +9749,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10399,16 +9787,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "464 208 352 96 240 208"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10418,16 +9804,14 @@
     :x1 "352"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "48 304 160 416 272 304"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10453,10 +9837,7 @@
     "M245.09,327.74V290.42c57.07,0,84.51,13.47,108.58,38.68,5.4,5.65,15,1.32,14.29-6.43-5.45-61.45-34.14-117.09-122.87-117.09V168.26a8.32,8.32,0,0,0-14.05-6L146.58,242a8.2,8.2,0,0,0,0,11.94L231,333.71A8.32,8.32,0,0,0,245.09,327.74Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M256,64C150,64,64,150,64,256s86,192,192,192,192-86,192-192S362,64,256,64Z"})))
 
@@ -10474,8 +9855,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10485,8 +9865,7 @@
     :x1 "368"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10496,8 +9875,7 @@
     :x1 "64"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10507,8 +9885,7 @@
     :x1 "368"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10518,8 +9895,7 @@
     :x1 "64"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10529,8 +9905,7 @@
     :x1 "208"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10540,8 +9915,7 @@
     :x1 "64"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10550,8 +9924,7 @@
     :cx "336"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10560,8 +9933,7 @@
     :cx "176"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10583,16 +9955,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "304 48 416 160 304 272"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10602,16 +9972,14 @@
     :x1 "398.87"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "208 464 96 352 208 240"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10650,10 +10018,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "32",
     :rx "32",
     :height "272",
@@ -10662,8 +10027,7 @@
     :x "48"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10673,8 +10037,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10684,8 +10047,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10695,8 +10057,7 @@
     :x1 "400"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10719,8 +10080,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10733,8 +10093,7 @@
     :x "128"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10792,8 +10151,7 @@
    {:ry "8", :rx "8", :height "80", :width "80", :y "96", :x "336"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10807,8 +10165,7 @@
    {:ry "8", :rx "8", :height "80", :width "80", :y "96", :x "96"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10822,8 +10179,7 @@
    {:ry "8", :rx "8", :height "80", :width "80", :y "336", :x "96"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -10848,24 +10204,21 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
     :d "M200.66,352H144a96,96,0,0,1,0-192h55.41"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
     :d "M312.59,160H368a96,96,0,0,1,0,192H311.34"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -10997,24 +10350,21 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :d "M320,320c9.74-19.38,16-40.84,16-64,0-23.48-6-44.42-16-64"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :d "M368,368c19.48-33.92,32-64.06,32-112s-12-77.74-32-112"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -11069,8 +10419,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11078,8 +10427,7 @@
     "M256,160c16-63.16,76.43-95.41,208-96a15.94,15.94,0,0,1,16,16V368a16,16,0,0,1-16,16c-128,0-177.45,25.81-208,64-30.37-38-80-64-208-64-9.88,0-16-8.05-16-17.93V80A15.94,15.94,0,0,1,48,64C179.57,64.59,240,96.84,256,160Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11102,8 +10450,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11112,8 +10459,7 @@
     :cx "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11123,8 +10469,7 @@
     :x1 "160"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11147,8 +10492,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11156,16 +10500,14 @@
     "M441.6,171.61,266.87,85.37a24.57,24.57,0,0,0-21.74,0L70.4,171.61A40,40,0,0,0,48,207.39V392c0,22.09,18.14,40,40.52,40h335c22.38,0,40.52-17.91,40.52-40V207.39A40,40,0,0,0,441.6,171.61Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M397.33,368,268.07,267.46a24,24,0,0,0-29.47,0L109.33,368"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11175,8 +10517,7 @@
     :x1 "309.33"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11199,24 +10540,21 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M144,48V320a48,48,0,0,0,48,48H464"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M368,304V192a48,48,0,0,0-48-48H208"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11226,8 +10564,7 @@
     :x1 "368"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11265,7 +10602,7 @@
    :fill "currentColor",
    :& props}
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d "M336,64H176a16,16,0,0,0-16,16V96H352V80A16,16,0,0,0,336,64Z"})
   (helix.dom/path
    {:d
@@ -11394,8 +10731,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11403,8 +10739,7 @@
     "M320,254.27c-4.5,51-40.12,80-80.55,80s-67.34-35.82-63.45-80,37.12-80,77.55-80S323.88,210.27,320,254.27Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11474,16 +10809,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "400 352 464 288 400 224"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11570,24 +10903,21 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "304 160 240 96 304 32"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "207 352 271 416 207 480"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11596,8 +10926,7 @@
     :cx "112"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11606,16 +10935,14 @@
     :cx "400"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M256,96h84a60,60,0,0,1,60,60V368"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11635,16 +10962,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "112 352 48 288 112 224"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11734,8 +11059,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11743,16 +11067,14 @@
     "M350.54,148.68l-26.62-42.06C318.31,100.08,310.62,96,302,96H210c-8.62,0-16.31,4.08-21.92,10.62l-26.62,42.06C155.85,155.23,148.62,160,140,160H80a32,32,0,0,0-32,32V384a32,32,0,0,0,32,32H432a32,32,0,0,0,32-32V192a32,32,0,0,0-32-32H373C364.35,160,356.15,155.23,350.54,148.68Z"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "124 158 124 136 100 136 100 158"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11760,16 +11082,14 @@
     "M335.76,285.22V271.91a80,80,0,0,0-131-61.6M176,258.78v13.31a80,80,0,0,0,130.73,61.8"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "196 272 176 252 156 272"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11805,8 +11125,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11815,8 +11134,7 @@
     :cx "129"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11825,8 +11143,7 @@
     :cx "129"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11836,8 +11153,7 @@
     :x1 "129"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11846,8 +11162,7 @@
     :cx "385"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -11927,8 +11242,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -11938,8 +11252,7 @@
     :x1 "192"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -11947,8 +11260,7 @@
     "M384,208v32c0,70.4-57.6,128-128,128h0c-70.4,0-128-57.6-128-128V208"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -12007,16 +11319,14 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M368,80h64a16,16,0,0,1,16,16v34a46,46,0,0,1-46,46H368"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -12024,8 +11334,7 @@
     "M96,80H368a0,0,0,0,1,0,0V272a80,80,0,0,1-80,80H176a80,80,0,0,1-80-80V80A0,0,0,0,1,96,80Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -12153,16 +11462,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M384,80H128c-26,0-43,14-48,40L48,272V384a48.14,48.14,0,0,0,48,48H416a48.14,48.14,0,0,0,48-48V272L432,120C427,93,409,80,384,80Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -12172,8 +11477,7 @@
     :x1 "48"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -12183,16 +11487,14 @@
     :x1 "320"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M192,272a64,64,0,0,0,128,0"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -12202,8 +11504,7 @@
     :x1 "144"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -12259,16 +11560,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "400 160 464 224 400 288"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -12308,8 +11607,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -12319,8 +11617,7 @@
     :x1 "32"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -12330,8 +11627,7 @@
     :x1 "112"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -12370,8 +11666,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -12381,8 +11676,7 @@
     :x1 "118"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -12407,11 +11701,11 @@
    {:d
     "M39.94,178l144.16,6.12c4.61.36,23.9,1.22,23.9,25.88,0,23.8-19.16,25.33-24.14,25.88L39.94,242C27.27,241.87,16,227.56,16,210S27.27,178.13,39.94,178ZM181.39,309.66,74.65,318C62,318,48,301.31,48,284.12v-.33c0-16.33,11.14-29.63,24.88-29.79l108.45,1.72C208,259,208,275.16,208,282.12,208,305,186.2,309.26,181.39,309.66ZM90.15,32l89.37,8.93C204,41.86,208,58.18,208,68.4,208,86.79,194.59,93,181.33,93l-91,3C75.78,95.78,64,81.51,64,64S75.68,32.34,90.15,32ZM55.79,103.5l126.4,6.22c9.39.63,25.81,3,25.81,26.36,0,12-4.35,25.62-25,27.53L55.79,167.5C42.65,167.35,32,154,32,136.08S42.65,103.65,55.79,103.5Z"})
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d
     "M378.45,273.93A15.84,15.84,0,0,1,386,272h0a15.93,15.93,0,0,0-7.51,1.91Z"})
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d
     "M337.86,343.22l-.13.22a2.53,2.53,0,0,1,.13-.22c20.5-35.51,30.36-55,33.82-62h0C368.21,288.28,358.34,307.73,337.86,343.22Z"})
   (helix.dom/path
@@ -12451,8 +11745,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -12461,8 +11754,7 @@
     :cx "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -12470,8 +11762,7 @@
     "M143.65,227.82,48,400l86.86-.42a16,16,0,0,1,13.82,7.8L192,480l88.33-194.32"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -12479,8 +11770,7 @@
     "M366.54,224,464,400l-86.86-.42a16,16,0,0,0-13.82,7.8L320,480,256,339.2"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -12609,10 +11899,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/path
@@ -12639,8 +11926,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -12663,8 +11949,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -12674,8 +11959,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -12685,15 +11969,11 @@
     :x1 "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d "M256,112A144,144,0,1,0,400,256,144,144,0,0,0,256,112Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -12703,8 +11983,7 @@
     :x1 "416"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -12727,8 +12006,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -12736,10 +12014,7 @@
     "M80,152V408a40.12,40.12,0,0,0,40,40H392a40.12,40.12,0,0,0,40-40V152"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "28",
     :rx "28",
     :height "80",
@@ -12748,16 +12023,14 @@
     :x "48"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "320 304 256 368 192 304"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13020,16 +12293,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "304 48 416 160 304 272"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13039,16 +12310,14 @@
     :x1 "398.87"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "208 464 96 352 208 240"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13071,8 +12340,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13184,8 +12452,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13206,8 +12473,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "round",
+    {:stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :y2 "415.79",
@@ -13216,8 +12482,7 @@
     :x1 "191.98"})
   (helix.dom/line
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "round",
+    {:stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :y2 "387.67",
@@ -13226,8 +12491,7 @@
     :x1 "90.16"})
   (helix.dom/line
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "round",
+    {:stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :y2 "319.79",
@@ -13334,40 +12598,35 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M432,320V144a32,32,0,0,0-32-32h0a32,32,0,0,0-32,32V256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M368,256V80a32,32,0,0,0-32-32h0a32,32,0,0,0-32,32V240"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M240,241V96a32,32,0,0,0-32-32h0a32,32,0,0,0-32,32V320"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M304,240V48a32,32,0,0,0-32-32h0a32,32,0,0,0-32,32V240"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13430,8 +12689,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13440,8 +12698,7 @@
     :cx "216"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13451,8 +12708,7 @@
     :x1 "216"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13462,16 +12718,14 @@
     :x1 "272"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "432 112 432 32 352 32"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13579,40 +12833,35 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M80,320V144a32,32,0,0,1,32-32h0a32,32,0,0,1,32,32V256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M144,256V80a32,32,0,0,1,32-32h0a32,32,0,0,1,32,32V240"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M272,241V96a32,32,0,0,1,32-32h0a32,32,0,0,1,32,32V320"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M208,240V48a32,32,0,0,1,32-32h0a32,32,0,0,1,32,32V240"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13633,10 +12882,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :ry "48",
     :rx "48",
     :height "352",
@@ -13645,8 +12891,7 @@
     :x "112"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13656,8 +12901,7 @@
     :x1 "208"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13669,26 +12913,19 @@
     :x "112"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :r "16",
     :cy "320",
     :cx "176"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :r "16",
     :cy "320",
     :cx "336"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13698,8 +12935,7 @@
     :x1 "144"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13709,8 +12945,7 @@
     :x1 "336"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13733,16 +12968,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "432 320 432 432 320 432"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13752,16 +12985,14 @@
     :x1 "421.8"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "80 192 80 80 192 80"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13771,16 +13002,14 @@
     :x1 "90.2"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "320 80 432 80 432 192"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13790,16 +13019,14 @@
     :x1 "421.77"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "192 432 80 432 80 320"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13902,15 +13129,15 @@
    :fill "currentColor",
    :& props}
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d
     "M275.8,157a16,16,0,0,0-22.63,0l-93.34,93.34a16,16,0,0,0,0,22.63l79.2,79.2h0a16,16,0,0,0,22.63,0L355,258.83a16,16,0,0,0,0-22.63Z"})
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d
     "M137.21,295.6a47.81,47.81,0,0,1-9.43-13.38L69,341a72.2,72.2,0,0,0,0,102h0a72.37,72.37,0,0,0,102,0l58.77-58.76a47.81,47.81,0,0,1-13.38-9.43Z"})
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d
     "M392,48a71.55,71.55,0,0,0-51,21l-55.92,55.91a48.05,48.05,0,0,1,13.36,9.45l79.19,79.19a48.05,48.05,0,0,1,9.45,13.36L443,171A72,72,0,0,0,392,48Z"})
   (helix.dom/path
@@ -13937,16 +13164,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "304 96 416 96 416 208"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -13956,8 +13181,7 @@
     :x1 "405.77"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -14041,10 +13265,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M408,64H104a56.16,56.16,0,0,0-56,56V312a56.16,56.16,0,0,0,56,56h40v80l93.72-78.14a8,8,0,0,1,5.13-1.86H408a56.16,56.16,0,0,0,56-56V120A56.16,56.16,0,0,0,408,64Z"})
   (helix.dom/circle {:r "32", :cy "216", :cx "160"})
@@ -14081,8 +13302,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -14090,10 +13310,7 @@
     "M255.66,112c-77.94,0-157.89,45.11-220.83,135.33a16,16,0,0,0-.27,17.77C82.92,340.8,161.8,400,255.66,400,348.5,400,429,340.62,477.45,264.75a16.14,16.14,0,0,0,0-17.47C428.89,172.28,347.8,112,255.66,112Z"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "80",
     :cy "256",
     :cx "256"})))
@@ -14147,8 +13364,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -14200,8 +13416,7 @@
     "M447.86,384H64.14A48.2,48.2,0,0,1,16,335.86V128.14A48.2,48.2,0,0,1,64.14,80H447.86A48.2,48.2,0,0,1,496,128.14V335.86A48.2,48.2,0,0,1,447.86,384Z"})
   (helix.dom/line
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "round",
+    {:stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :y2 "416",
@@ -14223,8 +13438,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -14232,34 +13446,22 @@
     "M192,53.84S208,48,256,48s74,16,96,32h64a64,64,0,0,1,64,64v48a64,64,0,0,1-64,64H386a32.34,32.34,0,0,0-27.37,15.4S350,290.19,324,335.22,248,448,240,464c-29,0-43-22-34-47.71,10.28-29.39,23.71-54.38,27.46-87.09.54-4.78-3.14-12-8-12L96,307"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M96,241l80,2c20,1.84,32,12.4,32,30h0c0,17.6-14,28.84-32,30l-80,4c-17.6,0-32-16.4-32-34v-.17A32,32,0,0,1,96,241Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M64,176l112,2c18,.84,32,12.41,32,30h0c0,17.61-14,28.86-32,30L64,240a32.1,32.1,0,0,1-32-32h0A32.1,32.1,0,0,1,64,176Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M112,48l64,3c21,1.84,32,11.4,32,29h0c0,17.6-14.4,30-32,30l-64,2A32.09,32.09,0,0,1,80,80h0A32.09,32.09,0,0,1,112,48Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M80,112l96,2c19,.84,32,12.4,32,30h0c0,17.6-13,28.84-32,30l-96,2a32.09,32.09,0,0,1-32-32h0A32.09,32.09,0,0,1,80,112Z"})))
 
@@ -14277,10 +13479,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/circle {:r "144", :cy "256", :cx "256"})))
@@ -14299,8 +13498,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -14313,8 +13511,7 @@
     :x "-24.43"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -14398,8 +13595,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -14478,16 +13674,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "304 416 304 304 416 304"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -14497,16 +13691,14 @@
     :x1 "314.2"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "208 96 208 208 96 208"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -14516,16 +13708,14 @@
     :x1 "197.8"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "416 208 304 208 304 96"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -14535,16 +13725,14 @@
     :x1 "314.23"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "96 304 208 304 208 416"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -14658,8 +13846,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -14679,10 +13866,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "32.14",
     :rx "32.14",
     :height "272",
@@ -14691,8 +13875,7 @@
     :x "32"})
   (helix.dom/line
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "round",
+    {:stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :y2 "416",
@@ -14714,24 +13897,19 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "368 192 256.13 320 208.18 272"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -14741,8 +13919,7 @@
     :x1 "191.95"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -14813,8 +13990,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -14822,10 +13998,7 @@
     "M374.79,308.78,457.5,367A16,16,0,0,0,480,352.38V159.62A16,16,0,0,0,457.5,145l-82.71,58.22A16,16,0,0,0,368,216.3v79.4A16,16,0,0,0,374.79,308.78Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M268,384H84a52.15,52.15,0,0,1-52-52V180a52.15,52.15,0,0,1,52-52H268.48A51.68,51.68,0,0,1,320,179.52V332A52.15,52.15,0,0,1,268,384Z"})))
 
@@ -14859,8 +14032,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -14868,8 +14040,7 @@
     "M132.43,162c-6.24-34-4.49-45.55-3.07-68.39L132.27,47a16,16,0,0,1,15.94-15H363.78a16,16,0,0,1,15.94,15l2.91,46.61c1.43,22.86,3.19,34.39-3.06,68.45-5.93,32.29-43.71,133.27-43.71,238.32V472a8,8,0,0,1-8,8H184.12a8,8,0,0,1-8-8V400.37C176.13,307.9,138.66,196.07,132.43,162Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -14983,10 +14154,7 @@
     "M342.43,273.77,268.3,184.68a16,16,0,0,0-24.6,0l-74.13,89.09A16,16,0,0,0,181.86,300H330.14A16,16,0,0,0,342.43,273.77Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})))
 
@@ -15104,16 +14272,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M256,64C150,64,64,150,64,256s86,192,192,192,192-86,192-192S362,64,256,64Z"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -15254,16 +14418,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "262.62 336 342 256 262.62 176"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -15273,10 +14435,7 @@
     :x1 "330.97"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M256,448c106,0,192-86,192-192S362,64,256,64,64,150,64,256,150,448,256,448Z"})))
 
@@ -15294,8 +14453,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -15303,16 +14461,14 @@
     "M434.67,285.59v-29.8C434.67,157.06,354.43,77,255.47,77a179,179,0,0,0-140.14,67.36m-38.53,82v29.8C76.8,355,157,435,256,435a180.45,180.45,0,0,0,140-66.92"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "32 256 76 212 122 256"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -15446,16 +14602,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "48 320 112 320 176 64 240 448 304 224 336 320 400 320"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -15521,8 +14675,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -15530,16 +14683,14 @@
     "M336,192h40a40,40,0,0,1,40,40V424a40,40,0,0,1-40,40H136a40,40,0,0,1-40-40V232a40,40,0,0,1,40-40h40"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "336 128 256 48 176 128"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -15620,48 +14771,42 @@
   (helix.dom/circle {:r "32", :cy "256.02", :cx "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M184.25,192.25a96,96,0,0,0,0,127.52"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M327.77,319.77a96,96,0,0,0,0-127.52"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M133.28,141.28a168,168,0,0,0,0,229.44"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M378.72,370.72a168,168,0,0,0,0-229.44"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M435,416a240.34,240.34,0,0,0,0-320"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -15758,16 +14903,14 @@
   (helix.dom/circle {:r "26", :cy "256", :cx "166"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "160 368 32 256 160 144"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -15819,8 +14962,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16028,16 +15170,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "400 160 464 224 400 288"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -16057,8 +15197,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16068,8 +15207,7 @@
     :x1 "176"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16079,8 +15217,7 @@
     :x1 "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16088,16 +15225,14 @@
     "M384,224c0-50.64-.08-134.63-.12-160a16,16,0,0,0-16-16l-223.79.26a16,16,0,0,0-16,15.95c0,30.58-.13,129.17-.13,159.79,0,64.28,83,112,128,112S384,288.28,384,224Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M128,96H48v16c0,55.22,33.55,112,80,112"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16117,16 +15252,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M57.49,47.74,425.92,416.17a37.28,37.28,0,0,1,0,52.72h0a37.29,37.29,0,0,1-52.72,0l-90-91.55A32,32,0,0,1,274,354.91v-5.53a32,32,0,0,0-9.52-22.78l-11.62-10.73a32,32,0,0,0-29.8-7.44h0A48.53,48.53,0,0,1,176.5,295.8L91.07,210.36C40.39,159.68,21.74,83.15,57.49,47.74Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16134,8 +15265,7 @@
     "M400,32l-77.25,77.25A64,64,0,0,0,304,154.51v14.86a16,16,0,0,1-4.69,11.32L288,192"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16143,8 +15273,7 @@
     "M320,224l11.31-11.31A16,16,0,0,1,342.63,208h14.86a64,64,0,0,0,45.26-18.75L480,112"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16154,8 +15283,7 @@
     :x1 "440"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16260,8 +15388,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16269,8 +15396,7 @@
     "M53.12,199.94l400-151.39a8,8,0,0,1,10.33,10.33l-151.39,400a8,8,0,0,1-15-.34L229.66,292.45a16,16,0,0,0-10.11-10.11L53.46,215A8,8,0,0,1,53.12,199.94Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16337,8 +15463,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16346,16 +15471,14 @@
     "M448,341.37V170.61A32,32,0,0,0,432.11,143l-152-88.46a47.94,47.94,0,0,0-48.24,0L79.89,143A32,32,0,0,0,64,170.61V341.37A32,32,0,0,0,79.89,369l152,88.46a48,48,0,0,0,48.24,0l152-88.46A32,32,0,0,0,448,341.37Z"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "69 153.99 256 263.99 443 153.99"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16394,10 +15517,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M480,208H308L256,48,204,208H32l140,96L118,464,256,364,394,464,340,304Z"})
   (helix.dom/polygon
@@ -16439,8 +15559,7 @@
    :& props}
   (helix.dom/polygon
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16460,8 +15579,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16469,8 +15587,7 @@
     "M452.37,59.63h0a40.49,40.49,0,0,0-57.26,0L184,294.74c23.08,4.7,46.12,27.29,49.26,49.26L452.37,116.89A40.49,40.49,0,0,0,452.37,59.63Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16491,8 +15608,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16513,16 +15629,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M400,111V401c0,17.44-17,28.52-31,20.16L121.09,272.79c-12.12-7.25-12.12-26.33,0-33.58L369,90.84C383,82.48,400,93.56,400,111Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -16642,8 +15754,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16653,8 +15764,7 @@
     :x1 "160"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16664,8 +15774,7 @@
     :x1 "160"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16675,8 +15784,7 @@
     :x1 "160"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16685,8 +15793,7 @@
     :cx "80"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16695,8 +15802,7 @@
     :cx "80"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16750,10 +15856,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "32.14",
     :rx "32.14",
     :height "304",
@@ -16762,8 +15865,7 @@
     :x "48"})
   (helix.dom/line
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "round",
+    {:stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :y2 "416",
@@ -16785,10 +15887,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M480,208H308L256,48,204,208H32l140,96L118,464,256,364,394,464,340,304Z"})
   (helix.dom/polygon
@@ -16840,8 +15939,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16849,16 +15947,14 @@
     "M208,64h66.75a32,32,0,0,1,22.62,9.37L438.63,214.63A32,32,0,0,1,448,237.25V432a48,48,0,0,1-48,48H192a48,48,0,0,1-48-48V304"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M288,72V192a32,32,0,0,0,32,32H440"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -16955,8 +16051,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -16964,16 +16059,14 @@
     "M434.67,285.59v-29.8C434.67,157.06,354.43,77,255.47,77a179,179,0,0,0-140.14,67.36m-38.53,82v29.8C76.8,355,157,435,256,435a180.45,180.45,0,0,0,140-66.92"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "32 256 76 212 122 256"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17009,8 +16102,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17020,8 +16112,7 @@
     :x1 "48"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17033,8 +16124,7 @@
     :x "384"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17046,8 +16136,7 @@
     :x "96"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17059,8 +16148,7 @@
     :x "32"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17180,10 +16268,7 @@
     "M342.43,238.23,268.3,327.32a16,16,0,0,1-24.6,0l-74.13-89.09A16,16,0,0,1,181.86,212H330.14A16,16,0,0,1,342.43,238.23Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})))
 
@@ -17338,8 +16423,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -17351,8 +16435,7 @@
     :x "32"})
   (helix.dom/rect
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "square",
+    {:stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :ry "4",
@@ -17363,8 +16446,7 @@
     :x "85.69"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -17439,8 +16521,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17449,8 +16530,7 @@
     :cx "128"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17460,16 +16540,14 @@
     :x1 "128"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "288 160 224 96 288 32"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17478,8 +16556,7 @@
     :cx "128"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17488,8 +16565,7 @@
     :cx "384"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17528,8 +16604,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17552,21 +16627,21 @@
    {:d
     "M442.3,67.82h0C383.92,44.72,317.78,32,256,32c-63.57,0-129.8,12.51-186.56,35.25C49.18,75.48,42,80,42,80l22,44,37.53-16.14C147.58,89.53,199.19,80,256.51,80,314,80,364.6,89.23,411.26,108.25h0L448,124l22-44S463,76,442.3,67.82Z"})
   (helix.dom/ellipse
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :transform "translate(-53.23 287.42) rotate(-44.98)",
     :ry "32.03",
     :rx "31.97",
     :cy "207.99",
     :cx "320.48"})
   (helix.dom/ellipse
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :transform "translate(-79.38 192.25) rotate(-44.98)",
     :ry "32.03",
     :rx "31.97",
     :cy "191.99",
     :cx "192.48"})
   (helix.dom/ellipse
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :transform "translate(-151.13 274.96) rotate(-44.98)",
     :ry "32.03",
     :rx "31.97",
@@ -17606,8 +16681,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -17616,8 +16690,7 @@
     :cx "256"})
   (helix.dom/polygon
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17625,16 +16698,14 @@
     "256 175.15 179.91 238.98 200 320 256 320 312 320 332.09 238.98 256 175.15"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "332.09 238.98 384.96 216.58 410.74 143.32"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17644,16 +16715,14 @@
     :x1 "447"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "179.91 238.98 127.04 216.58 101.26 143.32"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17663,16 +16732,14 @@
     :x1 "65"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "256 175.15 256 117.58 320 74.94"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17682,16 +16749,14 @@
     :x1 "192"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "312 320 340 368 312 439"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17701,16 +16766,14 @@
     :x1 "410.74"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "200 320 172 368 200.37 439.5"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17847,10 +16910,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "48",
     :rx "48",
     :height "416",
@@ -17859,8 +16919,7 @@
     :x "96"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17870,8 +16929,7 @@
     :x1 "176"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17881,8 +16939,7 @@
     :x1 "176"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -17974,8 +17031,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "48px"},
@@ -17983,8 +17039,7 @@
     "M256,256s-48-96-126-96c-54.12,0-98,43-98,96s43.88,96,98,96c30,0,56.45-13.18,78-32"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "48px"},
@@ -18005,8 +17060,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -18033,18 +17087,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M32,145.52v221c0,13.28,13,21.72,23.63,15.35l188.87-113c9.24-5.53,9.24-20.07,0-25.6l-188.87-113C45,123.8,32,132.24,32,145.52Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M260.57,145.52v221c0,13.28,13,21.72,23.63,15.35l188.87-113c9.24-5.53,9.24-20.07,0-25.6l-188.87-113C273.56,123.8,260.57,132.24,260.57,145.52Z"})))
 
@@ -18076,10 +17124,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M430.11,347.9c-6.6-6.1-16.3-7.6-24.6-9-11.5-1.9-15.9-4-22.6-10-14.3-12.7-14.3-31.1,0-43.8l30.3-26.9c46.4-41,46.4-108.2,0-149.2-34.2-30.1-80.1-45-127.8-45-55.7,0-113.9,20.3-158.8,60.1-83.5,73.8-83.5,194.7,0,268.5,41.5,36.7,97.5,55,152.9,55.4h1.7c55.4,0,110-17.9,148.8-52.4C444.41,382.9,442,359,430.11,347.9Z"})
   (helix.dom/circle {:r "32", :cy "208", :cx "144"})
@@ -18102,10 +17147,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "48",
     :rx "48",
     :height "352",
@@ -18114,25 +17156,20 @@
     :x "48"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "32",
     :cy "176",
     :cx "336"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M304,335.79,213.34,245.3A32,32,0,0,0,169.47,244L48,352"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -18238,8 +17275,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -18249,8 +17285,7 @@
    {:d "M352,144a32,32,0,1,1,32-32A32,32,0,0,1,352,144Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -18344,18 +17379,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "256 400 256 32 432 112 256 192"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M256,336c-87,0-175.3,43.2-191.64,124.74C62.39,470.57,68.57,480,80,480H432c11.44,0,17.62-9.43,15.65-19.26C431.3,379.2,343,336,256,336Z"})))
 
@@ -18444,16 +17475,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "112 352 48 288 112 224"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -18524,8 +17553,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -18535,8 +17563,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -18686,16 +17713,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
     :points "268 112 412 256 268 400"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -18806,8 +17831,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -18828,8 +17852,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -18837,8 +17860,7 @@
     "M344,48H320a16,16,0,0,0-16-16H208a16,16,0,0,0-16,16H168a56.16,56.16,0,0,0-56,56V351c0,35.3,144,65,144,65s144-29.7,144-65V104A56,56,0,0,0,344,48ZM256,352a48,48,0,1,1,48-48A48,48,0,0,1,256,352Zm96-160a16,16,0,0,1-16,16H176a16,16,0,0,1-16-16V128a16,16,0,0,1,16-16H336a16,16,0,0,1,16,16Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -18848,8 +17870,7 @@
     :x1 "144"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -18859,8 +17880,7 @@
     :x1 "336"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -18883,10 +17903,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "48",
     :rx "48",
     :height "320",
@@ -18895,16 +17912,14 @@
     :x "32"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M144,128V96a32,32,0,0,1,32-32H336a32,32,0,0,1,32,32v32"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -18914,8 +17929,7 @@
     :x1 "480"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -18986,16 +18000,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19048,16 +18058,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "112 160 48 224 112 288"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19093,8 +18101,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19140,8 +18147,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19151,8 +18157,7 @@
     :x1 "192"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19160,8 +18165,7 @@
     "M384,208v32c0,70.4-57.6,128-128,128h0c-70.4,0-128-57.6-128-128V208"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19187,8 +18191,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19197,8 +18200,7 @@
     :cx "128"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19207,8 +18209,7 @@
     :cx "384"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19217,8 +18218,7 @@
     :cx "384"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19228,8 +18228,7 @@
     :x1 "169.83"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19267,8 +18266,7 @@
     "M176.55,355,107,403.38a32.34,32.34,0,0,0-6,4.35,26.33,26.33,0,0,0,0,38.56,29.39,29.39,0,0,0,40.36,0,30.75,30.75,0,0,0,4-4.68L197.9,373c3.5-5.58,2.92-12.49-2-17.06A15,15,0,0,0,176.55,355Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -19276,8 +18274,7 @@
     "M368,125.09c0-55.7-49.22-89.16-94.2-93.06a8,8,0,0,0-8.69,7.71c-3.12,76-109.38,110.69-119.87,178.68-7,45.4,16.65,72.37,34.31,85.78a15.94,15.94,0,0,0,23.93-5.62c22.5-45.86,74.33-63.49,109.72-85.94C356.08,185.44,368,156.2,368,125.09Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -19285,8 +18282,7 @@
     "M240,95.7c-12.82-23-30.51-31-59.16-31.63a3.86,3.86,0,0,0-4.06,3.51C175.83,101.8,144,112.43,144,140.73c0,19.37,5.39,29,17.16,39.28"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -19307,16 +18303,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M384,80H128c-26,0-43,14-48,40L48,272V384a48.14,48.14,0,0,0,48,48H416a48.14,48.14,0,0,0,48-48V272L432,120C427,93,409,80,384,80Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19326,8 +18318,7 @@
     :x1 "48"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19337,8 +18328,7 @@
     :x1 "320"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19358,10 +18348,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})))
 
@@ -19468,16 +18455,14 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M224,232a32,32,0,0,1,64,0"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19487,8 +18472,7 @@
     :x1 "448"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19498,8 +18482,7 @@
     :x1 "64"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19507,8 +18490,7 @@
     "M64,200c0,96,16,128,80,128s80-32,80-128c0,0-16-16-80-16S64,200,64,200Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19545,32 +18527,28 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "160 368 32 256 160 144"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "352 368 480 256 352 144"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "192 288.1 256 352 320 288.1"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19593,10 +18571,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "48",
     :rx "48",
     :height "352",
@@ -19605,16 +18580,14 @@
     :x "32"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M144,112V80a32,32,0,0,1,32-32H336a32,32,0,0,1,32,32v32"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19624,8 +18597,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19667,10 +18639,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M112,111V401c0,17.44,17,28.52,31,20.16l247.9-148.37c12.12-7.25,12.12-26.33,0-33.58L143,90.84C129,82.48,112,93.56,112,111Z"})))
 
@@ -19688,10 +18657,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M218.1,167.17c0,13,0,25.6,4.1,37.4-43.1,50.6-156.9,184.3-167.5,194.5a20.17,20.17,0,0,0-6.7,15c0,8.5,5.2,16.7,9.6,21.3,6.6,6.9,34.8,33,40,28,15.4-15,18.5-19,24.8-25.2,9.5-9.3-1-28.3,2.3-36s6.8-9.2,12.5-10.4,15.8,2.9,23.7,3c8.3.1,12.8-3.4,19-9.2,5-4.6,8.6-8.9,8.7-15.6.2-9-12.8-20.9-3.1-30.4s23.7,6.2,34,5,22.8-15.5,24.1-21.6-11.7-21.8-9.7-30.7c.7-3,6.8-10,11.4-11s25,6.9,29.6,5.9c5.6-1.2,12.1-7.1,17.4-10.4,15.5,6.7,29.6,9.4,47.7,9.4,68.5,0,124-53.4,124-119.2S408.5,48,340,48,218.1,101.37,218.1,167.17ZM400,144a32,32,0,1,1-32-32A32,32,0,0,1,400,144Z"})))
 
@@ -19763,8 +18729,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -19865,8 +18830,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19874,8 +18838,7 @@
     "M427.68,351.43C402,320,383.87,304,383.87,217.35,383.87,138,343.35,109.73,310,96c-4.43-1.82-8.6-6-9.95-10.55C294.2,65.54,277.8,48,256,48S217.79,65.55,212,85.47c-1.35,4.6-5.52,8.71-9.95,10.53-33.39,13.75-73.87,41.92-73.87,121.35C128.13,304,110,320,84.32,351.43,73.68,364.45,83,384,101.61,384H410.49C429,384,438.26,364.39,427.68,351.43Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -19948,16 +18911,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "48px"},
     :points "112 268 256 412 400 268"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "48px"},
@@ -19980,8 +18941,7 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -20033,32 +18993,28 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "320 120 368 168 320 216"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M352,168H144a80.24,80.24,0,0,0-80,80v16"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "192 392 144 344 192 296"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -20078,16 +19034,14 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :d "M320,146s24.36-12-64-12A160,160,0,1,0,416,294"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -20142,8 +19096,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -20153,8 +19106,7 @@
     :x1 "96"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -20164,8 +19116,7 @@
     :x1 "96"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -20204,18 +19155,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M384,368h24a40.12,40.12,0,0,0,40-40V168a40.12,40.12,0,0,0-40-40H104a40.12,40.12,0,0,0-40,40V328a40.12,40.12,0,0,0,40,40h24"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "24.32",
     :rx "24.32",
     :height "208",
@@ -20224,10 +19169,7 @@
     :x "128"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M384,128V104a40.12,40.12,0,0,0-40-40H168a40.12,40.12,0,0,0-40,40v24"})
   (helix.dom/circle {:r "24", :cy "184", :cx "392"})))
@@ -20309,18 +19251,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M404.76,123.08C358.37,104.18,309.69,96,256,96S149.9,105,107.1,122.68c-8.08,3.3-15.26,9-10.07,19.5C101.24,150.71,203,375,241.66,455a15.94,15.94,0,0,0,28.72,0L414.43,142.78C417.62,135.88,415.33,127.38,404.76,123.08Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M436.38,82.68C384.31,62.08,320.17,48,256,48S128.65,60.78,75.48,82.08C70.79,84,62,88.43,64.41,95.88L74.09,120c4,8.2,8.67,8.2,15.06,8.2,1.79,0,4.29-1,7.28-2.18A442.46,442.46,0,0,1,256,96c56.76,0,114.91,12,159.6,30,3.59,1.4,5.59,2.18,7.28,2.18,6.58,0,10.38,2.19,15-8.1L447.65,96C449.66,90,442.66,85.18,436.38,82.68Z"})
   (helix.dom/circle {:r "32", :cy "192", :cx "192"})
@@ -20341,16 +19277,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
     :points "244 400 100 256 244 112"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -20389,10 +19323,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M464,256c0-114.87-93.13-208-208-208S48,141.13,48,256s93.13,208,208,208S464,370.87,464,256Z"})
   (helix.dom/path
@@ -20447,10 +19378,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M100.18,241.19a15.93,15.93,0,0,0,13.37-13.25C126.6,145.59,186.34,96,256,96c64.69,0,107.79,42.36,124.92,87a16.11,16.11,0,0,0,12.53,10.18C449.36,202.06,496,239.21,496,304c0,66-54,112-120,112H116c-55,0-100-27.44-100-88C16,273.57,59.89,247.19,100.18,241.19Z"})))
 
@@ -20495,8 +19423,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -20504,17 +19431,13 @@
     "M350.54,148.68l-26.62-42.06C318.31,100.08,310.62,96,302,96H210c-8.62,0-16.31,4.08-21.92,10.62l-26.62,42.06C155.85,155.23,148.62,160,140,160H80a32,32,0,0,0-32,32V384a32,32,0,0,0,32,32H432a32,32,0,0,0,32-32V192a32,32,0,0,0-32-32H373C364.35,160,356.15,155.23,350.54,148.68Z"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "80",
     :cy "272",
     :cx "256"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -20534,10 +19457,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :ry "40",
     :rx "40",
     :height "80",
@@ -20546,10 +19466,7 @@
     :x "64"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :ry "40",
     :rx "40",
     :height "80",
@@ -20558,10 +19475,7 @@
     :x "216"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :ry "40",
     :rx "40",
     :height "80",
@@ -20570,10 +19484,7 @@
     :x "368"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :ry "40",
     :rx "40",
     :height "80",
@@ -20582,10 +19493,7 @@
     :x "64"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :ry "40",
     :rx "40",
     :height "80",
@@ -20594,10 +19502,7 @@
     :x "216"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :ry "40",
     :rx "40",
     :height "80",
@@ -20606,10 +19511,7 @@
     :x "368"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :ry "40",
     :rx "40",
     :height "80",
@@ -20618,10 +19520,7 @@
     :x "64"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :ry "40",
     :rx "40",
     :height "80",
@@ -20630,10 +19529,7 @@
     :x "216"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :ry "40",
     :rx "40",
     :height "80",
@@ -20691,32 +19587,28 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "44px"},
     :d "M342,444h46a56,56,0,0,0,56-56V342"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "44px"},
     :d "M444,170V124a56,56,0,0,0-56-56H342"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "44px"},
     :d "M170,444H124a56,56,0,0,1-56-56V342"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -20780,16 +19672,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "176 112 256 32 336 112"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -20799,32 +19689,28 @@
     :x1 "255.98"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "176 400 256 480 336 400"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "400 176 480 256 400 336"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "112 176 32 256 112 336"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -20891,8 +19777,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -20900,8 +19785,7 @@
     "M313.27,124.64,198.73,51.36a32,32,0,0,0-29.28.35L56.51,127.49A16,16,0,0,0,48,141.63v295.8a16,16,0,0,0,23.49,14.14l97.82-63.79a32,32,0,0,1,29.5-.24l111.86,73a32,32,0,0,0,29.27-.11l115.43-75.94a16,16,0,0,0,8.63-14.2V74.57a16,16,0,0,0-23.49-14.14l-98,63.86A32,32,0,0,1,313.27,124.64Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -20911,8 +19795,7 @@
     :x1 "328"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -20935,16 +19818,14 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :d "M322,416c0,35.35-20.65,64-56,64H134c-35.35,0-56-28.65-56-64"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -20952,8 +19833,7 @@
     "M336,336c17.67,0,32,17.91,32,40h0c0,22.09-14.33,40-32,40H64c-17.67,0-32-17.91-32-40h0c0-22.09,14.33-40,32-40"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -20961,8 +19841,7 @@
     "M344,336H179.31a8,8,0,0,0-5.65,2.34l-26.83,26.83a4,4,0,0,1-5.66,0l-26.83-26.83a8,8,0,0,0-5.65-2.34H56a24,24,0,0,1-24-24h0a24,24,0,0,1,24-24H344a24,24,0,0,1,24,24h0A24,24,0,0,1,344,336Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -20970,8 +19849,7 @@
     "M64,276v-.22c0-55,45-83.78,100-83.78h72c55,0,100,29,100,84v-.22"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -20981,24 +19859,21 @@
     :x1 "241"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :d "M256,480H395.31a32,32,0,0,0,31.91-29.61L463,112"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "368 112 384 48 431 32"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -21056,16 +19931,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "48px"},
     :points "268 112 412 256 268 400"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "48px"},
@@ -21104,16 +19977,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "304 96 416 96 416 208"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -21123,8 +19994,7 @@
     :x1 "405.77"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -21204,8 +20074,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -21243,8 +20112,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -21254,8 +20122,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -21265,8 +20132,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -21276,8 +20142,7 @@
     :x1 "403.08"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -21287,8 +20152,7 @@
     :x1 "142.86"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -21298,8 +20162,7 @@
     :x1 "464"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -21309,8 +20172,7 @@
     :x1 "96"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -21320,8 +20182,7 @@
     :x1 "403.08"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -21331,8 +20192,7 @@
     :x1 "142.86"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -21354,8 +20214,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -21363,8 +20222,7 @@
     "M352.92,80C288,80,256,144,256,144s-32-64-96.92-64C106.32,80,64.54,124.14,64,176.81c-1.1,109.33,86.73,187.08,183,252.42a16,16,0,0,0,18,0c96.26-65.34,184.09-143.09,183-252.42C447.46,124.14,405.68,80,352.92,80Z"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -21468,16 +20326,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "112 352 48 288 112 224"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -21497,8 +20353,7 @@
    :& props}
   (helix.dom/ellipse
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -21509,8 +20364,7 @@
     :cx "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -21520,8 +20374,7 @@
     :x1 "334.04"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -21531,8 +20384,7 @@
     :x1 "278.3"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -21542,8 +20394,7 @@
     :x1 "322.89"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -21553,8 +20404,7 @@
     :x1 "456.68"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -21564,8 +20414,7 @@
     :x1 "211.4"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -21588,40 +20437,35 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "400 304 448 352 400 400"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "400 112 448 160 400 208"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "64 352 192 352 252 260"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "64 160 192 160 320 352 416 352"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -21641,10 +20485,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "8",
     :rx "8",
     :height "320",
@@ -21653,10 +20494,7 @@
     :x "416"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "8",
     :rx "8",
     :height "240",
@@ -21665,10 +20503,7 @@
     :x "288"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "8",
     :rx "8",
     :height "176",
@@ -21677,10 +20512,7 @@
     :x "160"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "8",
     :rx "8",
     :height "112",
@@ -21784,8 +20616,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -21808,11 +20639,11 @@
    {:d
     "M472.06,334,327.9,327.87c-4.61-.36-23.9-1.21-23.9-25.87,0-23.81,19.16-25.33,24.14-25.88L472.06,270c12.67.13,23.94,14.43,23.94,32S484.73,333.87,472.06,334ZM330.61,202.33,437.35,194C450,194,464,210.68,464,227.88v.33c0,16.32-11.14,29.62-24.88,29.79l-108.45-1.73C304,253,304,236.83,304,229.88,304,207,325.8,202.73,330.61,202.33ZM421.85,480l-89.37-8.93C308,470.14,304,453.82,304,443.59c0-18.38,13.41-24.6,26.67-24.6l91-3c14.54.23,26.32,14.5,26.32,32S436.32,479.66,421.85,480Zm34.36-71.5-126.4-6.21c-9.39-.63-25.81-3-25.81-26.37,0-12,4.35-25.61,25-27.53l127.19-3.88C469.35,344.65,480,358,480,375.91S469.35,408.34,456.21,408.49Z"})
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d
     "M133.55,238.06A15.85,15.85,0,0,1,126,240h0a15.82,15.82,0,0,0,7.51-1.92Z"})
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d
     "M174.14,168.78l.13-.23-.13.23c-20.5,35.51-30.36,54.95-33.82,62h0C143.79,223.71,153.66,204.27,174.14,168.78Z"})
   (helix.dom/path
@@ -21839,10 +20670,7 @@
   (helix.dom/circle {:r "26", :cy "166", :cx "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})))
 
@@ -21908,16 +20736,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "304 416 304 304 416 304"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -21927,16 +20753,14 @@
     :x1 "314.2"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "208 96 208 208 96 208"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -21946,16 +20770,14 @@
     :x1 "197.8"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "416 208 304 208 304 96"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -21965,16 +20787,14 @@
     :x1 "314.23"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "96 304 208 304 208 416"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -22013,24 +20833,21 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "36px"},
     :d "M208,352H144a96,96,0,0,1,0-192h64"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "36px"},
     :d "M304,160h64a96,96,0,0,1,0,192H304"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "36px"},
@@ -22351,8 +21168,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -22362,8 +21178,7 @@
     :x1 "368"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -22402,25 +21217,18 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d "M398.57,80H113.43V96S87.51,272,256,272,398.57,96,398.57,96Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :y2 "432",
     :x2 "256",
     :y1 "272",
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -22430,10 +21238,7 @@
     :x1 "352"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :y2 "160",
     :x2 "400",
     :y1 "160",
@@ -22453,8 +21258,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -22462,8 +21266,7 @@
     "M277.42,247a24.68,24.68,0,0,0-4.08-5.47L255,223.44a21.63,21.63,0,0,0-6.56-4.57,20.93,20.93,0,0,0-23.28,4.27c-6.36,6.26-18,17.68-39,38.43C146,301.3,71.43,367.89,37.71,396.29a16,16,0,0,0-1.09,23.54l39,39.43a16.13,16.13,0,0,0,23.67-.89c29.24-34.37,96.3-109,136-148.23,20.39-20.06,31.82-31.58,38.29-37.94A21.76,21.76,0,0,0,277.42,247Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -22484,16 +21287,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -22503,8 +21302,7 @@
     :x1 "360"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -22514,8 +21312,7 @@
     :x1 "443.13"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -22525,8 +21322,7 @@
     :x1 "417.41"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -22536,8 +21332,7 @@
     :x1 "299.13"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -22547,8 +21342,7 @@
     :x1 "152"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -22558,8 +21352,7 @@
     :x1 "68.87"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -22569,8 +21362,7 @@
     :x1 "94.59"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -22625,22 +21417,15 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d "M256,80A176,176,0,1,0,432,256,176,176,0,0,0,256,80Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d "M232,160a72,72,0,1,0,72,72A72,72,0,0,0,232,160Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -22663,8 +21448,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -22685,16 +21469,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "352 368 464 368 464 256"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -22714,8 +21496,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -22723,16 +21504,14 @@
     "M320,336h76c55,0,100-21.21,100-75.6s-53-73.47-96-75.6C391.11,99.74,329,48,256,48c-69,0-113.44,45.79-128,91.2-60,5.7-112,35.88-112,98.4S70,336,136,336h56"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "192 400.1 256 464 320 400.1"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -22755,18 +21534,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M413.48,284.46c58.87,47.24,91.61,89,80.31,108.55-17.85,30.85-138.78-5.48-270.1-81.15S.37,149.84,18.21,119c11.16-19.28,62.58-12.32,131.64,14.09"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "160",
     :cy "256",
     :cx "256"})))
@@ -22934,10 +21707,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M256,448c106,0,192-86,192-192S362,64,256,64,64,150,64,256,150,448,256,448Z"})
   (helix.dom/path
@@ -22993,8 +21763,7 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -23065,8 +21834,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -23108,16 +21876,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "464 208 352 96 240 208"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -23127,16 +21893,14 @@
     :x1 "352"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "48 304 160 416 272 304"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -23270,8 +22034,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "square",
+    {:stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :y2 "415.58",
@@ -23280,8 +22043,7 @@
     :x1 "191.98"})
   (helix.dom/line
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "square",
+    {:stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :y2 "387.46",
@@ -23290,8 +22052,7 @@
     :x1 "90.16"})
   (helix.dom/line
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "square",
+    {:stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :y2 "319.58",
@@ -23347,10 +22108,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :transform "translate(512 416) rotate(180)",
     :ry "16",
     :rx "16",
@@ -23360,8 +22118,7 @@
     :x "32"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -23371,8 +22128,7 @@
     :x1 "64"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -23382,8 +22138,7 @@
     :x1 "96"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -23392,32 +22147,28 @@
     :cx "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M480,160a80,80,0,0,1-80-80"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M32,160a80,80,0,0,0,80-80"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M480,256a80,80,0,0,0-80,80"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -23469,10 +22220,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M256,48C192,48,96,171.69,96,286.55S160,464,256,464s160-62.59,160-177.45S320,48,256,48Z"})))
 
@@ -23571,10 +22319,7 @@
   (helix.dom/circle {:r "24", :cy "232", :cx "328"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "208",
     :cy "256",
     :cx "256"})))
@@ -23593,10 +22338,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M448,256,272,88v96C103.57,184,64,304.77,64,424c48.61-62.24,91.6-96,208-96v96Z"})))
 
@@ -23631,8 +22373,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -23640,16 +22381,14 @@
     "M32,160V456a8,8,0,0,0,8,8H176V160a16,16,0,0,0-16-16H48A16,16,0,0,0,32,160Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M320,48H192a16,16,0,0,0-16,16V464H336V64A16,16,0,0,0,320,48Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -23670,24 +22409,21 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "42px"},
     :d "M332.69,320a115,115,0,0,0-152.8,0"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "42px"},
     :d "M393.74,259a201.26,201.26,0,0,0-274.92,0"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "42px"},
@@ -23725,7 +22461,7 @@
    :fill "currentColor",
    :& props}
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d "M400,64H112a16,16,0,0,0,0,32H400a16,16,0,0,0,0-32Z"})
   (helix.dom/path
    {:d
@@ -23804,40 +22540,33 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M296,352h28a28,28,0,0,0,28-28V296"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M352,216V188a28,28,0,0,0-28-28H296"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M216,352H188a28,28,0,0,1-28-28V296"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -23857,16 +22586,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "352 256 256 480 194 335"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -23934,16 +22661,14 @@
    :& props}
   (helix.dom/polygon
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "240 80 248 320 264 320 272 80 240 80"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -23991,10 +22716,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "28.87",
     :rx "28.87",
     :height "256",
@@ -24003,8 +22725,7 @@
     :x "64"})
   (helix.dom/line
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "round",
+    {:stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :y2 "80",
@@ -24013,8 +22734,7 @@
     :x1 "144"})
   (helix.dom/line
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "round",
+    {:stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :y2 "128",
@@ -24036,24 +22756,17 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M368,415.86V72a24.07,24.07,0,0,0-24-24H72A24.07,24.07,0,0,0,48,72V424a40.12,40.12,0,0,0,40,40H416"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M416,464h0a48,48,0,0,1-48-48V128h72a24,24,0,0,1,24,24V416A48,48,0,0,1,416,464Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -24063,8 +22776,7 @@
     :x1 "240"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -24074,8 +22786,7 @@
     :x1 "240"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -24085,8 +22796,7 @@
     :x1 "112"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -24096,8 +22806,7 @@
     :x1 "112"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -24123,39 +22832,28 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d "M416.07,272a160,160,0,1,0-160,160A160,160,0,0,0,416.07,272Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M142.12,91.21A46.67,46.67,0,0,0,112,80l-2.79.08C83.66,81.62,64,104,64.07,131c0,13.21,4.66,19.37,10.88,27.23A4.55,4.55,0,0,0,78.19,160h.88a3.23,3.23,0,0,0,2.54-1.31L142.38,99a5.38,5.38,0,0,0,1.55-4A5.26,5.26,0,0,0,142.12,91.21Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M369.88,91.21A46.67,46.67,0,0,1,400,80l2.79.08C428.34,81.62,448,104,447.93,131c0,13.21-4.66,19.37-10.88,27.23a4.55,4.55,0,0,1-3.24,1.76h-.88a3.23,3.23,0,0,1-2.54-1.31L369.62,99a5.38,5.38,0,0,1-1.55-4A5.26,5.26,0,0,1,369.88,91.21Z"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "256.07 160 256.07 272 176.07 272"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -24165,8 +22863,7 @@
     :x1 "416.07"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -24189,8 +22886,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -24198,16 +22894,14 @@
     "M157.65,192H88a8,8,0,0,0-8,8V312a8,8,0,0,0,8,8h69.65a16,16,0,0,1,10.14,3.63l91.47,75A8,8,0,0,0,272,392.17V119.83a8,8,0,0,0-12.74-6.44l-91.47,75A16,16,0,0,1,157.65,192Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M352,320c9.74-19.41,16-40.81,16-64,0-23.51-6-44.4-16-64"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -24227,16 +22921,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
     :points "112 268 256 412 400 268"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -24259,10 +22951,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/path
@@ -24410,8 +23099,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -24423,8 +23111,7 @@
     :x "32"})
   (helix.dom/rect
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "square",
+    {:stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :ry "4",
@@ -24435,8 +23122,7 @@
     :x "85.69"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -24494,8 +23180,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "40px"},
@@ -24523,17 +23208,11 @@
    :& props}
   (helix.dom/polygon
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :points "336 320 32 320 184 48 336 320"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d "M265.32,194.51A144,144,0,1,1,192,320"})))
 
 
@@ -24550,8 +23229,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -24572,8 +23250,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -24582,8 +23259,7 @@
     :cx "128"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -24592,8 +23268,7 @@
     :cx "384"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -24616,18 +23291,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "352 296 256 200 160 296"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M256,64C150,64,64,150,64,256s86,192,192,192,192-86,192-192S362,64,256,64Z"})))
 
@@ -24664,24 +23335,17 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M256,48C141.13,48,48,141.13,48,256s93.13,208,208,208,208-93.13,208-208S370.87,48,256,48Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M256,48c-58.07,0-112.67,93.13-112.67,208S197.93,464,256,464s112.67-93.13,112.67-208S314.07,48,256,48Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -24689,8 +23353,7 @@
     "M117.33,117.33c38.24,27.15,86.38,43.34,138.67,43.34s100.43-16.19,138.67-43.34"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -24698,20 +23361,14 @@
     "M394.67,394.67c-38.24-27.15-86.38-43.34-138.67-43.34s-100.43,16.19-138.67,43.34"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :y2 "464",
     :x2 "256",
     :y1 "48",
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :y2 "256",
     :x2 "48",
     :y1 "256",
@@ -24748,8 +23405,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -24759,8 +23415,7 @@
     :x1 "48"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -24770,16 +23425,14 @@
     :x1 "192"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "272 448 368 224 464 448"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -24789,16 +23442,14 @@
     :x1 "301.5"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M281.3,112S257,206,199,277,80,384,80,384"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -24845,7 +23496,7 @@
    :fill "currentColor",
    :& props}
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d
     "M296,64H216a7.91,7.91,0,0,0-8,8V96h96V72A7.91,7.91,0,0,0,296,64Z"})
   (helix.dom/path
@@ -24921,8 +23572,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -24986,8 +23636,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -25008,28 +23657,19 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "32",
     :cy "256",
     :cx "256"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "32",
     :cy "416",
     :cx "256"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "32",
     :cy "96",
     :cx "256"})))
@@ -25327,8 +23967,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -25336,34 +23975,22 @@
     "M320,458.16S304,464,256,464s-74-16-96-32H96a64,64,0,0,1-64-64V320a64,64,0,0,1,64-64h30a32.34,32.34,0,0,0,27.37-15.4S162,221.81,188,176.78,264,64,272,48c29,0,43,22,34,47.71-10.28,29.39-23.71,54.38-27.46,87.09-.54,4.78,3.14,12,7.95,12L416,205"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M416,271l-80-2c-20-1.84-32-12.4-32-30h0c0-17.6,14-28.84,32-30l80-4c17.6,0,32,16.4,32,34v.17A32,32,0,0,1,416,271Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,336l-112-2c-18-.84-32-12.41-32-30h0c0-17.61,14-28.86,32-30l112-2a32.1,32.1,0,0,1,32,32h0A32.1,32.1,0,0,1,448,336Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M400,464l-64-3c-21-1.84-32-11.4-32-29h0c0-17.6,14.4-30,32-30l64-2a32.09,32.09,0,0,1,32,32h0A32.09,32.09,0,0,1,400,464Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M432,400l-96-2c-19-.84-32-12.4-32-30h0c0-17.6,13-28.84,32-30l96-2a32.09,32.09,0,0,1,32,32h0A32.09,32.09,0,0,1,432,400Z"})))
 
@@ -25429,8 +24056,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -25534,32 +24160,24 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M336,264.13V436c0,24.3-19.05,44-42.95,44H107C83.05,480,64,460.3,64,436V172a44.26,44.26,0,0,1,44-44h94.12a24.55,24.55,0,0,1,17.49,7.36l109.15,111A25.4,25.4,0,0,1,336,264.13Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M200,128V236a28.34,28.34,0,0,0,28,28H336"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M176,128V76a44.26,44.26,0,0,1,44-44h94a24.83,24.83,0,0,1,17.61,7.36l109.15,111A25.09,25.09,0,0,1,448,168V340c0,24.3-19.05,44-42.95,44H344"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -25579,8 +24197,7 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -25616,8 +24233,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -25629,20 +24245,14 @@
     :x "48"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "60px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "60px"},
     :y2 "192",
     :x2 "464",
     :y1 "192",
     :x1 "48"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "60px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "60px"},
     :height "20",
     :width "48",
     :y "300",
@@ -25678,16 +24288,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -25695,16 +24301,14 @@
     "M351.82,271.87v-16A96.15,96.15,0,0,0,184.09,192m-24.2,48.17v16A96.22,96.22,0,0,0,327.81,320"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "135.87 256 159.46 232.4 184.13 256"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -25724,8 +24328,7 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "48px"},
@@ -25786,8 +24389,7 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "48px"},
@@ -25837,8 +24439,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -25859,16 +24460,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M135.19,390.14A28.79,28.79,0,0,0,156.87,400H403.13A29,29,0,0,0,432,371.13V140.87A29,29,0,0,0,403.13,112H156.87a28.84,28.84,0,0,0-21.67,9.84v0L46.33,256l88.86,134.11Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -25878,8 +24475,7 @@
     :x1 "336.67"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -25889,8 +24485,7 @@
     :x1 "336.67"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -25900,8 +24495,7 @@
     :x1 "336.67"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -25943,16 +24537,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "432 320 432 432 320 432"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -25962,16 +24554,14 @@
     :x1 "421.8"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "80 192 80 80 192 80"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -25981,16 +24571,14 @@
     :x1 "90.2"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "320 80 432 80 432 192"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -26000,16 +24588,14 @@
     :x1 "421.77"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "192 432 80 432 80 320"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -26062,8 +24648,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -26087,8 +24672,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -26096,8 +24680,7 @@
     "M256.05,80.65Q263.94,80,272,80c106,0,192,86,192,192S378,464,272,464A192.09,192.09,0,0,1,89.12,330.65"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -26134,16 +24717,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "249.38 336 170 256 249.38 176"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -26153,10 +24734,7 @@
     :x1 "181.03"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})))
 
@@ -26247,8 +24825,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -26258,8 +24835,7 @@
     :x1 "80"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -26269,8 +24845,7 @@
     :x1 "80"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -26315,10 +24890,7 @@
   (helix.dom/circle {:r "26", :cy "166", :cx "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})))
 
@@ -26375,16 +24947,14 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M256,272V432a32,32,0,0,1-32,32h0a32,32,0,0,1-32-32"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -26392,8 +24962,7 @@
     "M464,272c0-114.88-93.12-208-208-208S48,157.12,48,272h0a67.88,67.88,0,0,1,96,0h0a78.28,78.28,0,0,1,102.31-7.27L256,272l9.69-7.27A78.28,78.28,0,0,1,368,272h0a67.88,67.88,0,0,1,96,0Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -26448,16 +25017,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "304 96 416 96 416 208"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -26467,8 +25034,7 @@
     :x1 "405.77"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -26583,8 +25149,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -26592,16 +25157,12 @@
     "M376,144c-3.92,52.87-44,96-88,96s-84.15-43.12-88-96c-4-55,35-96,88-96S380,90,376,144Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M288,304c-87,0-175.3,48-191.64,138.6-2,10.92,4.21,21.4,15.65,21.4H464c11.44,0,17.62-10.48,15.65-21.4C463.3,352,375,304,288,304Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -26624,8 +25185,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -26633,16 +25193,14 @@
     "M336,336h40a40,40,0,0,0,40-40V88a40,40,0,0,0-40-40H136A40,40,0,0,0,96,88V296a40,40,0,0,0,40,40h40"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "176 240 256 160 336 240"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -26698,8 +25256,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -26709,8 +25266,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -26720,16 +25276,14 @@
     :x1 "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
     :d "M256,112A144,144,0,1,0,400,256,144,144,0,0,0,256,112Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -26739,8 +25293,7 @@
     :x1 "416"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -26943,8 +25496,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -26952,8 +25504,7 @@
     "M432,144,403.33,419.74A32,32,0,0,1,371.55,448H140.46a32,32,0,0,1-31.78-28.26L80,144"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -26965,8 +25516,7 @@
     :x "32"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -26976,8 +25526,7 @@
     :x1 "312"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -27003,10 +25552,7 @@
   (helix.dom/circle {:r "26", :cy "256", :cx "166"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})))
 
@@ -27024,10 +25570,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/path
@@ -27116,8 +25659,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -27127,8 +25669,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -27138,16 +25679,14 @@
     :x1 "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "48px"},
     :d "M256,112A144,144,0,1,0,400,256,144,144,0,0,0,256,112Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -27157,8 +25696,7 @@
     :x1 "416"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -27215,10 +25753,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "48",
     :rx "48",
     :height "384",
@@ -27243,8 +25778,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -27252,8 +25786,7 @@
     "M189.65,192H120a8,8,0,0,0-8,8V312a8,8,0,0,0,8,8h69.65a16,16,0,0,1,10.14,3.63l91.47,75A8,8,0,0,0,304,392.17V119.83a8,8,0,0,0-12.74-6.44l-91.47,75A16,16,0,0,1,189.65,192Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -27358,10 +25891,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "48",
     :rx "48",
     :height "416",
@@ -27370,10 +25900,7 @@
     :x "96"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "60px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "60px"},
     :y2 "464",
     :x2 "320",
     :y1 "48",
@@ -27488,8 +26015,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -27497,16 +26023,14 @@
     "M320,176V136a40,40,0,0,0-40-40H88a40,40,0,0,0-40,40V376a40,40,0,0,0,40,40H280a40,40,0,0,0,40-40V336"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "384 176 464 256 384 336"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -27529,48 +26053,30 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :points "176 112 256 32 336 112"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :y2 "480",
     :x2 "256",
     :y1 "32",
     :x1 "255.98"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :points "176 400 256 480 336 400"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :points "400 176 480 256 400 336"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :points "112 176 32 256 112 336"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :y2 "256",
     :x2 "480",
     :y1 "256",
@@ -27590,10 +26096,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/path
@@ -27663,15 +26166,11 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d "M256,80A176,176,0,1,0,432,256,176,176,0,0,0,256,80Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "28px"},
@@ -27721,16 +26220,14 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M336,208V113a80,80,0,0,0-160,0v95"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -27802,24 +26299,21 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "160 368 32 256 160 144"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "352 368 480 256 352 144"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -27842,16 +26336,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "304 416 304 304 416 304"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -27861,16 +26353,14 @@
     :x1 "314.2"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "208 96 208 208 96 208"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -27880,16 +26370,14 @@
     :x1 "197.8"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "416 208 304 208 304 96"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -27899,16 +26387,14 @@
     :x1 "314.23"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "96 304 208 304 208 416"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -27931,16 +26417,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
     :points "244 400 100 256 244 112"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -27995,24 +26479,19 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M416,221.25V416a48,48,0,0,1-48,48H144a48,48,0,0,1-48-48V96a48,48,0,0,1,48-48h98.75a32,32,0,0,1,22.62,9.37L406.63,198.63A32,32,0,0,1,416,221.25Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M256,56V176a32,32,0,0,0,32,32H408"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28022,8 +26501,7 @@
     :x1 "176"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28132,16 +26610,14 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :d "M320,146s24.36-12-64-12A160,160,0,1,0,416,294"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28193,8 +26669,7 @@
    :& props}
   (helix.dom/polygon
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -28202,8 +26677,7 @@
     "358.62 129.28 86.49 402.08 70 442 109.92 425.51 382.72 153.38 358.62 129.28"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -28224,8 +26698,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28233,8 +26706,7 @@
     "M384,400.33l35.13-.33A29,29,0,0,0,448,371.13V140.87A29,29,0,0,0,419.13,112l-35.13.33"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28242,8 +26714,7 @@
     "M128,112l-36.8.33c-15.88,0-27.2,13-27.2,28.87V371.47c0,15.87,11.32,28.86,27.2,28.86L128,400"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28253,8 +26724,7 @@
     :x1 "384"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28264,8 +26734,7 @@
     :x1 "320"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28275,8 +26744,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28286,8 +26754,7 @@
     :x1 "192"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28310,10 +26777,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/path
@@ -28374,19 +26838,13 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "208",
     :cy "256",
     :cx "256"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "96",
     :cy "256",
     :cx "256"})
@@ -28406,10 +26864,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/path
@@ -28433,8 +26888,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28444,8 +26898,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28455,8 +26908,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28466,8 +26918,7 @@
     :x1 "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28475,8 +26926,7 @@
     "M416,208H102.63a16,16,0,0,1-11.32-4.69L32,144,91.31,84.69A16,16,0,0,1,102.63,80H416a16,16,0,0,1,16,16v96A16,16,0,0,1,416,208Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28497,42 +26947,27 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M457.74,170.1a30.26,30.26,0,0,0-11.16-2.1h-.4c-20.17.3-42.79,19.19-54.66,47.76-14.23,34.18-7.68,69.15,14.74,78.14a30.21,30.21,0,0,0,11.15,2.1c20.27,0,43.2-19,55.17-47.76C486.71,214.06,480.06,179.09,457.74,170.1Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M327.6,303.48C299.8,257.35,287.8,240,256,240s-43.9,17.46-71.7,63.48c-23.8,39.36-71.9,42.64-83.9,76.07a50.91,50.91,0,0,0-3.6,19.25c0,27.19,20.8,49.2,46.4,49.2,31.8,0,75.1-25.39,112.9-25.39S337,448,368.8,448c25.6,0,46.3-22,46.3-49.2a51,51,0,0,0-3.7-19.25C399.4,346,351.4,342.84,327.6,303.48Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M192.51,196a26.53,26.53,0,0,0,4-.3c23.21-3.37,37.7-35.53,32.44-71.85C224,89.61,203.22,64,181.49,64a26.53,26.53,0,0,0-4,.3c-23.21,3.37-37.7,35.53-32.44,71.85C150,170.29,170.78,196,192.51,196Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M366.92,136.15c5.26-36.32-9.23-68.48-32.44-71.85a26.53,26.53,0,0,0-4-.3c-21.73,0-42.47,25.61-47.43,59.85-5.26,36.32,9.23,68.48,32.44,71.85a26.53,26.53,0,0,0,4,.3C341.22,196,362,170.29,366.92,136.15Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M105.77,293.9c22.39-9,28.93-44,14.72-78.14C108.53,187,85.62,168,65.38,168a30.21,30.21,0,0,0-11.15,2.1c-22.39,9-28.93,44-14.72,78.14C51.47,277,74.38,296,94.62,296A30.21,30.21,0,0,0,105.77,293.9Z"})))
 
@@ -28582,8 +27017,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28591,16 +27025,14 @@
     "M192,176V136a40,40,0,0,1,40-40H392a40,40,0,0,1,40,40V376a40,40,0,0,1-40,40H240c-22.09,0-48-17.91-48-40V336"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "288 336 368 256 288 176"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28679,10 +27111,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "32",
     :rx "32",
     :height "320",
@@ -28691,15 +27120,13 @@
     :x "32"})
   (helix.dom/polygon
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "round",
+    {:stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "304 448 296 384 216 384 208 448 304 448"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28792,8 +27219,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28801,10 +27227,7 @@
     "M344,144c-3.92,52.87-44,96-88,96s-84.15-43.12-88-96c-4-55,35-96,88-96S348,90,344,144Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M256,304c-87,0-175.3,48-191.64,138.6C62.39,453.52,68.57,464,80,464H432c11.44,0,17.62-10.48,15.65-21.4C431.3,352,343,304,256,304Z"})))
 
@@ -28870,8 +27293,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28879,8 +27301,7 @@
     "M434.8,137.65,285.44,69.55c-16.19-7.4-42.69-7.4-58.88,0L77.3,137.65c-17.6,8-17.6,21.09,0,29.09l148,67.5c16.89,7.7,44.69,7.7,61.58,0l148-67.5C452.4,158.74,452.4,145.64,434.8,137.65Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28888,8 +27309,7 @@
     "M160,308.52,77.3,345.63c-17.6,8-17.6,21.1,0,29.1l148,67.5c16.89,7.69,44.69,7.69,61.58,0l148-67.5c17.6-8,17.6-21.1,0-29.1l-79.94-38.47"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -28986,16 +27406,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "160 368 32 256 160 144"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -29050,8 +27468,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -29059,8 +27476,7 @@
     "M320,96H88a40,40,0,0,0-40,40V376a40,40,0,0,0,40,40H422.73a40,40,0,0,0,40-40V239"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -29084,7 +27500,7 @@
    :& props}
   (helix.dom/circle {:r "48", :cy "256", :cx "256"})
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d
     "M223.47,335.59l-51.71,68a169.73,169.73,0,0,0,168.48,0l-51.71-68"})
   (helix.dom/path
@@ -29175,8 +27591,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -29184,16 +27599,14 @@
     "M434.67,285.59v-29.8C434.67,157.06,354.43,77,255.47,77a179,179,0,0,0-140.14,67.36m-38.53,82v29.8C76.8,355,157,435,256,435a180.45,180.45,0,0,0,140-66.92"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "32 256 76 212 122 256"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -29285,8 +27698,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -29296,8 +27708,7 @@
     :x1 "224"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -29307,8 +27718,7 @@
     :x1 "224"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -29318,16 +27728,12 @@
     :x1 "224"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,258c0-106-86-192-192-192S64,152,64,258s86,192,192,192S448,364,448,258Z"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -29336,8 +27742,7 @@
     :cx "168"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -29346,8 +27751,7 @@
     :cx "168"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -29423,8 +27827,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -29432,18 +27835,12 @@
     "M83,384c-13-33-35-93.37-35-128C48,141.12,149.33,48,256,48s208,93.12,208,208c0,34.63-23,97-35,128"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M108.39,270.13l-13.69,8h0C64.47,295.83,63,350.54,91.32,400.33s75.87,75.81,106.1,58.12h0l13.69-8a16.16,16.16,0,0,0,5.78-21.87L130,276A15.74,15.74,0,0,0,108.39,270.13Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M403.61,270.13l13.69,8h0c30.23,17.69,31.74,72.4,3.38,122.19s-75.87,75.81-106.1,58.12h0l-13.69-8a16.16,16.16,0,0,1-5.78-21.87L382,276A15.74,15.74,0,0,1,403.61,270.13Z"})))
 
@@ -29538,16 +27935,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -29595,11 +27988,11 @@
    :fill "currentColor",
    :& props}
   (helix.dom/polygon
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :points
     "337.46 240 312 214.54 256 270.54 200 214.54 174.54 240 230.54 296 174.54 352 200 377.46 256 321.46 312 377.46 337.46 352 281.46 296 337.46 240"})
   (helix.dom/polygon
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :points
     "337.46 240 312 214.54 256 270.54 200 214.54 174.54 240 230.54 296 174.54 352 200 377.46 256 321.46 312 377.46 337.46 352 281.46 296 337.46 240"})
   (helix.dom/path
@@ -29660,8 +28053,7 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "48px"},
@@ -29736,8 +28128,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -29749,8 +28140,7 @@
     :x "64"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -29762,8 +28152,7 @@
     :x "288"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -29775,8 +28164,7 @@
     :x "400"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -29918,11 +28306,11 @@
    :& props}
   (helix.dom/path {:d "M295.68,351.43c0,.19,0,.38,0,.57H296Z"})
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d
     "M256,384c22.28,0,39.36-10.63,39.66-32H216C216,373.75,233.53,384,256,384Z"})
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d
     "M295.67,352H296l-.32-.57C295.68,351.62,295.67,351.81,295.67,352Z"})
   (helix.dom/path
@@ -29982,16 +28370,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M400,240c-8.89-89.54-71-144-144-144-69,0-113.44,48.2-128,96C68,198,16,235.59,16,304c0,66,54,112,120,112H396c55,0,100-27.44,100-88C496,268.18,443,242.24,400,240Z"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30011,16 +28395,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30030,8 +28410,7 @@
     :x1 "224"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30039,8 +28418,7 @@
     "M336,224.3v23.92c0,39.42-40.58,71.48-80,71.48h0c-39.42,0-80-32.06-80-71.48V224.3"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30088,8 +28466,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30097,8 +28474,7 @@
     "M320,254.27c-4.5,51-40.12,80-80.55,80s-67.34-35.82-63.45-80,37.12-80,77.55-80S323.88,210.27,320,254.27Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30118,10 +28494,9 @@
    :fill "currentColor",
    :& props}
   (helix.dom/path
-   {:style {:fill "currentColor"},
-    :d "M200,144h40V104a40,40,0,1,0-40,40Z"})
+   {:style {:fill "none"}, :d "M200,144h40V104a40,40,0,1,0-40,40Z"})
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d "M352,104a40,40,0,0,0-80,0v40h40A40,40,0,0,0,352,104Z"})
   (helix.dom/path
    {:d
@@ -30147,16 +28522,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "48px"},
     :points "244 400 100 256 244 112"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "48px"},
@@ -30179,8 +28552,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30188,16 +28560,14 @@
     "M336,176h40a40,40,0,0,1,40,40V424a40,40,0,0,1-40,40H136a40,40,0,0,1-40-40V216a40,40,0,0,1,40-40h40"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "176 272 256 352 336 272"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30266,18 +28636,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M480,145.52v221c0,13.28-13,21.72-23.63,15.35L267.5,268.8c-9.24-5.53-9.24-20.07,0-25.6l188.87-113C467,123.8,480,132.24,480,145.52Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M251.43,145.52v221c0,13.28-13,21.72-23.63,15.35L38.93,268.8c-9.24-5.53-9.24-20.07,0-25.6l188.87-113C238.44,123.8,251.43,132.24,251.43,145.52Z"})))
 
@@ -30371,8 +28735,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30380,8 +28743,7 @@
     "M128.51,204.59q-.37,6.15-.37,12.76C128.14,304,110,320,84.33,351.43,73.69,364.45,83,384,101.62,384H320"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30389,16 +28751,14 @@
     "M414.5,335.3c-18.48-23.45-30.62-47.05-30.62-118C383.88,138,343.36,109.73,310,96c-4.43-1.82-8.6-6-9.95-10.55C294.21,65.54,277.82,48,256,48S217.8,65.55,212,85.47c-1.35,4.6-5.52,8.71-10,10.53a149.57,149.57,0,0,0-18,8.79"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M320,384v16a64,64,0,0,1-128,0V384"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -30440,16 +28800,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30472,8 +28828,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -30524,16 +28879,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30543,8 +28894,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30608,10 +28958,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "48",
     :rx "48",
     :height "352",
@@ -30620,10 +28967,7 @@
     :x "80"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "16",
     :rx "16",
     :height "224",
@@ -30632,8 +28976,7 @@
     :x "144"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30643,8 +28986,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30654,8 +28996,7 @@
     :x1 "336"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30665,8 +29006,7 @@
     :x1 "176"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30676,8 +29016,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30687,8 +29026,7 @@
     :x1 "336"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30698,8 +29036,7 @@
     :x1 "176"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30709,8 +29046,7 @@
     :x1 "432"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30720,8 +29056,7 @@
     :x1 "432"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30731,8 +29066,7 @@
     :x1 "432"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30742,8 +29076,7 @@
     :x1 "48"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30753,8 +29086,7 @@
     :x1 "48"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30793,8 +29125,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -30850,16 +29181,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
     :points "112 244 256 100 400 244"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -30924,16 +29253,14 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :d "M320,146s24.36-12-64-12A160,160,0,1,0,416,294"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -30988,8 +29315,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -31091,8 +29417,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -31189,24 +29514,21 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "48px"},
     :d "M200.66,352H144a96,96,0,0,1,0-192h55.41"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "48px"},
     :d "M312.59,160H368a96,96,0,0,1,0,192H311.34"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "48px"},
@@ -31251,8 +29573,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -31342,8 +29663,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -31429,16 +29749,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "432 320 432 432 320 432"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -31448,16 +29766,14 @@
     :x1 "421.8"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "80 192 80 80 192 80"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -31467,16 +29783,14 @@
     :x1 "90.2"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "320 80 432 80 432 192"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -31486,16 +29800,14 @@
     :x1 "421.77"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "192 432 80 432 80 320"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -31517,11 +29829,10 @@
    :fill "currentColor",
    :& props}
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d "M346,110a34,34,0,0,0-68,0v34h34A34,34,0,0,0,346,110Z"})
   (helix.dom/path
-   {:style {:fill "currentColor"},
-    :d "M234,110a34,34,0,1,0-34,34h34Z"})
+   {:style {:fill "none"}, :d "M234,110a34,34,0,1,0-34,34h34Z"})
   (helix.dom/path
    {:d
     "M234,144h44V256H442a22,22,0,0,0,22-22V166a22,22,0,0,0-22-22H382.18A77.95,77.95,0,0,0,256,55.79,78,78,0,0,0,129.81,144H70a22,22,0,0,0-22,22v68a22,22,0,0,0,22,22H234Zm44-34a34,34,0,1,1,34,34H278Zm-112,0a34,34,0,1,1,68,0v34H200A34,34,0,0,1,166,110Z"})
@@ -31588,8 +29899,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -31597,8 +29907,7 @@
     "M256,256s-48-96-126-96c-54.12,0-98,43-98,96s43.88,96,98,96c37.51,0,71-22.41,94-48"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -31619,8 +29928,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -31630,8 +29938,7 @@
     :x1 "96"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -31641,8 +29948,7 @@
     :x1 "96"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -31652,8 +29958,7 @@
     :x1 "96"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -31676,24 +29981,21 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "400 400.33 448 400 448 112 400 112.33"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "112 112 64 112.33 64 400.33 112 400"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -31703,8 +30005,7 @@
     :x1 "384"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -31714,8 +30015,7 @@
     :x1 "320"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -31725,8 +30025,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -31736,8 +30035,7 @@
     :x1 "192"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -31776,18 +30074,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M68.4,192A20.38,20.38,0,0,0,48,212.2a17.87,17.87,0,0,0,.8,5.5L100.5,400a40.46,40.46,0,0,0,39.1,29.5H372.4A40.88,40.88,0,0,0,411.7,400l51.7-182.3.6-5.5A20.38,20.38,0,0,0,443.6,192H68.4ZM261.72,352.07A42.07,42.07,0,1,1,304,310,42.27,42.27,0,0,1,261.72,352.07Z"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :points "160 192 256 64 352 192"})))
 
 
@@ -31890,8 +30182,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -31941,8 +30232,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -31950,8 +30240,7 @@
     "M445.2,48.05,398,48H128C73.7,48,64,83.7,64,96c30.3,4.2,48,8,48,40V400A64,64,0,0,0,176,464H368a64,64,0,0,0,64-64V96c0-19,11.5-38.35,12.6-40,1.2-1.9,3.4-4.4,3.4-5.5S447.7,48.05,445.2,48.05Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -31993,16 +30282,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "464 128 240 384 144 288"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -32012,8 +30299,7 @@
     :x1 "144"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -32035,7 +30321,7 @@
    :fill "currentColor",
    :& props}
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d
     "M288.55,150.84c-8.09-3.86-20-6-32.72-5.82-18,.22-33.13,5.2-45,14.78-23,18.48-24.55,40.37-24.77,42.8a61.69,61.69,0,0,0-.09,12,3,3,0,0,0,3,2.69h21.23a3,3,0,0,0,3-3A65.7,65.7,0,0,1,214,204c0-.11,1.14-11.7,14.36-22.34,7-5.64,16.11-8.44,27.83-8.59,9.32-.11,16.93,1.47,20.34,3.09C291,183,298,192.31,298,204.57c0,18-10.9,26.23-30.18,39.18C247.08,257.68,237,275.1,237,297v11a3,3,0,0,0,3,3h22a3,3,0,0,0,3-3V297c0-9.16,2.23-19.13,18.44-30C303.39,253.59,326,238.4,326,204.57,326,181.43,312.7,162.34,288.55,150.84Z"})
   (helix.dom/path
@@ -32141,16 +30427,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "336 176 225.2 304 176 255.8"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -32171,8 +30455,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -32180,8 +30463,7 @@
     "M208,368V472a23.73,23.73,0,0,0,24,24h0a23.73,23.73,0,0,0,24-24"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -32189,8 +30471,7 @@
     "M256,368V472a23.73,23.73,0,0,0,24,24h0a23.73,23.73,0,0,0,24-24V368"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -32198,8 +30479,7 @@
     "M183,274a23.73,23.73,0,0,1-29.84,16.18h0a23.72,23.72,0,0,1-16.17-29.84l25-84.28A44.85,44.85,0,0,1,205,144H307a44.85,44.85,0,0,1,43,32.08l25,84.28a23.72,23.72,0,0,1-16.17,29.84h0A23.73,23.73,0,0,1,329.05,274"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -32208,8 +30488,7 @@
     :cx "256"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -32285,16 +30564,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "400 352 464 288 400 224"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -32314,8 +30591,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -32325,8 +30601,7 @@
     :x1 "102"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -32336,8 +30611,7 @@
     :x1 "102"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -32347,8 +30621,7 @@
     :x1 "102"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -32371,8 +30644,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -32380,8 +30652,7 @@
     "M215.08,156.92c-4.89-24-10.77-56.27-10.77-73.23A51.36,51.36,0,0,1,256,32h0c28.55,0,51.69,23.69,51.69,51.69,0,16.5-5.85,48.95-10.77,73.23"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -32389,8 +30660,7 @@
     "M215.08,355.08c-4.91,24.06-10.77,56.16-10.77,73.23A51.36,51.36,0,0,0,256,480h0c28.55,0,51.69-23.69,51.69-51.69,0-16.54-5.85-48.93-10.77-73.23"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -32398,8 +30668,7 @@
     "M355.08,215.08c24.06-4.91,56.16-10.77,73.23-10.77A51.36,51.36,0,0,1,480,256h0c0,28.55-23.69,51.69-51.69,51.69-16.5,0-48.95-5.85-73.23-10.77"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -32407,8 +30676,7 @@
     "M156.92,215.07c-24-4.89-56.25-10.76-73.23-10.76A51.36,51.36,0,0,0,32,256h0c0,28.55,23.69,51.69,51.69,51.69,16.5,0,48.95-5.85,73.23-10.77"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -32416,8 +30684,7 @@
     "M296.92,156.92c13.55-20.48,32.3-47.25,44.37-59.31a51.35,51.35,0,0,1,73.1,0h0c20.19,20.19,19.8,53.3,0,73.1-11.66,11.67-38.67,30.67-59.31,44.37"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -32425,8 +30692,7 @@
     "M156.92,296.92c-20.48,13.55-47.25,32.3-59.31,44.37a51.35,51.35,0,0,0,0,73.1h0c20.19,20.19,53.3,19.8,73.1,0,11.67-11.66,30.67-38.67,44.37-59.31"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -32434,8 +30700,7 @@
     "M355.08,296.92c20.48,13.55,47.25,32.3,59.31,44.37a51.35,51.35,0,0,1,0,73.1h0c-20.19,20.19-53.3,19.8-73.1,0-11.69-11.69-30.66-38.65-44.37-59.31"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -32443,8 +30708,7 @@
     "M215.08,156.92c-13.53-20.43-32.38-47.32-44.37-59.31a51.35,51.35,0,0,0-73.1,0h0c-20.19,20.19-19.8,53.3,0,73.1,11.61,11.61,38.7,30.68,59.31,44.37"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -32466,8 +30730,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -32475,10 +30738,7 @@
     "M388.31,272c47.75,0,89.77-27.77,107.69-68.92-14.21,6.18-30.9,8.61-47.38,8.61A116.31,116.31,0,0,1,332.31,95.38c0-16.48,2.43-33.17,8.61-47.38C299.77,65.92,272,107.94,272,155.69a116.31,116.31,0,0,0,3.44,28.18"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M90.61,306.85A16.07,16.07,0,0,0,104,293.6C116.09,220.17,169.63,176,232,176c57.93,0,96.62,37.75,112.2,77.74a15.84,15.84,0,0,0,12.2,9.87c50,8.15,91.6,41.54,91.6,99.59C448,422.6,399.4,464,340,464H106c-49.5,0-90-24.7-90-79.2C16,336.33,54.67,312.58,90.61,306.85Z"})))
 
@@ -32513,8 +30773,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -32524,8 +30783,7 @@
     :x1 "344"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -32535,8 +30793,7 @@
     :x1 "232"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -32546,8 +30803,7 @@
     :x1 "80"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -32556,8 +30812,7 @@
     :cx "456"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -32566,8 +30821,7 @@
     :cx "320"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -32576,8 +30830,7 @@
     :cx "208"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -32599,8 +30852,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -32608,8 +30860,7 @@
     "M378,108a191.41,191.41,0,0,1,70,148c0,106-86,192-192,192S64,362,64,256a192,192,0,0,1,69-148"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -32632,8 +30883,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -32641,8 +30891,7 @@
     "M416,128c-18.9,4.25-36.8,8.94-53.7,13.95-40.5,12-75.5,27.15-105.4,41.65-19.3,9.37-26.2,13.51-51.5,28.23C147,245.52,112,289.23,112,354.64,112,428.55,167.6,480,256,480s144-55.81,144-129.72S339,225.24,416,128Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -32650,16 +30899,14 @@
     "M264,180.19c-19.69-27-38.2-38.69-52.7-46.59C162.6,107.1,96,96,96,96c41.5,43.7,37.2,90.1,32,128,0,0-3.87,32.88,1.91,58.41"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M372,139.15C356.55,102.6,336,64,336,64s-63.32,0-135.69,64"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -32782,8 +31029,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -32793,8 +31039,7 @@
     :x1 "118"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -32817,8 +31062,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -32826,16 +31070,14 @@
     "M176,176V136a40,40,0,0,1,40-40H424a40,40,0,0,1,40,40V376a40,40,0,0,1-40,40H216a40,40,0,0,1-40-40V336"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "272 336 352 256 272 176"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -32912,7 +31154,7 @@
    :fill "currentColor",
    :& props}
   (helix.dom/rect
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :height "24",
     :width "176",
     :y "72",
@@ -33060,10 +31302,7 @@
   (helix.dom/circle {:r "24", :cy "232", :cx "328"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "208",
     :cy "256",
     :cx "256"})))
@@ -33120,10 +31359,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M352,128c-32.26-2.89-64,16-96,16s-63.75-19-96-16c-64,6-96,64-96,160,0,80,64,192,111.2,192s51.94-24,80.8-24,33.59,24,80.8,24S448,368,448,288C448,192,419,134,352,128Z"})
   (helix.dom/path
@@ -33222,8 +31458,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -33277,32 +31512,28 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "400 304 448 352 400 400"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "400 112 448 160 400 208"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M64,352h85.19a80,80,0,0,0,66.56-35.62L256,256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -33310,8 +31541,7 @@
     "M64,160h85.19a80,80,0,0,1,66.56,35.62l80.5,120.76A80,80,0,0,0,362.81,352H416"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -33347,24 +31577,17 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :points
     "160 336 160 48 192 64 224 48 255.94 64 288.31 48 320 64 351.79 48 383.72 64 416 48 448.01 64 480 48 480 272"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M480,272V384a80,80,0,0,1-80,80h0a80,80,0,0,1-80-80V336H48a15.86,15.86,0,0,0-16,16c0,64,6.74,112,80,112H400"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -33374,8 +31597,7 @@
     :x1 "224"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -33514,8 +31736,7 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -33551,8 +31772,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -33561,17 +31781,13 @@
     :cx "256"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :r "64",
     :cy "256",
     :cx "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -33581,8 +31797,7 @@
     :x1 "224"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -33592,8 +31807,7 @@
     :x1 "288"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -33603,8 +31817,7 @@
     :x1 "327.55"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -33614,8 +31827,7 @@
     :x1 "299.09"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -33625,8 +31837,7 @@
     :x1 "184.45"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -33666,16 +31877,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "352 368 464 368 464 256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -33729,16 +31938,14 @@
    :& props}
   (helix.dom/path
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "round",
+    {:stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d
     "M312.55,479.9l-56.42-114-44.62-57A72.37,72.37,0,0,1,201.45,272V143.64H217a40,40,0,0,1,40,40V365.85"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -33751,8 +31958,7 @@
     "M171.91,493.47a18.5,18.5,0,0,1-14.83-7.41c-6.14-8.18-4-17.18,3.7-25.92l59.95-74.66a7.41,7.41,0,0,1,10.76,2.06c1.56,2.54,3.38,5.65,5.19,9.09,5.24,9.95,6,16.11-1.68,25.7-8,10-52,67.44-52,67.44C180.38,492.75,175.77,493.47,171.91,493.47Z"})
   (helix.dom/circle
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "round",
+    {:stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "16px"},
     :r "37.04",
@@ -33789,18 +31995,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "352 176 217.6 336 160 272"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "48",
     :rx "48",
     :height "384",
@@ -33946,10 +32148,7 @@
     "M266.91,327.74V290.42c-57.07,0-84.51,13.47-108.58,38.68-5.4,5.65-15,1.32-14.29-6.43,5.45-61.45,34.14-117.09,122.87-117.09V168.26a8.32,8.32,0,0,1,14-6L365.42,242a8.2,8.2,0,0,1,0,11.94L281,333.71A8.32,8.32,0,0,1,266.91,327.74Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M64,256c0,106,86,192,192,192s192-86,192-192S362,64,256,64,64,150,64,256Z"})))
 
@@ -34084,7 +32283,7 @@
    :fill "currentColor",
    :& props}
   (helix.dom/rect
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :ry "16",
     :rx "16",
     :height "96",
@@ -34112,8 +32311,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "40px"},
@@ -34135,16 +32333,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "176 262.62 256 342 336 262.62"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34154,10 +32350,7 @@
     :x1 "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M256,64C150,64,64,150,64,256s86,192,192,192,192-86,192-192S362,64,256,64Z"})))
 
@@ -34213,16 +32406,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M112,111V401c0,17.44,17,28.52,31,20.16l247.9-148.37c12.12-7.25,12.12-26.33,0-33.58L143,90.84C129,82.48,112,93.56,112,111Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -34264,10 +32453,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "64",
     :rx "64",
     :height "288",
@@ -34276,17 +32462,11 @@
     :x "112"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d "M176,112V40a8,8,0,0,1,8-8H328a8,8,0,0,1,8,8v72"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d "M336,400v72a8,8,0,0,1-8,8H184a8,8,0,0,1-8-8V400"})))
 
 
@@ -34320,8 +32500,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34333,8 +32512,7 @@
     :x "48"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34346,8 +32524,7 @@
     :x "288"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34359,8 +32536,7 @@
     :x "48"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34385,8 +32561,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34410,8 +32585,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -34449,10 +32623,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "57",
     :rx "57",
     :height "336",
@@ -34461,8 +32632,7 @@
     :x "128"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34470,8 +32640,7 @@
     "M383.5,128l.5-24a56.16,56.16,0,0,0-56-56H112a64.19,64.19,0,0,0-64,64V328a56.16,56.16,0,0,0,56,56h24"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34481,8 +32650,7 @@
     :x1 "296"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34558,8 +32726,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -34567,8 +32734,7 @@
     "M436.67,184.11a27.17,27.17,0,0,1-38.3,0l-22.48-22.49a27.15,27.15,0,0,1,0-38.29l50.89-50.89a.85.85,0,0,0-.26-1.38C393.68,57,351.09,64.15,324.05,91c-25.88,25.69-27.35,64.27-17.87,98a27,27,0,0,1-7.67,27.14l-173,160.76a40.76,40.76,0,1,0,57.57,57.54l162.15-173.3A27,27,0,0,1,372,253.44c33.46,8.94,71.49,7.26,97.07-17.94,27.49-27.08,33.42-74.94,20.1-102.33a.85.85,0,0,0-1.36-.22Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34576,8 +32742,7 @@
     "M224,284c-17.48-17-25.49-24.91-31-30.29a18.24,18.24,0,0,1-3.33-21.35,20.76,20.76,0,0,1,3.5-4.62l15.68-15.29a18.66,18.66,0,0,1,5.63-3.87,18.11,18.11,0,0,1,20,3.62c5.45,5.29,15.43,15,33.41,32.52"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34585,8 +32750,7 @@
     "M317.07,291.3c40.95,38.1,90.62,83.27,110,99.41a13.46,13.46,0,0,1,.94,19.92L394.63,444a14,14,0,0,1-20.29-.76c-16.53-19.18-61.09-67.11-99.27-107"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34607,32 +32771,28 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "320 120 368 168 320 216"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "352 168 64 168 64 264"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "192 392 144 344 192 296"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -34776,16 +32936,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34795,8 +32951,7 @@
     :x1 "320"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34819,8 +32974,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34829,8 +32983,7 @@
     :cx "128"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34839,8 +32992,7 @@
     :cx "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34850,8 +33002,7 @@
     :x1 "256"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34860,16 +33011,14 @@
     :cx "384"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M128,144c0,74.67,68.92,112,128,112"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34889,8 +33038,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34898,8 +33046,7 @@
     "M256,80c-8.66,0-16.58,7.36-16,16l8,216a8,8,0,0,0,8,8h0a8,8,0,0,0,8-8l8-216C272.58,87.36,264.66,80,256,80Z"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34971,16 +33118,14 @@
    :& props}
   (helix.dom/path
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "square",
+    {:stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d
     "M315.09,481.38,258.14,366.26l-45-57.56a73.11,73.11,0,0,1-10.16-37.17V142h15.73A40.36,40.36,0,0,1,259,182.32V344.84"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -34993,8 +33138,7 @@
     "175.13 498.58 153.7 471.67 234.03 390.13 249.56 422.2 175.13 498.58"})
   (helix.dom/circle
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "square",
+    {:stroke-linecap "square",
      :stroke-linejoin "round",
      :stroke-width "16px"},
     :r "37.38",
@@ -35031,16 +33175,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -35097,8 +33237,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "48px"},
@@ -35108,8 +33247,7 @@
     :x1 "88"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "48px"},
@@ -35119,8 +33257,7 @@
     :x1 "88"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "48px"},
@@ -35160,8 +33297,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -35169,8 +33305,7 @@
     "M64,192V120a40,40,0,0,1,40-40h75.89a40,40,0,0,1,22.19,6.72l27.84,18.56A40,40,0,0,0,252.11,112H408a40,40,0,0,1,40,40v40"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -35191,16 +33326,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "40px"},
     :points "196 220 260 220 260 392"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "40px"},
@@ -35225,7 +33358,7 @@
    :& props}
   (helix.dom/path {:d "M400,96V56a8,8,0,0,0-8-8H120a8,8,0,0,0-8,8V96"})
   (helix.dom/rect
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :ry "4",
     :rx "4",
     :height "160",
@@ -35233,7 +33366,7 @@
     :y "264",
     :x "152"})
   (helix.dom/rect
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :ry "4",
     :rx "4",
     :height "160",
@@ -35258,22 +33391,15 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d "M421.83,293.82A144,144,0,0,0,218.18,90.17"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d "M353.94,225.94a48,48,0,0,0-67.88-67.88"})
   (helix.dom/line
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "round",
+    {:stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :y2 "416",
@@ -35282,8 +33408,7 @@
     :x1 "192"})
   (helix.dom/line
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "round",
+    {:stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :y2 "387.88",
@@ -35292,8 +33417,7 @@
     :x1 "90.18"})
   (helix.dom/line
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "round",
+    {:stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :y2 "320",
@@ -35302,36 +33426,24 @@
     :x1 "48"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M286.06,158.06,172.92,271.19a32,32,0,0,1-45.25,0L105,248.57a32,32,0,0,1,0-45.26L218.18,90.17"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M421.83,293.82,308.69,407a32,32,0,0,1-45.26,0l-22.62-22.63a32,32,0,0,1,0-45.26L353.94,225.94"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :y2 "237.87",
     :x2 "207.48",
     :y1 "169.98",
     :x1 "139.6"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :y2 "373.63",
     :x2 "343.25",
     :y1 "305.75",
@@ -35399,8 +33511,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -35408,16 +33519,14 @@
     "M335.72,330.76C381.73,299.5,416,251.34,416,192a160,160,0,0,0-320,0V398.57C96,442.83,131.74,480,176,480h0c44.26,0,66.83-25.94,77.29-40C268.06,420.19,295,358.44,335.72,330.76Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M160,304V184c0-48.4,43.2-88,96-88h0c52.8,0,96,39.6,96,88"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -35438,16 +33547,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :points "112 160 48 224 112 288"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -35535,10 +33642,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M461.93,261.05c-2-4.76-6.71-7.83-11.67-9.49L263.08,177.08a23.78,23.78,0,0,0-14.17,0l-187,74.52c-5,1.56-9.83,4.77-11.81,9.53s-2.94,9.37-1,15.08L95.63,395.36A7.46,7.46,0,0,0,103.1,400c26.69-1.68,50.31-15.23,68.38-32.5a7.66,7.66,0,0,1,10.49,0C201.29,386,227,400,256,400s54.56-14,73.88-32.54a7.67,7.67,0,0,1,10.5,0c18.07,17.28,41.69,30.86,68.38,32.54a7.45,7.45,0,0,0,7.46-4.61l46.7-119.16C464.9,271.45,463.91,265.82,461.93,261.05Z"})
   (helix.dom/path
@@ -35546,8 +33650,7 @@
     "M416,473.14a6.84,6.84,0,0,0-3.56-6c-27.08-14.55-51.77-36.82-62.63-48a10.05,10.05,0,0,0-12.72-1.51c-50.33,32.42-111.61,32.44-161.95.05a10.09,10.09,0,0,0-12.82,1.56c-10.77,11.28-35.19,33.3-62.43,47.75A7.15,7.15,0,0,0,96,472.72a6.73,6.73,0,0,0,7.92,7.15c20.85-4.18,41-13.68,60.2-23.83a8.71,8.71,0,0,1,8-.06A185.14,185.14,0,0,0,340,456a8.82,8.82,0,0,1,8.09.06c19.1,10,39.22,19.59,60,23.8a6.72,6.72,0,0,0,7.95-6.71Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -35555,8 +33658,7 @@
     "M320,96V72a24.07,24.07,0,0,0-24-24H216a24.07,24.07,0,0,0-24,24V96"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -35564,8 +33666,7 @@
     "M416,233V144a48.14,48.14,0,0,0-48-48H144a48.14,48.14,0,0,0-48,48v92"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -35606,32 +33707,28 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "42px"},
     :points "160 368 32 256 160 144"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "42px"},
     :points "352 368 480 256 352 144"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "42px"},
     :points "192 288.1 256 352 320 288.1"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "42px"},
@@ -35670,10 +33767,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M467.51,248.83c-18.4-83.18-45.69-136.24-89.43-149.17A91.5,91.5,0,0,0,352,96c-26.89,0-48.11,16-96,16s-69.15-16-96-16a99.09,99.09,0,0,0-27.2,3.66C89,112.59,61.94,165.7,43.33,248.83c-19,84.91-15.56,152,21.58,164.88,26,9,49.25-9.61,71.27-37,25-31.2,55.79-40.8,119.82-40.8s93.62,9.6,118.66,40.8c22,27.41,46.11,45.79,71.42,37.16C487.1,399.86,486.52,334.74,467.51,248.83Z"})
   (helix.dom/circle {:r "20", :cy "224", :cx "292"})
@@ -35683,8 +33777,7 @@
   (helix.dom/circle {:r "20", :cy "224", :cx "380"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -35694,8 +33787,7 @@
     :x1 "160"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -35734,8 +33826,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -35743,8 +33834,7 @@
     "M448,225.64v99a64,64,0,0,1-40.23,59.42l-23.68,9.47A32,32,0,0,0,364.6,417l-10,50.14A16,16,0,0,1,338.88,480H173.12a16,16,0,0,1-15.69-12.86L147.4,417a32,32,0,0,0-19.49-23.44l-23.68-9.47A64,64,0,0,1,64,324.67V224C64,118.08,149.77,32.19,255.65,32S448,119.85,448,225.64Z"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -35753,8 +33843,7 @@
     :cx "168"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -35763,16 +33852,14 @@
     :cx "344"})
   (helix.dom/polygon
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "256 336 240 384 272 384 256 336"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -35782,8 +33869,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -35793,8 +33879,7 @@
     :x1 "208"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -35849,18 +33934,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :d
     "M432,112V96a48.14,48.14,0,0,0-48-48H64A48.14,48.14,0,0,0,16,96V352a48.14,48.14,0,0,0,48,48H80"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "45.99",
     :rx "45.99",
     :height "336",
@@ -35869,18 +33948,14 @@
     :x "96"})
   (helix.dom/ellipse
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :ry "30.55",
     :rx "30.77",
     :cy "219.64",
     :cx "372.92"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -35888,8 +33963,7 @@
     "M342.15,372.17,255,285.78a30.93,30.93,0,0,0-42.18-1.21L96,387.64"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -35949,16 +34023,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M400,320c0,88.37-55.63,144-144,144S112,408.37,112,320c0-94.83,103.23-222.85,134.89-259.88a12,12,0,0,1,18.23,0C296.77,97.15,400,225.17,400,320Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -35978,8 +34048,7 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -36074,16 +34143,12 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -36093,8 +34158,7 @@
     :x1 "208"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -36136,7 +34200,7 @@
    :fill "currentColor",
    :& props}
   (helix.dom/path
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :d
     "M352,128H160a32,32,0,0,0-32,32V352a32,32,0,0,0,32,32H352a32,32,0,0,0,32-32V160A32,32,0,0,0,352,128Zm0,216a8,8,0,0,1-8,8H168a8,8,0,0,1-8-8V168a8,8,0,0,1,8-8H344a8,8,0,0,1,8,8Z"})
   (helix.dom/rect
@@ -36159,16 +34223,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "352 368 464 368 464 256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -36208,8 +34270,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -36217,8 +34278,7 @@
     "M440,432H72a40,40,0,0,1-40-40V120A40,40,0,0,1,72,80h75.89a40,40,0,0,1,22.19,6.72l27.84,18.56A40,40,0,0,0,220.11,112H440a40,40,0,0,1,40,40V392A40,40,0,0,1,440,432Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -36330,32 +34390,28 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M336,448h56a56,56,0,0,0,56-56V336"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M448,176V120a56,56,0,0,0-56-56H336"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M176,448H120a56,56,0,0,1-56-56V336"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -36411,8 +34467,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -36424,8 +34479,7 @@
     :x "112"})
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -36478,28 +34532,19 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :r "120",
     :cy "184",
     :cx "256"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :r "120",
     :cy "328",
     :cx "344"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :r "120",
     :cy "328",
     :cx "168"})))
@@ -36534,10 +34579,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-linejoin "round",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-linejoin "round", :stroke-width "32px"},
     :ry "57",
     :rx "57",
     :height "336",
@@ -36546,8 +34588,7 @@
     :x "128"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -36584,40 +34625,35 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M370,378c28.89,23.52,46,46.07,46,86"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M142,378c-28.89,23.52-46,46.06-46,86"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M384,208c28.89-23.52,32-56.07,32-96"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M128,206c-28.89-23.52-32-54.06-32-94"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -36627,8 +34663,7 @@
     :x1 "464"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -36638,8 +34673,7 @@
     :x1 "128"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -36649,8 +34683,7 @@
     :x1 "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -36658,8 +34691,7 @@
     "M256,448h0c-70.4,0-128-57.6-128-128V223.93c0-65.07,57.6-96,128-96h0c70.4,0,128,25.6,128,96V320C384,390.4,326.4,448,256,448Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -36680,8 +34712,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -36690,24 +34721,21 @@
     :cx "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M432.94,255.05A192,192,0,0,1,256.63,74.35"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :d "M255,433.61A192,192,0,0,0,74.29,256.69"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -36717,8 +34745,7 @@
     :x1 "120.24"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -36784,8 +34811,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -36797,8 +34823,7 @@
     :x "48"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -36853,7 +34878,7 @@
    :fill "currentColor",
    :& props}
   (helix.dom/polygon
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :points "240 304 272 304 278 144 234 144 240 304"})
   (helix.dom/path
    {:d
@@ -36892,8 +34917,7 @@
     "M326.1,231.9l-47.5,75.5a31,31,0,0,1-7,7,30.11,30.11,0,0,1-35-49l75.5-47.5a10.23,10.23,0,0,1,11.7,0A10.06,10.06,0,0,1,326.1,231.9Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -36901,8 +34925,7 @@
     "M256,64C132.3,64,32,164.2,32,287.9A223.18,223.18,0,0,0,88.3,436.4c1.1,1.2,2.1,2.4,3.2,3.5a25.19,25.19,0,0,0,37.1-.1,173.13,173.13,0,0,1,254.8,0,25.19,25.19,0,0,0,37.1.1l3.2-3.5A223.18,223.18,0,0,0,480,287.9C480,164.2,379.7,64,256,64Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -36912,8 +34935,7 @@
     :x1 "256"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -36923,8 +34945,7 @@
     :x1 "416"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -36934,8 +34955,7 @@
     :x1 "128"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -36945,8 +34965,7 @@
     :x1 "165.49"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -37039,8 +35058,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "square",
+    {:stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "10px"},
     :r "26",
@@ -37048,8 +35066,7 @@
     :cx "256"})
   (helix.dom/circle
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "square",
+    {:stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "10px"},
     :r "26",
@@ -37057,8 +35074,7 @@
     :cx "346"})
   (helix.dom/circle
    {:style
-    {:stroke "currentColor",
-     :stroke-linecap "square",
+    {:stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "10px"},
     :r "26",
@@ -37066,16 +35082,14 @@
     :cx "166"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "42px"},
     :points "160 368 32 256 160 144"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "42px"},
@@ -37117,8 +35131,7 @@
    :& props}
   (helix.dom/ellipse
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -37128,24 +35141,21 @@
     :cx "256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :d "M448,214c0,44.18-86,80-192,80S64,258.18,64,214"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
     :d "M448,300c0,44.18-86,80-192,80S64,344.18,64,300"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -37166,8 +35176,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -37175,8 +35184,7 @@
     "M93.72,183.25C49.49,198.05,16,233.1,16,288c0,66,54,112,120,112H320.37"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -37184,8 +35192,7 @@
     "M467.82,377.74C485.24,363.3,496,341.61,496,312c0-59.82-53-85.76-96-88-8.89-89.54-71-144-144-144-26.16,0-48.79,6.93-67.6,18.14"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -37226,8 +35233,7 @@
    :& props}
   (helix.dom/rect
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -37237,8 +35243,7 @@
     :x "32"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -37261,8 +35266,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -37272,8 +35276,7 @@
     :x1 "102"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -37283,8 +35286,7 @@
     :x1 "102"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -37294,8 +35296,7 @@
     :x1 "102"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "44px"},
@@ -37334,8 +35335,7 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "48px"},
@@ -37485,14 +35485,14 @@
    :fill "currentColor",
    :& props}
   (helix.dom/polygon
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :points "179.9 388 179.9 388 103.74 256 179.9 388"})
   (helix.dom/polygon
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :points
     "179.9 388 332.11 388 408.26 256 332.11 124 179.9 124 103.74 256 179.9 388"})
   (helix.dom/polygon
-   {:style {:fill "currentColor"},
+   {:style {:fill "none"},
     :points "103.74 256 179.9 124 179.9 124 103.74 256"})
   (helix.dom/polygon
    {:points
@@ -37515,16 +35515,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "48px"},
     :points "112 244 256 100 400 244"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "square",
      :stroke-miterlimit "10",
      :stroke-width "48px"},
@@ -37547,8 +35545,7 @@
    :& props}
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -37558,8 +35555,7 @@
     :x1 "176"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -37569,8 +35565,7 @@
     :x1 "118"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -37607,8 +35602,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -37616,16 +35610,12 @@
     "M376,144c-3.92,52.87-44,96-88,96s-84.15-43.12-88-96c-4-55,35-96,88-96S380,90,376,144Z"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
-     :stroke-miterlimit "10",
-     :stroke-width "32px"},
+    {:fill "none", :stroke-miterlimit "10", :stroke-width "32px"},
     :d
     "M288,304c-87,0-175.3,48-191.64,138.6-2,10.92,4.21,21.4,15.65,21.4H464c11.44,0,17.62-10.48,15.65-21.4C463.3,352,375,304,288,304Z"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -37635,8 +35625,7 @@
     :x1 "88"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -37773,8 +35762,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -37782,16 +35770,14 @@
     "M320,367.79h76c55,0,100-29.21,100-83.6s-53-81.47-96-83.6c-8.89-85.06-71-136.8-144-136.8-69,0-113.44,45.79-128,91.2-60,5.7-112,43.88-112,106.4s54,106.4,120,106.4h56"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "320 255.79 256 191.79 192 255.79"})
   (helix.dom/line
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -37814,8 +35800,7 @@
    :& props}
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-miterlimit "10",
      :stroke-width "32px"},
@@ -37855,16 +35840,14 @@
    :& props}
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "352 144 464 144 464 256"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -37904,8 +35887,7 @@
    :& props}
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -37914,8 +35896,7 @@
     :cx "176"})
   (helix.dom/circle
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
@@ -37924,16 +35905,14 @@
     :cx "400"})
   (helix.dom/polyline
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},
     :points "48 80 112 80 160 352 416 352"})
   (helix.dom/path
    {:style
-    {:fill "currentColor",
-     :stroke "currentColor",
+    {:fill "none",
      :stroke-linecap "round",
      :stroke-linejoin "round",
      :stroke-width "32px"},

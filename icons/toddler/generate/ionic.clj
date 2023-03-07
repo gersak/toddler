@@ -42,7 +42,9 @@
                                    (fn [r e]
                                      (let [[k v] (str/split e #":")]
                                        (if (#{"stroke" "fill"} k)
-                                         (assoc r (keyword k) "currentColor")
+                                         (case v
+                                           "none" (assoc r (keyword k) "none")
+                                           "#000" r)
                                          (assoc r (keyword k) v))))
                                    nil
                                    (when current (str/split current #";"))))))]
@@ -83,8 +85,9 @@
         (list-images)))))
 
 
+(defn generate []
+  (spit "gen/toddler/ionic.cljs" (generate-ionic)))
+
+
 (comment
-  (spit "gen/toddler/ionic.cljs" (generate-ionic))
-  (def path (first (list-images)))
-  (def url "https://github.com/ionic-team/ionicons.git")
-  (def target "io5"))
+  (generate))

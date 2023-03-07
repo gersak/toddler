@@ -155,7 +155,7 @@
       (when opened (focus value)))
     (popup/use-outside-action
       opened area popup 
-      #(set-opened! false))
+      #(when opened (set-opened! false)))
     (assoc props
            :search search
            :opened opened
@@ -167,7 +167,7 @@
            :read-only read-only
            :toggle! (fn []
                       (when @input (.focus @input))
-                      (set-opened! not))
+                        (set-opened! not))
            :open! (fn []
                     (when @input (.focus @input))
                     (set-opened! true))
@@ -236,13 +236,10 @@
 
 
 (defnc Option
-  [{:keys [value
-           on-remove
-           onRemove]
+  [{:keys [value]
     :as props}]
-  (let [on-remove (some #(when (fn? %) %) [onRemove on-remove])]
-    (d/div
-      {& props}
-      (if-some [children (c/children props)]
-        children
-        value))))
+  (d/div
+    {& props}
+    (if-some [children (c/children props)]
+      children
+      value)))

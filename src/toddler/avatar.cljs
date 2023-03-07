@@ -21,23 +21,23 @@
 
 
 (defnc Image
-  [{:keys [onSelect onChange ]
+  [{:keys [onSelect onMove]
     {:keys [image] :as avatar} :avatar}]
   (let [shape-ref (hooks/use-ref nil)]
     (when image
-      (<>
-        (konva/Image
-          {:& avatar
-           :onClick (fn [^js e] (onSelect (.. e -target)))
-           :ref #(reset! shape-ref %)
-           :draggable true
-           :onDragMove (fn [^js e]
-                         (let [node ^js @shape-ref]
-                           (onChange
-                             {:width (.width node)
-                              :height (.height node)
-                              :x (.x (.-target e))
-                              :y (.y (.-target e))})))})))))
+      (konva/Image
+        {:& avatar
+         :onClick (fn [^js e] (onSelect (.. e -target)))
+         :ref (fn [^js el]
+                (reset! shape-ref el))
+         :draggable true
+         :onDragMove (fn [^js e]
+                       (let [node ^js @shape-ref]
+                         (onMove
+                           {:width (.width node)
+                            :height (.height node)
+                            :x (.x (.-target e))
+                            :y (.y (.-target e))})))}))))
 
 
 (defn download-uri [^js uri, name, mime]
@@ -86,8 +86,11 @@
                        :style {:z-index "10"}})]
     (hooks/use-effect
       [image]
-      (set-layer-zoom 1)
       (when image
+        (let [w (.-width image)
+              h (.-height image)
+              s (max w h)]
+          (set-layer-zoom (/ size s)))
         (set-avatar!
           {:image image
            :offsetX (if (= image js/undefined) 0
@@ -127,7 +130,12 @@
                         (set-layer-zoom new-scale)))}
           ($ Image
              {:avatar avatar
-              :onChange (fn [delta] (set-avatar! merge delta))}))
+              :onChange (fn [e]
+                          (let [img (.. e -newVal)
+                                max-size (max (.-naturalHeight img) (.-naturalWidth img))]
+                            (set-layer-zoom (/ size max-size))))
+              :onMove (fn [delta]
+                        (set-avatar! merge delta))}))
         (konva/Layer
           (konva/Rect
             {:& frame-props})))

@@ -50,7 +50,9 @@
                                    (fn [r e]
                                      (let [[k v] (str/split e #":")]
                                        (if (#{"stroke" "fill"} k)
-                                         (assoc r (keyword k) "currentColor")
+                                         (case v
+                                           "none" (assoc r (keyword k) "none")
+                                           "#000" r)
                                          (assoc r (keyword k) v))))
                                    nil
                                    (when current (str/split current #";"))))))]
@@ -112,9 +114,4 @@
 
 
 (comment
-  (def x (generate-fa "brands"))
-  (generate)
-  (clone-repo)
-  (def style "regular")
-  (def path (first (list-images style)))
-  (def target "io5"))
+  (generate))

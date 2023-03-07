@@ -1,6 +1,7 @@
 (ns toddler.popup
   (:require
     clojure.string
+    [clojure.core.async :as async]
     ["react" :as react]
     ["react-dom" :as rdom]
     [helix.core 
@@ -404,7 +405,7 @@
     (hooks/use-effect
       [opened]
       (when opened
-        (letfn [(handle [e] 
+        (letfn [(handle [e]
                   (cond
                     (and (some? @area) (.contains @area (.-target e))) nil
                     ;; When clicke on popup do nothing
@@ -414,8 +415,10 @@
                     (handler e)
                     ;;
                     :else nil))]
-          (.addEventListener js/document "click" handle)
-          (.addEventListener js/document "wheel" handle)
+          (async/go
+            (async/<! (async/timeout 100))
+            (.addEventListener js/document "click" handle)
+            (.addEventListener js/document "wheel" handle))
           (fn []
             (.removeEventListener js/document "click" handle)
             (.removeEventListener js/document "wheel" handle)))))))

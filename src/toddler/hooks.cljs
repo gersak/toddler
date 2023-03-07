@@ -1,6 +1,7 @@
 (ns toddler.hooks
   (:require
     [clojure.set]
+    [clojure.edn :as edn]
     [goog.string :as gstr]
     [goog.string.format]
     [clojure.core.async :as async :refer-macros [go-loop]]
@@ -46,16 +47,16 @@
 
 
 (defhook use-local-storage
-  ([location] (use-local-storage location identity))
+  ([location] (use-local-storage (name location) edn/read-string))
   ([location transform]
     (let [[local set-local!] (hooks/use-state
                                (transform
-                                 (.getItem js/localStorage location)))]
+                                 (.getItem js/localStorage (name location))))]
       (hooks/use-effect
         [local]
         (if (some? local)
-          (.setItem js/localStorage location local)
-          (.removeItem js/localStorage location)))
+          (.setItem js/localStorage (name location) local)
+          (.removeItem js/localStorage (name location))))
       [local set-local!])))
 
 
@@ -127,7 +128,7 @@
   []
   (let [[{{locale :locale
            :or {locale :default}} :settings}] (use-user)]
-    locale))
+    (keyword locale)))
 
 
 (defhook use-translate

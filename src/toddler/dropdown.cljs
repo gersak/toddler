@@ -209,7 +209,7 @@
 
 
 (defnc Input
-  [{:keys [onSearchChange placeholder] :as props} _ref]
+  [{:keys [onSearchChange placeholder] :as props}]
   (let [{:keys [input
                 search
                 on-change
@@ -238,7 +238,7 @@
 
 
 (defnc Options
-  [{:keys [render]}]
+  [{:keys [render context-fn]}]
   (let [{:keys [options
                 search-fn
                 ref-fn
@@ -252,7 +252,9 @@
         ($ render
           {:key (search-fn option)
            :ref (ref-fn option)
-           :option option
+           :value option
+           :context (when (ifn? context-fn)
+                      (context-fn option))
            :selected (= option cursor)
            :onMouseDown (fn []
                           (select! option)

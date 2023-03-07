@@ -30,10 +30,10 @@
     ([this]
      (get-in @translations [this :default]))
     ([this locale]
-     (assert (keyword? locale) "Locale shoudld be keyword")
-     (if-let [w (get-in @translations [this (keyword (name locale))])]
+     (assert (keyword? locale) (str "Locale shoudld be keyword: " (pr-str locale)))
+     (if-let [w (get-in @translations [this locale])]
        w
-       (get @translations (keyword this :default))))))
+       (i18n/translate this :default)))))
 
 
 (comment
