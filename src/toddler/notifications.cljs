@@ -139,7 +139,6 @@
           {:frame frame
            :notifications notifications
            :opened? opened?})
-        ; opened? true
         ;;
         control-channel (async/chan)
         notifications (if opened? (reverse notifications) notifications)]

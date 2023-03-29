@@ -46,18 +46,47 @@
   (hooks/use-context app/token))
 
 
-(defhook use-local-storage
-  ([location] (use-local-storage (name location) edn/read-string))
-  ([location transform]
-    (let [[local set-local!] (hooks/use-state
-                               (transform
-                                 (.getItem js/localStorage (name location))))]
-      (hooks/use-effect
-        [local]
-        (if (some? local)
-          (.setItem js/localStorage (name location) local)
-          (.removeItem js/localStorage (name location))))
-      [local set-local!])))
+(letfn [(target [location]
+          (if-some [_ns (try (namespace location) (catch js/Error _ nil))]
+            (str _ns \/ (name location))
+            (name location)))]
+  (defhook use-local-storage
+    ([location] (use-local-storage
+                  location
+                  (fn [v] (when v (edn/read-string v)))))
+    ([location transform]
+      (let [target (target location) 
+            [local set-local!] (hooks/use-state
+                                 (transform
+                                   (.getItem js/localStorage target)))]
+        (hooks/use-effect
+          [local]
+          (if (some? local)
+            (.setItem js/localStorage target local)
+            (.removeItem js/localStorage target)))
+        [local set-local!]))))
+
+
+(letfn [(target [location]
+          (if-some [_ns (try (namespace location) (catch js/Error _ nil))]
+            (str _ns \/ (name location))
+            (name location)))]
+  (defhook use-session-storage
+    ([location] (use-session-storage
+                  location
+                  (fn [v]
+                    (when v (edn/read-string v)))))
+    ([location transform]
+      (let [target (target location) 
+            [local set-local!] (hooks/use-state
+                                 (transform
+                                   (.getItem js/sessionStorage target)))]
+        (hooks/use-effect
+          [local]
+          (if (some? local)
+            (.setItem js/sessionStorage target local)
+            (.removeItem js/sessionStorage target)))
+        [local set-local!]))))
 
 
 (defhook use-avatar
@@ -95,12 +124,12 @@
                                 ;; otherwise
                                 nil
                                 (async/put! app/signal-channel
-                                  {:type :toddler.notifications/error
-                                   :message (str "Couldn't fetch avatar for user " name)
-                                   :visible? true
-                                   :hideable? true
-                                   :adding? true
-                                   :autohide true})))))
+                                            {:type :toddler.notifications/error
+                                             :message (str "Couldn't fetch avatar for user " name)
+                                             :visible? true
+                                             :hideable? true
+                                             :adding? true
+                                             :autohide true})))))
                         (.send xhr)))))]
     (hooks/use-effect
       [avatar]
@@ -187,11 +216,12 @@
          (let [aggregated-values
                (loop [[value _]
                       (async/alts!
-                       [idle-channel (async/go (async/<! (async/timeout period))
-                                               ::TIMEOUT)])
+                        [idle-channel (async/go
+                                        (async/<! (async/timeout period))
+                                        ::TIMEOUT)])
                       r [v]]
                  (if (or
-                      (= ::TIMEOUT value)
+                       (= ::TIMEOUT value)
                       (nil? value))
                    (conj r value)
                    (recur (async/alts! [idle-channel (async/go (async/<! (async/timeout period)) ::TIMEOUT)]) (conj r value))))]
@@ -207,12 +237,15 @@
   "Idle hook. Returns cached value and update fn. Input arguments
   are initial state, callback that should will be called on idle
   timeout."
-  ([state callback] (use-idle state callback 500))
-  ([state callback timeout]
+  ([state callback] (use-idle state callback {:timeout 500}))
+  ([state callback
+    {:keys [timeout initialized?]
+     :or {timeout 500
+          initialized? false}}]
    (assert (fn? callback) "Callback should be function")
    (let [[v u] (hooks/use-state state)
          call (hooks/use-ref callback)
-         initialized? (hooks/use-ref false)
+         initialized? (hooks/use-ref initialized?)
          idle-channel (hooks/use-ref nil)]
      ;; Create idle channel
      (hooks/use-effect
@@ -222,12 +255,13 @@
        (make-idle-service
         timeout
         (fn [values]
-          (let [v' (last (butlast values))]
+          (let [[_ v'] (reverse values)]
             (if @initialized?
               (when (ifn? @call) (@call v'))
               (reset! initialized? true))))))
       (fn []
-        (when @idle-channel (async/close! @idle-channel))))
+        (when @idle-channel
+          (async/close! @idle-channel))))
      ;; When callback is changed reference new callback
      (hooks/use-effect
       [callback]
@@ -315,7 +349,8 @@
             nil)))
       (hooks/use-effect
         :once
-        (fn [] (when @observer (.disconnect @observer))))
+        (fn []
+          (when @observer (.disconnect @observer))))
       [node dimensions]))
   ([ks]
     (let [nodes (hooks/use-ref nil)
@@ -523,8 +558,7 @@
         [queries]
         (fn send
           []
-          (let [
-                query (apply
+          (let [query (apply
                         graphql/wrap-queries
                         (map
                           (fn [{query-name :query

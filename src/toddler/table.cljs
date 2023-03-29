@@ -9,7 +9,9 @@
              <> provider]]
     [helix.hooks :as hooks]
     [helix.children :as c]
+    [toddler.i18n]
     [toddler.ui :as ui]
+    [toddler.hooks :as toddler]
     [toddler.layout :as layout]))
 
 
@@ -73,12 +75,11 @@
 
 
 (defnc FRow
-  [{:keys [className] :as props} _ref]
+  [props _ref]
   {:wrap [(ui/forward-ref)]}
   (let [min-width (use-table-width)] 
     (d/div
-      {:className className
-       :style {:display "flex"
+      {:style {:display "flex"
                :flexDirection "row"
                :justifyContent "flex-start"
                ; :justifyContent "space-around"
@@ -86,17 +87,18 @@
                :minWidth min-width}
        :level (:level props)
        & (cond-> 
-           (dissoc props :style :level :class :className :data)
+           (dissoc props :style :level :data)
            _ref (assoc :ref _ref))}
       (c/children props))))
 
 
 (defnc Row
   [{data :data
-    :keys [className idx render]
+    :keys [className idx render class]
     :as props
-    :or {render FRow}}]
-  {:wrap [(memo 
+    :or {render FRow}} _ref]
+  {:wrap [(ui/forward-ref)
+          (memo 
             (fn [{idx1 :idx data1 :data} {idx2 :idx data2 :data}]
               (and 
                 (= idx1 idx2)
@@ -107,9 +109,13 @@
        :value (assoc data :idx idx)}
       (<>
         ($ render
-           {:key idx
-            :className (str className (if (even? idx) " even" " odd"))
-            & (dissoc props :className)}
+           {:ref _ref
+            :key idx
+            :class (cond-> [(if (even? idx) " even" " odd")]
+                     (string? class) (conj class)
+                     className (conj className)
+                     (sequential? class) (into class))
+            & (dissoc props :class :className)}
            (map
              (fn [{:keys [attribute cursor] :as column}]
                (let [_key (or
@@ -122,9 +128,6 @@
                      :column column})))
              (remove :hidden columns)))
         (c/children props)))))
-
-
-
 
 
 (defn init-pagination
@@ -249,15 +252,13 @@
 ;;;;;;;;;;;;;;;;
 ;;   HEADERS  ;;
 ;;;;;;;;;;;;;;;;
-
-
-
 (defnc ColumnNameElement
   [{{column-name :label
      :keys [order]
      :as column} 
     :column}]
-  (let [dispatch (use-dispatch)] 
+  (let [dispatch (use-dispatch)
+        translate (toddler/use-translate)] 
     (d/div 
       {:className "name"
        :onClick (fn []
@@ -272,7 +273,7 @@
                          :desc :asc 
                          ;;
                          nil)})))} 
-      column-name)))
+      (translate column-name))))
 
 
 ;; Styled headers

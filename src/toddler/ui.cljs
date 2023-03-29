@@ -31,9 +31,9 @@
 (defcomponent identity :identity)
 (defcomponent tooltip :tooltip)
 (defcomponent autosize-input :input/autosize)
-(defcomponent idle-input :input/idle)
 (defcomponent action :action)
 (defcomponent checklist :checklist)
+(defcomponent drawer :drawer)
 
 
 (defcomponent card :card)
@@ -69,6 +69,7 @@
 (defcomponent date-period-field :field/date-period)
 (defcomponent boolean-field :field/boolean)
 (defcomponent checklist-field :field/checklist)
+(defcomponent idle-field :field/idle)
 
 
 (defcomponent table :table)

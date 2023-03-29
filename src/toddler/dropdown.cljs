@@ -1,13 +1,13 @@
 (ns toddler.dropdown
   (:require
    clojure.string
-   [helix.core :refer [defhook defnc create-context $ provider]]
+   [helix.core :refer [defhook defnc create-context $]]
    [helix.hooks :as hooks]
    [helix.dom :as d]
    [helix.children :as c]
    [toddler.hooks :refer [use-idle]]
-   [toddler.popup :as popup]
-   [toddler.ui :as ui]))
+   [toddler.popup :as popup]))
+
 
 (defn get-available-options
   ([search options search-fn]
@@ -24,15 +24,18 @@
        (vec options)
        (vec available-options)))))
 
+
 (defn next-option  [cursor [option :as options]]
   (let [cursor-position (inc (.indexOf options cursor))
         cursor' (get options cursor-position option)]
     cursor'))
 
+
 (defn previous-option [cursor options]
   (let [cursor-position (dec (.indexOf options cursor))
         cursor' (get options cursor-position (last options))]
     cursor'))
+
 
 (defn key-down-handler
   [e {:keys [value
