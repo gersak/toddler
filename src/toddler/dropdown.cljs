@@ -58,7 +58,9 @@
         (set-opened! true)
         (when (<= (count search) 1)
           (set-search! "")
-          (when (fn? new-fn) (on-change nil))))
+          (if (fn? new-fn)
+            (on-change (new-fn nil))
+            (on-change nil))))
     ;; TAB
     9 (do
         (set-opened! false)
@@ -171,19 +173,19 @@
      :on-change (fn [e] (set-search! (.. e -target -value)))
      :on-key-down (fn [e]
                     (key-down-handler e
-                                      {:value value
-                                       :search search
-                                       :opened opened
-                                       :cursor cursor
-                                       :options available-options
-                                       :new-fn new-fn
-                                       :search-fn search-fn
-                                       :on-change on-change
-                                       :set-opened! set-opened!
-                                       :set-search! set-search!
-                                       :set-cursor! set-cursor!
-                                       :position area-position
-                                       :input @input}))
+                      {:value value
+                       :search search
+                       :opened opened
+                       :cursor cursor
+                       :options available-options
+                       :new-fn new-fn
+                       :search-fn search-fn
+                       :on-change on-change
+                       :set-opened! set-opened!
+                       :set-search! set-search!
+                       :set-cursor! set-cursor!
+                       :position area-position
+                       :input @input}))
      :options available-options}))
 
 

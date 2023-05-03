@@ -2,6 +2,7 @@
   (:require
     [clojure.set]
     [clojure.edn :as edn]
+    [clojure.pprint :refer [pprint]]
     [goog.string :as gstr]
     [goog.string.format]
     [clojure.core.async :as async :refer-macros [go-loop]]
@@ -185,7 +186,18 @@
                    (fn
                      ([data & args]
                        (if-let [template (translate data locale)]
-                         (apply gstr/format template args)
+                         (try
+                           (apply gstr/format template args)
+                           (catch js/Error _
+                             (let [message
+                                   (str "Couldn't translate " data
+                                        "\n"
+                                        (with-out-str
+                                          (pprint
+                                            {:args args
+                                             :template template})))]
+                               (.error js/console message)
+                               "")))
                          (throw (js/Error. (str "Couldn't find translation for " data ". Locale: " locale)))))))]
     translate))
 
@@ -516,7 +528,7 @@
   ([{query-name :query
      selection :selection
      args :args
-     :keys [on-loaded on-error]}]
+     :keys [on-load on-error]}]
     (let [[token] (use-token)
           url (use-graphql-url)]
       (hooks/use-memo
@@ -538,7 +550,7 @@
                         query 
                         :url url
                         :token token
-                        :on-loaded on-loaded 
+                        :on-load on-load
                         :on-error on-error))]
                 (if (some? errors)
                   (ex-info "Remote query failed"
@@ -551,7 +563,7 @@
 
 (defhook use-queries
   ([queries] (use-queries queries nil))
-  ([queries {:keys [on-loaded on-error]}]
+  ([queries {:keys [on-load on-error]}]
     (let [[token] (use-token)
           url (use-graphql-url)]
       (hooks/use-memo
@@ -578,7 +590,7 @@
                         query 
                         :url url
                         :token token
-                        :on-loaded on-loaded 
+                        :on-load on-load
                         :on-error on-error))]
                 (if (some? errors)
                   (ex-info "Remote query failed"
@@ -588,8 +600,7 @@
 
 
 (defhook use-mutation
-  ([{:keys [mutation selection variables]
-     {:keys [on-loaded on-error]} :handlers}]
+  ([{:keys [mutation selection variables on-load on-error]}]
     (let [[token] (use-token)
           [mutation-fragment type-declarations variable-mapping]
           (hooks/use-memo
@@ -597,7 +608,8 @@
             (graphql/gen-mutation mutation variables selection))
           ;;
           url (use-graphql-url)]
-      (hooks/use-memo
+      ; (when (ifn? on-load) (on-load "109"))
+      (hooks/use-callback
         [mutation-fragment]
         (fn [data]
           (async/go
@@ -611,7 +623,7 @@
                       :url url
                       :token token
                       :variables (clojure.set/rename-keys data variable-mapping)
-                      :on-load on-loaded
+                      :on-load on-load
                       :on-error on-error))]
               (if (some? errors)
                 (ex-info

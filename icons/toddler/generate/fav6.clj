@@ -44,6 +44,11 @@
                   :stroke "currentColor"
                   :fill "currentColor")
                 ;;
+                (#{:line :path :polyline :rect :circle :polygon} tag)
+                (as-> tag
+                  (update tag :stroke (fn [v] (if (= v "#000") "currentColor" v)))
+                  (update tag :fill (fn [v] (if (= v "#000") "currentColor" v))))
+                ;;
                 (some? (:style attrs))
                 (update :style (fn [current]
                                  (reduce
