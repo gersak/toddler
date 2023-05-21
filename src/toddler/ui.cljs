@@ -41,6 +41,10 @@
 (defcomponent card-actions :card/actions)
 
 
+(defcomponent tabs :tabs)
+(defcomponent tab :tab)
+
+
 (defcomponent calendar-month-dropdown :calendar/month-dropdown)
 (defcomponent calendar-year-dropdown :calendar/year-dropdown)
 

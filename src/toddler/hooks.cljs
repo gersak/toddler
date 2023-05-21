@@ -3,6 +3,7 @@
     [clojure.set]
     [clojure.edn :as edn]
     [clojure.pprint :refer [pprint]]
+    [clojure.string :as str]
     [goog.string :as gstr]
     [goog.string.format]
     [clojure.core.async :as async :refer-macros [go-loop]]
@@ -90,6 +91,43 @@
         [local set-local!]))))
 
 
+(letfn [(target [location]
+          (if-some [_ns (try (namespace location) (catch js/Error _ nil))]
+            (str _ns \/ (name location))
+            (name location)))]
+  (defhook use-session-cache
+    ([location value]
+      (use-session-cache
+        location
+        (fn [v] (when v (edn/read-string v)))
+        value))
+    ([location transform variable]
+      (use-session-cache
+        location
+        transform 
+        variable
+        nil))
+    ([location transform variable init-fn]
+      (let [target (target location) 
+            initialized? (hooks/use-ref false)
+            _ref (hooks/use-ref (transform (.getItem js/sessionStorage target)))]
+        (hooks/use-effect
+          [variable]
+          (when @initialized?
+            (if (some? variable)
+              (.setItem js/sessionStorage target variable)
+              (.removeItem js/sessionStorage target))
+            (reset! _ref variable)))
+        (hooks/use-effect
+          :once
+          (when (ifn? init-fn)
+            (init-fn
+              (transform
+                (.getItem js/sessionStorage target))))
+          (reset! initialized? true))
+        _ref))))
+
+
 (defhook use-avatar
   [{:keys [name avatar path]}]
   (let [avatars (hooks/use-context app/avatars)
@@ -99,39 +137,41 @@
                   [_avatar avatar path]
                   (fn []
                     (when avatar
-                      (let [xhr (new js/XMLHttpRequest)]
-                        (.open xhr "GET" path true)
-                        (when token (.setRequestHeader xhr "Authorization" (str "Bearer " token)))
-                        (.setRequestHeader xhr "Accept" "application/octet-stream")
-                        (.setRequestHeader xhr "Cache-Control" "no-cache")
-                        (.addEventListener
-                          xhr "load"
-                          (fn [evt]
-                            (let [status (.. evt -target -status)
-                                  avatar' (.. evt -currentTarget -responseText)]
-                              (case status
-                                200
-                                (cond
-                                  ;; if avatar has changed than swap avatars
-                                  ;; this should trigger updates for all hooks
-                                  ;; with target avatar
-                                  (not= avatar' (get @avatars avatar))
-                                  (swap! avatars assoc avatar avatar')
-                                  ;; Otherwise if avatar is cached properly, but
-                                  ;; current _avatar doesn't match current state
-                                  ;; update current _avatar
-                                  (not= _avatar avatar')
-                                  (set-avatar! avatar'))
-                                ;; otherwise
-                                nil
-                                (async/put! app/signal-channel
-                                            {:type :toddler.notifications/error
-                                             :message (str "Couldn't fetch avatar for user " name)
-                                             :visible? true
-                                             :hideable? true
-                                             :adding? true
-                                             :autohide true})))))
-                        (.send xhr)))))]
+                      (if (str/starts-with? avatar "data:image")
+                        (set-avatar! (str/replace avatar #"data:.*base64," ""))
+                        (let [xhr (new js/XMLHttpRequest)]
+                          (.open xhr "GET" path true)
+                          (when token (.setRequestHeader xhr "Authorization" (str "Bearer " token)))
+                          (.setRequestHeader xhr "Accept" "application/octet-stream")
+                          (.setRequestHeader xhr "Cache-Control" "no-cache")
+                          (.addEventListener
+                            xhr "load"
+                            (fn [evt]
+                              (let [status (.. evt -target -status)
+                                    avatar' (.. evt -currentTarget -responseText)]
+                                (case status
+                                  200
+                                  (cond
+                                    ;; if avatar has changed than swap avatars
+                                    ;; this should trigger updates for all hooks
+                                    ;; with target avatar
+                                    (not= avatar' (get @avatars avatar))
+                                    (swap! avatars assoc avatar avatar')
+                                    ;; Otherwise if avatar is cached properly, but
+                                    ;; current _avatar doesn't match current state
+                                    ;; update current _avatar
+                                    (not= _avatar avatar')
+                                    (set-avatar! avatar'))
+                                  ;; otherwise
+                                  nil
+                                  (async/put! app/signal-channel
+                                              {:type :toddler.notifications/error
+                                               :message (str "Couldn't fetch avatar for user " name)
+                                               :visible? true
+                                               :hideable? true
+                                               :adding? true
+                                               :autohide true})))))
+                          (.send xhr))))))]
     (hooks/use-effect
       [avatar]
       (when (some? avatar)
@@ -327,13 +367,13 @@
   (hooks/use-context app/window))
 
 
-
 (defhook use-dimensions
   "Hook returns ref that should be attached to component and
   second result dimensions of bounding client rect"
   ([]
-    (let [node (hooks/use-ref nil)
-          observer (hooks/use-ref nil)
+    (use-dimensions (hooks/use-ref nil)))
+  ([node]
+    (let [observer (hooks/use-ref nil)
           [dimensions set-dimensions!] (hooks/use-state nil)
           resize-idle-service (hooks/use-ref
                                 (make-idle-service
@@ -363,7 +403,15 @@
         :once
         (fn []
           (when @observer (.disconnect @observer))))
-      [node dimensions]))
+      [node dimensions])))
+
+
+
+(defhook use-multi-dimensions
+  "Similar to use dimensions, only for tracking multiple elements.
+  Input are sequence of references, i.e keywords, and output is vector
+  of two elements. First element is map of reference to React ref, and
+  second is map of reference to element dimensions."
   ([ks]
     (let [nodes (hooks/use-ref nil)
           refs (hooks/use-memo

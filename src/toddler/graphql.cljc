@@ -336,9 +336,18 @@
                              (let [body (.. evt -currentTarget -responseText)] 
                                (async/put!
                                  result
-                                 (let [raw-data (.parse js/JSON body)
-                                       data (js->clj raw-data :keywordize-keys true)]
-                                   {:errors data}))
+                                 (case (.. evt -currentTarget -status)
+                                   403 (ex-info
+                                         "Not authorized"
+                                         {:type :not-authorized})
+                                   500 (ex-info
+                                         "Server couldn't process GraphQL query"
+                                         {:query query
+                                          :data data
+                                          :type :server-error})
+                                   (let [raw-data (.parse js/JSON body)
+                                         data (js->clj raw-data :keywordize-keys true)]
+                                     data)))
                                (when (ifn? on-error) (on-error evt)))))
 
         (when (ifn? on-progress) (.addEventListener xhr "progress" on-progress))

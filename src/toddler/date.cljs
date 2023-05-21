@@ -31,7 +31,6 @@
   [{:keys [value
            day-in-month
            today
-           className
            onClick]
     :as props}]
   (let [is-weekend (cond (some? value)
@@ -45,8 +44,8 @@
                              (if (-> value vura/*holiday?*)
                                "red" ""))]
     (d/div
-      {:class className
-       :onClick (when-not disabled onClick)}
+      {:onClick (when-not disabled onClick)
+       & (select-keys props [:class :className])}
       (d/div
         {:class (cond-> ["day"]
                   selected (conj "selected")

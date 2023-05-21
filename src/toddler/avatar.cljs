@@ -251,6 +251,21 @@
 
 
 (defhook use-generator-queue [] (hooks/use-context *generator-queue*))
+(defhook use-generate []
+  (let [generator-queue (use-generator-queue)]
+    (hooks/use-callback
+      :once
+      (fn []
+        (when (some? generator-queue)
+          (async/go
+            ;; create generated promise
+            (let [generated (async/promise-chan)]
+              ;; send promise to generator queue
+              (async/>! generator-queue generated)
+              ;; then wait for generated result
+              (let [avatar (async/<! generated)]
+                ;; and handle stuff
+                avatar))))))))
 
 
 (defnc Generator
