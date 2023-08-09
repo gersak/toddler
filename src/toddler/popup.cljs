@@ -5,16 +5,14 @@
     ["react" :as react]
     ["react-dom" :as rdom]
     [helix.core 
-     :refer [defnc $ provider <>
+     :refer [defnc provider <>
              defhook create-context]]
     [helix.hooks :as hooks]
     [helix.dom :as d]
     [helix.children :as c]
-    ; [vura.core :refer [round-number]]
-    ; [toddler.scroll :refer [SimpleBar]]
     [toddler.layout :refer [*container-dimensions*]]
-    [toddler.hooks :refer [use-delayed]]
     [toddler.util :as util]))
+
 
 (def ^:dynamic ^js *area-element* (create-context))
 (def ^:dynamic ^js *position* (create-context))
@@ -71,7 +69,9 @@
 
 (def ^:dynamic ^js *offset* 6)
 
+
 (defmulti compute-candidate (fn [{:keys [position]}] position))
+
 
 (defmethod compute-candidate #{:bottom :left}
   [{:keys [popup-height
@@ -286,20 +286,20 @@
      (case position
        ;;
        (#{:top :left}
-        #{:bottom :left})
+         #{:bottom :left})
        (update data :position/right move-right)
        ;;
        (#{:top :center}
-        #{:bottom :center}
-        #{:right :center})
+         #{:bottom :center}
+         #{:right :center})
        (->
          data
          (update :position/left center-left)
          (update :position/right center-right))
        ;;
        (#{:top :right}
-        #{:bottom :right}
-        #{:left :center})
+         #{:bottom :right}
+         #{:left :center})
        (update data :position/left move-left)
        :else data))))
 
@@ -310,6 +310,7 @@
     data
     :popup-width (- (:position/right data) (:position/left data))
     :popup-height (- (:position/bottom data) (:position/top data))))
+
 
 (defn best-candidate
   [candidates]
@@ -336,6 +337,7 @@
         (neg? right) (assoc :position/right (- window-width 3)))
       (adjust-scroll-width 15)
       #_update-dropdown-size)))
+
 
 (defn padding-data [el]
   (when el
@@ -374,18 +376,6 @@
              ;; There was no full size candidate
              (best-candidate candidates))
            (padding-data el)))))))
-
-;; DROPDOWN CONTAINER
-; (defstyled dropdown-container
-;   "div"
-;   {:max-height 600
-;    :min-width 50
-;    :padding "2px 0"
-;    :overflow "auto"
-;    ".dropdown-content"
-;    {:display "flex"
-;     :flex-direction "column"}}
-;   --themed)
 
 
 (defhook use-focusable-items
@@ -451,7 +441,6 @@
          (c/children props)))))
 
 
-
 (defnc Element
   [{:keys [preference style offset onChange]
     :or {preference default-preference
@@ -470,12 +459,12 @@
         target (hooks/use-context *area-element*)
         container-node (hooks/use-context *container*)]
     (hooks/use-layout-effect
-      ; :always
-      :once
+      :always
       (binding [*offset* offset] 
-        (let [computed (compute-container-props target @_el preference)]
-          (set-state! computed)
-          (when (ifn? onChange) (onChange computed)))))
+        (let [_computed (compute-container-props target @_el preference)]
+          (when (not= computed _computed)
+            (set-state! _computed)
+            (when (ifn? onChange) (onChange _computed))))))
     (when (nil? container-node)
       (.error js/console "Popup doesn't know where to render. Specify popup container. I.E. instantiate toddler.elements.popup/Container"))
     (rdom/createPortal

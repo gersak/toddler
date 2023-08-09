@@ -120,12 +120,12 @@
                               (fn [v]
                                  ;; I wan't to check if there is new-fn so that
                                  ;; "New" valaue can be created
-                                (when (fn? new-fn)
+                                 (when (fn? new-fn)
                                    ;; Than I wan't to call new-fn with new search input value
-                                  (let [v' (new-fn (if (= v :NULL) nil v))]
+                                   (let [v' (new-fn (if (= v :NULL) nil v))]
                                      ;; and check if onChange should be called
-                                    (when-not (= v' value)
-                                      (on-change v'))))))
+                                     (when-not (= v' value)
+                                       (on-change v'))))))
         [opened set-opened!] (hooks/use-state false)
         [cursor set-cursor!] (hooks/use-state value)
         input (hooks/use-ref nil)
@@ -144,15 +144,20 @@
        (focus o)
        (set-cursor! o)))
     (hooks/use-effect
-     [value search-fn]
-     (when (not= (search-fn value) search)
-       (set-search! (search-fn value))))
+      [value]
+      ;; Search FN can change as well, but it is not expected to change search-fn
+      ;; I.E. usually it will be keyword like :name, and ClojureScript generates
+      ;; new :keyword object on every render, so this will reset set-search! that
+      ;; was changed in on-change handler... This is a bug
+      ;; [value search-fn]
+      (when (not= (search-fn value) search)
+        (set-search! (search-fn value))))
     (hooks/use-effect
      [opened]
      (when opened (focus value)))
     (popup/use-outside-action
-     opened area popup
-     #(set-opened! false))
+      opened area popup
+      #(set-opened! false))
     {:search search
      :value value
      :opened opened
@@ -287,3 +292,20 @@
           :preference preference
           & (select-keys props [:className :class])}
          (c/children props)))))
+
+
+; (defnc ScrollablePopup
+;   [{:keys [preference]
+;     :as props}]
+;   (let [{:keys [options
+;                 popup
+;                 disabled
+;                 opened
+;                 read-only]} (hooks/use-context *dropdown*)]
+;     (when (and (not read-only) (not disabled) (pos? (count options)) opened)
+;       ($ popup/Element
+;          {:ref popup
+;           :items options
+;           :preference preference
+;           & (select-keys props [:className :class])}
+;          (c/children props)))))

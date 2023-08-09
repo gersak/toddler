@@ -11,6 +11,7 @@
 
 
 (defcomponent avatar :avatar)
+(defcomponent avatar-editor :avatar/editor)
 (defcomponent row :row)
 (defcomponent column :column)
 (defcomponent form :form)
@@ -34,6 +35,13 @@
 (defcomponent action :action)
 (defcomponent checklist :checklist)
 (defcomponent drawer :drawer)
+
+
+(defcomponent modal-avatar-editor :modal/avatar-editor)
+(defcomponent modal-background :modal/background)
+(defcomponent modal-dialog :modal/dialog)
+(defcomponent modal-pavement :modal/pavement)
+(defcomponent modal-strip :modal/strip)
 
 
 (defcomponent card :card)

@@ -96,28 +96,32 @@
             (str _ns \/ (name location))
             (name location)))]
   (defhook use-session-cache
+    "Hook that will store variable value in browser session storage when ever
+    value changes. If init-fn is provided it will be called on last recorded
+    value for given variable that is found under location key in browser session
+    storage."
     ([location value]
       (use-session-cache
         location
         (fn [v] (when v (edn/read-string v)))
         value))
-    ([location transform variable]
+    ([location transform value]
       (use-session-cache
         location
         transform 
-        variable
+        value
         nil))
-    ([location transform variable init-fn]
+    ([location transform value init-fn]
       (let [target (target location) 
             initialized? (hooks/use-ref false)
             _ref (hooks/use-ref (transform (.getItem js/sessionStorage target)))]
         (hooks/use-effect
-          [variable]
+          [value]
           (when @initialized?
-            (if (some? variable)
-              (.setItem js/sessionStorage target variable)
+            (if (some? value)
+              (.setItem js/sessionStorage target value)
               (.removeItem js/sessionStorage target))
-            (reset! _ref variable)))
+            (reset! _ref value)))
         (hooks/use-effect
           :once
           (when (ifn? init-fn)
@@ -129,7 +133,8 @@
 
 
 (defhook use-avatar
-  [{:keys [name avatar path]}]
+  [{:keys [name avatar path cached?]
+    :or {cached? true}}]
   (let [avatars (hooks/use-context app/avatars)
         [_avatar set-avatar!] (hooks/use-state (get @avatars avatar))
         [token] (hooks/use-context app/token)
@@ -143,7 +148,7 @@
                           (.open xhr "GET" path true)
                           (when token (.setRequestHeader xhr "Authorization" (str "Bearer " token)))
                           (.setRequestHeader xhr "Accept" "application/octet-stream")
-                          (.setRequestHeader xhr "Cache-Control" "no-cache")
+                          (when-not cached? (.setRequestHeader xhr "Cache-Control" "no-cache"))
                           (.addEventListener
                             xhr "load"
                             (fn [evt]
@@ -156,12 +161,13 @@
                                     ;; this should trigger updates for all hooks
                                     ;; with target avatar
                                     (not= avatar' (get @avatars avatar))
-                                    (swap! avatars assoc avatar avatar')
+                                    (when (not-empty avatar')
+                                    (swap! avatars assoc avatar avatar'))
                                     ;; Otherwise if avatar is cached properly, but
                                     ;; current _avatar doesn't match current state
                                     ;; update current _avatar
                                     (not= _avatar avatar')
-                                    (set-avatar! avatar'))
+                                    (set-avatar! (not-empty avatar')))
                                   ;; otherwise
                                   nil
                                   (async/put! app/signal-channel
@@ -222,23 +228,23 @@
   []
   (let [locale (use-current-locale)
         translate (hooks/use-memo
-                   [locale]
-                   (fn
-                     ([data & args]
-                       (if-let [template (translate data locale)]
-                         (try
-                           (apply gstr/format template args)
-                           (catch js/Error _
-                             (let [message
-                                   (str "Couldn't translate " data
-                                        "\n"
-                                        (with-out-str
-                                          (pprint
-                                            {:args args
-                                             :template template})))]
-                               (.error js/console message)
-                               "")))
-                         (throw (js/Error. (str "Couldn't find translation for " data ". Locale: " locale)))))))]
+                    [locale]
+                    (fn
+                      ([data & args]
+                        (if-let [template (translate data locale)]
+                          (try
+                            (apply gstr/format template args)
+                            (catch js/Error _
+                              (let [message
+                                    (str "Couldn't translate " data
+                                         "\n"
+                                         (with-out-str
+                                           (pprint
+                                             {:args args
+                                              :template template})))]
+                                (.error js/console message)
+                                "")))
+                          (throw (js/Error. (str "Couldn't find translation for " data ". Locale: " locale)))))))]
     translate))
 
 

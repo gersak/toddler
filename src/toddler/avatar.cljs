@@ -339,8 +339,9 @@
       (if (some? value)
         (if (re-find #"^data:image" value)
           (when-not (= value avatar) (set-avatar! avatar))
-          (let [url (str root value)]
-            (when-not (= avatar url) (set-avatar! url))))
+          (when (and root value)
+            (let [url (str root value)]
+              (when-not (= avatar url) (set-avatar! url)))))
         (when (some? generator-queue)
           (async/go
             ;; create generated promise
