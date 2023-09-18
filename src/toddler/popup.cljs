@@ -428,8 +428,8 @@
 
 
 (defnc Area
-  [props ref]
   {:wrap [(react/forwardRef)]}
+  [props ref]
   (let [area (hooks/use-ref nil)
         area' (or ref area)]
     (d/div
@@ -442,12 +442,12 @@
 
 
 (defnc Element
+  {:helix/features {:fast-refresh true}
+   :wrap [(react/forwardRef)]}
   [{:keys [preference style offset onChange]
     :or {preference default-preference
          offset 5}
     :as props} ref]
-  {:helix/features {:fast-refresh true}
-   :wrap [(react/forwardRef)]}
   (let [[{:keys [position/top position/left position]
           :as computed
           :or {left -10000

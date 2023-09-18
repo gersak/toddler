@@ -4,9 +4,9 @@
  {org.clojure/clojurescript                  {:mvn/version "1.11.54"}
   org.clojure/core.async                     {:mvn/version "1.5.648"}
   cljs-bean/cljs-bean                        {:mvn/version "1.7.0"}
-  ; com.github.gersak/helix.placenta           {:git/url "https://github.com/gersak/helix.placenta"
-  ;                                             :sha "d41a066e1e1686f52fb5a6f7a9a0cbd9f728911b"}
-  com.github.gersak/helix.placenta           {:local/root "helix.placenta"}
+  com.github.gersak/helix.placenta           {:git/url "https://github.com/gersak/helix.placenta"
+                                              :sha "f0364ae901d1902132be9b0dd3c8f11aea924e2b"}
+  ; com.github.gersak/helix.placenta           {:local/root "helix.placenta"}
   camel-snake-kebab/camel-snake-kebab        {:mvn/version "0.4.3"}
   com.github.gersak/vura                     {:mvn/version "0.5.7-SNAPSHOT"}
   com.thheller/shadow-css                    {:mvn/version "0.4.2"} 
