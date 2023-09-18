@@ -10,6 +10,20 @@
 (def forward-ref react/forwardRef)
 
 
+(declare avatar row column form checkbox
+         button simplebar popup option input clear
+         field wrapper discard dropdown img header identity tooltip
+         autosize-input idle-input action checklist card card-action
+         card-actions calendar-year-dropdown calendar-day calendar-week calendar-month calendar-time
+         calendar search-field identity-field identity-multiselect-field text-field integer-field
+         float-field currency-field input-field dropdown-field multiselect-field timestamp-field
+         timestamp-period-field date-field date-period-field boolean-field checklist-field table
+         table-row table-header-row enum-header currency-header boolean-header text-header
+         user-header timestamp-header plain-header boolean-cell integer-cell float-cell
+         text-cell enum-cell currency-cell hash-cell uuid-cell identity-cell
+         timestamp-cell expand-cell delete-cell)
+
+
 (defcomponent avatar :avatar)
 (defcomponent avatar-editor :avatar/editor)
 (defcomponent row :row)
