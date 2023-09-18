@@ -1,15 +1,13 @@
 (ns toddler.dropdown
   (:require
    clojure.string
-   [helix.core :refer [defhook defnc create-context $ provider]]
+   [helix.core :refer [defhook defnc create-context $]]
    [helix.hooks :as hooks]
    [helix.dom :as d]
    [helix.children :as c]
    [toddler.hooks :refer [use-idle]]
-   [toddler.popup :as popup]
-   [toddler.ui :as ui]
-   [toddler.input :refer [AutosizeInput]]
-   ["toddler-icons$default" :as icon]))
+   [toddler.popup :as popup]))
+
 
 (defn get-available-options
   ([search options search-fn]
@@ -17,8 +15,8 @@
          regex (when (not-empty search)
                  (re-pattern (apply str "(?i)" (clojure.string/replace search #"\s+" ".*"))))
          available-options (if regex
-                             (let [predicate (comp (partial re-find regex) search-fn)]
-                               (if (some (comp (partial = search) search-fn) options)
+                             (let [predicate (comp (partial re-find regex) str search-fn)]
+                               (if (some (comp (partial = search) str search-fn) options)
                                  options
                                  (filter predicate options)))
                              options)]
@@ -26,15 +24,18 @@
        (vec options)
        (vec available-options)))))
 
+
 (defn next-option  [cursor [option :as options]]
   (let [cursor-position (inc (.indexOf options cursor))
         cursor' (get options cursor-position option)]
     cursor'))
 
+
 (defn previous-option [cursor options]
   (let [cursor-position (dec (.indexOf options cursor))
         cursor' (get options cursor-position (last options))]
     cursor'))
+
 
 (defn key-down-handler
   [e {:keys [value
@@ -57,7 +58,9 @@
         (set-opened! true)
         (when (<= (count search) 1)
           (set-search! "")
-          (when (fn? new-fn) (on-change nil))))
+          (if (fn? new-fn)
+            (on-change (new-fn nil))
+            (on-change nil))))
     ;; TAB
     9 (do
         (set-opened! false)
@@ -106,7 +109,9 @@
 
 
 (defhook use-dropdown
-  [{:keys [value options on-change onChange new-fn search-fn area area-position disabled]
+  [{:keys [value options on-change onChange
+           new-fn search-fn area area-position disabled
+           read-only]
     :or {search-fn str}}]
   (let [on-change (or onChange on-change identity)
         [search set-search!] (use-idle
@@ -115,12 +120,12 @@
                               (fn [v]
                                  ;; I wan't to check if there is new-fn so that
                                  ;; "New" valaue can be created
-                                (when (fn? new-fn)
+                                 (when (fn? new-fn)
                                    ;; Than I wan't to call new-fn with new search input value
-                                  (let [v' (new-fn (if (= v :NULL) nil v))]
+                                   (let [v' (new-fn (if (= v :NULL) nil v))]
                                      ;; and check if onChange should be called
-                                    (when-not (= v' value)
-                                      (on-change v'))))))
+                                     (when-not (= v' value)
+                                       (on-change v'))))))
         [opened set-opened!] (hooks/use-state false)
         [cursor set-cursor!] (hooks/use-state value)
         input (hooks/use-ref nil)
@@ -139,15 +144,20 @@
        (focus o)
        (set-cursor! o)))
     (hooks/use-effect
-     [value search-fn]
-     (when (not= (search-fn value) search)
-       (set-search! (search-fn value))))
+      [value]
+      ;; Search FN can change as well, but it is not expected to change search-fn
+      ;; I.E. usually it will be keyword like :name, and ClojureScript generates
+      ;; new :keyword object on every render, so this will reset set-search! that
+      ;; was changed in on-change handler... This is a bug
+      ;; [value search-fn]
+      (when (not= (search-fn value) search)
+        (set-search! (search-fn value))))
     (hooks/use-effect
      [opened]
      (when opened (focus value)))
     (popup/use-outside-action
-     opened area popup
-     #(set-opened! false))
+      opened area popup
+      #(set-opened! false))
     {:search search
      :value value
      :opened opened
@@ -157,6 +167,7 @@
      :area area
      :search-fn search-fn
      :ref-fn ref-fn
+     :read-only read-only
      :discard! #(on-change nil)
      :sync-search! #(when-not (fn? new-fn) (set-search! (search-fn value)))
      :toggle! (fn [] (when-not disabled (maybe-focus input) (set-opened! not)))
@@ -167,19 +178,19 @@
      :on-change (fn [e] (set-search! (.. e -target -value)))
      :on-key-down (fn [e]
                     (key-down-handler e
-                                      {:value value
-                                       :search search
-                                       :opened opened
-                                       :cursor cursor
-                                       :options available-options
-                                       :new-fn new-fn
-                                       :search-fn search-fn
-                                       :on-change on-change
-                                       :set-opened! set-opened!
-                                       :set-search! set-search!
-                                       :set-cursor! set-cursor!
-                                       :position area-position
-                                       :input @input}))
+                      {:value value
+                       :search search
+                       :opened opened
+                       :cursor cursor
+                       :options available-options
+                       :new-fn new-fn
+                       :search-fn search-fn
+                       :on-change on-change
+                       :set-opened! set-opened!
+                       :set-search! set-search!
+                       :set-cursor! set-cursor!
+                       :position area-position
+                       :input @input}))
      :options available-options}))
 
 
@@ -187,15 +198,14 @@
 
 
 (defnc Decorator
-  [{:keys [className]}]
+  [{:keys [className] :as props}]
   (let [{:keys [options opened disabled]} (hooks/use-context *dropdown*)]
-    (when (and (not disabled) (pos? (count options))
-               icon/dropdownDecorator)
+    (when (and (not disabled) (pos? (count options)))
       (d/span
        {:className (str
                     className
                     (when opened " opened"))}
-       ($ icon/dropdownDecorator)))))
+       (c/children props)))))
 
 
 (defnc Discard
@@ -208,32 +218,8 @@
        (c/children props)))))
 
 
-(defnc Area
-  [props]
-  (let [[area-position set-area-position!] (hooks/use-state nil)
-        ;;
-        {:keys [area] :as dropdown}
-        (use-dropdown
-         (->
-          props
-          (assoc :area-position area-position)
-          (dissoc :className)))]
-    (provider
-     {:context *dropdown*
-      :value dropdown}
-     (provider
-      {:context popup/*area-position*
-       :value [area-position set-area-position!]}
-      ($ popup/Area
-         {:ref area
-          & (select-keys props [:className])}
-         (c/children props))))))
-
-
 (defnc Input
-  [{:keys [onSearchChange placeholder]
-    rinput :render/input
-    :or {rinput AutosizeInput}} _ref]
+  [{:keys [onSearchChange placeholder] :as props}]
   (let [{:keys [input
                 search
                 on-change
@@ -247,67 +233,79 @@
       [search]
       (when (ifn? onSearchChange)
         (onSearchChange search)))
-    ($ rinput
-       {:ref input
-        :className "input"
-        :value search
-        :read-only (or read-only (not searchable?))
-        :disabled disabled
-        :spellCheck false
-        :auto-complete "off"
-        :placeholder placeholder
-        :onChange on-change
-        :onBlur sync-search!
-        :onKeyDown on-key-down})))
+    (d/input
+      {:ref input
+       :value (or search "")
+       :read-only (or read-only (not searchable?))
+       :disabled disabled
+       :spellCheck false
+       :auto-complete "off"
+       :placeholder placeholder
+       :onChange on-change
+       :onBlur sync-search!
+       :onKeyDown on-key-down
+       & (select-keys props [:className :class])})))
 
 
-(defnc Popup
-  [{:keys [className]
-    rwrapper :render/wrapper
-    roption :render/option
-    :or {rwrapper "div"
-         roption "div"}}]
-  (let [[area-position set-area-position!] (hooks/use-context popup/*area-position*)
-        {:keys [options
-                popup
-                disabled
-                opened
-                read-only
+(defnc Options
+  [{:keys [render context-fn]}]
+  (let [{:keys [options
                 search-fn
                 ref-fn
                 cursor
                 select!
                 close!]
-         :or {search-fn str}} (hooks/use-context *dropdown*)]
+         :or {search-fn str}} (hooks/use-context *dropdown*)
+        popup-position (hooks/use-context popup/*position*)]
+    (map
+      (fn [option]
+        ($ render
+          {:key (search-fn option)
+           :ref (ref-fn option)
+           :value option
+           :context (when (ifn? context-fn)
+                      (context-fn option))
+           :selected (= option cursor)
+           :onMouseDown (fn []
+                          (select! option)
+                          (close!))
+           & (cond-> nil
+               (nil? option) (assoc :style #js {:color "transparent"}))}
+          (if (nil? option) "nil" (search-fn option))))
+      (if (:top popup-position)
+        (reverse options)
+        options))))
+
+
+(defnc Popup
+  [{:keys [preference]
+    :as props}]
+  (let [{:keys [options
+                popup
+                disabled
+                opened
+                read-only]} (hooks/use-context *dropdown*)]
     (when (and (not read-only) (not disabled) (pos? (count options)) opened)
       ($ popup/Element
          {:ref popup
           :items options
-          :wrapper rwrapper
-          :onChange (fn [{:keys [position]}]
-                      (when (some? position) (set-area-position! position)))
-          :className className}
-         (map
-           (fn [option]
-             ($ roption
-               {:key (search-fn option)
-                :ref (ref-fn option)
-                :option option
-                :selected (= option cursor)
-                :onMouseDown (fn []
-                               (select! option)
-                               (close!))
-                & (cond-> nil
-                    (nil? option) (assoc :style #js {:color "transparent"}))}
-               (if (nil? option) "nil" (search-fn option))))
-           (if (:top area-position)
-             (reverse options)
-             options))))))
+          :preference preference
+          & (select-keys props [:className :class])}
+         (c/children props)))))
 
 
-(defnc Element
-  [props]
-  ($ Area
-    {& props}
-    ($ ui/input {& props})
-    ($ ui/popup)))
+; (defnc ScrollablePopup
+;   [{:keys [preference]
+;     :as props}]
+;   (let [{:keys [options
+;                 popup
+;                 disabled
+;                 opened
+;                 read-only]} (hooks/use-context *dropdown*)]
+;     (when (and (not read-only) (not disabled) (pos? (count options)) opened)
+;       ($ popup/Element
+;          {:ref popup
+;           :items options
+;           :preference preference
+;           & (select-keys props [:className :class])}
+;          (c/children props)))))

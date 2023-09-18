@@ -45,7 +45,7 @@
            (.removeEventListener js/window "resize" track-window-size)))
       (provider
         {:value state
-         :context app/*window*}
+         :context app/window}
         (c/children props)))))
 
 

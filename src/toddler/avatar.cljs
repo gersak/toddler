@@ -21,23 +21,23 @@
 
 
 (defnc Image
-  [{:keys [onSelect onChange ]
+  [{:keys [onSelect onMove]
     {:keys [image] :as avatar} :avatar}]
   (let [shape-ref (hooks/use-ref nil)]
     (when image
-      (<>
-       (konva/Image
+      (konva/Image
         {:& avatar
          :onClick (fn [^js e] (onSelect (.. e -target)))
-         :ref #(reset! shape-ref %)
+         :ref (fn [^js el]
+                (reset! shape-ref el))
          :draggable true
          :onDragMove (fn [^js e]
                        (let [node ^js @shape-ref]
-                         (onChange
-                          {:width (.width node)
-                           :height (.height node)
-                           :x (.x (.-target e))
-                           :y (.y (.-target e))})))})))))
+                         (onMove
+                           {:width (.width node)
+                            :height (.height node)
+                            :x (.x (.-target e))
+                            :y (.y (.-target e))})))}))))
 
 
 (defn download-uri [^js uri, name, mime]
@@ -52,7 +52,6 @@
     (.removeChild body link)))
 
 
-
 (def ^:dynamic ^js *stage* (create-context))
 
 
@@ -60,7 +59,7 @@
   (hooks/use-context *stage*))
 
 
-(defnc EditorStage [{:keys [image className size]
+(defnc EditorStage [{:keys [image size]
                :or {size 144}
                :as props} _ref]
   {:wrap [(ui/forward-ref)]}
@@ -72,7 +71,7 @@
         stage-ref (hooks/use-memo
                     :once
                     (or _ref (fn [el] (reset! local-ref el))))
-        [layer-zoom set-layer-zoom] (hooks/use-state 0.5)
+        [layer-zoom set-layer-zoom] (hooks/use-state 1)
         frame-props (hooks/use-memo
                       [size]
                       {:x (* -1 0.1 size)
@@ -87,8 +86,11 @@
                        :style {:z-index "10"}})]
     (hooks/use-effect
       [image]
-      (set-layer-zoom 0.5)
       (when image
+        (let [w (.-width image)
+              h (.-height image)
+              s (max w h)]
+          (set-layer-zoom (/ size s)))
         (set-avatar!
           {:image image
            :offsetX (if (= image js/undefined) 0
@@ -103,40 +105,61 @@
            :y (if (= image js/undefined) 0
                 half-size)})))
     (<>
-      (d/div
-        {:className className}
-        (konva/Stage
-          {:width size
-           :height size 
-           :ref stage-ref
+      (konva/Stage
+        {:width size
+         :height size 
+         :ref stage-ref
+         :onWheel (fn [^js e]
+                    (let [evt (.-evt e)]
+                      (.preventDefault evt)
+                      (.stopPropagation evt)))
+         :& (select-keys props [:class :className])}
+        (konva/Layer
+          {:x half-size
+           :y half-size
+           :offsetX half-size
+           :offsetY half-size 
+           :scaleX layer-zoom
+           :scaleY layer-zoom
            :onWheel (fn [^js e]
-                      (let [evt (.-evt e)]
-                        (.preventDefault evt)
-                        (.stopPropagation evt)))}
-          (konva/Layer
-            {:x half-size
-             :y half-size
-             :offsetX half-size
-             :offsetY half-size 
-             :scaleX layer-zoom
-             :scaleY layer-zoom
-             :onWheel (fn [^js e]
-                        (let [scale-by 1.02
-                              old-scale layer-zoom
-                              new-scale (if (< (.-deltaY (.-evt e)) 0)
-                                          (* old-scale scale-by)
-                                          (/ old-scale scale-by))]
-                          (set-layer-zoom new-scale)))}
-            ($ Image
-               {:avatar avatar
-                :onChange (fn [delta] (set-avatar! merge delta))}))
-          (konva/Layer
-            (konva/Rect
-              {& frame-props}))))
+                      (let [scale-by 1.02
+                            old-scale layer-zoom
+                            new-scale (if (< (.-deltaY (.-evt e)) 0)
+                                        (* old-scale scale-by)
+                                        (/ old-scale scale-by))]
+                        (set-layer-zoom new-scale)))}
+          ($ Image
+             {:avatar avatar
+              :onChange (fn [e]
+                          (let [img (.. e -newVal)
+                                max-size (max (.-naturalHeight img) (.-naturalWidth img))]
+                            (set-layer-zoom (/ size max-size))))
+              :onMove (fn [delta]
+                        (set-avatar! merge delta))}))
+        (konva/Layer
+          (konva/Rect
+            {:& frame-props})))
       (provider
         {:context *stage*
          :value stage-ref}
         (c/children props)))))
+
+
+(defn stage->base64
+  [stage]
+  (let [[layer1 layer2] (.-children @stage)
+        [_ ^js transformer] ^js (.-children layer1)
+        frame ^js (.-children layer2)]
+    ;; remove frames
+    (doseq [^js el frame] (.hide el))
+    (when transformer (.hide transformer))
+    ;; memorize result
+    (let [result (.toDataURL @stage)]
+      ;; return frames
+      (doseq [^js el frame] (.show el))
+      (when transformer (.show transformer))
+      ;; 
+      result)))
 
 
 (defnc Editor [{:keys [size]
@@ -176,7 +199,7 @@
 
 (defnc GeneratorStage
   [{:keys [className size squares color background style]
-    :or {size 500
+    :or {size 250
          squares 16
          color "gray"
          background "white"}
@@ -205,7 +228,13 @@
     (<>
       (d/div
         {:className className
-         :style style}
+         :style style
+         ;; FIXME - className is not propagated properly... WHY i don't know
+         ;; There should be no forcing hidden and position
+         ; :style (assoc style
+         ;               :visibility "hidden"
+         ;               :top 0 :left 0 :position "fixed")
+         }
         (konva/Stage
           {:width size
            :height size
@@ -213,14 +242,30 @@
           (konva/Layer
             (map
               (fn [square]
-                (konva/Rect {& square}))
+                (konva/Rect {:& square}))
               squares))))
       (c/children props))))
 
 
 (def ^:dynamic ^js *generator-queue* (create-context))
 
+
 (defhook use-generator-queue [] (hooks/use-context *generator-queue*))
+(defhook use-generate []
+  (let [generator-queue (use-generator-queue)]
+    (hooks/use-callback
+      :once
+      (fn []
+        (when (some? generator-queue)
+          (async/go
+            ;; create generated promise
+            (let [generated (async/promise-chan)]
+              ;; send promise to generator queue
+              (async/>! generator-queue generated)
+              ;; then wait for generated result
+              (let [avatar (async/<! generated)]
+                ;; and handle stuff
+                avatar))))))))
 
 
 (defnc Generator
@@ -270,6 +315,7 @@
             (async/put! request img)
             (swap! requests (comp vec rest))
             (when (not-empty @requests)
+              ;; chose some other color
               (async/go (set-color! (rand-nth (remove #{color} palette)))))))))
     (provider
       {:context *generator-queue*
@@ -280,7 +326,6 @@
           :background "white"
           :ref stage})
       (c/children props))))
-
 
 
 (defnc Avatar
@@ -294,8 +339,9 @@
       (if (some? value)
         (if (re-find #"^data:image" value)
           (when-not (= value avatar) (set-avatar! avatar))
-          (let [url (str root value)]
-            (when-not (= avatar url) (set-avatar! url))))
+          (when (and root value)
+            (let [url (str root value)]
+              (when-not (= avatar url) (set-avatar! url)))))
         (when (some? generator-queue)
           (async/go
             ;; create generated promise

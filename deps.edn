@@ -1,21 +1,24 @@
 {;; REPL
- :paths ["src" "showcase" "resources"]
+ :paths ["src" "resources" "gen"]
  :deps
  {org.clojure/clojurescript                  {:mvn/version "1.11.54"}
   org.clojure/core.async                     {:mvn/version "1.5.648"}
   cljs-bean/cljs-bean                        {:mvn/version "1.7.0"}
-  ; com.github.gersak/helix.placenta           {:git/url "https://github.com/gersak/helix.placenta"
-  ;                                             :sha "d41a066e1e1686f52fb5a6f7a9a0cbd9f728911b"}
-  com.github.gersak/helix.placenta           {:local/root "helix.placenta"}
+  com.github.gersak/helix.placenta           {:git/url "https://github.com/gersak/helix.placenta"
+                                              :sha "f0364ae901d1902132be9b0dd3c8f11aea924e2b"}
+  ; com.github.gersak/helix.placenta           {:local/root "helix.placenta"}
   camel-snake-kebab/camel-snake-kebab        {:mvn/version "0.4.3"}
-  ; com.github.gersak/vura                     {:mvn/version "0.5.7-SNAPSHOT"}
+  com.github.gersak/vura                     {:mvn/version "0.5.7-SNAPSHOT"}
   com.thheller/shadow-css                    {:mvn/version "0.4.2"} 
-  com.github.gersak/vura                     {:local/root "../vura/core/"}
   lilactown/helix                            {:mvn/version "0.1.6"}}
  :aliases
  {:shadow
   {:extra-deps
    {thheller/shadow-cljs {:mvn/version "2.20.2"}}}
+  :icons
+  {:extra-paths ["icons"]
+   :extra-deps {babashka/fs {:mvn/version "0.2.16"}}}
   :cider
   {:extra-deps
-   {cider/cider-nrepl {:mvn/version "0.28.5"}}}}}
+   {cider/cider-nrepl {:mvn/version "0.30.0"}}
+   :main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}}}

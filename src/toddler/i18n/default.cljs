@@ -2,7 +2,7 @@
   (:require
     toddler.i18n.number
     toddler.i18n.time
-    [toddler.i18n.keywords :refer [add-translations]]))
+    [toddler.i18n.keyword :refer [add-translations]]))
 
 
 (.log js/console "Loaded toddler.i18n.default")
@@ -11,6 +11,6 @@
 (add-translations
   (merge
     #:time.before {:hr "prije"
-                   :en "before"}
+                   :default "before"}
     #:time.after {:hr "poslije"
-                  :en "after"}))
+                  :default "after"}))

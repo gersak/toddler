@@ -1,24 +1,23 @@
 (ns toddler.popup
   (:require
     clojure.string
+    [clojure.core.async :as async]
     ["react" :as react]
     ["react-dom" :as rdom]
     [helix.core 
-     :refer [defnc $ provider <>
+     :refer [defnc provider <>
              defhook create-context]]
     [helix.hooks :as hooks]
     [helix.dom :as d]
     [helix.children :as c]
-    [vura.core :refer [round-number]]
-    [toddler.scroll :refer [SimpleBar]]
-    [toddler.hooks :refer [use-delayed]]
+    [toddler.layout :refer [*container-dimensions*]]
     [toddler.util :as util]))
 
+
 (def ^:dynamic ^js *area-element* (create-context))
-(def ^:dynamic ^js *dimensions* (create-context))
+(def ^:dynamic ^js *position* (create-context))
 (def ^:dynamic ^js *container* (create-context))
 (def ^:dynamic ^js *outside-action-channel* (create-context))
-(def ^:dynamic ^js *area-position* (create-context))
 
 
 (def default-preference
@@ -70,7 +69,9 @@
 
 (def ^:dynamic ^js *offset* 6)
 
+
 (defmulti compute-candidate (fn [{:keys [position]}] position))
+
 
 (defmethod compute-candidate #{:bottom :left}
   [{:keys [popup-height
@@ -97,12 +98,11 @@
 (defmethod compute-candidate #{:bottom :right}
   [{:keys [popup-height
            popup-width
-           window-width
            window-height
            right
            bottom]
     :as data}]
-  (let [dl (- window-width right popup-width)
+  (let [dl (- right popup-width)
         bp (+ popup-height bottom *offset*)
         db (- window-height bp)] 
     (assoc data
@@ -139,12 +139,11 @@
 (defmethod compute-candidate #{:top :right}
   [{:keys [popup-height
            popup-width
-           window-width
            top
            right]
     :as data}]
   (let [dt (- top popup-height *offset*)
-        dl (- window-width right popup-width)] 
+        dl (- right popup-width)] 
     (assoc data
            :position/left dl
            :position/top dt 
@@ -255,6 +254,7 @@
 (defn computation-props [target el]
   (when-let [[top left right bottom] (util/window-element-position target)]
     (when-let [[_ _ _ _ popup-width popup-height] (util/get-element-rect el)]
+
       {:top top :left left :right right :bottom bottom
        :popup-width popup-width 
        :popup-height popup-height
@@ -306,9 +306,11 @@
 
 (defn update-dropdown-size
   [data]
-  (assoc  data
-         :popup-width (- (:position/right data) (:position/left data))
-         :popup-height (- (:position/bottom data) (:position/top data))))
+  (assoc 
+    data
+    :popup-width (- (:position/right data) (:position/left data))
+    :popup-height (- (:position/bottom data) (:position/top data))))
+
 
 (defn best-candidate
   [candidates]
@@ -334,7 +336,8 @@
         (neg? left) (assoc :position/left 3)
         (neg? right) (assoc :position/right (- window-width 3)))
       (adjust-scroll-width 15)
-      update-dropdown-size)))
+      #_update-dropdown-size)))
+
 
 (defn padding-data [el]
   (when el
@@ -354,36 +357,25 @@
 (defn compute-container-props 
   ([target el] (compute-container-props target el default-preference))
   ([target el preference]
-   (when-let [props (computation-props target el)]
-     (let [candidates (map 
-                        #(compute-candidate (assoc props :position %))
-                        preference)]
-       (when (empty? candidates)
-         (throw
-           (ex-info 
-             "Coulnd't find suitable candidate"
-             {:candidates candidates
-              :target @target
-              :element @el
-              :preference preference})))
-       (merge
-         (if-let [prefered-candidate (some ok-candidate? candidates)]
-           prefered-candidate 
-           ;; There was no full size candidate
-           (best-candidate candidates))
-         (padding-data el))))))
-
-;; DROPDOWN CONTAINER
-; (defstyled dropdown-container
-;   "div"
-;   {:max-height 600
-;    :min-width 50
-;    :padding "2px 0"
-;    :overflow "auto"
-;    ".dropdown-content"
-;    {:display "flex"
-;     :flex-direction "column"}}
-;   --themed)
+   (let [preference (or preference default-preference)]
+     (when-let [props (computation-props target el)]
+       (let [candidates (map 
+                          #(compute-candidate (assoc props :position %))
+                          preference)]
+         (when (empty? candidates)
+           (throw
+             (ex-info 
+               "Coulnd't find suitable candidate"
+               {:candidates candidates
+                :target @target
+                :element @el
+                :preference preference})))
+         (merge
+           (if-let [prefered-candidate (some ok-candidate? candidates)]
+             prefered-candidate 
+             ;; There was no full size candidate
+             (best-candidate candidates))
+           (padding-data el)))))))
 
 
 (defhook use-focusable-items
@@ -399,25 +391,27 @@
 
 
 (defhook use-outside-action
-  [opened area popup handler]
-  (hooks/use-effect
-    [opened]
-    (when opened
-      (letfn [(handle [e] 
-                (cond
-                  (and (some? @area) (.contains @area (.-target e))) nil
-                  ;; When clicke on popup do nothing
-                  (and (some? @popup) (.contains @popup (.-target e))) nil
-                  ;; Else call outside action handler
-                  (and (some? @area) (some? @popup))
-                  (handler e)
-                  ;;
-                  :else nil))]
-        (.addEventListener js/document "click" handle)
-        (.addEventListener js/document "wheel" handle)
-        (fn []
-          (.removeEventListener js/document "click" handle)
-          (.removeEventListener js/document "wheel" handle))))))
+  ([opened area popup handler]
+    (hooks/use-effect
+      [opened]
+      (when opened
+        (letfn [(handle [e]
+                  (cond
+                    (and (some? @area) (.contains @area (.-target e))) nil
+                    ;; When clicke on popup do nothing
+                    (and (some? @popup) (.contains @popup (.-target e))) nil
+                    ;; Else call outside action handler
+                    (and (some? @area) (some? @popup))
+                    (handler e)
+                    ;;
+                    :else nil))]
+          (async/go
+            (async/<! (async/timeout 100))
+            (.addEventListener js/document "click" handle)
+            (.addEventListener js/document "wheel" handle))
+          (fn []
+            (.removeEventListener js/document "click" handle)
+            (.removeEventListener js/document "wheel" handle)))))))
 
 
 (defnc Container
@@ -434,15 +428,12 @@
 
 
 (defnc Area
-  [{:keys [render className] 
-    :or {render "div"} 
-    :as props} ref]
   {:wrap [(react/forwardRef)]}
+  [props ref]
   (let [area (hooks/use-ref nil)
         area' (or ref area)]
-    ($ render
+    (d/div
        {:ref #(reset! area' %)
-        :className className
         & props}
        (provider
          {:context *area-element*
@@ -450,142 +441,49 @@
          (c/children props)))))
 
 
-; (defstyled element "div"
-;   {:display "flex"
-;    :justify-content "start"
-;    :flex-wrap "wrap"
-;    :border-radius 3
-;    :padding 7}
-;   --themed)
-
-
 (defnc Element
-  [{:keys [preference style className offset onChange items wrapper]
+  {:helix/features {:fast-refresh true}
+   :wrap [(react/forwardRef)]}
+  [{:keys [preference style offset onChange]
     :or {preference default-preference
          offset 5}
     :as props} ref]
-  {:helix/features {:fast-refresh true}
-   :wrap [(react/forwardRef)]}
-  (let [[{:keys [position/top position/left
-                 popup-width
-                 popup-height
-                 padding-top
-                 padding-left
-                 padding-right
-                 padding-bottom]
+  (let [[{:keys [position/top position/left position]
           :as computed
           :or {left -10000
-               top -10000
-               padding-left 0
-               padding-right 0
-               padding-bottom 0
-               padding-top 0}}
+               top -10000}}
          set-state!] (hooks/use-state nil)
         ;;
-        dummy (hooks/use-ref nil)
         el (hooks/use-ref nil)
+        _el (or ref el)
         target (hooks/use-context *area-element*)
         container-node (hooks/use-context *container*)]
-    (hooks/use-effect
-      [items]
+    (hooks/use-layout-effect
+      :always
       (binding [*offset* offset] 
-        (let [computed (compute-container-props target @dummy preference)]
-          (set-state! computed)
-          (when (ifn? onChange) (onChange computed)))))
+        (let [_computed (compute-container-props target @_el preference)]
+          (when (not= computed _computed)
+            (set-state! _computed)
+            (when (ifn? onChange) (onChange _computed))))))
     (when (nil? container-node)
       (.error js/console "Popup doesn't know where to render. Specify popup container. I.E. instantiate toddler.elements.popup/Container"))
     (rdom/createPortal
       (provider
-        {:context *dimensions*
-         :value computed}
-        (<>
-          (if wrapper
-            ($ wrapper
-               {:ref #(reset! dummy %)
-                :className className
-                :style (merge
-                         style
-                         {:top -10000 :left -10000 
-                          :position "fixed"
-                          :zIndex "1000"
-                          :visibility "hidden"})}
-               ;; TODO - think about what happens when height is limited by css
-               ;; or style properties. Than commented line doesn't work well
-               ;; on the other hand with current line simplebar is always present
-               ;; even for small popups.... this is not goood
-               ; (if (and computed (not (ok-candidate? computed)))
-               (c/children props))
-            (d/div
-              {:ref #(reset! dummy %)
-               :className className
-               :style (merge
-                        style
-                        {:top -10000 :left -10000 
-                         :position "fixed"
-                         :zIndex "1000"
-                         :visibility "hidden"})}
-              (c/children props)))
-          (when computed
-            (if wrapper
-              ($ wrapper
-                 {:ref #(reset! (or ref el) %)
-                  :className className
-                  :style (merge
-                           style
-                           {:top top :left left
-                            :position "fixed"
-                            :zIndex "1000"})}
-                 ($ SimpleBar
-                    {:style {:width (round-number (- popup-width padding-left padding-right) 1 :ceil)
-                             :height (round-number (- popup-height padding-top padding-bottom) 1 :ceil)}}
-                    (c/children props)))
-              (d/div
-                {:ref #(reset! (or ref el) %)
-                 :className className
-                 :style (merge
-                          style
-                          {:top top :left left
-                           :position "fixed"
-                           :zIndex "1000"})}
-                ($ SimpleBar
-                   {:style {:width (round-number (- popup-width padding-left padding-right) 1 :ceil)
-                            :height (round-number (- popup-height padding-top padding-bottom) 1 :ceil)}}
-                   (c/children props)))))))
+        {:context *position*
+         :value position}
+        (provider
+          {:context *container-dimensions*
+           :value computed}
+          (d/div
+            {:ref #(reset! _el %)
+             :style (merge
+                      style
+                      {:top top :left left
+                       :position "fixed"
+                       :box-sizing "border-box"
+                       ;; TODO - add border box
+                       :zIndex "1000"
+                       :visibility (if computed "visible" "hidden")})
+             & (select-keys props [:class :className])}
+            (c/children props))))
       @container-node)))
-
-
-(defnc Tooltip
-  [{:keys [message preference className disabled] 
-    :or {preference cross-preference}
-    :as props} ref]
-  {:wrap [(react/forwardRef)]}
-  (let [[visible? set-visible!] (hooks/use-state nil)
-        hidden? (use-delayed (not visible?) 300)
-        area (hooks/use-ref nil)
-        popup (hooks/use-ref nil)]
-    (if (and (some? message) (not disabled)) 
-      ($ Area
-         {:ref area
-          :className "popup_area"
-          :onMouseLeave (fn [] (set-visible! false))
-          :onMouseEnter (fn [] (set-visible! true))}
-         (c/children props)
-         (when visible?
-           ($ Element
-              {:ref (or ref popup)
-               :style {:visibility (if hidden? "hidden" "visible")
-                       :animationDuration ".5s"
-                       :animationDelay ".3s"}
-               :preference preference
-               :className (str className " animated fadeIn")}
-              (d/div {:class "info-tooltip"} message))))
-      (c/children props))))
-
-
-;; TODO implement menu
-
-
-
-(comment
-  (def els (array-seq (.getElementsByClassName js/document "tooltip-container")))
-  (def el (first els)))

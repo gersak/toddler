@@ -9,9 +9,10 @@
              <> provider]]
     [helix.hooks :as hooks]
     [helix.children :as c]
+    [toddler.i18n]
     [toddler.ui :as ui]
-    [toddler.layout :as layout]
-    ["toddler-icons$default" :as icon]))
+    [toddler.hooks :as toddler]
+    [toddler.layout :as layout]))
 
 
 
@@ -45,23 +46,22 @@
   [{{:keys [style level]
      render :cell
      :as column} :column
-    :keys [className]
-    :or {render "div"}}]
+    :or {render "div"} :as props}]
   {:wrap [(memo #(= (:column %1) (:column %2)))]}
   (when (nil? render)
     (.error "Cell renderer not specified for culumn " (pr-str column)))
   (let [w (get style :width 100)]
     ;; Field dispatcher
     (d/div
-      {:class className
-       :style (merge
+      {:style (merge
                 style
                 {:display "flex"
                  :flex (str w  \space 0 \space "auto")
                  :position "relative"
                  :min-width w
                  :width w}) 
-       :level level}
+       :level level
+       & (dissoc props :style :level :render :column)}
       (provider
         {:context *column*
          :value column}
@@ -75,12 +75,11 @@
 
 
 (defnc FRow
-  [{:keys [className] :as props} _ref]
+  [props _ref]
   {:wrap [(ui/forward-ref)]}
   (let [min-width (use-table-width)] 
     (d/div
-      {:className className
-       :style {:display "flex"
+      {:style {:display "flex"
                :flexDirection "row"
                :justifyContent "flex-start"
                ; :justifyContent "space-around"
@@ -88,17 +87,18 @@
                :minWidth min-width}
        :level (:level props)
        & (cond-> 
-           (dissoc props :style :level :class :className :data)
+           (dissoc props :style :level :data)
            _ref (assoc :ref _ref))}
       (c/children props))))
 
 
 (defnc Row
   [{data :data
-    :keys [className idx render]
+    :keys [className idx render class]
     :as props
-    :or {render FRow}}]
-  {:wrap [(memo 
+    :or {render FRow}} _ref]
+  {:wrap [(ui/forward-ref)
+          (memo 
             (fn [{idx1 :idx data1 :data} {idx2 :idx data2 :data}]
               (and 
                 (= idx1 idx2)
@@ -109,9 +109,13 @@
        :value (assoc data :idx idx)}
       (<>
         ($ render
-           {:key idx
-            :className (str className (if (even? idx) " even" " odd"))
-            & (dissoc props :className)}
+           {:ref _ref
+            :key idx
+            :class (cond-> [(if (even? idx) " even" " odd")]
+                     (string? class) (conj class)
+                     className (conj className)
+                     (sequential? class) (into class))
+            & (dissoc props :class :className)}
            (map
              (fn [{:keys [attribute cursor] :as column}]
                (let [_key (or
@@ -119,14 +123,11 @@
                               (when (not-empty cursor)
                                 (str/join "->" (map name cursor))))
                             attribute)]
-                 ($ Cell
+                 ($ ui/table-cell
                     {:key _key
                      :column column})))
              (remove :hidden columns)))
         (c/children props)))))
-
-
-
 
 
 (defn init-pagination
@@ -217,47 +218,6 @@
 ;                               np (min (max 0 (dec page)) page-count)]
 ;                           (set-pagination! {:page np})))})))))
 
-
-; (defnc AddRowAction
-;   [{:keys [tooltip render name]
-;     :or {render ui/action}}]
-;   (let [dispatch (use-dispatch)]
-;     ($ render 
-;        {:onClick #(dispatch {:type :table.row/add})
-;         :tooltip tooltip
-;         :icon icon/add}
-;        name)))
-
-
-; (defnc Actions
-;   [{:keys [className]}]
-;   (let [actions (use-actions)]
-;     (d/div
-;       {:className className}
-;       (map
-;         (fn [{:keys [id render]}]
-;           ($ render 
-;             {:key id 
-;              :className "action" 
-;              & (dissoc ui/action :render)}))
-;         actions))))
-
-
-; (defnc ClearButton
-;   [{:keys [className]}]
-;   (let [dispatch (use-dispatch)
-;         column (use-column)
-;         row (use-row)]
-;     (when row 
-;       (d/span
-;         {:className className
-;          :onClick #(dispatch
-;                      {:type :table.cell/clear
-;                       :row row
-;                       :column column})}
-;         ($ icon/clear)))))
-
-
 (defhook use-cell-state
   [el]
   (let [{:keys [idx] :as row} (hooks/use-context *row-record*)
@@ -269,40 +229,36 @@
         dispatch (use-dispatch)
         value (get-in row k) 
         set-value! (hooks/use-memo
-                     [idx]
+                     [idx dispatch]
                      (fn [value]
-                       (dispatch
-                         {:type :table.element/change
-                          :idx idx 
-                          :column el
-                          :value value})))]
-    [value set-value!]))
+                       (when dispatch
+                         (dispatch
+                           {:type :table.element/change
+                            :idx idx 
+                            :column el
+                            :value value}))))
+        select-value! (hooks/use-memo
+                        [idx dispatch]
+                        (fn [value]
+                          (when dispatch
+                            (dispatch
+                              {:type :table.element/select
+                               :idx idx 
+                               :column el
+                               :value value}))))]
+    [value set-value! select-value!]))
 
 
 ;;;;;;;;;;;;;;;;
 ;;   HEADERS  ;;
 ;;;;;;;;;;;;;;;;
-
-(defnc SortElement
-  [{{:keys [order]} :column}]
-  (case order
-    :desc
-    ($ icon/sortDesc
-       {:className "sort-marker"})
-    :asc
-    ($ icon/sortAsc
-       {:className "sort-marker"})
-    ;;
-    ($ icon/sortDesc 
-       {:className "sort-marker hidden"})))
-
-
 (defnc ColumnNameElement
   [{{column-name :label
      :keys [order]
      :as column} 
     :column}]
-  (let [dispatch (use-dispatch)] 
+  (let [dispatch (use-dispatch)
+        translate (toddler/use-translate)] 
     (d/div 
       {:className "name"
        :onClick (fn []
@@ -317,7 +273,7 @@
                          :desc :asc 
                          ;;
                          nil)})))} 
-      column-name)))
+      (translate column-name))))
 
 
 ;; Styled headers
@@ -411,8 +367,6 @@
         rows (use-rows)
         table-width (use-table-width)
         style {:minWidth table-width}]
-    ; (when (nil? container-dimensions)
-    ;   (.error js/console "Wrap TableBody in container"))
     (when (and container-width container-height)
       ($ ui/simplebar
          {:key :tbody/simplebar
@@ -422,7 +376,7 @@
                        (remove empty? ["tbody"
                                        className
                                        (when (empty? rows) " empty")]))
-          :style {:minWidth container-width
+          :style {:width container-width
                   :maxHeight container-height}}
          (d/div
            {:key :tbody

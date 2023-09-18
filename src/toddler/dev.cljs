@@ -9,22 +9,21 @@
      :refer [*components*]]
     [toddler.router.dom :as router]
     [toddler.hooks
-     :refer [use-current-user
-             use-current-locale
+     :refer [use-user
              use-window-dimensions
              use-dimensions]]
     [toddler.i18n.default]
     [toddler.ui :as ui]
-    [toddler.ui.provider :refer [UI]]
-    [toddler.ui.default :as default]
+    [toddler.ui.elements :as e]
+    [toddler.provider :refer [UI]]
+    [toddler.ui.components :as default]
     [toddler.layout :as layout
      :refer [use-layout]]
     [toddler.window :as window]
     [toddler.popup :as popup]
-    [toddler.dropdown :as dropdown
-     :refer [*dropdown*]]
+    [toddler.dropdown :as dropdown]
     ["react" :as react]
-    ["toddler-icons$default" :as icon]
+    ["toddler-icons" :as icon]
     [toddler.app :as app]
     [toddler.i18n :as i18n]
     [shadow.css :refer [css]]
@@ -42,10 +41,10 @@
         $component (css :mx-3 :my-2
                         :flex
                         :items-center
-                        ["& .name" {:color "#7ead92" :text-decoration "none"}]
+                        ["& .name" :toddler/menu-link]
                         ["& .icon" :w-5 :text-transparent :mr-1]
-                        ["&.selected .icon" {:color "#6fcc96"}]
-                        ["&.selected .name" {:color "#6fcc96"}])]
+                        ["&.selected .icon" :toddler/menu-link-selected]
+                        ["&.selected .name" :toddler/menu-link-selected])]
     (d/div
       {:class [$component
                (when selected? "selected")]}
@@ -65,7 +64,7 @@
         $navbar (css
                   :flex
                   :flex-col
-                  {:color "#7ead92"}
+                  :toddler/menu-link-selected
                   ["& .title"
                    :flex
                    :h-28
@@ -95,24 +94,50 @@
 
 
 
-(defnc LocaleDropdown
-  []
-  (let [{:keys [toggle! opened]} (hooks/use-context *dropdown*)
-        locale (use-current-locale)
-        pressed-button (when opened
-                         {:color "#d3d3d3"
-                          :background-color "#003366"
-                          :border "2px solid #003366"})]
-    (d/button
-      {:className "circular-button"
-       :onClick toggle!
-       :style pressed-button}
-      (str/upper-case (name locale)))))
+(let [popup-preference
+      [#{:bottom :center}
+       #{:bottom :right}]]
+  (defnc LocaleDropdown
+    []
+    (let [[area-position set-area-position!] (hooks/use-state #{:bottom :center})
+          ;;
+          [{{locale :locale} :settings} set-user!] (use-user)
+          ;;
+          {:keys [area toggle! opened] :as dropdown}
+          (dropdown/use-dropdown
+            {:value locale
+             :options [:en :hr :fr :fa]
+             :search-fn name
+             :area-position #{:bottom :center}
+             :onChange (fn [v] (set-user! assoc-in [:settings :locale] v))})]
+      ;;
+      (provider
+        {:context dropdown/*dropdown*
+         :value dropdown}
+        (provider
+          {:context popup/*area-position*
+           :value [area-position set-area-position!]}
+          ($ popup/Area
+             {:ref area
+              :class (css :flex :items-center :font-bold)}
+             (d/button
+               {:onClick toggle!
+                :class [(css
+                          :toddler/menu-link
+                          :items-center
+                          ["&:hover" :toddler/menu-link-selected])
+                        (when opened (css :toddler/menu-link-selected))]}
+               (str/upper-case (name locale)))
+             ($ dropdown/Popup
+                {:className "dropdown-popup"
+                 :preference popup-preference
+                 :render/option e/dropdown-option
+                 :render/wrapper e/dropdown-wrapper})))))))
 
 (defnc header
   [_ _ref]
   {:wrap [(react/forwardRef)]}
-  (let [[{{locale :locale} :settings} set-user!] (use-current-user)
+  (let [
         window (use-window-dimensions)
         layout (use-layout)
         header-height 50
@@ -129,13 +154,7 @@
        :ref _ref 
        :style {:height header-height
                :width header-width}}
-      ($ dropdown/Area
-         {:value locale
-          :options [:hr :en :fa]
-          :search-fn name
-          :onChange (fn [v] (set-user! assoc-in [:settings :locale] v))}
-         ($ LocaleDropdown)
-         ($ dropdown/Popup)))))
+      ($ LocaleDropdown))))
 
 
 
@@ -176,7 +195,6 @@
                               :height content-height})
         $content (css
                    :bg-neutral-100
-                   ; :border-4
                    :border-teal-600
                    :rounded-md)]
     (if render

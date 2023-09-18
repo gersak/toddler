@@ -3,11 +3,9 @@
    [helix.core :refer [$ defnc]]
    [helix.hooks :as hooks]
    [helix.dom :as d]
-   ; [helix.dom :as d]
    [shadow.css :refer [css]]
    [toddler.ui :as ui]
-   [toddler.ui.provider :refer [UI]]
-   [toddler.ui.default :as default]
+   [toddler.ui.components :as components]
    [toddler.avatar :as a]
    [toddler.layout :as layout]
    [toddler.dev :as dev]))
@@ -15,8 +13,7 @@
 
 (defnc Editor 
   []
-  ($ UI
-     {:components default/components}
+  ($ components/Provider
      ($ a/Editor)))
 
 
@@ -43,20 +40,19 @@
                  "#913D86"
                  "#F03FC1"]
         [color set-color!] (hooks/use-state (rand-nth palette))]
-    ($ UI
-       {:components default/components}
-       ($ a/GeneratorStage
-          {:color color 
-           :className (css
-                         :mt-5
-                         :justify-center
-                         :flex)
-           :background "white"}
-          ($ ui/row
-             {:className (css :mt-5 :flex :justify-center)}
-             ($ ui/button
-                {:onClick (fn [] (set-color! (rand-nth palette)))}
-                "Generate"))))))
+     ($ components/Provider
+        ($ a/GeneratorStage
+           {:color color 
+            :className (css
+                          :mt-5
+                          :justify-center
+                          :flex)
+            :background "white"}
+           ($ ui/row
+              {:className (css :mt-5 :flex :justify-center)}
+              ($ ui/button
+                 {:onClick (fn [] (set-color! (rand-nth palette)))}
+                 "Generate"))))))
 
 
 (dev/add-component
@@ -68,8 +64,7 @@
 (defnc Avatars
    []
    (let [{:keys [width height]} (layout/use-container-dimensions)]
-      ($ UI
-         {:components default/components}
+      ($ components/Provider
          ($ ui/simplebar
             {:style #js {:width width :height height}}
             ($ a/Generator

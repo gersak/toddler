@@ -15,8 +15,8 @@
 
 
 (defhook use-layout
-  ([] (hooks/use-context app/*layout*))
-  ([k] (get (hooks/use-context app/*layout*) k)))
+  ([] (hooks/use-context app/layout))
+  ([k] (get (hooks/use-context app/layout) k)))
 
 
 (def ^:dynamic ^js *container* (create-context nil))
@@ -35,14 +35,13 @@
                 result (= before after)]
             result))]
   (defnc Container
-    [{:keys [className style] :as props}]
+    [props]
     ;; TODO - maybe remove this
     ; {:wrap [(memo same?)]}
     (let [[container dimensions] (use-dimensions)]
       (d/div
         {:ref #(reset! container %)
-         :className className
-         :style style}
+         & props}
         (provider
           {:context *container-dimensions*
            :value dimensions}

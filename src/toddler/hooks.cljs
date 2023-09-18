@@ -1,37 +1,250 @@
 (ns toddler.hooks
   (:require
-   [clojure.core.async :as async :refer-macros [go-loop]]
-   [helix.core :refer-macros [defhook]]
-   [helix.hooks :as hooks]
-   [toddler.app :as app]
-   [toddler.util :as util]
-   [toddler.i18n :as i18n :refer [translate]]))
+    [clojure.set]
+    [clojure.edn :as edn]
+    [clojure.pprint :refer [pprint]]
+    [clojure.string :as str]
+    [goog.string :as gstr]
+    [goog.string.format]
+    [clojure.core.async :as async :refer-macros [go-loop]]
+    [helix.core :refer-macros [defhook]]
+    [helix.hooks :as hooks]
+    [toddler.app :as app]
+    [toddler.util :as util]
+    [toddler.i18n :as i18n :refer [translate]]
+    [toddler.i18n.keyword]
+    [toddler.i18n.time]
+    [toddler.i18n.number]
+    [toddler.graphql :as graphql]))
 
 
 (.log js/console "Loading toddler.hooks")
 
-(defhook use-current-user
+
+(defhook use-url
+  "Returns root application root URL"
+  []
+  (hooks/use-context app/url))
+
+(defhook use-graphql-url
+  "Returns GraphQL endpoint URL"
+  []
+  (let [root (use-url)
+        from-context (hooks/use-context app/graphql-url)]
+    (hooks/use-memo
+      [root from-context]
+      (or from-context (str root "/graphql")))))
+
+
+(defhook use-user
   "Returns value in app/*user* context"
   []
-  (hooks/use-context app/*user*))
+  (hooks/use-context app/user))
+
+
+(defhook use-token
+  "Returns current app token if any."
+  []
+  (hooks/use-context app/token))
+
+
+(letfn [(target [location]
+          (if-some [_ns (try (namespace location) (catch js/Error _ nil))]
+            (str _ns \/ (name location))
+            (name location)))]
+  (defhook use-local-storage
+    ([location] (use-local-storage
+                  location
+                  (fn [v] (when v (edn/read-string v)))))
+    ([location transform]
+      (let [target (target location) 
+            [local set-local!] (hooks/use-state
+                                 (transform
+                                   (.getItem js/localStorage target)))]
+        (hooks/use-effect
+          [local]
+          (if (some? local)
+            (.setItem js/localStorage target local)
+            (.removeItem js/localStorage target)))
+        [local set-local!]))))
+
+
+(letfn [(target [location]
+          (if-some [_ns (try (namespace location) (catch js/Error _ nil))]
+            (str _ns \/ (name location))
+            (name location)))]
+  (defhook use-session-storage
+    ([location] (use-session-storage
+                  location
+                  (fn [v]
+                    (when v (edn/read-string v)))))
+    ([location transform]
+      (let [target (target location) 
+            [local set-local!] (hooks/use-state
+                                 (transform
+                                   (.getItem js/sessionStorage target)))]
+        (hooks/use-effect
+          [local]
+          (if (some? local)
+            (.setItem js/sessionStorage target local)
+            (.removeItem js/sessionStorage target)))
+        [local set-local!]))))
+
+
+(letfn [(target [location]
+          (if-some [_ns (try (namespace location) (catch js/Error _ nil))]
+            (str _ns \/ (name location))
+            (name location)))]
+  (defhook use-session-cache
+    "Hook that will store variable value in browser session storage when ever
+    value changes. If init-fn is provided it will be called on last recorded
+    value for given variable that is found under location key in browser session
+    storage."
+    ([location value]
+      (use-session-cache
+        location
+        (fn [v] (when v (edn/read-string v)))
+        value))
+    ([location transform value]
+      (use-session-cache
+        location
+        transform 
+        value
+        nil))
+    ([location transform value init-fn]
+      (let [target (target location) 
+            initialized? (hooks/use-ref false)
+            _ref (hooks/use-ref (transform (.getItem js/sessionStorage target)))]
+        (hooks/use-effect
+          [value]
+          (when @initialized?
+            (if (some? value)
+              (.setItem js/sessionStorage target value)
+              (.removeItem js/sessionStorage target))
+            (reset! _ref value)))
+        (hooks/use-effect
+          :once
+          (when (ifn? init-fn)
+            (init-fn
+              (transform
+                (.getItem js/sessionStorage target))))
+          (reset! initialized? true))
+        _ref))))
+
+
+(defhook use-avatar
+  [{:keys [name avatar path cached?]
+    :or {cached? true}}]
+  (let [avatars (hooks/use-context app/avatars)
+        [_avatar set-avatar!] (hooks/use-state (get @avatars avatar))
+        [token] (hooks/use-context app/token)
+        refresh (hooks/use-callback
+                  [_avatar avatar path]
+                  (fn []
+                    (when avatar
+                      (if (str/starts-with? avatar "data:image")
+                        (set-avatar! (str/replace avatar #"data:.*base64," ""))
+                        (let [xhr (new js/XMLHttpRequest)]
+                          (.open xhr "GET" path true)
+                          (when token (.setRequestHeader xhr "Authorization" (str "Bearer " token)))
+                          (.setRequestHeader xhr "Accept" "application/octet-stream")
+                          (when-not cached? (.setRequestHeader xhr "Cache-Control" "no-cache"))
+                          (.addEventListener
+                            xhr "load"
+                            (fn [evt]
+                              (let [status (.. evt -target -status)
+                                    avatar' (.. evt -currentTarget -responseText)]
+                                (case status
+                                  200
+                                  (cond
+                                    ;; if avatar has changed than swap avatars
+                                    ;; this should trigger updates for all hooks
+                                    ;; with target avatar
+                                    (not= avatar' (get @avatars avatar))
+                                    (when (not-empty avatar')
+                                    (swap! avatars assoc avatar avatar'))
+                                    ;; Otherwise if avatar is cached properly, but
+                                    ;; current _avatar doesn't match current state
+                                    ;; update current _avatar
+                                    (not= _avatar avatar')
+                                    (set-avatar! (not-empty avatar')))
+                                  ;; otherwise
+                                  nil
+                                  (async/put! app/signal-channel
+                                              {:type :toddler.notifications/error
+                                               :message (str "Couldn't fetch avatar for user " name)
+                                               :visible? true
+                                               :hideable? true
+                                               :adding? true
+                                               :autohide true})))))
+                          (.send xhr))))))]
+    (hooks/use-effect
+      [avatar]
+      (when (some? avatar)
+        (if-let [cached (get @avatars avatar)]
+          (set-avatar! cached)
+          (refresh))))
+    (hooks/use-effect
+      [avatar]
+      (let [uuid (random-uuid)]
+        (when (and avatars avatar)
+          (add-watch avatars uuid
+                     (fn [_ _ o n]
+                       (let [old (get o avatar)
+                             new (get n avatar)]
+                         (when (not= old new)
+                           (set-avatar! new))))))
+        (fn []
+          (when avatars (remove-watch avatars uuid)))))
+    [_avatar refresh]))
 
 
 (defhook use-current-locale
   "Returns value for :locale in current user settings"
   []
   (let [[{{locale :locale
-           :or {locale :en}} :settings}] (use-current-user)]
-    locale))
+           :or {locale :default}} :settings}] (use-user)]
+    (keyword locale)))
 
 
 (defhook use-translate
   []
   (let [locale (use-current-locale)
         translate (hooks/use-memo
-                   [locale]
-                   (fn
-                     ([data] (translate data locale))
-                     ([data options]  (translate data locale options))))]
+                    [locale]
+                    (fn
+                      ([data] (translate data locale))
+                      ([data options] (translate data locale options))))]
+    translate))
+
+
+(comment
+  (apply gstr/format
+         (translate :reacher.delete.dialog :hr)
+         ["Biljana"]))
+
+
+(defhook use-translatef
+  []
+  (let [locale (use-current-locale)
+        translate (hooks/use-memo
+                    [locale]
+                    (fn
+                      ([data & args]
+                        (if-let [template (translate data locale)]
+                          (try
+                            (apply gstr/format template args)
+                            (catch js/Error _
+                              (let [message
+                                    (str "Couldn't translate " data
+                                         "\n"
+                                         (with-out-str
+                                           (pprint
+                                             {:args args
+                                              :template template})))]
+                                (.error js/console message)
+                                "")))
+                          (throw (js/Error. (str "Couldn't find translation for " data ". Locale: " locale)))))))]
     translate))
 
 
@@ -52,7 +265,7 @@
   ([period f]
    (assert (and (number? period) (pos? period)) "Timeout period should be positive number.")
    (assert (fn? f) "Function not provided. No point if no action is taken on idle timeout.")
-   (let [idle-channel (async/chan)]
+   (let [idle-channel (async/chan (async/sliding-buffer 2))]
      ;; When some change happend
      (async/go-loop [v (async/<! idle-channel)]
        (if (nil? v)
@@ -61,11 +274,12 @@
          (let [aggregated-values
                (loop [[value _]
                       (async/alts!
-                       [idle-channel (async/go (async/<! (async/timeout period))
-                                               ::TIMEOUT)])
+                        [idle-channel (async/go
+                                        (async/<! (async/timeout period))
+                                        ::TIMEOUT)])
                       r [v]]
                  (if (or
-                      (= ::TIMEOUT value)
+                       (= ::TIMEOUT value)
                       (nil? value))
                    (conj r value)
                    (recur (async/alts! [idle-channel (async/go (async/<! (async/timeout period)) ::TIMEOUT)]) (conj r value))))]
@@ -81,12 +295,15 @@
   "Idle hook. Returns cached value and update fn. Input arguments
   are initial state, callback that should will be called on idle
   timeout."
-  ([state callback] (use-idle state callback 500))
-  ([state callback timeout]
+  ([state callback] (use-idle state callback {:timeout 500}))
+  ([state callback
+    {:keys [timeout initialized?]
+     :or {timeout 500
+          initialized? false}}]
    (assert (fn? callback) "Callback should be function")
    (let [[v u] (hooks/use-state state)
          call (hooks/use-ref callback)
-         initialized? (hooks/use-ref false)
+         initialized? (hooks/use-ref initialized?)
          idle-channel (hooks/use-ref nil)]
      ;; Create idle channel
      (hooks/use-effect
@@ -96,12 +313,13 @@
        (make-idle-service
         timeout
         (fn [values]
-          (let [v' (last (butlast values))]
+          (let [[_ v'] (reverse values)]
             (if @initialized?
               (when (ifn? @call) (@call v'))
               (reset! initialized? true))))))
       (fn []
-        (when @idle-channel (async/close! @idle-channel))))
+        (when @idle-channel
+          (async/close! @idle-channel))))
      ;; When callback is changed reference new callback
      (hooks/use-effect
       [callback]
@@ -152,16 +370,16 @@
   "Function will return browser window dimensions that
   should be instantiated in app/*window* context"
   []
-  (hooks/use-context app/*window*))
-
+  (hooks/use-context app/window))
 
 
 (defhook use-dimensions
   "Hook returns ref that should be attached to component and
   second result dimensions of bounding client rect"
   ([]
-    (let [node (hooks/use-ref nil)
-          observer (hooks/use-ref nil)
+    (use-dimensions (hooks/use-ref nil)))
+  ([node]
+    (let [observer (hooks/use-ref nil)
           [dimensions set-dimensions!] (hooks/use-state nil)
           resize-idle-service (hooks/use-ref
                                 (make-idle-service
@@ -189,8 +407,17 @@
             nil)))
       (hooks/use-effect
         :once
-        (fn [] (when @observer (.disconnect @observer))))
-      [node dimensions]))
+        (fn []
+          (when @observer (.disconnect @observer))))
+      [node dimensions])))
+
+
+
+(defhook use-multi-dimensions
+  "Similar to use dimensions, only for tracking multiple elements.
+  Input are sequence of references, i.e keywords, and output is vector
+  of two elements. First element is map of reference to React ref, and
+  second is map of reference to element dimensions."
   ([ks]
     (let [nodes (hooks/use-ref nil)
           refs (hooks/use-memo
@@ -349,3 +576,113 @@
                    (fn [data]
                      (async/put! app/signal-channel data)))]
     publisher))
+
+
+(defhook use-query
+  ([{query-name :query
+     selection :selection
+     args :args
+     :keys [on-load on-error]}]
+    (let [[token] (use-token)
+          url (use-graphql-url)]
+      (hooks/use-memo
+        [(name query-name) args selection]
+        (fn send
+          []
+          (let [query-name (name query-name)
+                query-key (keyword query-name)
+                query (graphql/wrap-queries
+                        (graphql/->graphql 
+                          (graphql/->GraphQLQuery
+                            query-name nil selection args)))]
+            (async/go
+              (let [{:keys [errors]
+                     {data query-key} :data
+                     :as response}
+                    (async/<! 
+                      (graphql/send-query 
+                        query 
+                        :url url
+                        :token token
+                        :on-load on-load
+                        :on-error on-error))]
+                (if (some? errors)
+                  (ex-info "Remote query failed"
+                           {:query query
+                            :args args
+                            :selection selection
+                            :response response})
+                  data)))))))))
+
+
+(defhook use-queries
+  ([queries] (use-queries queries nil))
+  ([queries {:keys [on-load on-error]}]
+    (let [[token] (use-token)
+          url (use-graphql-url)]
+      (hooks/use-memo
+        [queries]
+        (fn send
+          []
+          (let [query (apply
+                        graphql/wrap-queries
+                        (map
+                          (fn [{query-name :query
+                                selection :selection
+                                args :args}]
+                            (let [query-name (name query-name)]
+                              (graphql/->graphql 
+                                (graphql/->GraphQLQuery
+                                  query-name nil selection args))))
+                          queries))]
+            (async/go
+              (let [{:keys [errors]
+                     data :data
+                     :as response}
+                    (async/<! 
+                      (graphql/send-query 
+                        query 
+                        :url url
+                        :token token
+                        :on-load on-load
+                        :on-error on-error))]
+                (if (some? errors)
+                  (ex-info "Remote query failed"
+                           {:queries queries
+                            :response response})
+                  data)))))))))
+
+
+(defhook use-mutation
+  ([{:keys [mutation selection variables on-load on-error]}]
+    (let [[token] (use-token)
+          [mutation-fragment type-declarations variable-mapping]
+          (hooks/use-memo
+            [mutation variables selection]
+            (graphql/gen-mutation mutation variables selection))
+          ;;
+          url (use-graphql-url)]
+      ; (when (ifn? on-load) (on-load "109"))
+      (hooks/use-callback
+        [mutation-fragment]
+        (fn [data]
+          (async/go
+            (let [query (binding [toddler.graphql/*variable-bindings* type-declarations]
+                          (graphql/wrap-mutations mutation-fragment))
+                  {:keys [errors]
+                   {data mutation} :data}
+                  (async/<! 
+                    (graphql/send-query 
+                      query 
+                      :url url
+                      :token token
+                      :variables (clojure.set/rename-keys data variable-mapping)
+                      :on-load on-load
+                      :on-error on-error))]
+              (if (some? errors)
+                (ex-info
+                  (str "Mutation " mutation " failed")
+                  {:query query
+                   :variables variables
+                   :errors errors})
+                data))))))))

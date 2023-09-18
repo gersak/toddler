@@ -15,8 +15,7 @@
      :refer [*dropdown*]]
     [toddler.popup
      :as popup]
-    [toddler.ui :as ui]
-    ["toddler-icons$default" :as icon]))
+    [toddler.ui :as ui]))
 
 (defn get-available-options 
   ([search value options search-fn]
@@ -117,7 +116,7 @@
 
 
 (defhook use-multiselect
-  [{:keys [value options on-change onChange new-fn search-fn area area-position]
+  [{:keys [value options on-change onChange new-fn search-fn area area-position read-only]
     :or {search-fn str}
     :as props}]
   (let [on-change (or onChange on-change identity)
@@ -156,7 +155,7 @@
       (when opened (focus value)))
     (popup/use-outside-action
       opened area popup 
-      #(set-opened! false))
+      #(when opened (set-opened! false)))
     (assoc props
            :search search
            :opened opened
@@ -165,9 +164,10 @@
            :area area
            :popup popup
            :ref-fn ref-fn
+           :read-only read-only
            :toggle! (fn []
                       (when @input (.focus @input))
-                      (set-opened! not))
+                        (set-opened! not))
            :open! (fn []
                     (when @input (.focus @input))
                     (set-opened! true))
@@ -204,60 +204,42 @@
   [{:keys [context-fn search-fn disabled placeholder]
     :or {search-fn str}
     :as props}]
-  (let [[area-position set-area-position!] (hooks/use-state nil)
-        {:keys [open!
+  (let [{:keys [open!
                 remove!
                 options
                 new-fn
                 area]
          :as multiselect} (use-multiselect
                             (assoc props
-                                   :search-fn search-fn
-                                   :area-position area-position))]
+                                   :search-fn search-fn))]
     (provider
       {:context *dropdown*
        :value multiselect}
-      (provider
-        {:context popup/*area-position*
-         :value [area-position set-area-position!]}
-        (<>
-          (map
-            (fn [option]
-              ($ ui/option
-                {:key (search-fn option)
-                 :value option
-                 :onRemove #(remove! option)
-                 :context (if disabled :stale
-                            (when (fn? context-fn)
-                              (context-fn option)))}))
-            (:value props))
-          ($ popup/Area
-             {:ref area
-              :onClick #(when-not (empty? options) (open!))
-              :className "dropdown"}
-             (when (or (fn? new-fn) (not-empty options))
-               ($ ui/input {:placeholder placeholder}))
-             ($ ui/popup)))))))
+      (<>
+        (map
+          (fn [option]
+            ($ ui/option
+              {:key (search-fn option)
+               :value option
+               :onRemove #(remove! option)
+               :context (if disabled :stale
+                          (when (fn? context-fn)
+                            (context-fn option)))}))
+          (:value props))
+        ($ popup/Area
+           {:ref area
+            :onClick #(when-not (empty? options) (open!))
+            :className "dropdown"}
+           (when (or (fn? new-fn) (not-empty options))
+             ($ ui/input {:placeholder placeholder}))
+           ($ ui/popup))))))
 
 
 (defnc Option
-  [{:keys [value
-           context
-           on-remove
-           onRemove
-           disabled
-           className]
+  [{:keys [value]
     :as props}]
-  (let [on-remove (some #(when (fn? %) %) [onRemove on-remove])]
-    (d/div
-      {:context (if disabled :stale context)
-       :className className}
-      (if-some [children (c/children props)]
-        children
-        value)
-      (when on-remove
-        ($ icon/clear
-           {:className "remove"
-            :onClick (fn [e]
-                       (.stopPropagation e)
-                       (on-remove value))})))))
+  (d/div
+    {& props}
+    (if-some [children (c/children props)]
+      children
+      value)))

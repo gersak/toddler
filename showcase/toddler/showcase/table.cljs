@@ -4,8 +4,7 @@
       [toddler.layout :as layout]
       [toddler.grid :as grid]
       [toddler.ui :as ui]
-      [toddler.ui.provider :refer [UI]]
-      [toddler.ui.default :as default]
+      [toddler.ui.components :as components]
       toddler.elements.table.theme
       [vura.core :as vura]
       [helix.core :refer [$ defnc]]
@@ -199,7 +198,7 @@
 
 (defnc Table
    []
-   ($ default/Provider
+   ($ components/Provider
       (d/div
          {:style
           {:width "100%" :height "100%"

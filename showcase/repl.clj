@@ -1,5 +1,6 @@
 (ns repl
   (:require
+    [toddler.aliases :refer [aliases]]
     [clojure.java.io :as io]
     [shadow.css.build :as cb]
     [shadow.cljs.devtools.server.fs-watch :as fs-watch])
@@ -11,7 +12,8 @@
 (defn generate-css []
   (let [result
         (-> @css-ref
-            (cb/generate '{:ui {:include [toddler.ui*]}
+            (cb/generate '{:ui {:include [toddler.ui*
+                                          toddler]}
                            :dev {:include [toddler.dev
                                            toddler.showcase*]}})
             (cb/write-outputs-to (io/file "dev" "css")))]
@@ -35,15 +37,22 @@
         (recur (conj dirs (.getName entry)))
         dirs))))
 
+
+(defn init []
+  (-> 
+    (cb/init)
+    (update :aliases merge aliases)
+    (cb/start)
+    (cb/index-path (io/file "src") {})
+    (cb/index-path (io/file "showcase") {})))
+
+
 (defn start
   {:shadow/requires-server true}
   []
 
   ;; first initialize my css
-  (reset! css-ref
-          (-> (cb/start)
-              (cb/index-path (io/file "src") {})
-              (cb/index-path (io/file "showcase") {})))
+  (reset! css-ref (init))
 
   ;; then build it once
   (generate-css)
@@ -83,7 +92,7 @@
 
 (comment
   (-> css-ref deref keys)
-  (-> css-ref deref :aliases )
+  (-> css-ref deref :aliases :toddler-menu-link)
   (-> css-ref deref :colors)
   (-> css-ref deref )
   (-> css-ref deref :namespaces keys)

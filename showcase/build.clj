@@ -17,3 +17,23 @@
             {:keys [warning-type] :as warning} (:warnings mod)]
 
       (prn [:CSS (name warning-type) (dissoc warning :warning-type)]))))
+
+
+(defn generate-shadow-index-file
+  []
+  (-> (cb/start)
+      (cb/index-path (io/file "src") {})
+      (cb/write-index-to (io/file "src" "shadow-css-index.edn"))))
+
+
+(comment
+  (let [build-state
+        (-> (cb/start)
+            (cb/index-path (io/file "src") {})
+            (cb/index-path (io/file "showcase") {})
+            )]
+
+    (doseq [mod (:outputs build-state)
+            {:keys [warning-type] :as warning} (:warnings mod)]
+
+      (prn [:CSS (name warning-type) (dissoc warning :warning-type)]))))

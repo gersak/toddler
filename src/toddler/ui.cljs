@@ -11,6 +11,7 @@
 
 
 (defcomponent avatar :avatar)
+(defcomponent avatar-editor :avatar/editor)
 (defcomponent row :row)
 (defcomponent column :column)
 (defcomponent form :form)
@@ -21,6 +22,7 @@
 (defcomponent option :option)
 (defcomponent input :input)
 (defcomponent clear :clear)
+(defcomponent close :close)
 (defcomponent field :field)
 (defcomponent wrapper :wrapper)
 (defcomponent discard :discard)
@@ -28,16 +30,27 @@
 (defcomponent img :img)
 (defcomponent header :header)
 (defcomponent identity :identity)
-(defcomponent tooltip tooltip)
+(defcomponent tooltip :tooltip)
 (defcomponent autosize-input :input/autosize)
-(defcomponent idle-input :input/idle)
 (defcomponent action :action)
 (defcomponent checklist :checklist)
+(defcomponent drawer :drawer)
+
+
+(defcomponent modal-avatar-editor :modal/avatar-editor)
+(defcomponent modal-background :modal/background)
+(defcomponent modal-dialog :modal/dialog)
+(defcomponent modal-pavement :modal/pavement)
+(defcomponent modal-strip :modal/strip)
 
 
 (defcomponent card :card)
 (defcomponent card-action :card/action)
 (defcomponent card-actions :card/actions)
+
+
+(defcomponent tabs :tabs)
+(defcomponent tab :tab)
 
 
 (defcomponent calendar-month-dropdown :calendar/month-dropdown)
@@ -68,10 +81,12 @@
 (defcomponent date-period-field :field/date-period)
 (defcomponent boolean-field :field/boolean)
 (defcomponent checklist-field :field/checklist)
+(defcomponent idle-field :field/idle)
 
 
 (defcomponent table :table)
 (defcomponent table-row :table/row)
+(defcomponent table-cell :table/cell)
 (defcomponent table-header-row :table/header-row)
 
 (defcomponent enum-header :header/enum)
