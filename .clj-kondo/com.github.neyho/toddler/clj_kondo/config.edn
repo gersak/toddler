@@ -1,0 +1,1 @@
+{:lint-as {toddler.ui/defcomponent clojure.core/def}}

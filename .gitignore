@@ -5,8 +5,9 @@ target/
 node_modules/
 .nrepl-port
 .nrepl-history
-.clj-kondo/
-.lsp/
+.clj-kondo/.cache
+.lsp/.cache
 dev/js/
 release/js/
 .calva/
+.DS_Store
