@@ -5,7 +5,7 @@
   org.clojure/core.async                     {:mvn/version "1.5.648"}
   cljs-bean/cljs-bean                        {:mvn/version "1.7.0"}
   com.github.gersak/helix.placenta           {:git/url "https://github.com/gersak/helix.placenta"
-                                              :sha "f0364ae901d1902132be9b0dd3c8f11aea924e2b"}
+                                              :git/sha "f0364ae901d1902132be9b0dd3c8f11aea924e2b"}
   ; com.github.gersak/helix.placenta           {:local/root "helix.placenta"}
   camel-snake-kebab/camel-snake-kebab        {:mvn/version "0.4.3"}
   com.github.gersak/vura                     {:mvn/version "0.5.7-SNAPSHOT"}
@@ -20,5 +20,4 @@
    :extra-deps {babashka/fs {:mvn/version "0.2.16"}}}
   :cider
   {:extra-deps
-   {cider/cider-nrepl {:mvn/version "0.30.0"}}
-   :main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}}}
+   {cider/cider-nrepl {:mvn/version "0.30.0"}}}}}

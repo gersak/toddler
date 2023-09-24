@@ -16,9 +16,13 @@
   (io/make-parents "icons/.repos/README.md"))
 
 
+; (defn clone-repo
+;   [target url]
+;   (sh/sh "git" "clone" url (str root "/" target)))
+
 (defn clone-repo
-  [target url]
-  (sh/sh "git" "clone" url (str root "/" target)))
+  []
+  (sh/sh "git" "clone" "https://github.com/ionic-team/ionicons.git" (str root "/io5")))
 
 
 (defn list-images
@@ -96,4 +100,5 @@
 
 
 (comment
+  (clone-repo)
   (generate))
