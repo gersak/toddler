@@ -8,12 +8,12 @@
     [clojure.java.io :as io]))
 
 
-(def root "icons/.repos")
+(def root ".icons/io5")
 
 
 (defn ensure-root
   []
-  (io/make-parents "icons/.repos/README.md"))
+  (io/make-parents ".icons/.repos/README.md"))
 
 
 ; (defn clone-repo
@@ -22,12 +22,12 @@
 
 (defn clone-repo
   []
-  (sh/sh "git" "clone" "https://github.com/ionic-team/ionicons.git" (str root "/io5")))
+  (sh/sh "git" "clone" "https://github.com/ionic-team/ionicons.git" root))
 
 
 (defn list-images
   []
-  (fs/list-dir (str root "/io5/src/svg")))
+  (fs/list-dir (str root "/src/svg")))
 
 
 (defn gen-el

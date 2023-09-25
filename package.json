@@ -1,10 +1,11 @@
 {
   "name": "toddler",
-  "version": "0.0.1",
+  "version": "0.1",
   "description": "UI elements based on helix library",
   "main": "index.js",
   "scripts": {
-    "dev": "npx shadow-cljs -A:shadow:cider watch dev",
+    "dev": "npx shadow-cljs -A:shadow:cider:showcase watch dev",
+    "icons": "npx shadow-cljs -A:shadow:cider:icons watch icons",
     "release": "npx shadow-cljs -A:shadow release webpack",
     "webpack": "npm run release && npx webpack --config webpack.config.js",
     "check": "npx shadow-cljs -A:shadow check dev",
@@ -16,19 +17,19 @@
     "server": "^1.0.37",
     "shadow-cljs": "^2.20.2",
     "webpack": "^5.74.0",
-    "webpack-cli": "^4.10.0"
+    "react-icons": "^4.7.1",
+    "react-spring": "^9.5.5",
+    "styled-components": "^5.3.6",
+    "webpack-cli": "^4.10.0",
+    "use-image": "^1.1.0"
   },
   "dependencies": {
     "konva": "^8.3.13",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^4.7.1",
     "react-is": "^18.2.0",
     "react-konva": "^18.2.2",
     "react-router-dom": "^6.4.2",
-    "react-spring": "^9.5.5",
-    "simplebar-react": "^2.4.3",
-    "styled-components": "^5.3.6",
-    "use-image": "^1.1.0"
+    "simplebar-react": "^2.4.3"
   }
 }

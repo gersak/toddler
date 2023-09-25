@@ -8,12 +8,12 @@
     [clojure.java.io :as io]))
 
 
-(def root "icons/.repos")
+(def root ".icons/")
 
 
 (defn ensure-root
   []
-  (io/make-parents "icons/.repos/README.md"))
+  (io/make-parents ".icons/README.md"))
 
 
 (defn clone-repo

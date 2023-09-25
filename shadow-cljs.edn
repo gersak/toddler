@@ -12,6 +12,17 @@
    :devtools {:http-root "dev"
               :http-port 8000 
               :preloads []}}
+  :icons
+  {:target :browser
+   :entries [toddler.icons]
+   :modules {:main
+             {:entries [toddler.icons]
+              :init-fn toddler.icons/start!}}
+   :output-dir "dev/js"
+   :output-to "dev/js/main.js"
+   :devtools {:http-root "dev"
+              :http-port 8000 
+              :preloads []}}
   :webpack
   {:target :esm
    :output-dir "release/js"

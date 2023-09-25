@@ -15,6 +15,8 @@
  {:shadow
   {:extra-deps
    {thheller/shadow-cljs {:mvn/version "2.20.2"}}}
+  :showcase
+  {:extra-paths ["showcase"]}
   :icons
   {:extra-paths ["icons"]
    :extra-deps {babashka/fs {:mvn/version "0.2.16"}}}
