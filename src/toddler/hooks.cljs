@@ -162,14 +162,13 @@
                                     ;; with target avatar
                                     (not= avatar' (get @avatars avatar))
                                     (when (not-empty avatar')
-                                    (swap! avatars assoc avatar avatar'))
+                                      (swap! avatars assoc avatar avatar'))
                                     ;; Otherwise if avatar is cached properly, but
                                     ;; current _avatar doesn't match current state
                                     ;; update current _avatar
                                     (not= _avatar avatar')
                                     (set-avatar! (not-empty avatar')))
                                   ;; otherwise
-                                  nil
                                   (async/put! app/signal-channel
                                               {:type :toddler.notifications/error
                                                :message (str "Couldn't fetch avatar for user " name)
@@ -410,6 +409,32 @@
         (fn []
           (when @observer (.disconnect @observer))))
       [node dimensions])))
+
+
+
+(defhook use-scroll-offset
+  ([body] (use-scroll-offset body 50))
+  ([body threshold]
+   (let [[offset set-offset!] (hooks/use-state 0)
+         cached-height (hooks/use-ref 0)]
+     (letfn [(check-offset [_]
+               (let [scrolled (+ (.-scrollTop @body) (.-clientHeight @body))
+                     content-height (.-scrollHeight @body)]
+                 (when (and
+                         (not= @cached-height content-height)
+                         (>= (+ scrolled threshold) content-height))
+                   (set-offset! inc)
+                   (reset! cached-height content-height))))
+             (reset []
+               (reset! cached-height 0)
+               (set-offset! 0))]
+       (hooks/use-effect
+         [@body]
+         (.log js/console "BODY IS " @body)
+         (when @body (.addEventListener @body "scroll" check-offset))
+         (fn []
+           (when @body (.removeEventListener @body "scroll" check-offset))))
+       [offset reset]))))
 
 
 

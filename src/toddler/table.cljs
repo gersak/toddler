@@ -111,10 +111,12 @@
         ($ render
            {:ref _ref
             :key idx
-            :class (cond-> [(if (even? idx) " even" " odd")]
-                     (string? class) (conj class)
-                     className (conj className)
-                     (sequential? class) (into class))
+            :class (str/join
+                     " "
+                     (cond-> [(if (even? idx) " even" " odd")]
+                       (string? class) (conj class)
+                       className (conj className)
+                       (sequential? class) (into class)))
             & (dissoc props :class :className)}
            (map
              (fn [{:keys [attribute cursor] :as column}]
@@ -314,7 +316,7 @@
 
 
 (defnc Header
-  [{:keys [className]} _ref]
+  [{:keys [className class]} _ref]
   {:wrap [(ui/forward-ref)]}
   (let [{container-width :width} (layout/use-container-dimensions)
         table-width (use-table-width)
@@ -325,7 +327,12 @@
       ($ ui/simplebar
          {:key :thead/simplebar
           :ref _ref 
-          :className (str/join " " ["thead" className])
+          :className (str/join
+                       " "
+                       (cond-> ["thead"]
+                         className (conj className)
+                         (string? class) (conj class)
+                         (sequential? class) (into class)))
           :style (cond->
                    {:width container-width
                     :maxHeight 500}
@@ -360,22 +367,24 @@
 
 
 (defnc Body
-  [{:keys [className]} _ref]
+  [{:keys [class className]} _ref]
   {:wrap [(ui/forward-ref)]}
   (let [{container-width :width
          container-height :height} (layout/use-container-dimensions)
         rows (use-rows)
         table-width (use-table-width)
-        style {:minWidth table-width}]
+        style {:minWidth table-width}
+        className (str/join " "
+                            (cond-> ["tbody"]
+                              className (conj className)
+                              (string? class) (conj class)
+                              (sequential? class) (into class)))]
+    (println "BODY ROWS: " (count rows))
     (when (and container-width container-height)
       ($ ui/simplebar
          {:key :tbody/simplebar
           :ref _ref
-          :className (str/join
-                       " "
-                       (remove empty? ["tbody"
-                                       className
-                                       (when (empty? rows) " empty")]))
+          :className className  
           :style {:width container-width
                   :maxHeight container-height}}
          (d/div
