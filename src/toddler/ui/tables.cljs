@@ -18,8 +18,7 @@
     [toddler.input :refer [TextAreaElement]]
     [toddler.ui.elements :as e]
     [toddler.ui :as ui]
-    [toddler.i18n :as i18n]
-    ["toddler-icons" :as icon]))
+    [toddler.i18n :as i18n]))
 
 
 
@@ -134,7 +133,7 @@
                      (when-not copied?
                        (.writeText js/navigator.clipboard (str value))
                        (set-copied! true)))}
-         ($ icon/uuid))
+         #_($ icon/uuid))
        (when visible?
          ($ popup/Element
             {:ref popup
@@ -212,7 +211,7 @@
                 :onKeyDown on-key-down})
              (d/span
                {:className "decorator"}
-               ($ icon/dropdownDecorator)))
+               #_($ icon/dropdownDecorator)))
            ($ dropdown/Popup
               {:className "dropdown-popup"
                :render/option e/dropdown-option
@@ -298,7 +297,7 @@
                        (.preventDefault e)
                        (set-value! nil)
                        (set-opened! false))}
-           ($ icon/clear)))
+           #_($ icon/clear)))
        (when opened
          ($ popup/Element
             {:ref popup
@@ -454,91 +453,85 @@
         (if (and amount currency)
           (i18n/translate amount currency)
           (set-state! ""))))
-    (provider
-      {:context dropdown/*dropdown*
-       :value dropdown}
-      (provider
-        {:context popup/*area-position*
-         :value [area-position set-area-position!]}
-        (d/div
-          {:class (str/join " "
-                            [$alignment
-                             (css
-                               :py-2
-                               :flex
-                               :grow
-                               :text-sm
-                               ["& .clear"
-                                :text-md
-                                 :self-center
-                                :text-transparent
-                                {:transition "color .2s ease-in-out"
-                                 :position "absolute"
-                                 :right "0px"}]
-                               ["&:hover .clear " :text-gray-400]
-                               ["& .clear:hover" :text-gray-900 :cursor-pointer])])
-           :onClick (fn [] 
-                      (when (and currency @input)
-                        (set-state! (str amount))
-                        (.focus @input)))}
-          ($ popup/Area
-             {:ref area}
-             (d/input
-               {:value (or currency "")
-                :className (css
-                             :w-10
-                             :font-bold
-                             :cursor-pointer)
-                :read-only true
-                :onClick toggle!
-                :placeholder "VAL"})
-             ($ dropdown/Popup
-                {:render/option e/dropdown-option
-                 :render/wrapper e/dropdown-wrapper}))
-          (d/input
-            {:ref input
-             :value state
-             :placeholder (or placeholder label)
-             :read-only read-only
-             :disabled (or disabled (not currency))
-             :onFocus (fn [e]
-                        (set-focused! true)
-                        (when (and currency amount)
-                          (set-state! (i18n/translate amount currency)))
-                        (on-focus e))
-             :onBlur (fn [e]
-                       (set-focused! false)
-                       (when amount
-                         (set-state! (i18n/translate amount currency)))
-                       (on-blur e))
-             :onChange (fn [e]
-                         (when (some? currency)
-                           (let [text (as-> (.. e -target -value) t
-                                        (re-find #"[\d\.,]*" t)
-                                        (str/replace t #"\.(?=[^.]*\.)" "")
-                                        (str/replace t #"[\.\,]+" "."))
-                                 number (js/parseFloat text)
-                                 dot? (#{\.} (last text))]
-                             (if (empty? text)
-                               (set-value! {:amount nil
-                                            :currency currency})
-                               (when-not (js/Number.isNaN number)
-                                 (when (or (not= number value) dot?)
-                                   (set-state! text))
-                                 (when-not dot?
-                                   (set-value!
-                                     {:amount number
-                                      :currency currency})))))))})
-          (when value
-            (d/span
-              {:class (cond-> ["clear"]
-                        focused? (conj "opened"))
-               :onClick (fn [e]
-                          (.stopPropagation e)
-                          (.preventDefault e)
-                          (set-value! nil)
-                          (set-focused! false))}
-              ($ icon/clear))))))))
+    (d/div
+      {:class (str/join " "
+                        [$alignment
+                         (css
+                           :py-2
+                           :flex
+                           :grow
+                           :text-sm
+                           ["& .clear"
+                            :text-md
+                            :self-center
+                            :text-transparent
+                            {:transition "color .2s ease-in-out"
+                             :position "absolute"
+                             :right "0px"}]
+                           ["&:hover .clear " :text-gray-400]
+                           ["& .clear:hover" :text-gray-900 :cursor-pointer])])
+       :onClick (fn [] 
+                  (when (and currency @input)
+                    (set-state! (str amount))
+                    (.focus @input)))}
+      ($ popup/Area
+         {:ref area}
+         (d/input
+           {:value (or currency "")
+            :className (css
+                         :w-10
+                         :font-bold
+                         :cursor-pointer)
+            :read-only true
+            :onClick toggle!
+            :placeholder "VAL"})
+         ($ dropdown/Popup
+            {:render/option e/dropdown-option
+             :render/wrapper e/dropdown-wrapper}))
+      (d/input
+        {:ref input
+         :value state
+         :placeholder (or placeholder label)
+         :read-only read-only
+         :disabled (or disabled (not currency))
+         :onFocus (fn [e]
+                    (set-focused! true)
+                    (when (and currency amount)
+                      (set-state! (i18n/translate amount currency)))
+                    (on-focus e))
+         :onBlur (fn [e]
+                   (set-focused! false)
+                   (when amount
+                     (set-state! (i18n/translate amount currency)))
+                   (on-blur e))
+         :onChange (fn [e]
+                     (when (some? currency)
+                       (let [text (as-> (.. e -target -value) t
+                                    (re-find #"[\d\.,]*" t)
+                                    (str/replace t #"\.(?=[^.]*\.)" "")
+                                    (str/replace t #"[\.\,]+" "."))
+                             number (js/parseFloat text)
+                             dot? (#{\.} (last text))]
+                         (if (empty? text)
+                           (set-value! {:amount nil
+                                        :currency currency})
+                           (when-not (js/Number.isNaN number)
+                             (when (or (not= number value) dot?)
+                               (set-state! text))
+                             (when-not dot?
+                               (set-value!
+                                 {:amount number
+                                  :currency currency})))))))})
+      (when value
+        (d/span
+          {:class (cond-> ["clear"]
+                    focused? (conj "opened"))
+           :onClick (fn [e]
+                      (.stopPropagation e)
+                      (.preventDefault e)
+                      (set-value! nil)
+                      (set-focused! false))}
+          #_($ icon/clear))))))
 
 
 (defnc boolean-cell
@@ -571,7 +564,7 @@
                   value (conj $active)
                   (not value) (conj $inactive))
          :onClick #(set-value! (not value))}
-        ($ (case value
+        #_($ (case value
              nil icon/checkboxDefault
              icon/checkbox))))))
 
@@ -644,7 +637,7 @@
                 :onKeyDown on-key-down})
              (d/span
                {:className "decorator"}
-               ($ icon/dropdownDecorator)))
+               #_($ icon/dropdownDecorator)))
            ($ dropdown/Popup
               {:className "dropdown-popup"
                :render/option e/identity-dropdown-option
@@ -669,7 +662,7 @@
                    :padding-top "0.7em"})]
     (d/div
       {:class [$expand]}
-      (if value
+      #_(if value
         ($ icon/expanded {:onClick #(set-value! (not value))})
         ($ icon/expand {:onClick #(set-value! (not value))})))))
 
@@ -694,13 +687,13 @@
   [{{:keys [order]} :column}]
   (case order
     :desc
-    ($ icon/sortDesc
+    #_($ icon/sortDesc
        {:className "sort-marker"})
     :asc
-    ($ icon/sortAsc
+    #_($ icon/sortAsc
        {:className "sort-marker"})
     ;;
-    ($ icon/sortDesc 
+    #_($ icon/sortDesc 
        {:className "sort-marker hidden"})))
 
 
@@ -821,7 +814,7 @@
            {:ref area
             :className "filter"
             :onClick (fn [] (set-opened! true))}
-           ($ icon/enumFilter
+           #_($ icon/enumFilter
               {:value (if (nil? v) nil (boolean (not-empty v)))})
            (when opened? 
              ($ popup/Element
@@ -889,7 +882,7 @@
                        (set-opened! true)
                        #_(when opened? 
                            (.preventDefault e)))}
-           ($ icon/enumFilter
+           #_($ icon/enumFilter
               {:value (if (nil? v) nil (boolean (not-empty v)))})
            (when (and (not-empty options) opened?) 
              ($ popup/Element
@@ -968,7 +961,7 @@
             :className (str/join " " ["filter" (if (or start end) $filtered $unfiltered)])
             :onClick (fn []
                        (set-opened! true))}
-           ($ icon/timeFilter
+           #_($ icon/timeFilter
               {:value (if (nil? v) nil (boolean (not-empty v)))})
            (when opened? 
              ($ popup/Element
@@ -988,7 +981,7 @@
                                   {:type :table.column/filter
                                    :column column
                                    :value nil}))}
-                    ($ icon/clear)))
+                    #_($ icon/clear)))
                 ($ e/period-calendar
                    {:value (or v [nil nil])
                     :onChange (fn [v]

@@ -430,7 +430,6 @@
                (set-offset! 0))]
        (hooks/use-effect
          [@body]
-         (.log js/console "BODY IS " @body)
          (when @body (.addEventListener @body "scroll" check-offset))
          (fn []
            (when @body (.removeEventListener @body "scroll" check-offset))))

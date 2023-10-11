@@ -27,7 +27,6 @@
 (comment
   (file-seq (io/file "src"))
   (io/resource "neyho")
-  *classpath*
   (def s (ZipInputStream. (io/input-stream (io/resource "shadow/css"))))
   (.available s)
   (.getNextEntry s)

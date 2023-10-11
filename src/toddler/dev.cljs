@@ -23,7 +23,6 @@
     [toddler.popup :as popup]
     [toddler.dropdown :as dropdown]
     ["react" :as react]
-    ["toddler-icons" :as icon]
     [toddler.app :as app]
     [toddler.i18n :as i18n]
     [shadow.css :refer [css]]
@@ -48,7 +47,7 @@
     (d/div
       {:class [$component
                (when selected? "selected")]}
-      ($ icon/selectedRow {:className "icon"})
+      ; ($ icon/selectedRow {:className "icon"})
       (d/a
         {:className "name"
          :onClick (fn [] (set-query! (assoc query :rendered (:key component))))}
@@ -111,28 +110,22 @@
              :area-position #{:bottom :center}
              :onChange (fn [v] (set-user! assoc-in [:settings :locale] v))})]
       ;;
-      (provider
-        {:context dropdown/*dropdown*
-         :value dropdown}
-        (provider
-          {:context popup/*area-position*
-           :value [area-position set-area-position!]}
-          ($ popup/Area
-             {:ref area
-              :class (css :flex :items-center :font-bold)}
-             (d/button
-               {:onClick toggle!
-                :class [(css
-                          :toddler/menu-link
-                          :items-center
-                          ["&:hover" :toddler/menu-link-selected])
-                        (when opened (css :toddler/menu-link-selected))]}
-               (str/upper-case (name locale)))
-             ($ dropdown/Popup
-                {:className "dropdown-popup"
-                 :preference popup-preference
-                 :render/option e/dropdown-option
-                 :render/wrapper e/dropdown-wrapper})))))))
+      ($ popup/Area
+         {:ref area
+          :class (css :flex :items-center :font-bold)}
+         (d/button
+           {:onClick toggle!
+            :class [(css
+                      :toddler/menu-link
+                      :items-center
+                      ["&:hover" :toddler/menu-link-selected])
+                    (when opened (css :toddler/menu-link-selected))]}
+           (str/upper-case (name locale)))
+         ($ dropdown/Popup
+            {:className "dropdown-popup"
+             :preference popup-preference
+             :render/option e/dropdown-option
+             :render/wrapper e/dropdown-wrapper})))))
 
 (defnc header
   [_ _ref]
@@ -235,33 +228,27 @@
        (provider
          {:context *components*
           :value components}
-         (provider
-           {:context app/*user*
-            :value [user set-user!]}
-           (provider
-             {:context app/*layout*
-              :value layout}
-             ($ UI
-                {:components default/components}
-                ($ popup/Container
-                   ($ window/DimensionsProvider
+         ($ UI
+            {:components default/components}
+            ($ popup/Container
+               ($ window/DimensionsProvider
+                  (d/div
+                    {:className $playground}
+                    ($ navbar {:ref _navbar})
+                    (let [header-height 50
+                          header-width (- (:width window) (get-in layout [:navigation :width]))
+                          content-height (- (:height window) (get-in layout [:header :height]))
+                          content-width (- (:width window) (get-in layout [:navigation :width]))]
                       (d/div
-                        {:className $playground}
-                        ($ navbar {:ref _navbar})
-                        (let [header-height 50
-                              header-width (- (:width window) (get-in layout [:navigation :width]))
-                              content-height (- (:height window) (get-in layout [:header :height]))
-                              content-width (- (:width window) (get-in layout [:navigation :width]))]
-                          (d/div
-                            {:className "content"}
-                            ($ header
-                               {:ref _header
-                                :style {:width header-width 
-                                        :height header-height}})
-                            ($ content
-                               {:ref _content
-                                :style {:height content-height 
-                                        :width content-width}})))))))))))))
+                        {:className "content"}
+                        ($ header
+                           {:ref _header
+                            :style {:width header-width 
+                                    :height header-height}})
+                        ($ content
+                           {:ref _content
+                            :style {:height content-height 
+                                    :width content-width}})))))))))))
 
 
 

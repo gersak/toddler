@@ -373,13 +373,13 @@
          container-height :height} (layout/use-container-dimensions)
         rows (use-rows)
         table-width (use-table-width)
-        style {:minWidth table-width}
+        style {:minWidth table-width
+               :minHeight container-height}
         className (str/join " "
                             (cond-> ["tbody"]
                               className (conj className)
                               (string? class) (conj class)
                               (sequential? class) (into class)))]
-    (println "BODY ROWS: " (count rows))
     (when (and container-width container-height)
       ($ ui/simplebar
          {:key :tbody/simplebar

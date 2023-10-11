@@ -21,8 +21,7 @@
     [toddler.multiselect
      :refer [use-multiselect]]
     [toddler.ui :as ui]
-    [toddler.popup :as popup]
-    ["toddler-icons" :as icon]))
+    [toddler.popup :as popup]))
 
 
 (defnc field
@@ -276,7 +275,7 @@
               (d/span
                 {:class (cond-> [$decorator]
                           opened (conj "opened"))}
-                ($ icon/dropdownDecorator))))))))
+                #_($ icon/dropdownDecorator))))))))
 
 
 (defnc multiselect-field
@@ -401,7 +400,7 @@
                              (.preventDefault e)
                              (onChange nil)
                              (set-opened! false))}
-                 ($ icon/clear))))))))
+                 #_($ icon/clear))))))))
 
 
 (defnc timestamp-field
@@ -510,7 +509,7 @@
                              (.preventDefault e)
                              (onChange nil)
                              (set-opened! false))}
-                 ($ icon/clear))))))))
+                 #_($ icon/clear))))))))
 
 
 (defnc timestamp-period-field
@@ -651,7 +650,7 @@
                  (d/span
                    {:class (cond-> [$decorator]
                              opened (conj "opened"))}
-                   ($ icon/dropdownDecorator)))))))))
+                   #_($ icon/dropdownDecorator)))))))))
 
 
 (defnc IdentityMultiselectOption
@@ -827,7 +826,7 @@
                           (.stopPropagation e)
                           (.preventDefault e)
                           (onChange nil))}
-              ($ icon/clear)))))))
+              #_($ icon/clear)))))))
 
 
 (def components

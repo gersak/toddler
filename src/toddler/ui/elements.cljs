@@ -21,8 +21,7 @@
     [toddler.date :as date]
     [toddler.scroll :as scroll]
     [toddler.popup :as popup]
-    [toddler.provider :refer [ExtendUI UI]]
-    ["toddler-icons" :as icon]))
+    [toddler.provider :refer [ExtendUI UI]]))
 
 
 (defnc simplebar
@@ -156,7 +155,7 @@
                (if value $active $inactive)
                (when disabled $disabled)]
        & (dissoc props :value)}
-      ($ (case value
+      #_($ (case value
            nil icon/checkboxDefault
            icon/checkbox)))))
 
@@ -702,7 +701,7 @@
           {:className "header"}
           (d/div
             {:className "years"}
-            ($ icon/previous
+            #_($ icon/previous
                {:onClick on-prev-month
                 :className "button"})
             ($ calendar-year-dropdown
@@ -713,7 +712,7 @@
             ($ calendar-month-dropdown
                {:value month
                 :onChange on-month-change})
-            ($ icon/next
+            #_($ icon/next
                {:onClick on-next-month
                 :className "button"}))))
       (d/div

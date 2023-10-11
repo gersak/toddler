@@ -1,7 +1,7 @@
 (ns toddler.elements.table.theme
   (:require
    clojure.string
-   [toddler.theme
+   #_[toddler.theme
     :refer [pastel-green
             red
             saturated-teal
@@ -18,6 +18,22 @@
             interactions-drop-on-active]]
    [helix.styled-components :as sc :refer [--themed]]
    [helix.placenta.util :refer [deep-merge]]))
+
+
+(def pastel-green nil)
+(def red nil)
+(def saturated-teal nil)
+(def yellow nil )
+(def light-gray nil)
+(def disabled nil)
+(def green nil)
+(def color nil)
+(def asphalt nil)
+(def dark-asphalt nil)
+(def level nil)
+(def gray nil)
+(def interactions-button nil)
+(def interactions-drop-on-active nil)
 
 
 (letfn [(--themed-action 

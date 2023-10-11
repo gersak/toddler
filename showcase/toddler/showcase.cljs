@@ -3,10 +3,11 @@
    ["react-dom/client" :refer [createRoot]]
    [toddler.dev :as dev]
    [helix.core :refer [$]]
-   toddler.showcase.calendar
-   toddler.showcase.fields
-   toddler.showcase.table
-   toddler.showcase.avatar))
+   ; toddler.showcase.calendar
+   ; toddler.showcase.fields
+   ; toddler.showcase.table
+   ; toddler.showcase.avatar
+   ))
 
 
 (.log js/console "Loaded showcase!")
@@ -21,4 +22,4 @@
     (when-not @root
       (reset! root ^js (createRoot target)))
     (.log js/console "Rendering playground")
-    (.render ^js @root ($ dev/playground))))
+    #_(.render ^js @root ($ dev/playground))))

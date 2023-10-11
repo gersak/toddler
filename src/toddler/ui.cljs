@@ -6,10 +6,6 @@
     [helix.core :refer [create-context]]))
 
 
-(def ^js __components__ (create-context))
-(def forward-ref react/forwardRef)
-
-
 (declare avatar row column form checkbox
          button simplebar popup option input clear
          field wrapper discard dropdown img header identity tooltip
@@ -21,7 +17,15 @@
          table-row table-header-row enum-header currency-header boolean-header text-header
          user-header timestamp-header plain-header boolean-cell integer-cell float-cell
          text-cell enum-cell currency-cell hash-cell uuid-cell identity-cell
-         timestamp-cell expand-cell delete-cell)
+         timestamp-cell expand-cell delete-cell forward-ref)
+
+
+
+
+(def ^js __components__ (create-context))
+
+
+(def forward-ref react/forwardRef)
 
 
 (defcomponent avatar :avatar)

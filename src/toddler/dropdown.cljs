@@ -279,6 +279,7 @@
 
 (defnc Popup
   [{:keys [preference]
+    :or {preference [#{:bottom :left} #{:top :left}]}
     :as props}]
   (let [{:keys [options
                 popup
@@ -290,7 +291,7 @@
          {:ref popup
           :items options
           :preference preference
-          & (select-keys props [:className :class])}
+          & (select-keys props [:style :className :class])}
          (c/children props)))))
 
 
