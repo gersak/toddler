@@ -123,15 +123,16 @@
             :else placeholder))))))
 
 
-(defnc TextAreaElement [{:keys [value
-                                placeholder
-                                onChange
-                                onFocus
-                                onBlur
-                                className]
-                         :or {onChange identity}
-                         :as props} _ref]
+(defnc TextAreaElement
   {:wrap [(react/forwardRef)]}
+  [{:keys [value
+           placeholder
+           onChange
+           onFocus
+           onBlur
+           className]
+    :or {onChange identity}
+    :as props} _ref]
   (let [[[width height] set-size!] (hooks/use-state nil)
         [dummy-style set-dummy-style!] (hooks/use-state nil)
         ; [{:keys [height style]} update-state!] (hooks/use-state nil)

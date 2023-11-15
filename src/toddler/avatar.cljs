@@ -147,6 +147,7 @@
 
 (defn stage->base64
   [stage]
+  (.log js/console "STAGE: " @stage)
   (let [[layer1 layer2] (.-children @stage)
         [_ ^js transformer] ^js (.-children layer1)
         frame ^js (.-children layer2)]

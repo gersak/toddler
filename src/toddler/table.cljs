@@ -337,33 +337,33 @@
                    {:width container-width
                     :maxHeight 500}
                    (empty? rows) (assoc :visible "hidden"))}
-         ($ ui/row
-            {:key :thead/row
-             :style style
-             :className "trow"}
-            (map
-              (fn [{a :attribute
-                    idx :idx
-                    render :header
-                    style :style
-                    p :cursor
-                    :as column}]
-                (let [w (get style :width 100)]
-                  (d/div
-                    {:key idx
-                     :style (merge style
-                                   {:display "flex"
-                                    :flex (str w  \space 0 \space "auto")
-                                    :min-width w
-                                    :width w})}
-                    (when render
-                      ($ render
-                         {:key (if (nil? p) a
-                                 (if (keyword? p) p
-                                   (str/join "->" (map name (not-empty p)))))
-                          :className "th"
-                          :column column})))))
-              (remove :hidden columns)))))))
+         (d/div
+           {:key :thead/row
+            :style style
+            :className "trow"}
+           (map
+             (fn [{a :attribute
+                   idx :idx
+                   render :header
+                   style :style
+                   p :cursor
+                   :as column}]
+               (let [w (get style :width 100)]
+                 (d/div
+                   {:key idx
+                    :style (merge style
+                                  {:display "flex"
+                                   :flex (str w  \space 0 \space "auto")
+                                   :min-width w
+                                   :width w})}
+                   (when render
+                     ($ render
+                        {:key (if (nil? p) a
+                                (if (keyword? p) p
+                                  (str/join "->" (map name (not-empty p)))))
+                         :className "th"
+                         :column column})))))
+             (remove :hidden columns)))))))
 
 
 (defnc Body

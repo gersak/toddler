@@ -391,7 +391,13 @@
 
 
 (defhook use-outside-action
+  ([area handler]
+   (use-outside-action area area handler))
+  ([area popup handler]
+   (use-outside-action true area popup handler))
   ([opened area popup handler]
+   (use-outside-action opened area popup handler ["mousedown" "wheel"]))
+  ([opened area popup handler events]
     (hooks/use-effect
       [opened]
       (when opened
@@ -407,11 +413,11 @@
                     :else nil))]
           (async/go
             (async/<! (async/timeout 100))
-            (.addEventListener js/document "click" handle)
-            (.addEventListener js/document "wheel" handle))
+            (doseq [event events]
+              (.addEventListener js/document event handle)))
           (fn []
-            (.removeEventListener js/document "click" handle)
-            (.removeEventListener js/document "wheel" handle)))))))
+            (doseq [event events]
+              (.removeEventListener js/document event handle))))))))
 
 
 (defnc Container

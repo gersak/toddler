@@ -6,8 +6,8 @@
     [helix.core :refer [create-context]]))
 
 
-(declare avatar row column form checkbox
-         button simplebar popup option input clear
+(declare avatar row column form checkbox drawer tab
+         button buttons simplebar popup option input clear
          field wrapper discard dropdown img header identity tooltip
          autosize-input idle-input action checklist card card-action
          card-actions calendar-year-dropdown calendar-day calendar-week calendar-month calendar-time
@@ -25,7 +25,7 @@
 (def ^js __components__ (create-context))
 
 
-(def forward-ref react/forwardRef)
+(def forward-ref ^js react/forwardRef)
 
 
 (defcomponent avatar :avatar)
@@ -35,6 +35,7 @@
 (defcomponent form :form)
 (defcomponent checkbox :checkbox)
 (defcomponent button :button)
+(defcomponent buttons :buttons)
 (defcomponent simplebar :simplebar)
 (defcomponent popup :popup)
 (defcomponent option :option)
@@ -50,6 +51,7 @@
 (defcomponent identity :identity)
 (defcomponent tooltip :tooltip)
 (defcomponent autosize-input :input/autosize)
+(defcomponent idle-input :input/idle)
 (defcomponent action :action)
 (defcomponent checklist :checklist)
 (defcomponent drawer :drawer)
@@ -91,6 +93,7 @@
 (defcomponent float-field :field/float)
 (defcomponent currency-field :field/currency)
 (defcomponent input-field :field/input)
+(defcomponent password-field :field/password)
 (defcomponent dropdown-field :field/dropdown)
 (defcomponent multiselect-field :field/multiselect)
 (defcomponent timestamp-field :field/timestamp)

@@ -26,6 +26,7 @@
   []
   (hooks/use-context app/url))
 
+
 (defhook use-graphql-url
   "Returns GraphQL endpoint URL"
   []
@@ -378,37 +379,49 @@
   ([]
     (use-dimensions (hooks/use-ref nil)))
   ([node]
-    (let [observer (hooks/use-ref nil)
-          [dimensions set-dimensions!] (hooks/use-state nil)
-          resize-idle-service (hooks/use-ref
-                                (make-idle-service
-                                  50
-                                  (fn handle [entries]
-                                    (let [[_ entry] (reverse entries)
-                                          content-rect (.-contentRect entry)
-                                          dimensions {:width (.-width content-rect)
-                                                      :height (.-height content-rect)
-                                                      :top (.-top content-rect)
-                                                      :left (.-left content-rect)
-                                                      :right (.-right content-rect)
-                                                      :bottom (.-bottom content-rect)
-                                                      :x (.-x content-rect)
-                                                      :y (.-y content-rect)}]
-                                      (set-dimensions! dimensions)))))]
-      (hooks/use-effect
-        :always
-        (when (and (some? @node) (nil? dimensions))
-          (letfn [(reset [[entry]]
-                    (async/put! @resize-idle-service entry))]
-            (reset! observer (js/ResizeObserver. reset))
-            (.observe @observer @node)
-            (set-dimensions! (util/bounding-client-rect @node))
-            nil)))
-      (hooks/use-effect
-        :once
-        (fn []
-          (when @observer (.disconnect @observer))))
-      [node dimensions])))
+   (use-dimensions node :box))
+  ([node sizing]
+   (let [observer (hooks/use-ref nil)
+         [dimensions set-dimensions!] (hooks/use-state nil)
+         resize-idle-service (hooks/use-ref
+                               (make-idle-service
+                                 50
+                                 (case sizing
+                                   ;;
+                                   :content 
+                                   (fn handle [entries]
+                                     (let [[_ entry] (reverse entries)
+                                           content-rect (.-contentRect entry)
+                                           dimensions {:width (.-width content-rect)
+                                                       :height (.-height content-rect)
+                                                       :top (.-top content-rect)
+                                                       :left (.-left content-rect)
+                                                       :right (.-right content-rect)
+                                                       :bottom (.-bottom content-rect)
+                                                       :x (.-x content-rect)
+                                                       :y (.-y content-rect)}]
+                                       (set-dimensions! dimensions)))
+                                   ;; default
+                                   (fn handle [entries]
+                                     (let [[_ entry] (reverse entries)
+                                           [box-size] (.-borderBoxSize entry)
+                                           dimensions {:width (.-inlineSize box-size) 
+                                                       :height (.-blockSize box-size) }]
+                                       (set-dimensions! dimensions))))))]
+     (hooks/use-effect
+       :always
+       (when (and (some? @node) (nil? dimensions))
+         (letfn [(reset [[entry]]
+                   (async/put! @resize-idle-service entry))]
+           (reset! observer (js/ResizeObserver. reset))
+           (.observe @observer @node)
+           (set-dimensions! (util/bounding-client-rect @node))
+           nil)))
+     (hooks/use-effect
+       :once
+       (fn []
+         (when @observer (.disconnect @observer))))
+     [node dimensions])))
 
 
 
