@@ -8,10 +8,10 @@
 
 (declare avatar row column form checkbox drawer tab
          button buttons simplebar popup option input clear
-         field wrapper discard dropdown img header identity tooltip
-         autosize-input idle-input action checklist card card-action
+         field wrapper discard dropdown img tag header identity tooltip
+         textarea autosize-input idle-input action checklist card card-action
          card-actions calendar-year-dropdown calendar-day calendar-week calendar-month calendar-time
-         calendar search-field identity-field identity-multiselect-field text-field integer-field
+         calendar calendar-period search-field identity-field identity-multiselect-field text-field integer-field
          float-field currency-field input-field dropdown-field multiselect-field timestamp-field
          timestamp-period-field date-field date-period-field boolean-field checklist-field table
          table-row table-header-row enum-header currency-header boolean-header text-header
@@ -47,11 +47,13 @@
 (defcomponent discard :discard)
 (defcomponent dropdown :dropdown)
 (defcomponent img :img)
+(defcomponent tag :tag)
 (defcomponent header :header)
 (defcomponent identity :identity)
 (defcomponent tooltip :tooltip)
-(defcomponent autosize-input :input/autosize)
 (defcomponent idle-input :input/idle)
+(defcomponent autosize-input :input/autosize)
+(defcomponent textarea :textarea)
 (defcomponent action :action)
 (defcomponent checklist :checklist)
 (defcomponent drawer :drawer)
@@ -81,6 +83,7 @@
 (defcomponent calendar-month :calendar/month)
 (defcomponent calendar-time :calendar/time)
 (defcomponent calendar :calendar)
+(defcomponent calendar-period :calendar/period)
 
 
 (defcomponent search-field :field/search)

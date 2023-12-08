@@ -33,7 +33,7 @@
      (assert (keyword? locale) (str "Locale shoudld be keyword: " (pr-str locale)))
      (if-let [w (get-in @translations [this locale])]
        w
-       (i18n/translate this :default)))))
+       (i18n/translate this)))))
 
 
 (comment

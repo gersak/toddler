@@ -403,11 +403,12 @@
       (when opened
         (letfn [(handle [e]
                   (cond
-                    (and (some? @area) (.contains @area (.-target e))) nil
+                    (and (some? area) (some? @area) (.contains @area (.-target e))) nil
                     ;; When clicke on popup do nothing
-                    (and (some? @popup) (.contains @popup (.-target e))) nil
+                    (and (some? popup) (some? @popup) (.contains @popup (.-target e))) nil
                     ;; Else call outside action handler
-                    (and (some? @area) (some? @popup))
+                    (and (some? area) (some? @area)
+                         (some? popup) (some? @popup))
                     (handler e)
                     ;;
                     :else nil))]
