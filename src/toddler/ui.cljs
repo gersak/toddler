@@ -106,6 +106,7 @@
 (defcomponent boolean-field :field/boolean)
 (defcomponent checklist-field :field/checklist)
 (defcomponent idle-field :field/idle)
+(defcomponent copy-field :field/copy)
 
 
 (defcomponent table :table)

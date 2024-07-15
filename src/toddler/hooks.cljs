@@ -267,27 +267,37 @@
    (assert (fn? f) "Function not provided. No point if no action is taken on idle timeout.")
    (let [idle-channel (async/chan (async/sliding-buffer 2))]
      ;; When some change happend
-     (async/go-loop [v (async/<! idle-channel)]
-       (if (nil? v)
-         :IDLED
-         ;; If not nil new value received and now idle handling should begin
-         (let [aggregated-values
-               (loop [[value _]
-                      (async/alts!
-                        [idle-channel (async/go
-                                        (async/<! (async/timeout period))
-                                        ::TIMEOUT)])
-                      r [v]]
-                 (if (or
-                       (= ::TIMEOUT value)
-                      (nil? value))
-                   (conj r value)
-                   (recur (async/alts! [idle-channel (async/go (async/<! (async/timeout period)) ::TIMEOUT)]) (conj r value))))]
-           ;; Apply function and if needed recur
-           (f aggregated-values)
-           (if (nil? (last aggregated-values))
-             nil
-             (recur (async/<! idle-channel))))))
+     (async/go
+       (loop [v (async/<! idle-channel)]
+         ; (.trace js/console "Iddling: " )
+         (if (nil? v)
+           :IDLED
+           ;; If not nil new value received and now idle handling should begin
+           (let [aggregated-values; [v]
+                 (loop [[value _] (async/alts!
+                                    [idle-channel
+                                     (async/go
+                                       (async/<! (async/timeout period))
+                                       ::TIMEOUT)])
+                        r [v]]
+                   (if (or
+                         (= ::TIMEOUT value)
+                         (nil? value))
+                     ;; Return aggregated values
+                     (conj r value)
+                     ;; Otherwise wait for next value in idle-channel
+                     ;; and recur
+                     (recur (async/alts!
+                              [idle-channel
+                               (async/go
+                                 (async/<! (async/timeout period))
+                                 ::TIMEOUT)])
+                            (conj r value))))]
+             ;; Apply function and if needed recur
+             (f aggregated-values)
+             (if (nil? (last aggregated-values))
+               nil
+               (recur (async/<! idle-channel)))))))
      idle-channel)))
 
 
@@ -373,6 +383,28 @@
   (hooks/use-context app/window))
 
 
+(defhook use-resize-observer
+  "Hook returns ref that should be attached to component and
+  second result dimensions of bounding client rect"
+  ([node f]
+   (let [observer (hooks/use-ref nil)
+         current-size (hooks/use-ref nil)]
+     (hooks/use-effect
+       [node]
+       (when (some? node)
+         (letfn [(reset [[entry]]
+                   (let [entry-target (.-target entry)
+                         rect (util/bounding-client-rect entry-target)]
+                     (when (not= @current-size rect)
+                       (reset! current-size rect)
+                       (f rect))))]
+           (reset! observer (js/ResizeObserver. reset))
+           (.observe @observer node)
+           nil))
+       (fn [] (when @observer (.disconnect @observer))))
+     node)))
+
+
 (defhook use-dimensions
   "Hook returns ref that should be attached to component and
   second result dimensions of bounding client rect"
@@ -385,7 +417,7 @@
          [dimensions set-dimensions!] (hooks/use-state nil)
          resize-idle-service (hooks/use-ref
                                (make-idle-service
-                                 50
+                                 20
                                  (case sizing
                                    ;;
                                    :content 
@@ -590,28 +622,28 @@
   toddler toddler.app/signal-publisher"
   [topic handler]
   (hooks/use-effect
-   :once
-   (let [c (async/chan 10)]
-     (async/sub app/signal-publisher topic c)
-     (async/go-loop []
-       (let [v (async/<! c)]
-         (when v
-           (handler v)
-           (recur))))
-     (fn [] (async/close! c)))))
+    :once
+    (let [c (async/chan 10)]
+      (async/sub app/signal-publisher topic c)
+      (async/go-loop []
+                     (let [v (async/<! c)]
+                       (when v
+                         (handler v)
+                         (recur))))
+      (fn [] (async/close! c)))))
 
 
 (defhook use-toddler-publisher
   "Function will forward all input data to global
   toddler.app/signal-channel. Data will be published
   through toddler.app/signal-publisher.
-  
+
   See `use-toddler-listener` for handling published signals"
   []
   (let [publisher (hooks/use-memo
-                   :once
-                   (fn [data]
-                     (async/put! app/signal-channel data)))]
+                    :once
+                    (fn [data]
+                      (async/put! app/signal-channel data)))]
     publisher))
 
 

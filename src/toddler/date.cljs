@@ -276,7 +276,7 @@
                end]
               ;; It is higher than end and start doesn't exist
               (and (> day-value end-value) (nil? start))
-              [(-> end-value vura/midnight vura/time->value)
+              [(-> end-value vura/midnight vura/value->time)
                (-> day-value vura/before-midnight vura/value->time)]
               ;; It is higher than end
               (> day-value end-value)
@@ -297,7 +297,9 @@
         (fn [day]
           (assoc day
                  :today (same today day)
-                 :selected (<= start-value (:value day) end-value)
+                 :selected (if (some? end-value)
+                             (<= start-value (:value day) end-value)
+                             (<= start-value (:value day)))
                  :period-start (when period-start (same day period-start))
                  :period-end (when period-end (same day period-end))))
         days))

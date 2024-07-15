@@ -150,9 +150,10 @@
       ; (add-notification ::warning "Wear protective clothing: Covering your skin with protective clothing such as hats, long sleeves, and pants can help reduce your risk of skin cancer and other sun-related skin damage")
       ; (add-notification ::success "The sun is an essential part of our lives, providing warmth and light that sustain all living things on Earth. Without the sun, there would be no life on our planet.")
       ; (add-notification ::error "prolonged exposure to the sun's ultraviolet (UV) rays can increase the risk of skin cancer, as well as cause sunburn, premature aging, and other skin damage.")
-      (async/go-loop [[new-notification _] (async/alts! 
-                                             [notification-channel
-                                              control-channel])]
+      (async/go-loop
+        [[new-notification _] (async/alts! 
+                                [notification-channel
+                                 control-channel])]
         (if (and
               (some? new-notification)
               (not= ::CLOSE new-notification))
@@ -200,17 +201,6 @@
 
 (comment
   
-  (go
-    (dotimes [n 5]
-      (async/<! (async/timeout 800))
-      (async/put!
-        notification-channel
-        {:type (rand-nth [:common/warning :common/success :common/error])
-         :visible? true
-         :hideable? true
-         :adding? true
-         :autohide 4000
-         :message (str "Message " n)})))
   (async/put!
     notification-channel
     {:type :common/warning

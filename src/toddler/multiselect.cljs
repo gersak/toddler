@@ -18,29 +18,25 @@
     [toddler.ui :as ui]))
 
 (defn get-available-options 
-  ([search value options search-fn]
-   (let [selected-values (set value)
-         options (map
-                   (fn [option] (if (contains? selected-values option)
-                                  (vary-meta option assoc ::selected? true)
-                                  option))
-                   (distinct options))
+  ([search options search-fn]
+   (let [options (distinct options)
          regex (when (not-empty search)
                  (re-pattern (apply str "(?i)" (clojure.string/replace search #"\s+" ".*"))))
+         ; _ (println "OPTIONS: " options)
          available-options (if regex
-                             (let [predicate (comp (partial re-find regex) search-fn)]
+                             (let [predicate (fn [v]
+                                               (when-let [text (search-fn v)]
+                                                 (re-find regex text)))]
+                               ;; Check if current search-fn matches some option
+                               ;; and if it does return all options
                                (if (some (comp #(= search %) search-fn) options)
                                  options
+                                 ;; Otherwise return filtered options
                                  (filter predicate options)))
                                options)]
      (if (empty? available-options) 
        (vec options)
        (vec available-options)))))
-
-
-(defn selected-option?
-  [option]
-  (boolean (::selected? (meta option))))
 
 
 (defn next-option  [cursor [option :as options]]
@@ -150,7 +146,7 @@
                     :top true
                     :center true
                     false) 
-        available-options (get-available-options search value options search-fn)
+        available-options (get-available-options search options search-fn)
         [ref-fn focus] (popup/use-focusable-items direction)]
     (hooks/use-effect
       [search]
@@ -261,13 +257,17 @@
   (let [{:keys [options
                 search-fn
                 ref-fn
+                value
                 remove!
                 select!]
          :or {search-fn str}} (hooks/use-context *dropdown*)
-        popup-position (hooks/use-context popup/*position*)]
+        popup-position (hooks/use-context popup/*position*)
+        is-selected? (hooks/use-memo
+                   [value]
+                   (set value))]
     (map
       (fn [option]
-        (let [selected (selected-option? option)]
+        (let [selected (is-selected? option)]
           ($ render
              {:key (search-fn option)
               :ref (ref-fn option)

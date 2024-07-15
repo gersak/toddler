@@ -254,7 +254,6 @@
 (defn computation-props [target el]
   (when-let [[top left right bottom] (util/window-element-position target)]
     (when-let [[_ _ _ _ popup-width popup-height] (util/get-element-rect el)]
-
       {:top top :left left :right right :bottom bottom
        :popup-width popup-width 
        :popup-height popup-height
@@ -463,15 +462,31 @@
         ;;
         el (hooks/use-ref nil)
         _el (or ref el)
+        observer (hooks/use-ref nil)
         target (hooks/use-context *area-element*)
         container-node (hooks/use-context *container*)]
-    (hooks/use-layout-effect
-      :always
-      (binding [*offset* offset] 
-        (let [_computed (compute-container-props target @_el preference)]
-          (when (not= computed _computed)
-            (set-state! _computed)
-            (when (ifn? onChange) (onChange _computed))))))
+    (letfn [(recalculate []
+              (binding [*offset* offset] 
+                (let [_computed (compute-container-props target @_el preference)]
+                  (when (not= computed _computed)
+                    (set-state! _computed)
+                    (when (ifn? onChange) (onChange _computed))))))]
+      ; (hooks/use-layout-effect
+          ;   :always
+          ;   (recalculate))
+      (hooks/use-effect
+        :always
+        (when (and (some? @_el) (not @observer))
+          (reset! observer (js/ResizeObserver. recalculate))
+          (.observe @observer @_el)
+          (let [_computed (compute-container-props target @_el preference)]
+            (when (not= computed _computed)
+              (set-state! _computed)
+              (when (ifn? onChange) (onChange _computed))))))
+      (hooks/use-effect
+        :once
+        (fn []
+          (when @observer (.disconnect @observer)))))
     (when (nil? container-node)
       (.error js/console "Popup doesn't know where to render. Specify popup container. I.E. instantiate toddler.elements.popup/Container"))
     (rdom/createPortal
@@ -483,14 +498,18 @@
            :value computed}
           (d/div
             {:ref #(reset! _el %)
-             :style (merge
-                      style
-                      {:top top :left left
-                       :position "fixed"
-                       :box-sizing "border-box"
-                       ;; TODO - add border box
-                       :zIndex "1000"
-                       :visibility (if computed "visible" "hidden")})
+             :style (cond->
+                      (merge
+                        style
+                        {:top top :left left
+                         :position "fixed"
+                         :box-sizing "border-box"
+                         :zIndex "1000"
+                         :visibility (if computed "visible" "hidden")})
+                      ;;
+                      (not (pos? (:popup-height computed)))
+                      (assoc :visibility "hidden"
+                             :opacity "0"))
              & (select-keys props [:class :className])}
             (c/children props))))
       @container-node)))

@@ -19,6 +19,37 @@
   ([k] (get (hooks/use-context app/layout) k)))
 
 
+(defhook use-m-columns
+  "Hook will return data distributed to columns-count number
+  of vectors, distributed by pattern that goes sequentialy through
+  original data sequence and appending to column = mod(idx, coulumn-count)"
+  [data columns-count]
+  (hooks/use-memo
+    [data columns-count]
+    (loop [[c & r :as data] (seq data)
+           idx 0
+           result (vec (take columns-count (repeat [])))]
+      (if (empty? data)
+        result
+        (recur r (mod (inc idx) columns-count) (update result idx conj c))))))
+
+
+(defhook use-columns-frame
+  ([{:keys [column-width container-width max-columns :padding-x]
+     :or {column-width 400
+          max-columns 4
+          padding-x 32}
+     :as props}]
+   (let [estimated-size (vura/round-number container-width (+ column-width padding-x) :floor)
+         column-count (hooks/use-memo
+                        [column-width container-width]
+                        (min (quot estimated-size column-width)
+                             max-columns))]
+     (assoc props
+            :estimated-width estimated-size
+            :column-count column-count))))
+
+
 (def ^:dynamic ^js *container* (create-context nil))
 (def ^:dynamic ^js *container-dimensions* (create-context nil))
 (def ^:dynamic ^js *container-style* (create-context nil))
