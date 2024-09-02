@@ -158,7 +158,7 @@
               dw (.-scrollWidth @dummy)]
           (when-not (< -5 (- th dh) 5)
             (set! (.. @input -style -height) (str dh "px"))
-            (set! (.. @input -style -width) (str dw "px"))))))
+            ))))
     (hooks/use-effect
       :once
       (when @input
@@ -171,8 +171,13 @@
                                  :padding-right :padding-bottom)))))
     (hooks/use-effect
       [value]
-      (when (not= value upstream-value)
+      (when (and #_initialized? (not= value upstream-value))
         (onChange (not-empty value))))
+    (hooks/use-effect
+      [upstream-value]
+      (when (not= upstream-value value)
+        (set-initialized! false)
+        (set-value! upstream-value)))
     (<>
       (d/textarea
         {:className className
@@ -184,11 +189,12 @@
              (dissoc :style :value :className :ref :onChange)
              (update :style merge {:overflow "hidden"}))})
       (when (or
+              true
               (not initialized?)
               focused?)
         (d/pre
           {:ref #(do
-                   (when-not initialized? (set-initialized! true))
+                   ;(when-not initialized? (set-initialized! true))
                    (reset! dummy %))
            :className className
            :style (merge
