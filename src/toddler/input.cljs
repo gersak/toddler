@@ -157,8 +157,7 @@
               dh (.-scrollHeight @dummy)
               dw (.-scrollWidth @dummy)]
           (when-not (< -5 (- th dh) 5)
-            (set! (.. @input -style -height) (str dh "px"))
-            ))))
+            (set! (.. @input -style -height) (str dh "px"))))))
     (hooks/use-effect
       :once
       (when @input
@@ -171,7 +170,7 @@
                                  :padding-right :padding-bottom)))))
     (hooks/use-effect
       [value]
-      (when (and #_initialized? (not= value upstream-value))
+      (when (not= value upstream-value)
         (onChange (not-empty value))))
     (hooks/use-effect
       [upstream-value]
@@ -181,7 +180,7 @@
     (<>
       (d/textarea
         {:className className
-         :onChange (fn [e] (set-value! (.. e -target -value))) 
+         :onChange (fn [e] (set-value! (when e (.. e -target -value)))) 
          :value (or value "")
          :ref #(reset! input %)
          & (->

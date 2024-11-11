@@ -234,13 +234,10 @@
 
 (defnc dropdown-field
   [props]
-  (let [[area-position set-area-position!] (hooks/use-state nil)
-        ;;
-        {:keys [input area toggle! opened] :as dropdown}
+  (let [{:keys [input area toggle! opened] :as dropdown}
         (use-dropdown
           (->
             props
-            (assoc :area-position area-position)
             (dissoc :className)))
         $wrapper (css
                    :flex
@@ -253,45 +250,38 @@
     (provider
       {:context dropdown/*dropdown*
        :value dropdown}
-      (provider
-        {:context popup/*area-position*
-         :value [area-position set-area-position!]}
-        ($ field
-           {:onClick (fn []
-                       (toggle!)
-                       (when @input (.focus @input)))
-            :empty? (nil? (:value props))
-            & props}
-           ($ field-wrapper
-              {:className $wrapper}
-              ($ popup/Area
-                 {:ref area
-                  & (select-keys props [:className])}
-                 ($ dropdown/Input {& props})
-                 ($ dropdown/Popup
-                    {:className "dropdown-popup"
-                     :render/option e/dropdown-option
-                     :render/wrapper e/dropdown-wrapper}))
-              (d/span
-                {:class (cond-> [$decorator]
-                          opened (conj "opened"))}
-                #_($ icon/dropdownDecorator))))))))
+      ($ field
+         {:onClick (fn []
+                     (toggle!)
+                     (when @input (.focus @input)))
+          :empty? (nil? (:value props))
+          & props}
+         ($ field-wrapper
+            {:className $wrapper}
+            ($ popup/Area
+               {:ref area
+                & (select-keys props [:className])}
+               ($ dropdown/Input {& props})
+               ($ dropdown/Popup
+                  {:className "dropdown-popup"
+                   :render/option e/dropdown-option
+                   :render/wrapper e/dropdown-wrapper}))
+            (d/span
+              {:class (cond-> [$decorator]
+                        opened (conj "opened"))}
+              #_($ icon/dropdownDecorator)))))))
 
 
 (defnc multiselect-field
   [{:keys [context-fn search-fn disabled]
     :or {search-fn str}
     :as props}]
-  (let [[area-position set-area-position!] (hooks/use-state nil)
-        {:keys [remove!
+  (let [{:keys [remove!
                 toggle!
                 options
                 new-fn
                 area]
-         :as multiselect} (use-multiselect
-                            (assoc props
-                                   :search-fn search-fn
-                                   :area-position area-position))
+         :as multiselect} (use-multiselect (assoc props :search-fn search-fn))
         $wrapper (css
                    :flex
                    :items-center
@@ -299,33 +289,30 @@
     (provider
       {:context dropdown/*dropdown*
        :value multiselect}
-      (provider
-        {:context popup/*area-position*
-         :value [area-position set-area-position!]}
-           ($ field
-              {:onClick (fn [] (toggle!))
-               :empty? (empty? (:value props))
-               & props}
-              ($ field-wrapper
-                 {:className $wrapper}
-                 (map
-                   (fn [option]
-                     ($ e/multiselect-option
-                       {:key (search-fn option)
-                        :value option
-                        :onRemove #(remove! option)
-                        :context (if disabled :stale
-                                   (when (fn? context-fn)
-                                     (context-fn option)))}))
-                   (:value props))
-                 (when (or (fn? new-fn) (not-empty options))
-                   ($ popup/Area
-                      {:ref area}
-                      ($ dropdown/Input {& props})
-                      ($ dropdown/Popup
-                         {:className "dropdown-popup"
-                          :render/option e/dropdown-option
-                          :render/wrapper e/dropdown-wrapper})))))))))
+      ($ field
+         {:onClick (fn [] (toggle!))
+          :empty? (empty? (:value props))
+          & props}
+         ($ field-wrapper
+            {:className $wrapper}
+            (map
+              (fn [option]
+                ($ e/multiselect-option
+                   {:key (search-fn option)
+                    :value option
+                    :onRemove #(remove! option)
+                    :context (if disabled :stale
+                               (when (fn? context-fn)
+                                 (context-fn option)))}))
+              (:value props))
+            (when (or (fn? new-fn) (not-empty options))
+              ($ popup/Area
+                 {:ref area}
+                 ($ dropdown/Input {& props})
+                 ($ dropdown/Popup
+                    {:className "dropdown-popup"
+                     :render/option e/dropdown-option
+                     :render/wrapper e/dropdown-wrapper}))))))))
 
 
 (def $clear
@@ -371,7 +358,7 @@
                  :spellCheck false
                  :auto-complete "off"
                  :disabled disabled})
-             (when opened
+             #_(when opened
                ($ popup/Element
                   {:ref popup
                    :className className 
@@ -468,7 +455,7 @@
                  :spellCheck false
                  :auto-complete "off"
                  :disabled disabled})
-             (when opened
+             #_(when opened
                ($ popup/Element
                   {:ref popup
                    :className className 
@@ -597,14 +584,11 @@
 
 (defnc identity-field
   [{:keys [className] :as props}]
-  (let [[area-position set-area-position!] (hooks/use-state nil)
-        ;;
-        {:keys [value input area toggle! opened] :as dropdown}
+  (let [{:keys [value input area toggle! opened] :as dropdown}
         (use-dropdown
           (->
             props
-            (assoc :area-position area-position
-                   :search-fn :name)
+            (assoc :search-fn :name)
             (dissoc :className)))
         $wrapper (css
                    :flex
@@ -618,39 +602,36 @@
     (provider
       {:context dropdown/*dropdown*
        :value dropdown}
-      (provider
-        {:context popup/*area-position*
-         :value [area-position set-area-position!]}
-        ($ field
-           {:onClick (fn []
-                       (toggle!)
-                       (when @input (.focus @input)))
-            :empty? (nil? (:value props))
-            & props}
-           ($ field-wrapper
-              {:className $wrapper}
-              ($ e/avatar
-                 {:className (css :mr-2
-                                  :border
-                                  :border-solid
-                                  :border-gray-500)
-                  :size :small}
-                 value)
-              ($ popup/Area
-                 {:ref area
-                  :className (str/join " " [className (css :grow
-                                                           :flex
-                                                           :items-center)])}
-                 ($ dropdown/Popup
-                    {:className "dropdown-popup"
-                     :render/option e/identity-dropdown-option
-                     :render/wrapper e/dropdown-wrapper})
-                 ($ dropdown/Input
-                    {:className (css :flex :grow) & props})
-                 (d/span
-                   {:class (cond-> [$decorator]
-                             opened (conj "opened"))}
-                   #_($ icon/dropdownDecorator)))))))))
+      ($ field
+         {:onClick (fn []
+                     (toggle!)
+                     (when @input (.focus @input)))
+          :empty? (nil? (:value props))
+          & props}
+         ($ field-wrapper
+            {:className $wrapper}
+            ($ e/avatar
+               {:className (css :mr-2
+                                :border
+                                :border-solid
+                                :border-gray-500)
+                :size :small}
+               value)
+            ($ popup/Area
+               {:ref area
+                :className (str/join " " [className (css :grow
+                                                         :flex
+                                                         :items-center)])}
+               ($ dropdown/Popup
+                  {:className "dropdown-popup"
+                   :render/option e/identity-dropdown-option
+                   :render/wrapper e/dropdown-wrapper})
+               ($ dropdown/Input
+                  {:className (css :flex :grow) & props})
+               (d/span
+                 {:class (cond-> [$decorator]
+                           opened (conj "opened"))}
+                 #_($ icon/dropdownDecorator))))))))
 
 
 (defnc IdentityMultiselectOption
@@ -668,16 +649,12 @@
   [{:keys [context-fn search-fn disabled]
     :or {search-fn str}
     :as props}]
-  (let [[area-position set-area-position!] (hooks/use-state nil)
-        {:keys [remove!
+  (let [{:keys [remove!
                 toggle!
                 options
                 new-fn
                 area]
-         :as multiselect} (use-multiselect
-                            (assoc props
-                                   :search-fn search-fn
-                                   :area-position area-position))
+         :as multiselect} (use-multiselect (assoc props :search-fn search-fn))
         $wrapper (css
                    :flex
                    :items-center
@@ -685,33 +662,30 @@
     (provider
       {:context dropdown/*dropdown*
        :value multiselect}
-      (provider
-        {:context popup/*area-position*
-         :value [area-position set-area-position!]}
-           ($ field
-              {:onClick (fn [] (toggle!))
-               :empty? (every? nil? (:value props))
-               & props}
-              ($ field-wrapper
-                 {:className $wrapper}
-                 (map
-                   (fn [option]
-                     ($ IdentityMultiselectOption
-                       {:key (search-fn option)
-                        :value option
-                        :onRemove #(remove! option)
-                        :context (if disabled :stale
-                                   (when (fn? context-fn)
-                                     (context-fn option)))}))
-                   (:value props))
-                 (when (or (fn? new-fn) (not-empty options))
-                   ($ popup/Area
-                      {:ref area}
-                      ($ dropdown/Input {& props})
-                      ($ dropdown/Popup
-                         {:className "dropdown-popup"
-                          :render/option e/identity-dropdown-option
-                          :render/wrapper e/dropdown-wrapper})))))))))
+      ($ field
+         {:onClick (fn [] (toggle!))
+          :empty? (every? nil? (:value props))
+          & props}
+         ($ field-wrapper
+            {:className $wrapper}
+            (map
+              (fn [option]
+                ($ IdentityMultiselectOption
+                   {:key (search-fn option)
+                    :value option
+                    :onRemove #(remove! option)
+                    :context (if disabled :stale
+                               (when (fn? context-fn)
+                                 (context-fn option)))}))
+              (:value props))
+            (when (or (fn? new-fn) (not-empty options))
+              ($ popup/Area
+                 {:ref area}
+                 ($ dropdown/Input {& props})
+                 ($ dropdown/Popup
+                    {:className "dropdown-popup"
+                     :render/option e/identity-dropdown-option
+                     :render/wrapper e/dropdown-wrapper}))))))))
 
 
 (defnc currency-field
@@ -721,14 +695,11 @@
     :or {onChange identity}}]
   (let [{:keys [currency amount]} value
         ;;
-        [area-position set-area-position!] (hooks/use-state nil)
-        ;;
         {:keys [input area toggle! close!] :as dropdown}
         (use-dropdown
           (->
             (hash-map
               :value currency
-              :area-position area-position
               :options ["EUR" "USD" "JPY" "AUD" "CAD" "CHF"]
               :onChange (fn [x] (onChange {:amount amount :currency x})))
             (dissoc :className)))
@@ -767,24 +738,21 @@
           (provider
             {:context dropdown/*dropdown*
              :value dropdown}
-            (provider
-              {:context popup/*area-position*
-               :value [area-position set-area-position!]}
-              ($ popup/Area
-                 {:ref area
-                  :className (css :flex :items-center)}
-                 (d/input
-                   {:value (or currency "")
-                    :disabled true
-                    :className (css
-                                 :w-8
-                                 :font-bold
-                                 :text-sm
-                                 :cursor-pointer)
-                    :read-only true})
-                 ($ dropdown/Popup
-                    {:render/option e/dropdown-option
-                     :render/wrapper e/dropdown-wrapper}))))
+            ($ popup/Area
+               {:ref area
+                :className (css :flex :items-center)}
+               (d/input
+                 {:value (or currency "")
+                  :disabled true
+                  :className (css
+                               :w-8
+                               :font-bold
+                               :text-sm
+                               :cursor-pointer)
+                  :read-only true})
+               ($ dropdown/Popup
+                  {:render/option e/dropdown-option
+                   :render/wrapper e/dropdown-wrapper})))
           (d/input
             {:ref input
              :value amount'

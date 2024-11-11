@@ -8,6 +8,16 @@
 (set! *warn-on-infer* true)
 
 
+(defn deep-merge
+  "Recursively merges maps."
+  [& maps]
+  (letfn [(m [& xs]
+            (if (some #(and (map? %) (not (record? %))) xs)
+              (apply merge-with m xs)
+              (last xs)))]
+    (reduce m maps)))
+
+
 (defn get-font-style [node]
   (when node
     (let [style (.getComputedStyle js/window node)]

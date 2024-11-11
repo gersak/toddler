@@ -16,12 +16,6 @@
 (def box (create-context))
 (def avatars (create-context))
 (def graphql-url (create-context))
-(.log js/console "Loading toddler.app")
-
-
-(defhook use-layout
-  ([] (hooks/use-context layout))
-  ([k] (get (hooks/use-context layout) k)))
 
 
 (defhook use-window [] (hooks/use-context window))

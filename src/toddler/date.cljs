@@ -4,7 +4,6 @@
     [vura.core :as vura]
     [helix.core :refer [defnc defhook create-context]]
     [helix.hooks :as hooks]
-    [helix.dom :as d]
     [toddler.hooks :as th]))
 
 

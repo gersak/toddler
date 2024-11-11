@@ -24,12 +24,8 @@
     "use-image": "^1.1.0"
   },
   "dependencies": {
-    "konva": "^8.3.13",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-is": "^18.2.0",
-    "react-konva": "^18.2.2",
-    "react-router-dom": "^6.4.2",
     "simplebar-react": "^2.4.3"
   }
 }

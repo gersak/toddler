@@ -64,8 +64,8 @@
 
 
 (defmethod render-notification :default
-  [{:keys [type]}]
-  (.error js/console "Unknown notifcation renderer for: " type))
+  [{:keys [type] :as message}]
+  (.error js/console "Unknown notifcation renderer for: " type message))
 
 
 (defn notification-reducer

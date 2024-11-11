@@ -51,15 +51,18 @@
      (str (indent-rest level) line)
      line)))
 
+
 (def generate-indent 
   (memoize
     (fn [level]
       (j (repeat level *indent*)))))
 
+
 (defn indent-lines [level lines]
   (str
     (generate-indent level)
     (j (str \newline (generate-indent level)) lines)))
+
 
 (defn indent [level text]
   (indent-lines level (clojure.string/split-lines text)))
@@ -79,6 +82,7 @@
     ;;
     :else (pr-str v)))
 
+
 (defn- map->graphql
   [this]
   (str 
@@ -90,6 +94,7 @@
          []
          this))
     \}))
+
 
 (defn- seq->graphql
   [this]
@@ -133,6 +138,7 @@
   (when (not-empty m) 
     (let [r (->graphql m)] 
       (subs r 1 (dec (count r))))))
+
 
 (defrecord GraphQLSelection [selection]
   GraphQLTransformProtocol
@@ -184,6 +190,7 @@
         (indent-lines *level* lines)
         (clojure.string/join " " lines)))))
 
+
 (defrecord GraphQLQuery [name alias selection args]
   GraphQLTransformProtocol
   (->graphql
@@ -213,6 +220,7 @@
            args'
            (when (not-empty selection) (->graphql (->GraphQLSelection selection))))))))
 
+
 (defrecord GraphQLMutation [name alias args selection]
   GraphQLTransformProtocol
   (->graphql
@@ -237,6 +245,7 @@
            name'
            args'
            (->graphql (->GraphQLSelection selection)))))))
+
 
 (defrecord GraphQLSubscription [name selection args]
   GraphQLTransformProtocol
@@ -266,10 +275,13 @@
            (or args' "")
            (if (not-empty selection) (str \{ selection' \}) ""))))))
 
+
 (defrecord GraphQLPayload [query operation variables])
+
 
 (defn wrap-queries [& queries]
   (str \{ \newline (clojure.string/join "" queries) \}))
+
 
 (defn wrap-mutations [& mutations]
   (if (not-empty *variable-bindings*)
@@ -344,6 +356,9 @@
                                          "Server couldn't process GraphQL query"
                                          {:query query
                                           :data data
+                                          :body (try
+                                                  (.parse js/JSON body)
+                                                  (catch js/Error _ body))
                                           :type :server-error})
                                    (let [raw-data (.parse js/JSON body)
                                          data (js->clj raw-data :keywordize-keys true)]
@@ -360,11 +375,16 @@
                                    403 (ex-info
                                          "Not authorized"
                                          {:type :not-authorized})
-                                   500 (ex-info
-                                         "Server couldn't process GraphQL query"
-                                         {:query query
-                                          :data data
-                                          :type :server-error})
+                                   500 (let [{[{:keys [message]}] :errors :as response}
+                                             (try
+                                               (js->clj (.parse js/JSON body) :keywordize-keys true)
+                                               (catch js/Error _ body))]
+                                         (ex-info
+                                           (or message "Server couldn't process GraphQL query")
+                                           {:query query
+                                            :data data
+                                            :response response 
+                                            :type :server-error}))
                                    (let [raw-data (.parse js/JSON body)
                                          data (js->clj raw-data :keywordize-keys true)]
                                      data))))

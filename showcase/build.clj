@@ -30,8 +30,7 @@
   (let [build-state
         (-> (cb/start)
             (cb/index-path (io/file "src") {})
-            (cb/index-path (io/file "showcase") {})
-            )]
+            (cb/index-path (io/file "showcase") {}))]
 
     (doseq [mod (:outputs build-state)
             {:keys [warning-type] :as warning} (:warnings mod)]

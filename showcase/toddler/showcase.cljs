@@ -2,11 +2,13 @@
   (:require
    ["react-dom/client" :refer [createRoot]]
    [toddler.dev :as dev]
-   [helix.core :refer [$]]
+   [helix.core :refer [$ defnc]]
+   [helix.hooks :as hooks]
    ; toddler.showcase.calendar
-   ; toddler.showcase.fields
+   [toddler.showcase.fields :refer [Fields]]
    ; toddler.showcase.table
    ; toddler.showcase.avatar
+   [toddler.router :as router]
    ))
 
 
@@ -16,10 +18,27 @@
 (defonce root (atom nil))
 
 
+(def components
+  [{:id :toddler.fields
+    :name :showcase.fields
+    :render Fields
+    :segment "fields"}
+   {:id :toddler.table 
+    :name :showcase.tables
+    :render nil
+    :segment "tables"}])
+
+
+(defnc Showcase
+  []
+  ($ router/Provider
+     ($ dev/playground {:components components})))
+
+
 (defn ^:dev/after-load start! []
   (.log js/console "Starting Toddler showcase!")
   (let [target ^js (.getElementById js/document "app")]
     (when-not @root
       (reset! root ^js (createRoot target)))
     (.log js/console "Rendering playground")
-    #_(.render ^js @root ($ dev/playground))))
+    (.render ^js @root ($ Showcase))))

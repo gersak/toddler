@@ -5,29 +5,28 @@
      :refer [defnc $ provider]]
     [helix.hooks :as hooks]
     [helix.dom :as d]
-    [toddler.dev.context
-     :refer [*components*]]
-    [toddler.router.dom :as router]
+    ; [toddler.dev.context
+    ;  :refer [*components*]]
+    [toddler.router :as router]
     [toddler.hooks
      :refer [use-user
              use-window-dimensions
              use-dimensions]]
     [toddler.i18n.default]
+    [toddler.app :as app]
     [toddler.ui :as ui]
     [toddler.ui.elements :as e]
     [toddler.provider :refer [UI]]
     [toddler.ui.components :as default]
-    [toddler.layout :as layout
-     :refer [use-layout]]
+    [toddler.hooks :as toddler]
+    [toddler.layout :as layout]
     [toddler.window :as window]
     [toddler.popup :as popup]
     [toddler.dropdown :as dropdown]
     ["react" :as react]
-    [toddler.app :as app]
     [toddler.i18n :as i18n]
     [shadow.css :refer [css]]
     [clojure.string :as str]))
-
 
 
 (defonce component-db (atom nil))
@@ -35,30 +34,30 @@
 
 (defnc component
   [{:keys [component]}]
-  (let [[{:keys [rendered] :as query} set-query!] (router/use-search-params)
-        selected? (= rendered (:key component))
+  (let [rendered? (router/use-rendered? (:id component))
+        path (router/use-go-to (:id component))
         $component (css :mx-3 :my-2
                         :flex
                         :items-center
                         ["& .name" :toddler/menu-link]
                         ["& .icon" :w-5 :text-transparent :mr-1]
                         ["&.selected .icon" :toddler/menu-link-selected]
-                        ["&.selected .name" :toddler/menu-link-selected])]
+                        ["&.selected .name" :toddler/menu-link-selected])
+        translate (toddler/use-translate)]
     (d/div
       {:class [$component
-               (when selected? "selected")]}
+               (when rendered? "selected")]}
       ; ($ icon/selectedRow {:className "icon"})
       (d/a
         {:className "name"
-         :onClick (fn [] (set-query! (assoc query :rendered (:key component))))}
-        (:name component)))))
-
+         :onClick #(path)}
+        (str (translate (:name component)))))))
 
 
 (defnc navbar
   [_ _ref]
   {:wrap [(react/forwardRef)]}
-  (let [components (hooks/use-context *components*)
+  (let [links (:children (router/use-component-tree))
         {:keys [height]} (use-window-dimensions)
         $navbar (css
                   :flex
@@ -87,10 +86,9 @@
            (map
              (fn [c]
                ($ component
-                 {:key (:key c)
-                  :component c}))
-             components))))))
-
+                  {:key (:id c)
+                   :component c}))
+             links))))))
 
 
 (let [popup-preference
@@ -98,58 +96,53 @@
        #{:bottom :right}]]
   (defnc LocaleDropdown
     []
-    (let [[area-position set-area-position!] (hooks/use-state #{:bottom :center})
+    (let [[{{locale :locale
+             :or {locale :en}} :settings} set-user!] (use-user)
           ;;
-          [{{locale :locale} :settings} set-user!] (use-user)
-          ;;
-          {:keys [area toggle! opened] :as dropdown}
+          {:keys [toggle! opened area] :as dropdown}
           (dropdown/use-dropdown
             {:value locale
              :options [:en :hr :fr :fa]
-             :search-fn name
+             :search-fn #(when % (name %))
              :area-position #{:bottom :center}
-             :onChange (fn [v] (set-user! assoc-in [:settings :locale] v))})]
+             :onChange (fn [v]
+                         (set-user! assoc-in [:settings :locale] v))})]
       ;;
-      ($ popup/Area
-         {:ref area
-          :class (css :flex :items-center :font-bold)}
-         (d/button
-           {:onClick toggle!
-            :class [(css
-                      :toddler/menu-link
-                      :items-center
-                      ["&:hover" :toddler/menu-link-selected])
-                    (when opened (css :toddler/menu-link-selected))]}
-           (str/upper-case (name locale)))
-         ($ dropdown/Popup
-            {:className "dropdown-popup"
-             :preference popup-preference
-             :render/option e/dropdown-option
-             :render/wrapper e/dropdown-wrapper})))))
+      (provider
+        {:context dropdown/*dropdown*
+         :value dropdown}
+        ($ popup/Area
+           {:ref area :class (css :flex :items-center :font-bold)}
+           (d/button
+             {:onClick toggle!
+              :class [(css
+                        :toddler/menu-link
+                        :items-center
+                        ["&:hover" :toddler/menu-link-selected])
+                      (when opened (css :toddler/menu-link-selected))]}
+             (str/upper-case (name locale)))
+           ($ dropdown/Popup
+              {:className "dropdown-popup"
+               :preference popup-preference}
+              ($ e/dropdown-wrapper
+                 ($ dropdown/Options
+                    {:render e/dropdown-option}))))))))
+
 
 (defnc header
-  [_ _ref]
+  [{:keys [style]} _ref]
   {:wrap [(react/forwardRef)]}
-  (let [
-        window (use-window-dimensions)
-        layout (use-layout)
-        header-height 50
-        header-width (- (:width window) (get-in layout [:navbar :width]))
-        $header (css
+  (d/div
+    {:className (css
                   :flex
                   :h-15
                   :flex-row-reverse
                   :pr-3
                   :box-border
-                  {:color "#2c2c2c"})]
-    (d/div
-      {:className $header 
-       :ref _ref 
-       :style {:height header-height
-               :width header-width}}
-      ($ LocaleDropdown))))
-
-
+                  {:color "#2c2c2c"})
+     :ref _ref 
+     :style style}
+    ($ LocaleDropdown)))
 
 
 (defnc empty-content
@@ -167,25 +160,12 @@
           "Select a component from the list"))))
 
 
-
 (defnc content
-  []
+  [{:keys [style]}]
   {:wrap [(react/forwardRef)]}
-  (let [components (hooks/use-context *components*)
-        [{:keys [rendered]}] (router/use-search-params)
-        render  (some
-                  (fn [c]
-                    (when (= (:key c) rendered)
-                      (:render c)))
-                  components)
-        window (use-window-dimensions)
-        layout (use-layout)
-        content-height (- (:height window) (get-in layout [:header :height]) 10)
-        content-width (- (:width window) (get-in layout [:navbar :width]) 10)
-        content-dimensions (hooks/use-memo
-                             [content-height content-width]
-                             {:width content-width
-                              :height content-height})
+  (let [[{:keys [rendered]}] (router/use-query)
+        rendered-components (router/use-url->components)
+        render (last (filter some? (map :render rendered-components))) 
         $content (css
                    :bg-neutral-100
                    :border-teal-600
@@ -193,24 +173,21 @@
     (if render
       (provider
         {:context layout/*container-dimensions*
-         :value content-dimensions}
+         :value style}
         (d/div
-          {:style
-           {:height content-height
-            :width content-width}
+          {:style style 
            :class [$content "render-zone"]}
           ($ render)))
       ($ empty-content))))
 
 
-(defnc playground
+(defnc playground-layout
   []
   (let [[components set-components!] (hooks/use-state @component-db)
-        [user set-user!] (hooks/use-state {:settings {:locale i18n/*locale*}})
         window (use-window-dimensions)
-        [{_navbar :navbar
-          _header :header
-          _content :content} layout] (use-dimensions [:navbar :header :content])
+        [_navbar {navigation-width :width}] (use-dimensions)
+        [_header] (use-dimensions)
+        [_content {content-height :height}] (use-dimensions)
         $playground (css
                       :flex
                       ["& .content" :flex :flex-col])]
@@ -224,32 +201,38 @@
           (set-components! components)))
       (fn []
         (remove-watch component-db ::playground)))
-    ($ router/BrowserRouter
-       (provider
-         {:context *components*
-          :value components}
-         ($ UI
-            {:components default/components}
-            ($ popup/Container
-               ($ window/DimensionsProvider
-                  (d/div
-                    {:className $playground}
-                    ($ navbar {:ref _navbar})
-                    (let [header-height 50
-                          header-width (- (:width window) (get-in layout [:navigation :width]))
-                          content-height (- (:height window) (get-in layout [:header :height]))
-                          content-width (- (:width window) (get-in layout [:navigation :width]))]
-                      (d/div
-                        {:className "content"}
-                        ($ header
-                           {:ref _header
-                            :style {:width header-width 
-                                    :height header-height}})
-                        ($ content
-                           {:ref _content
-                            :style {:height content-height 
-                                    :width content-width}})))))))))))
+    ($ UI
+       {:components default/components}
+       ($ popup/Container
+          ($ window/DimensionsProvider
+             (d/div
+               {:className $playground}
+               ($ navbar {:ref _navbar})
+               (let [header-height 50
+                     header-width (- (:width window) navigation-width)
+                     content-height (- (:height window) content-height)
+                     content-width (- (:width window) navigation-width)]
+                 (d/div
+                   {:className "content"}
+                   ($ header
+                      {:ref _header
+                       :style {:width header-width 
+                               :height header-height}})
+                   ($ content
+                      {:ref _content
+                       :style {:height content-height 
+                               :width content-width}})))))))))
 
+
+(defnc playground
+  [{:keys [components]}]
+  (let [[user set-user!] (hooks/use-state {:settings {:locale i18n/*locale*}})]
+    (router/use-component-children ::router/ROOT components)
+    ($ window/DimensionsProvider
+       (provider
+         {:context app/user
+          :value [user set-user!]}
+         ($ playground-layout)))))
 
 
 (defn add-component
@@ -257,11 +240,10 @@
   (swap! component-db
          (fn [current]
            (if (empty? current) [c]
-             (let [idx (.indexOf (map :key current) (:key c))]
+             (let [idx (.indexOf (map :key current) (:id c))]
                (if (neg? idx)
                  (conj current c)
                  (assoc current idx c)))))))
-
 
 
 ;; Component wrappers

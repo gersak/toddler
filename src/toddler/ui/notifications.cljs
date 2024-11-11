@@ -1,6 +1,6 @@
 (ns toddler.ui.notifications
-  {:shadow.css/include
-   ["css/toddler_notifications.css"]}
+  ; {:shadow.css/include
+  ;  ["css/toddler_notifications.css"]}
   (:require
     clojure.string
     goog.string.format

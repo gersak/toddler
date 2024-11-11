@@ -7,9 +7,8 @@
     [helix.core :refer [defnc $ <> create-context defhook provider]]
     [helix.hooks :as hooks]
     [helix.dom :as d]
-    [helix.konva :as konva]
     [helix.children :as c]
-    [helix.image :refer [use-image]]))
+    #_[helix.image :refer [use-image]]))
 
 
 (def ^:dynamic *avatar-root* (create-context ""))
@@ -25,7 +24,7 @@
     {:keys [image] :as avatar} :avatar}]
   (let [shape-ref (hooks/use-ref nil)]
     (when image
-      (konva/Image
+      #_(konva/Image
         {:& avatar
          :onClick (fn [^js e] (onSelect (.. e -target)))
          :ref (fn [^js el]
@@ -104,7 +103,7 @@
                 half-size)
            :y (if (= image js/undefined) 0
                 half-size)})))
-    (<>
+    #_(<>
       (konva/Stage
         {:width size
          :height size 
@@ -167,7 +166,9 @@
                 :or {size 250}}]
   (let [stage (hooks/use-ref nil)
         [file set-file] (hooks/use-state nil)
-        [image] (use-image file "anonymous")]
+        ; [image] (use-image file "anonymous")
+        [image] nil
+        ]
     ($ EditorStage
        {:ref #(reset! stage %)
         :image image
@@ -227,7 +228,7 @@
                           :width square-size
                           :height square-size}]))))]
     (<>
-      (d/div
+      #_(d/div
         {:className className
          :style style
          ;; FIXME - className is not propagated properly... WHY i don't know

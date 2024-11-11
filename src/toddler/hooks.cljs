@@ -218,12 +218,6 @@
     translate))
 
 
-(comment
-  (apply gstr/format
-         (translate :reacher.delete.dialog :hr)
-         ["Biljana"]))
-
-
 (defhook use-translatef
   []
   (let [locale (use-current-locale)

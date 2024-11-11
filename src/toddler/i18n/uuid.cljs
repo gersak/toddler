@@ -1,7 +1,7 @@
 (ns toddler.i18n.uuid
   (:require
    [toddler.i18n :as i18n]
-   [helix.placenta.util :refer [deep-merge]]))
+   [toddler.util :refer [deep-merge]]))
 
 
 (defonce translations (atom nil))

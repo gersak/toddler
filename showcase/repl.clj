@@ -1,6 +1,5 @@
 (ns repl
   (:require
-    [toddler.aliases :refer [aliases]]
     [clojure.java.io :as io]
     [shadow.css.build :as cb]
     [shadow.cljs.devtools.server.fs-watch :as fs-watch])
@@ -40,7 +39,6 @@
 (defn init []
   (-> 
     (cb/init)
-    (update :aliases merge aliases)
     (cb/start)
     (cb/index-path (io/file "src") {})
     (cb/index-path (io/file "showcase") {})))
@@ -91,7 +89,6 @@
 
 (comment
   (-> css-ref deref keys)
-  (-> css-ref deref :aliases :toddler-menu-link)
   (-> css-ref deref :colors)
   (-> css-ref deref )
   (-> css-ref deref :namespaces keys)

@@ -358,77 +358,77 @@
        (c/children props))))
 
 
-(defnc calendar-month-dropdown
-  [{:keys [value] :as props}]
-  (let [$wrapper (css
-                   {:margin "5px 0"
-                    :cursor "pointer"}
-                   ["& input" :cursor-pointer :text-rose-700])
-        [area-position set-area-position!] (hooks/use-state nil)
-        ;;
-        months (range 1 13)
-        search-fn (date/use-calendar-months) 
-        ;;
-        {:keys [area toggle!] :as dropdown}
-        (dropdown/use-dropdown
-          (->
-            props
-            (assoc :area-position area-position
-                   :value (or value (vura/month? (vura/date)))
-                   :search-fn search-fn 
-                   :options months)
-            (dissoc :className)))]
-    (provider
-      {:context dropdown/*dropdown*
-       :value dropdown}
-      (provider
-        {:context popup/*area-position*
-         :value [area-position set-area-position!]}
-        ($ popup/Area
-           {:ref area
-            :onClick (fn [] (toggle!))
-            :className $wrapper}
-           ($ dropdown/Input
-              {:className (css :flex :w-28 {:text-align "right"})})
-           ($ dropdown/Popup
-              {:className "dropdown-popup"
-               :render/option dropdown-option
-               :render/wrapper dropdown-wrapper}))))))
+; (defnc calendar-month-dropdown
+;   [{:keys [value] :as props}]
+;   (let [$wrapper (css
+;                    {:margin "5px 0"
+;                     :cursor "pointer"}
+;                    ["& input" :cursor-pointer :text-rose-700])
+;         [area-position set-area-position!] (hooks/use-state nil)
+;         ;;
+;         months (range 1 13)
+;         search-fn (date/use-calendar-months) 
+;         ;;
+;         {:keys [area toggle!] :as dropdown}
+;         (dropdown/use-dropdown
+;           (->
+;             props
+;             (assoc :area-position area-position
+;                    :value (or value (vura/month? (vura/date)))
+;                    :search-fn search-fn 
+;                    :options months)
+;             (dissoc :className)))]
+;     (provider
+;       {:context dropdown/*dropdown*
+;        :value dropdown}
+;       (provider
+;         {:context popup/*area-position*
+;          :value [area-position set-area-position!]}
+;         ($ popup/Area
+;            {:ref area
+;             :onClick (fn [] (toggle!))
+;             :className $wrapper}
+;            ($ dropdown/Input
+;               {:className (css :flex :w-28 {:text-align "right"})})
+;            ($ dropdown/Popup
+;               {:className "dropdown-popup"
+;                :render/option dropdown-option
+;                :render/wrapper dropdown-wrapper}))))))
 
-(defnc calendar-year-dropdown
-  [{:keys [value] :as props}]
-  (let [$wrapper (css
-                   {:margin "5px 0"
-                    :cursor "pointer"}
-                   ["& input" :cursor-pointer :text-rose-700])
-        [area-position set-area-position!] (hooks/use-state nil)
-        ;;
-        years (date/use-calendar-years)
-        ;;
-        {:keys [area toggle!] :as dropdown}
-        (dropdown/use-dropdown
-          (->
-            props
-            (assoc :area-position area-position
-                   :value (or value (vura/year? (vura/date)))
-                   :options years)
-            (dissoc :className)))]
-    (provider
-      {:context dropdown/*dropdown*
-       :value dropdown}
-      (provider
-        {:context popup/*area-position*
-         :value [area-position set-area-position!]}
-        ($ popup/Area
-           {:ref area
-            :onClick (fn [] (toggle!))
-            :className $wrapper}
-           ($ dropdown/Input
-              {:className (css :w-12) & props})
-           ($ dropdown/Popup
-              {:className "dropdown-popup"
-               :render/option dropdown-option
-               :render/wrapper dropdown-wrapper}))))))
+; (defnc calendar-year-dropdown
+;   [{:keys [value] :as props}]
+;   (let [$wrapper (css
+;                    {:margin "5px 0"
+;                     :cursor "pointer"}
+;                    ["& input" :cursor-pointer :text-rose-700])
+;         [area-position set-area-position!] (hooks/use-state nil)
+;         ;;
+;         years (date/use-calendar-years)
+;         ;;
+;         {:keys [area toggle!] :as dropdown}
+;         (dropdown/use-dropdown
+;           (->
+;             props
+;             (assoc :area-position area-position
+;                    :value (or value (vura/year? (vura/date)))
+;                    :options years)
+;             (dissoc :className)))]
+;     (provider
+;       {:context dropdown/*dropdown*
+;        :value dropdown}
+;       (provider
+;         {:context popup/*area-position*
+;          :value [area-position set-area-position!]}
+;         ($ popup/Area
+;            {:ref area
+;             :onClick (fn [] (toggle!))
+;             :className $wrapper}
+;            ($ dropdown/Input
+;               {:className (css :w-12) & props})
+;            ($ dropdown/Popup
+;               {:className "dropdown-popup"
+;                :render/option dropdown-option
+;                :render/wrapper dropdown-wrapper}))))))
 
 
 (def $tag
@@ -549,6 +549,46 @@
         days))))
 
 
+(defnc calendar-day
+  [{:keys [value
+           onClick
+           class
+           className]
+    {:keys [day-in-month
+            today
+            first-day-in-month?
+            last-day-in-month?
+            disabled
+            next-month
+            prev-month
+            period-start
+            period-end
+            picked
+            selected
+            weekend?]} :day}]
+  (d/div
+    {:onClick (when-not disabled onClick)
+     :class (cond-> []
+              (string? className) (conj className)
+              (string? class) (conj class)
+              (sequential? class) (into class)
+              period-start (conj "period-start")
+              period-end (conj "period-end")
+              picked (conj "picked")
+              next-month (conj "next-month")
+              prev-month (conj "prev-month")
+              selected (conj "selected")
+              first-day-in-month? (conj "first-day-in-month")
+              last-day-in-month? (conj "last-day-in-month")
+              disabled (conj "disabled")
+              today (conj "today")
+              weekend? (conj "weekend")
+              (nil? value) (conj "empty"))}
+    (d/div
+      {:class "day"}
+      (d/div (or day-in-month " ")))))
+
+
 (defnc calendar-month
   [{:keys [days on-select disabled read-only]}]
   (let [$month (css
@@ -619,7 +659,7 @@
                         k (if (empty? day)
                             [idx :unknown]
                             [week day-in-month])]
-                    ($ date/CalendarDay
+                    ($ calendar-day
                        {:key k
                         :day idx
                         :className $day
@@ -633,194 +673,194 @@
         weeks))))
 
 
-(defnc timestamp-calendar
-  [{:keys [value onChange] :as props}]
-  (let [$style (css
-                 {:display "flex"
-                  :flex-direction "column"
-                  :border-radius "3px"
-                  :padding "7px"
-                  :width "230px"
-                  ; :height "190px"
-                  }
-                 ; (str popup/dropdown-container) {:overflow "hidden"}
-                 ["& .header-wrapper" {:display "flex" :justify-content "center" :flex-grow "1"}]
-                 ["& .header"
-                  :flex
-                  :grow
-                  :justify-between
-                  :w-24
-                  :h-14]
-                 ["& .header .years"
-                  {:position "relative"
-                   :display "flex"
-                   :align-items "center"}]
-                 ["& .header .months"
-                  {:position "relative"
-                   :display "flex"
-                   :align-items "center"}]
-                 ["& .content-wrapper"
-                  {:display "flex"
-                   :height "200px"
-                   :justify-content "center"
-                   :flex-grow "1"}])
-        ;;
-        {:keys [selected] :as props'}
-        (hooks/use-memo
-          [value onChange]
-          (let [v (vura/time->value (or value (vura/date)))
-                context (vura/day-time-context v)]
-            (cond-> 
-              (merge props context)
-              (some? value) (assoc :selected v)
-              (fn? onChange) (assoc
-                               :onChange (fn [v]
-                                           (when-not (= v value)
-                                             (when v
-                                               (onChange (vura/value->time v)))))))))
-        ;;
-        {:keys [days]
-         {:keys [year month]} :state
-         {:keys [on-prev-month
-                 on-next-month
-                 on-year-change
-                 on-month-change
-                 on-day-change]} :events} (date/use-calendar props' :month)
-        upstream-is-selected (hooks/use-context date/*calendar-selected*)
-        is-selected (hooks/use-memo
-                      [selected]
-                      (if-not selected (constantly false)
-                        (let [selected-context (vura/day-context selected)]
-                          (fn [day]
-                            (date/same day selected-context)))))]
-    (d/div
-      {:className $style}
-      (d/div
-        {:className "header-wrapper"}
-        (d/div
-          {:className "header"}
-          (d/div
-            {:className "years"}
-            #_($ icon/previous
-               {:onClick on-prev-month
-                :className "button"})
-            ($ calendar-year-dropdown
-               {:value year
-                :onChange on-year-change}))
-          (d/div
-            {:className "months"}
-            ($ calendar-month-dropdown
-               {:value month
-                :onChange on-month-change})
-            #_($ icon/next
-               {:onClick on-next-month
-                :className "button"}))))
-      (d/div
-        {:className "content-wrapper"}
-        (d/div
-          {:className "content"}
-          (provider
-            {:context date/*calendar-selected*
-             :value (or upstream-is-selected is-selected)}
-            ($ calendar-month
-               {:days days
-                :on-select (fn [{:keys [day-in-month]}]
-                             (on-day-change day-in-month))
-                & props})))))))
+; (defnc timestamp-calendar
+;   [{:keys [value onChange] :as props}]
+;   (let [$style (css
+;                  {:display "flex"
+;                   :flex-direction "column"
+;                   :border-radius "3px"
+;                   :padding "7px"
+;                   :width "230px"
+;                   ; :height "190px"
+;                   }
+;                  ; (str popup/dropdown-container) {:overflow "hidden"}
+;                  ["& .header-wrapper" {:display "flex" :justify-content "center" :flex-grow "1"}]
+;                  ["& .header"
+;                   :flex
+;                   :grow
+;                   :justify-between
+;                   :w-24
+;                   :h-14]
+;                  ["& .header .years"
+;                   {:position "relative"
+;                    :display "flex"
+;                    :align-items "center"}]
+;                  ["& .header .months"
+;                   {:position "relative"
+;                    :display "flex"
+;                    :align-items "center"}]
+;                  ["& .content-wrapper"
+;                   {:display "flex"
+;                    :height "200px"
+;                    :justify-content "center"
+;                    :flex-grow "1"}])
+;         ;;
+;         {:keys [selected] :as props'}
+;         (hooks/use-memo
+;           [value onChange]
+;           (let [v (vura/time->value (or value (vura/date)))
+;                 context (vura/day-time-context v)]
+;             (cond-> 
+;               (merge props context)
+;               (some? value) (assoc :selected v)
+;               (fn? onChange) (assoc
+;                                :onChange (fn [v]
+;                                            (when-not (= v value)
+;                                              (when v
+;                                                (onChange (vura/value->time v)))))))))
+;         ;;
+;         {:keys [days]
+;          {:keys [year month]} :state
+;          {:keys [on-prev-month
+;                  on-next-month
+;                  on-year-change
+;                  on-month-change
+;                  on-day-change]} :events} (date/use-calendar props' :month)
+;         upstream-is-selected (hooks/use-context date/*calendar-selected*)
+;         is-selected (hooks/use-memo
+;                       [selected]
+;                       (if-not selected (constantly false)
+;                         (let [selected-context (vura/day-context selected)]
+;                           (fn [day]
+;                             (date/same day selected-context)))))]
+;     (d/div
+;       {:className $style}
+;       (d/div
+;         {:className "header-wrapper"}
+;         (d/div
+;           {:className "header"}
+;           (d/div
+;             {:className "years"}
+;             #_($ icon/previous
+;                  {:onClick on-prev-month
+;                   :className "button"})
+;             ($ calendar-year-dropdown
+;                {:value year
+;                 :onChange on-year-change}))
+;           #_(d/div
+;               {:className "months"}
+;               ($ calendar-month-dropdown
+;                  {:value month
+;                   :onChange on-month-change})
+;               #_($ icon/next
+;                    {:onClick on-next-month
+;                     :className "button"}))))
+;       (d/div
+;         {:className "content-wrapper"}
+;         (d/div
+;           {:className "content"}
+;           (provider
+;             {:context date/*calendar-selected*
+;              :value (or upstream-is-selected is-selected)}
+;             ($ calendar-month
+;                {:days days
+;                 :on-select (fn [{:keys [day-in-month]}]
+;                              (on-day-change day-in-month))
+;                 & props})))))))
 
 
-(defnc timestamp-time
-  [{:keys [value read-only disabled onChange]}]
-  (let [{:keys [hour minute] :as state} (hooks/use-memo
-                                          [value]
-                                          (if-not value {:hour 0 :minute 0}
-                                            (->
-                                              value
-                                              vura/time->value
-                                              vura/day-time-context)))
-        props' (use-mask
-                 {:value (gstr/format "%02d:%02d" hour minute)
-                  :disabled disabled
-                  :read-only read-only
-                  :mask (gstr/format "%02d:%02d" 0 0)
-                  :delimiters #{\:}
-                  :constraints [#"([0-1][0-9])|(2[0-3])" #"[0-5][0-9]"]
-                  :onChange (fn [time-]
-                              (let [[h m] (map js/parseInt (str/split time- #":"))]
-                                (when (ifn? onChange)
-                                  (onChange
-                                    (->
-                                      state 
-                                      (assoc :hour h :minute m)
-                                      vura/context->value
-                                      vura/value->time)))))})]
-    (d/div
-      {:className (css
-                    {:display "flex"
-                     :justify-content "center"
-                     :align-items "center"
+; (defnc timestamp-time
+;   [{:keys [value read-only disabled onChange]}]
+;   (let [{:keys [hour minute] :as state} (hooks/use-memo
+;                                           [value]
+;                                           (if-not value {:hour 0 :minute 0}
+;                                             (->
+;                                               value
+;                                               vura/time->value
+;                                               vura/day-time-context)))
+;         props' (use-mask
+;                  {:value (gstr/format "%02d:%02d" hour minute)
+;                   :disabled disabled
+;                   :read-only read-only
+;                   :mask (gstr/format "%02d:%02d" 0 0)
+;                   :delimiters #{\:}
+;                   :constraints [#"([0-1][0-9])|(2[0-3])" #"[0-5][0-9]"]
+;                   :onChange (fn [time-]
+;                               (let [[h m] (map js/parseInt (str/split time- #":"))]
+;                                 (when (ifn? onChange)
+;                                   (onChange
+;                                     (->
+;                                       state 
+;                                       (assoc :hour h :minute m)
+;                                       vura/context->value
+;                                       vura/value->time)))))})]
+;     (d/div
+;       {:className (css
+;                     {:display "flex"
+;                      :justify-content "center"
+;                      :align-items "center"
+;
+;                      :font-size "1em"
+;                      :margin "3px 0 5px 0"
+;                      :justify-self "center"}
+;                     ["& input" {:max-width "40px"}]
+;                     ["& .time" {:outline "none"
+;                                 :border "none"}])}
+;       (d/input
+;         {:className "time"
+;          :spellCheck false
+;          :auto-complete "off"
+;          & (dissoc props' :className :constraints :delimiters :mask)}))))
 
-                     :font-size "1em"
-                     :margin "3px 0 5px 0"
-                     :justify-self "center"}
-                    ["& input" {:max-width "40px"}]
-                    ["& .time" {:outline "none"
-                                :border "none"}])}
-      (d/input
-        {:className "time"
-         :spellCheck false
-         :auto-complete "off"
-         & (dissoc props' :className :constraints :delimiters :mask)}))))
 
-
-(defnc period-calendar
-  [{:keys [onChange]
-    [start end :as value] :value
-    :or {value [nil nil]}}]
-  (let [$wrapper (css :flex)
-        [after before] (hooks/use-memo
-                         [start end]
-                         (let [start (some->
-                                       start
-                                       vura/date->value
-                                       vura/midnight)
-                               end (some->
-                                     end
-                                     vura/date->value
-                                     vura/midnight
-                                     (+ vura/day))]
-                           [(fn [{:keys [value]}]
-                              (when start
-                                (if end
-                                  (and (<= start value)
-                                       (< value end))
-                                  (<= start value))))
-                            (fn [{:keys [value]}]
-                              (when end
-                                (if start
-                                  (and (<= start value)
-                                       (< value end))
-                                  (< value end))))]))]
-    (d/div
-      {:className $wrapper}
-      (provider
-        {:context date/*calendar-selected*
-         :value after}
-        ($ timestamp-calendar
-           {:key :start
-            :value start
-            :onChange (fn [v]
-                        (when (fn? onChange)
-                          (onChange (assoc value 0 v))))}))
-      (provider
-        {:context date/*calendar-selected*
-         :value before}
-        ($ timestamp-calendar
-           {:key :end
-            :value end
-            :onChange (fn [v]
-                        (when (fn? onChange)
-                          (onChange (assoc value 1 v))))})))))
+; (defnc period-calendar
+;   [{:keys [onChange]
+;     [start end :as value] :value
+;     :or {value [nil nil]}}]
+;   (let [$wrapper (css :flex)
+;         [after before] (hooks/use-memo
+;                          [start end]
+;                          (let [start (some->
+;                                        start
+;                                        vura/date->value
+;                                        vura/midnight)
+;                                end (some->
+;                                      end
+;                                      vura/date->value
+;                                      vura/midnight
+;                                      (+ vura/day))]
+;                            [(fn [{:keys [value]}]
+;                               (when start
+;                                 (if end
+;                                   (and (<= start value)
+;                                        (< value end))
+;                                   (<= start value))))
+;                             (fn [{:keys [value]}]
+;                               (when end
+;                                 (if start
+;                                   (and (<= start value)
+;                                        (< value end))
+;                                   (< value end))))]))]
+;     (d/div
+;       {:className $wrapper}
+;       (provider
+;         {:context date/*calendar-selected*
+;          :value after}
+;         ($ timestamp-calendar
+;            {:key :start
+;             :value start
+;             :onChange (fn [v]
+;                         (when (fn? onChange)
+;                           (onChange (assoc value 0 v))))}))
+;       (provider
+;         {:context date/*calendar-selected*
+;          :value before}
+;         ($ timestamp-calendar
+;            {:key :end
+;             :value end
+;             :onChange (fn [v]
+;                         (when (fn? onChange)
+;                           (onChange (assoc value 1 v))))})))))
 
 
 (defnc avatar
@@ -956,9 +996,9 @@
      :button button
      :buttons buttons
      :simplebar simplebar
-     :calendar/timestamp timestamp-calendar
-     :calendar/year-dropdown calendar-year-dropdown
-     :calendar/month-dropdown calendar-month-dropdown
+     ; :calendar/timestamp timestamp-calendar
+     ; :calendar/year-dropdown calendar-year-dropdown
+     ; :calendar/month-dropdown calendar-month-dropdown
      :calendar/month calendar-month}
     #:input {:autosize autosize-input
              :idle idle-input}))

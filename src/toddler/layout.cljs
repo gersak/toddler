@@ -2,13 +2,13 @@
   (:require
     [helix.core
      :refer [defnc create-context
-             defhook provider memo
+             defhook provider
              fnc $]]
     [helix.hooks :as hooks]
     [helix.dom :as d]
     [helix.children :as c]
     [vura.core :as vura]
-    [toddler.ui :refer [forward-ref]]
+    ; [toddler.ui :refer [forward-ref]]
     [toddler.app :as app]
     [toddler.hooks
      :refer [use-dimensions]]))

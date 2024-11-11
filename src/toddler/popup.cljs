@@ -10,6 +10,7 @@
     [helix.hooks :as hooks]
     [helix.dom :as d]
     [helix.children :as c]
+    [toddler.ui :refer [forward-ref]]
     [toddler.layout :refer [*container-dimensions*]]
     [toddler.util :as util]))
 
@@ -434,10 +435,10 @@
 
 
 (defnc Area
-  {:wrap [(react/forwardRef)]}
-  [props ref]
+  {:wrap [forward-ref]}
+  [props _ref]
   (let [area (hooks/use-ref nil)
-        area' (or ref area)]
+        area' (or _ref area)]
     (d/div
        {:ref #(reset! area' %)
         & props}
@@ -449,7 +450,7 @@
 
 (defnc Element
   {:helix/features {:fast-refresh true}
-   :wrap [(react/forwardRef)]}
+   :wrap [forward-ref]}
   [{:keys [preference style offset onChange]
     :or {preference default-preference
          offset 5}

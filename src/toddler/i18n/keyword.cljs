@@ -2,7 +2,7 @@
   (:require
    [toddler.i18n :as i18n]
    [toddler.i18n.time :as t]
-   [helix.placenta.util :refer [deep-merge]]))
+   [toddler.util :refer [deep-merge]]))
 
 
 (defonce translations (atom nil))

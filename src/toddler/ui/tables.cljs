@@ -153,8 +153,6 @@
   (let [{:keys [placeholder label] :as column} (table/use-column)
         [value set-value!] (table/use-cell-state column)
         ;;
-        [area-position set-area-position!] (hooks/use-state nil)
-        ;;
         {:keys [input
                 search
                 on-key-down
@@ -170,52 +168,47 @@
              :ref-fn :value
              :searchable? true
              :onChange set-value!}
-            (assoc column
-                   :value value
-                   :area-position area-position)))
+            (assoc column :value value)))
         $alignment (use-cell-alignment-css column)]
     (provider
-      {:context popup/*area-position*
-       :value [area-position set-area-position!]}
-      (provider
-        {:context dropdown/*dropdown*
-         :value dropdown}
-        ($ popup/Area
-           {:ref area
-            :onClick toggle!
-            :className (str/join " "
-                                 [$alignment
-                                  (css :text-sm)])}
-           (d/div
-             {:className (css
-                           :flex
-                           :items-center
-                           :py-2
-                           :font-bold
-                           ["& .decorator"
-                            :text-transparent
-                            {:transition "color .2s ease-in-out"
-                             :position "absolute"
-                             :right "0px"}]
-                           ["&:hover .decorator" :text-gray-400])}
-             (d/input
-               {:ref input
-                :className "input"
-                :value search 
-                :disabled disabled
-                :spellCheck false
-                :auto-complete "off"
-                :placeholder (or placeholder label)
-                :onChange on-change 
-                :onBlur sync-search!
-                :onKeyDown on-key-down})
-             (d/span
-               {:className "decorator"}
-               #_($ icon/dropdownDecorator)))
-           ($ dropdown/Popup
-              {:className "dropdown-popup"
-               :render/option e/dropdown-option
-               :render/wrapper e/dropdown-wrapper}))))))
+      {:context dropdown/*dropdown*
+       :value dropdown}
+      ($ popup/Area
+         {:ref area
+          :onClick toggle!
+          :className (str/join " "
+                               [$alignment
+                                (css :text-sm)])}
+         (d/div
+           {:className (css
+                         :flex
+                         :items-center
+                         :py-2
+                         :font-bold
+                         ["& .decorator"
+                          :text-transparent
+                          {:transition "color .2s ease-in-out"
+                           :position "absolute"
+                           :right "0px"}]
+                         ["&:hover .decorator" :text-gray-400])}
+           (d/input
+             {:ref input
+              :className "input"
+              :value search 
+              :disabled disabled
+              :spellCheck false
+              :auto-complete "off"
+              :placeholder (or placeholder label)
+              :onChange on-change 
+              :onBlur sync-search!
+              :onKeyDown on-key-down})
+           (d/span
+             {:className "decorator"}
+             #_($ icon/dropdownDecorator)))
+         ($ dropdown/Popup
+            {:className "dropdown-popup"
+             :render/option e/dropdown-option
+             :render/wrapper e/dropdown-wrapper})))))
 
 
 (defnc text-cell
@@ -304,14 +297,14 @@
              ; :className className 
              :wrapper e/dropdown-wrapper
              :preference popup/cross-preference}
-            ($ e/timestamp-calendar
+            #_($ e/timestamp-calendar
                {:value value
                 :disabled disabled
                 :read-only read-only
                 :onChange (fn [x]
                             (set-value! x)
                             (when-not show-time (set-opened! false)))})
-            (when show-time
+            #_(when show-time
               ($ e/timestamp-time
                  {:value value
                   :disabled (if-not value true
@@ -588,60 +581,56 @@
          :as dropdown}
         (dropdown/use-dropdown (assoc column
                                       :value value
-                                      :area-position area-position
                                       :search-fn :name))
         $alignment (use-cell-alignment-css column)]
     (provider
-      {:context popup/*area-position*
-       :value [area-position set-area-position!]}
-      (provider
-        {:context dropdown/*dropdown*
-         :value dropdown}
-        ($ popup/Area
-           {:ref area
-            :onClick toggle!
-            :className (str/join
-                         " "
-                         [$alignment
-                          (css :text-sm)])}
-           (d/div
-             {:className (css
-                           :flex
-                           :items-center
-                           :py-2
-                           ["& .decorator"
-                            :text-transparent
-                            {:transition "color .2s ease-in-out"
-                             :position "absolute"
-                             :right "0px"}]
-                           ["&:hover .decorator" :text-gray-400])}
-             ($ ui/avatar
-                {:className (css :mr-2
-                                 :border
-                                 :border-solid
-                                 :border-gray-500
-                                 {:border-radius "20px"})
-                 :size :small
-                 & value})
-             (d/input
-               {:ref input
-                :className "input"
-                :value search
-                :read-only (or read-only (not searchable?))
-                :disabled disabled
-                :spellCheck false
-                :auto-complete "off"
-                :placeholder placeholder
-                :onChange #(set-value! %)
-                :onBlur sync-search!
-                :onKeyDown on-key-down})
-             (d/span
-               {:className "decorator"}
-               #_($ icon/dropdownDecorator)))
-           ($ dropdown/Popup
-              {:className "dropdown-popup"
-               :render/option e/identity-dropdown-option
-               :render/wrapper e/dropdown-wrapper}))))))
+      {:context dropdown/*dropdown*
+       :value dropdown}
+      ($ popup/Area
+         {:ref area
+          :onClick toggle!
+          :className (str/join
+                       " "
+                       [$alignment
+                        (css :text-sm)])}
+         (d/div
+           {:className (css
+                         :flex
+                         :items-center
+                         :py-2
+                         ["& .decorator"
+                          :text-transparent
+                          {:transition "color .2s ease-in-out"
+                           :position "absolute"
+                           :right "0px"}]
+                         ["&:hover .decorator" :text-gray-400])}
+           ($ ui/avatar
+              {:className (css :mr-2
+                               :border
+                               :border-solid
+                               :border-gray-500
+                               {:border-radius "20px"})
+               :size :small
+               & value})
+           (d/input
+             {:ref input
+              :className "input"
+              :value search
+              :read-only (or read-only (not searchable?))
+              :disabled disabled
+              :spellCheck false
+              :auto-complete "off"
+              :placeholder placeholder
+              :onChange #(set-value! %)
+              :onBlur sync-search!
+              :onKeyDown on-key-down})
+           (d/span
+             {:className "decorator"}
+             #_($ icon/dropdownDecorator)))
+         ($ dropdown/Popup
+            {:className "dropdown-popup"
+             :render/option e/identity-dropdown-option
+             :render/wrapper e/dropdown-wrapper})))))
 
 
 
@@ -963,7 +952,7 @@
                        (set-opened! true))}
            #_($ icon/timeFilter
               {:value (if (nil? v) nil (boolean (not-empty v)))})
-           (when opened? 
+           #_(when opened? 
              ($ popup/Element
                 {:ref popup
                  :wrapper header-popup-wrapper

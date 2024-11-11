@@ -4,6 +4,7 @@
    [helix.hooks :as hooks]
    [shadow.css :refer [css]]
    [toddler.ui :as ui]
+   [toddler.router :as router]
    [toddler.avatar :as a]
    [toddler.layout :as layout]
    [toddler.ui.components :as components]
@@ -14,6 +15,12 @@
 
 (add-translations
    (merge
+      #:showcase.fields {:default "Fields"
+                          :hr "Polja"}
+      ;;
+      #:showcase.tables {:default "Tables"
+                         :hr "Tablice"}
+      ;;
       #:button.default {:default "Default"
                         :hr "Normalan"}
       ;;
@@ -178,6 +185,7 @@
 
 
 (dev/add-component
-   {:key ::fields
+   {:id :showcase.fields
     :name "Fields"
+    :segment "fields"
     :render Fields})
