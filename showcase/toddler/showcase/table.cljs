@@ -5,12 +5,21 @@
       [toddler.grid :as grid]
       [toddler.ui :as ui]
       [toddler.ui.components :as components]
-      toddler.elements.table.theme
       [vura.core :as vura]
       [helix.core :refer [$ defnc]]
       [helix.dom :as d]
       [helix.hooks :as hooks]
-      [helix.children :as c]))
+      [helix.children :as c]
+      [toddler.i18n.keyword :refer [add-translations]]))
+
+
+
+(add-translations
+   (merge
+      #:showcase.table {:default "Table"
+                        :hr "Tablica"}
+      #:showcase.multi-tables {:default "Multi Table"
+                               :hr "Više tablica"}))
 
 
 (def columns
@@ -219,10 +228,10 @@
                    :dispatch dispatch}))))))
 
 
-(dev/add-component
-   {:key ::table
-    :name "Table"
-    :render Table})
+; (dev/add-component
+;    {:key ::table
+;     :name "Table"
+;     :render Table})
 
 
 (let [large [{:i "top" :x 0 :y 0 :w 10 :h 1}
@@ -264,7 +273,7 @@
                    :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))}))))))
 
 
-(dev/add-component
-   {:key ::tables
-    :name "Multiple Tables"
-    :render TableGrid})
+; (dev/add-component
+;    {:key ::tables
+;     :name "Multiple Tables"
+;     :render TableGrid})

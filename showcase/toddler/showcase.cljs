@@ -6,7 +6,7 @@
    [helix.hooks :as hooks]
    ; toddler.showcase.calendar
    [toddler.showcase.fields :refer [Fields]]
-   ; toddler.showcase.table
+   [toddler.showcase.table :refer [Table TableGrid]]
    ; toddler.showcase.avatar
    [toddler.router :as router]
    ))
@@ -25,8 +25,12 @@
     :segment "fields"}
    {:id :toddler.table 
     :name :showcase.tables
-    :render nil
-    :segment "tables"}])
+    :render Table
+    :segment "tables"}
+   {:id :toddler.multi-table 
+    :name :showcase.multi-tables
+    :render TableGrid
+    :segment "multi-tables"}])
 
 
 (defnc Showcase
