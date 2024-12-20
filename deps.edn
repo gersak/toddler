@@ -1,15 +1,17 @@
 {;; REPL
  :paths ["src" "resources" "gen"]
  :deps
- {org.clojure/clojurescript                  {:mvn/version "1.11.54"}
+ {org.github.gersak/toddler-graphql          {:local/root  "graphql"}
+  org.clojure/clojurescript                  {:mvn/version "1.11.54"}
   org.clojure/core.async                     {:mvn/version "1.5.648"}
   cljs-bean/cljs-bean                        {:mvn/version "1.7.0"}
   com.taoensso/timbre                        {:mvn/version "6.6.1"}
   camel-snake-kebab/camel-snake-kebab        {:mvn/version "0.4.3"}
   com.github.gersak/vura                     {:mvn/version "0.5.8"}
-  com.github.gersak/shadow-css               {:git/url "https://github.com/gersak/shadow-css.git"
-                                              :git/sha "697f2937345be9d187b6bce73ff4f50613f7ece8"}
-  com.thheller/shadow-css                    {:mvn/version "0.4.2"} 
+  ; com.github.gersak/shadow-css               {:git/url "https://github.com/gersak/shadow-css.git"
+  ;                                             :git/sha "697f2937345be9d187b6bce73ff4f50613f7ece8"}
+  com.github.gersak/shadow-css               {:mvn/version "0.5.0"}
+  ; com.thheller/shadow-css                    {:mvn/version "0.4.2"} 
   lilactown/helix                            {:mvn/version "0.1.10"}}
  :aliases
  {:shadow

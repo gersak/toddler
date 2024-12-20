@@ -2,6 +2,8 @@ target/
 .cpcache/
 .nrepl-port
 .shadow-cljs/
+.lsp/
+.clj-kondo/
 node_modules/
 .nrepl-port
 .nrepl-history

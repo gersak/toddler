@@ -1,5 +1,0 @@
-{:config-paths
- ["com.github.gersak/helix.placenta"
-  "lilactown/helix"]
- :linters {:clojure-lsp/unused-public-var {:level :off}}
- :lint-as {toddler.ui/defcomponent clojure.core/def}}

@@ -15,7 +15,8 @@
     [toddler.i18n.keyword]
     [toddler.i18n.time]
     [toddler.i18n.number]
-    [toddler.graphql :as graphql]))
+    [toddler.graphql :as graphql]
+    [toddler.graphql.transport :refer [send-query]]))
 
 
 (.log js/console "Loading toddler.hooks")
@@ -644,6 +645,7 @@
 (defhook use-query
   ([{query-name :query
      selection :selection
+     alias :alias
      args :args
      :keys [on-load on-error]}]
     (let [[token] (use-token)
@@ -657,13 +659,13 @@
                 query (graphql/wrap-queries
                         (graphql/->graphql 
                           (graphql/->GraphQLQuery
-                            query-name nil selection args)))]
+                            query-name alias selection args)))]
             (async/go
               (let [{:keys [errors]
                      {data query-key} :data
                      :as response}
                     (async/<! 
-                      (graphql/send-query 
+                      (send-query 
                         query 
                         :url url
                         :token token
@@ -687,23 +689,13 @@
         [queries]
         (fn send
           []
-          (let [query (apply
-                        graphql/wrap-queries
-                        (map
-                          (fn [{query-name :query
-                                selection :selection
-                                args :args}]
-                            (let [query-name (name query-name)]
-                              (graphql/->graphql 
-                                (graphql/->GraphQLQuery
-                                  query-name nil selection args))))
-                          queries))]
+          (let [query (graphql/queries queries)]
             (async/go
               (let [{:keys [errors]
                      data :data
                      :as response}
                     (async/<! 
-                      (graphql/send-query 
+                      (send-query 
                         query 
                         :url url
                         :token token
@@ -717,29 +709,31 @@
 
 
 (defhook use-mutation
-  ([{:keys [mutation selection variables on-load on-error]}]
+  ([{:keys [mutation selection types alias args on-load on-error]}]
     (let [[token] (use-token)
-          [mutation-fragment type-declarations variable-mapping]
-          (hooks/use-memo
-            [mutation variables selection]
-            (graphql/gen-mutation mutation variables selection))
           ;;
           url (use-graphql-url)]
       ; (when (ifn? on-load) (on-load "109"))
       (hooks/use-callback
-        [mutation-fragment]
+        [mutation selection types args]
         (fn [data]
           (async/go
-            (let [query (binding [toddler.graphql/*variable-bindings* type-declarations]
-                          (graphql/wrap-mutations mutation-fragment))
+            (let [{:keys [query variables]}
+                  (graphql/mutations [{:mutation mutation
+                                       :selection selection
+                                       :alias alias
+                                       :args args
+                                       :variables data
+                                       :types types}])
+                  ;;
                   {:keys [errors]
                    {data mutation} :data}
                   (async/<! 
-                    (graphql/send-query 
+                    (send-query 
                       query 
                       :url url
                       :token token
-                      :variables (clojure.set/rename-keys data variable-mapping)
+                      :variables variables 
                       :on-load on-load
                       :on-error on-error))]
               (if (some? errors)
@@ -749,3 +743,32 @@
                    :variables variables
                    :errors errors})
                 data))))))))
+
+
+(defhook use-mutations
+  ([{:keys [mutations on-load on-error]}]
+   (let [[token] (use-token)
+         url (use-graphql-url)]
+     (hooks/use-callback
+       [mutations]
+       (fn []
+         (async/go
+           (let [{:keys [query variables]} (graphql/mutations mutations)
+                 ;;
+                 {:keys [errors]
+                  data :data}
+                 (async/<! 
+                   (send-query 
+                     query 
+                     :url url
+                     :token token
+                     :variables variables 
+                     :on-load on-load
+                     :on-error on-error))]
+             (if (some? errors)
+               (ex-info
+                 (str "Mutations " (str/join ", " (map :mutation mutations)) " failed")
+                 {:query query
+                  :variables variables
+                  :errors errors})
+               data))))))))

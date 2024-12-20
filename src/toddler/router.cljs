@@ -317,6 +317,14 @@
          :parent parent}))))
 
 
+
+(defhook use-is-super?
+  []
+  (let [super-role (hooks/use-context -super-)
+        user-roles (hooks/use-context -roles-)]
+    (contains? user-roles super-role)))
+
+
 (defhook use-authorized? [id]
   (let [user-permissions (hooks/use-context -permissions-)
         user-roles (hooks/use-context -roles-)
@@ -505,13 +513,16 @@
 
 (defnc Protect
   [{:keys [super permissions roles] :as props}]
-  (provider
-    {:context -permissions-
-     :value permissions}
+  (let [_super (hooks/use-context -super-)
+        _permissions (hooks/use-context -permissions-)
+        _roles (hooks/use-context -roles-)]
     (provider
-      {:context -roles-
-       :value roles}
+      {:context -permissions-
+       :value (or permissions _permissions)}
       (provider
-        {:context -super-
-         :value super}
-        (children props)))))
+        {:context -roles-
+         :value (or roles _roles)}
+        (provider
+          {:context -super-
+           :value (or super _super)}
+          (children props))))))
