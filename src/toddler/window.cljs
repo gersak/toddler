@@ -8,7 +8,6 @@
    [helix.hooks :as hooks]
    [helix.children :as c]))
 
-
 (defn get-window-dimensions
   []
   (let [w (round-number (..  js/window -visualViewport -width) 1 :floor)
@@ -26,9 +25,9 @@
   [props]
   (let [[state set-state!] (hooks/use-state (get-window-dimensions))
         resize-idle-service (hooks/use-ref
-                              (make-idle-service
-                                10
-                                #(set-state! (get-window-dimensions))))]
+                             (make-idle-service
+                              10
+                              #(set-state! (get-window-dimensions))))]
     (hooks/use-effect
       [state]
       (async/go
@@ -44,15 +43,14 @@
            (async/close! @resize-idle-service)
            (.removeEventListener js/window "resize" track-window-size)))
       (provider
-        {:value state
-         :context app/window}
-        (c/children props)))))
+       {:value state
+        :context app/window}
+       (c/children props)))))
 
-
-(defn dimension-provider
+(defn wrap-window-provider
   ([component]
    (fnc dimensions-provider [props]
-     ($ DimensionsProvider ($ component {& props}))))
+        ($ DimensionsProvider ($ component {& props}))))
   ([component cprops]
-   (fnc dimensions-provider[props]
-     ($ DimensionsProvider {& cprops} ($ component {& props})))))
+   (fnc dimensions-provider [props]
+        ($ DimensionsProvider {& cprops} ($ component {& props})))))

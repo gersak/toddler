@@ -1,36 +1,35 @@
 (ns toddler.dev
   (:require
     ; [cljs-bean.core :refer [->clj ->js]]
-    [helix.core
-     :refer [defnc $ provider]]
-    [helix.hooks :as hooks]
-    [helix.dom :as d]
+   [clojure.core.async :as async]
+   [helix.core
+    :refer [defnc $ provider]]
+   [helix.hooks :as hooks]
+   [helix.dom :as d]
     ; [toddler.dev.context
     ;  :refer [*components*]]
-    [toddler.router :as router]
-    [toddler.hooks
-     :refer [use-user
-             use-window-dimensions
-             use-dimensions]]
-    [toddler.i18n.default]
-    [toddler.app :as app]
-    [toddler.ui :as ui]
-    [toddler.ui.elements :as e]
-    [toddler.provider :refer [UI]]
-    [toddler.ui.components :as default]
-    [toddler.hooks :as toddler]
-    [toddler.layout :as layout]
-    [toddler.window :as window]
-    [toddler.popup :as popup]
-    [toddler.dropdown :as dropdown]
-    ["react" :as react]
-    [toddler.i18n :as i18n]
-    [shadow.css :refer [css]]
-    [clojure.string :as str]))
-
+   [toddler.router :as router]
+   [toddler.hooks
+    :as toddler
+    :refer [use-user
+            use-window-dimensions
+            use-dimensions]]
+   [toddler.i18n.default]
+   [toddler.app :as app]
+   [toddler.ui :as ui]
+   [toddler.ui.elements :as e]
+   [toddler.provider :refer [UI]]
+   [toddler.ui.components :as default]
+   [toddler.layout :as layout]
+   [toddler.window :as window]
+   [toddler.popup :as popup]
+   [toddler.dropdown :as dropdown]
+   ["react" :as react]
+   [toddler.i18n :as i18n]
+   [shadow.css :refer [css]]
+   [clojure.string :as str]))
 
 (defonce component-db (atom nil))
-
 
 (defnc component
   [{:keys [component]}]
@@ -45,51 +44,49 @@
                         ["&.selected .name" :toddler/menu-link-selected])
         translate (toddler/use-translate)]
     (d/div
-      {:class [$component
-               (when rendered? "selected")]}
+     {:class [$component
+              (when rendered? "selected")]}
       ; ($ icon/selectedRow {:className "icon"})
-      (d/a
-        {:className "name"
-         :onClick #(path)}
-        (str (translate (:name component)))))))
-
+     (d/a
+      {:className "name"
+       :onClick #(path)}
+      (str (translate (:name component)))))))
 
 (defnc navbar
-  [_ _ref]
   {:wrap [(react/forwardRef)]}
+  [_ _ref]
   (let [links (:children (router/use-component-tree))
         {:keys [height]} (use-window-dimensions)
         $navbar (css
+                 :flex
+                 :flex-col
+                 :toddler/menu-link-selected
+                 ["& .title"
                   :flex
-                  :flex-col
-                  :toddler/menu-link-selected
-                  ["& .title"
-                   :flex
-                   :h-28
-                   :items-center
-                   :text-2xl
-                   :justify-center
-                   {:font-family "Audiowide"}])]
+                  :h-28
+                  :items-center
+                  :text-2xl
+                  :justify-center
+                  {:font-family "Audiowide"}])]
     ($ ui/simplebar
        {:ref _ref
         :className $navbar
-        :style {:height height 
+        :style {:height height
                 :min-width 300
                 :max-width 500}}
        (d/div
-         {:className "title"}
-         "TODDLER")
+        {:className "title"}
+        "TODDLER")
        (d/div
-         {:className "components-wrapper"}
-         (d/div
-           {:className "components-list"}
-           (map
-             (fn [c]
-               ($ component
-                  {:key (:id c)
-                   :component c}))
-             links))))))
-
+        {:className "components-wrapper"}
+        (d/div
+         {:className "components-list"}
+         (map
+          (fn [c]
+            ($ component
+               {:key (:id c)
+                :component c}))
+          links))))))
 
 (let [popup-preference
       [#{:bottom :center}
@@ -101,49 +98,47 @@
           ;;
           {:keys [toggle! opened area] :as dropdown}
           (dropdown/use-dropdown
-            {:value locale
-             :options [:en :hr :fr :fa]
-             :search-fn #(when % (name %))
-             :area-position #{:bottom :center}
-             :onChange (fn [v]
-                         (set-user! assoc-in [:settings :locale] v))})]
+           {:value locale
+            :options [:en :hr :fr :fa]
+            :search-fn #(when % (name %))
+            :area-position #{:bottom :center}
+            :onChange (fn [v]
+                        (set-user! assoc-in [:settings :locale] v))})]
       ;;
       (provider
-        {:context dropdown/*dropdown*
-         :value dropdown}
-        ($ popup/Area
-           {:ref area :class (css :flex :items-center :font-bold)}
-           (d/button
-             {:onClick toggle!
-              :class [(css
-                        :toddler/menu-link
-                        :items-center
-                        ["&:hover" :toddler/menu-link-selected])
-                      (when opened (css :toddler/menu-link-selected))]}
-             (str/upper-case (name locale)))
-           ($ dropdown/Popup
-              {:className "dropdown-popup"
-               :preference popup-preference}
-              ($ e/dropdown-wrapper
-                 ($ dropdown/Options
-                    {:render e/dropdown-option}))))))))
-
+       {:context dropdown/*dropdown*
+        :value dropdown}
+       ($ popup/Area
+          {:ref area :class (css :flex :items-center :font-bold)}
+          (d/button
+           {:onClick toggle!
+            :class [(css
+                     :toddler/menu-link
+                     :items-center
+                     ["&:hover" :toddler/menu-link-selected])
+                    (when opened (css :toddler/menu-link-selected))]}
+           (str/upper-case (name locale)))
+          ($ dropdown/Popup
+             {:className "dropdown-popup"
+              :preference popup-preference}
+             ($ e/dropdown-wrapper
+                ($ dropdown/Options
+                   {:render e/dropdown-option}))))))))
 
 (defnc header
   [{:keys [style]} _ref]
   {:wrap [(react/forwardRef)]}
   (d/div
-    {:className (css
-                  :flex
-                  :h-15
-                  :flex-row-reverse
-                  :pr-3
-                  :box-border
-                  {:color "#2c2c2c"})
-     :ref _ref 
-     :style style}
-    ($ LocaleDropdown)))
-
+   {:className (css
+                :flex
+                :h-15
+                :flex-row-reverse
+                :pr-3
+                :box-border
+                {:color "#2c2c2c"})
+    :ref _ref
+    :style style}
+   ($ LocaleDropdown)))
 
 (defnc empty-content
   []
@@ -159,27 +154,24 @@
            :style #js {:height (:height window)}}
           "Select a component from the list"))))
 
-
 (defnc content
-  [{:keys [style]}]
   {:wrap [(react/forwardRef)]}
+  [{:keys [style]}]
   (let [[{:keys [rendered]}] (router/use-query)
         rendered-components (router/use-url->components)
-        render (last (filter some? (map :render rendered-components))) 
+        render (last (filter some? (map :render rendered-components)))
         $content (css
-                   :bg-neutral-100
-                   :border-teal-600
-                   :rounded-md)]
+                  :background-normal
+                  :rounded-md)]
     (if render
       (provider
-        {:context layout/*container-dimensions*
-         :value style}
-        (d/div
-          {:style style 
-           :class [$content "render-zone"]}
-          ($ render)))
+       {:context layout/*container-dimensions*
+        :value style}
+       (d/div
+        {:style style
+         :class [$content "render-zone"]}
+        ($ render)))
       ($ empty-content))))
-
 
 (defnc playground-layout
   []
@@ -189,16 +181,16 @@
         [_header] (use-dimensions)
         [_content {content-height :height}] (use-dimensions)
         $playground (css
-                      :flex
-                      ["& .content" :flex :flex-col])]
+                     :flex
+                     ["& .content" :flex :flex-col])]
     (hooks/use-effect
       :once
       (.log js/console "Adding playground watcher!")
       (add-watch
-        component-db
-        ::playground
-        (fn [_ _ _ components]
-          (set-components! components)))
+       component-db
+       ::playground
+       (fn [_ _ _ components]
+         (set-components! components)))
       (fn []
         (remove-watch component-db ::playground)))
     ($ UI
@@ -206,45 +198,53 @@
        ($ popup/Container
           ($ window/DimensionsProvider
              (d/div
-               {:className $playground}
-               ($ navbar {:ref _navbar})
-               (let [header-height 50
-                     header-width (- (:width window) navigation-width)
-                     content-height (- (:height window) content-height)
-                     content-width (- (:width window) navigation-width)]
-                 (d/div
-                   {:className "content"}
-                   ($ header
-                      {:ref _header
-                       :style {:width header-width 
-                               :height header-height}})
-                   ($ content
-                      {:ref _content
-                       :style {:height content-height 
-                               :width content-width}})))))))))
-
+              {:className $playground}
+              ($ navbar {:ref _navbar})
+              (let [header-height 50
+                    header-width (- (:width window) navigation-width)
+                    content-height (- (:height window) content-height)
+                    content-width (- (:width window) navigation-width)]
+                (d/div
+                 {:className "content"}
+                 ($ header
+                    {:ref _header
+                     :style {:width header-width
+                             :height header-height}})
+                 ($ content
+                    {:ref _content
+                     :style {:height content-height
+                             :width content-width}})))))))))
 
 (defnc playground
   [{:keys [components]}]
-  (let [[user set-user!] (hooks/use-state {:settings {:locale i18n/*locale*}})]
+  (let [[user set-user!] (hooks/use-state {:settings {:locale i18n/*locale*}})
+        [theme set-theme!] (hooks/use-state nil)]
+    (hooks/use-effect
+      :once
+      (async/go
+        (loop []
+          (if-some [html (.querySelector js/document "html")]
+            (when-not (= (.getAttribute html "data-theme") "dark")
+              (.setAttribute html "data-theme" "dark"))
+            (do
+              (async/<! (async/timeout 100))
+              (recur))))))
     (router/use-component-children ::router/ROOT components)
     ($ window/DimensionsProvider
        (provider
-         {:context app/user
-          :value [user set-user!]}
-         ($ playground-layout)))))
-
+        {:context app/user
+         :value [user set-user!]}
+        ($ playground-layout)))))
 
 (defn add-component
   [c]
   (swap! component-db
          (fn [current]
            (if (empty? current) [c]
-             (let [idx (.indexOf (map :key current) (:id c))]
-               (if (neg? idx)
-                 (conj current c)
-                 (assoc current idx c)))))))
-
+               (let [idx (.indexOf (map :key current) (:id c))]
+                 (if (neg? idx)
+                   (conj current c)
+                   (assoc current idx c)))))))
 
 ;; Component wrappers
 

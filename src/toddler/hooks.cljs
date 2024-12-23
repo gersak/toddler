@@ -1,32 +1,29 @@
 (ns toddler.hooks
   (:require
-    [clojure.set]
-    [clojure.edn :as edn]
-    [clojure.pprint :refer [pprint]]
-    [clojure.string :as str]
-    [goog.string :as gstr]
-    [goog.string.format]
-    [clojure.core.async :as async :refer-macros [go-loop]]
-    [helix.core :refer-macros [defhook]]
-    [helix.hooks :as hooks]
-    [toddler.app :as app]
-    [toddler.util :as util]
-    [toddler.i18n :as i18n :refer [translate]]
-    [toddler.i18n.keyword]
-    [toddler.i18n.time]
-    [toddler.i18n.number]
-    [toddler.graphql :as graphql]
-    [toddler.graphql.transport :refer [send-query]]))
+   [clojure.set]
+   [clojure.edn :as edn]
+   [clojure.pprint :refer [pprint]]
+   [clojure.string :as str]
+   [goog.string :as gstr]
+   [goog.string.format]
+   [clojure.core.async :as async :refer-macros [go-loop]]
+   [helix.core :refer-macros [defhook]]
+   [helix.hooks :as hooks]
+   [toddler.app :as app]
+   [toddler.util :as util]
+   [toddler.i18n :as i18n :refer [translate]]
+   [toddler.i18n.keyword]
+   [toddler.i18n.time]
+   [toddler.i18n.number]
+   [toddler.graphql :as graphql]
+   [toddler.graphql.transport :refer [send-query]]))
 
-
-(.log js/console "Loading toddler.hooks")
-
+; (.log js/console "Loading toddler.hooks")
 
 (defhook use-url
   "Returns root application root URL"
   []
   (hooks/use-context app/url))
-
 
 (defhook use-graphql-url
   "Returns GraphQL endpoint URL"
@@ -37,18 +34,15 @@
       [root from-context]
       (or from-context (str root "/graphql")))))
 
-
 (defhook use-user
   "Returns value in app/*user* context"
   []
   (hooks/use-context app/user))
 
-
 (defhook use-token
   "Returns current app token if any."
   []
   (hooks/use-context app/token))
-
 
 (letfn [(target [location]
           (if-some [_ns (try (namespace location) (catch js/Error _ nil))]
@@ -56,20 +50,19 @@
             (name location)))]
   (defhook use-local-storage
     ([location] (use-local-storage
-                  location
-                  (fn [v] (when v (edn/read-string v)))))
+                 location
+                 (fn [v] (when v (edn/read-string v)))))
     ([location transform]
-      (let [target (target location) 
-            [local set-local!] (hooks/use-state
-                                 (transform
-                                   (.getItem js/localStorage target)))]
-        (hooks/use-effect
-          [local]
-          (if (some? local)
-            (.setItem js/localStorage target local)
-            (.removeItem js/localStorage target)))
-        [local set-local!]))))
-
+     (let [target (target location)
+           [local set-local!] (hooks/use-state
+                               (transform
+                                (.getItem js/localStorage target)))]
+       (hooks/use-effect
+         [local]
+         (if (some? local)
+           (.setItem js/localStorage target local)
+           (.removeItem js/localStorage target)))
+       [local set-local!]))))
 
 (letfn [(target [location]
           (if-some [_ns (try (namespace location) (catch js/Error _ nil))]
@@ -77,21 +70,20 @@
             (name location)))]
   (defhook use-session-storage
     ([location] (use-session-storage
-                  location
-                  (fn [v]
-                    (when v (edn/read-string v)))))
+                 location
+                 (fn [v]
+                   (when v (edn/read-string v)))))
     ([location transform]
-      (let [target (target location) 
-            [local set-local!] (hooks/use-state
-                                 (transform
-                                   (.getItem js/sessionStorage target)))]
-        (hooks/use-effect
-          [local]
-          (if (some? local)
-            (.setItem js/sessionStorage target local)
-            (.removeItem js/sessionStorage target)))
-        [local set-local!]))))
-
+     (let [target (target location)
+           [local set-local!] (hooks/use-state
+                               (transform
+                                (.getItem js/sessionStorage target)))]
+       (hooks/use-effect
+         [local]
+         (if (some? local)
+           (.setItem js/sessionStorage target local)
+           (.removeItem js/sessionStorage target)))
+       [local set-local!]))))
 
 (letfn [(target [location]
           (if-some [_ns (try (namespace location) (catch js/Error _ nil))]
@@ -103,36 +95,35 @@
     value for given variable that is found under location key in browser session
     storage."
     ([location value]
-      (use-session-cache
-        location
-        (fn [v] (when v (edn/read-string v)))
-        value))
+     (use-session-cache
+      location
+      (fn [v] (when v (edn/read-string v)))
+      value))
     ([location transform value]
-      (use-session-cache
-        location
-        transform 
-        value
-        nil))
+     (use-session-cache
+      location
+      transform
+      value
+      nil))
     ([location transform value init-fn]
-      (let [target (target location) 
-            initialized? (hooks/use-ref false)
-            _ref (hooks/use-ref (transform (.getItem js/sessionStorage target)))]
-        (hooks/use-effect
-          [value]
-          (when @initialized?
-            (if (some? value)
-              (.setItem js/sessionStorage target value)
-              (.removeItem js/sessionStorage target))
-            (reset! _ref value)))
-        (hooks/use-effect
-          :once
-          (when (ifn? init-fn)
-            (init-fn
-              (transform
-                (.getItem js/sessionStorage target))))
-          (reset! initialized? true))
-        _ref))))
-
+     (let [target (target location)
+           initialized? (hooks/use-ref false)
+           _ref (hooks/use-ref (transform (.getItem js/sessionStorage target)))]
+       (hooks/use-effect
+         [value]
+         (when @initialized?
+           (if (some? value)
+             (.setItem js/sessionStorage target value)
+             (.removeItem js/sessionStorage target))
+           (reset! _ref value)))
+       (hooks/use-effect
+         :once
+         (when (ifn? init-fn)
+           (init-fn
+            (transform
+             (.getItem js/sessionStorage target))))
+         (reset! initialized? true))
+       _ref))))
 
 (defhook use-avatar
   [{:keys [name avatar path cached?]
@@ -152,32 +143,32 @@
                           (.setRequestHeader xhr "Accept" "application/octet-stream")
                           (when-not cached? (.setRequestHeader xhr "Cache-Control" "no-cache"))
                           (.addEventListener
-                            xhr "load"
-                            (fn [evt]
-                              (let [status (.. evt -target -status)
-                                    avatar' (.. evt -currentTarget -responseText)]
-                                (case status
-                                  200
-                                  (cond
+                           xhr "load"
+                           (fn [evt]
+                             (let [status (.. evt -target -status)
+                                   avatar' (.. evt -currentTarget -responseText)]
+                               (case status
+                                 200
+                                 (cond
                                     ;; if avatar has changed than swap avatars
                                     ;; this should trigger updates for all hooks
                                     ;; with target avatar
-                                    (not= avatar' (get @avatars avatar))
-                                    (when (not-empty avatar')
-                                      (swap! avatars assoc avatar avatar'))
+                                   (not= avatar' (get @avatars avatar))
+                                   (when (not-empty avatar')
+                                     (swap! avatars assoc avatar avatar'))
                                     ;; Otherwise if avatar is cached properly, but
                                     ;; current _avatar doesn't match current state
                                     ;; update current _avatar
-                                    (not= _avatar avatar')
-                                    (set-avatar! (not-empty avatar')))
+                                   (not= _avatar avatar')
+                                   (set-avatar! (not-empty avatar')))
                                   ;; otherwise
-                                  (async/put! app/signal-channel
-                                              {:type :toddler.notifications/error
-                                               :message (str "Couldn't fetch avatar for user " name)
-                                               :visible? true
-                                               :hideable? true
-                                               :adding? true
-                                               :autohide true})))))
+                                 (async/put! app/signal-channel
+                                             {:type :toddler.notifications/error
+                                              :message (str "Couldn't fetch avatar for user " name)
+                                              :visible? true
+                                              :hideable? true
+                                              :adding? true
+                                              :autohide true})))))
                           (.send xhr))))))]
     (hooks/use-effect
       [avatar]
@@ -199,14 +190,12 @@
           (when avatars (remove-watch avatars uuid)))))
     [_avatar refresh]))
 
-
 (defhook use-current-locale
   "Returns value for :locale in current user settings"
   []
   (let [[{{locale :locale
            :or {locale :default}} :settings}] (use-user)]
     (keyword locale)))
-
 
 (defhook use-translate
   []
@@ -218,7 +207,6 @@
                       ([data options] (translate data locale options))))]
     translate))
 
-
 (defhook use-translatef
   []
   (let [locale (use-current-locale)
@@ -226,30 +214,28 @@
                     [locale]
                     (fn
                       ([data & args]
-                        (if-let [template (translate data locale)]
-                          (try
-                            (apply gstr/format template args)
-                            (catch js/Error _
-                              (let [message
-                                    (str "Couldn't translate " data
-                                         "\n"
-                                         (with-out-str
-                                           (pprint
-                                             {:args args
-                                              :template template})))]
-                                (.error js/console message)
-                                "")))
-                          (throw (js/Error. (str "Couldn't find translation for " data ". Locale: " locale)))))))]
+                       (if-let [template (translate data locale)]
+                         (try
+                           (apply gstr/format template args)
+                           (catch js/Error _
+                             (let [message
+                                   (str "Couldn't translate " data
+                                        "\n"
+                                        (with-out-str
+                                          (pprint
+                                           {:args args
+                                            :template template})))]
+                               (.error js/console message)
+                               "")))
+                         (throw (js/Error. (str "Couldn't find translation for " data ". Locale: " locale)))))))]
     translate))
-
 
 (defhook use-calendar
   [key]
   (let [locale (use-current-locale)]
     (hooks/use-memo
-     [locale]
-     (i18n/locale locale key))))
-
+      [locale]
+      (i18n/locale locale key))))
 
 (defn make-idle-service
   "Creates idle service that will return idle-channel. This channel can be used
@@ -270,23 +256,23 @@
            ;; If not nil new value received and now idle handling should begin
            (let [aggregated-values; [v]
                  (loop [[value _] (async/alts!
-                                    [idle-channel
-                                     (async/go
-                                       (async/<! (async/timeout period))
-                                       ::TIMEOUT)])
+                                   [idle-channel
+                                    (async/go
+                                      (async/<! (async/timeout period))
+                                      ::TIMEOUT)])
                         r [v]]
                    (if (or
-                         (= ::TIMEOUT value)
-                         (nil? value))
+                        (= ::TIMEOUT value)
+                        (nil? value))
                      ;; Return aggregated values
                      (conj r value)
                      ;; Otherwise wait for next value in idle-channel
                      ;; and recur
                      (recur (async/alts!
-                              [idle-channel
-                               (async/go
-                                 (async/<! (async/timeout period))
-                                 ::TIMEOUT)])
+                             [idle-channel
+                              (async/go
+                                (async/<! (async/timeout period))
+                                ::TIMEOUT)])
                             (conj r value))))]
              ;; Apply function and if needed recur
              (f aggregated-values)
@@ -294,7 +280,6 @@
                nil
                (recur (async/<! idle-channel)))))))
      idle-channel)))
-
 
 (defhook use-idle
   "Idle hook. Returns cached value and update fn. Input arguments
@@ -312,32 +297,31 @@
          idle-channel (hooks/use-ref nil)]
      ;; Create idle channel
      (hooks/use-effect
-      :once
-      (reset!
-       idle-channel
-       (make-idle-service
-        timeout
-        (fn [values]
-          (let [[_ v'] (reverse values)]
-            (if @initialized?
-              (when (ifn? @call) (@call v'))
-              (reset! initialized? true))))))
-      (fn []
-        (when @idle-channel
-          (async/close! @idle-channel))))
+       :once
+       (reset!
+        idle-channel
+        (make-idle-service
+         timeout
+         (fn [values]
+           (let [[_ v'] (reverse values)]
+             (if @initialized?
+               (when (ifn? @call) (@call v'))
+               (reset! initialized? true))))))
+       (fn []
+         (when @idle-channel
+           (async/close! @idle-channel))))
      ;; When callback is changed reference new callback
      (hooks/use-effect
-      [callback]
-      (reset! call callback))
+       [callback]
+       (reset! call callback))
      ;; When value has changed and there is idle channel
      ;; put new value to idle-channel
      (hooks/use-effect
-      [v]
-      (when @idle-channel
-        (async/put! @idle-channel (or v :NULL))))
+       [v]
+       (when @idle-channel
+         (async/put! @idle-channel (or v :NULL))))
      ;; Return local state and update fn
      [v u])))
-
 
 (defhook use-delayed
   "Function returns `stable` input state after timeout. Idle service
@@ -351,32 +335,30 @@
          [v u] (hooks/use-state state)
          idle-channel (hooks/use-ref nil)]
      (hooks/use-effect
-      :once
-      (reset!
-       idle-channel
-       (make-idle-service
-        timeout
-        (fn [values]
-          (let [v (last (butlast values))
-                v (if (= v ::NULL) nil v)]
-            (when (not= @current-value v)
-              (reset! current-value v)
-              (u v))))))
-      (fn []
-        (when @idle-channel (async/close! @idle-channel))))
+       :once
+       (reset!
+        idle-channel
+        (make-idle-service
+         timeout
+         (fn [values]
+           (let [v (last (butlast values))
+                 v (if (= v ::NULL) nil v)]
+             (when (not= @current-value v)
+               (reset! current-value v)
+               (u v))))))
+       (fn []
+         (when @idle-channel (async/close! @idle-channel))))
      (hooks/use-effect
-      [state]
-      (when @idle-channel
-        (async/put! @idle-channel (or state ::NULL))))
+       [state]
+       (when @idle-channel
+         (async/put! @idle-channel (or state ::NULL))))
      v)))
-
 
 (defhook use-window-dimensions
   "Function will return browser window dimensions that
   should be instantiated in app/*window* context"
   []
   (hooks/use-context app/window))
-
 
 (defhook use-resize-observer
   "Hook returns ref that should be attached to component and
@@ -399,42 +381,41 @@
        (fn [] (when @observer (.disconnect @observer))))
      node)))
 
-
 (defhook use-dimensions
   "Hook returns ref that should be attached to component and
   second result dimensions of bounding client rect"
   ([]
-    (use-dimensions (hooks/use-ref nil)))
+   (use-dimensions (hooks/use-ref nil)))
   ([node]
    (use-dimensions node :box))
   ([node sizing]
    (let [observer (hooks/use-ref nil)
          [dimensions set-dimensions!] (hooks/use-state nil)
          resize-idle-service (hooks/use-ref
-                               (make-idle-service
-                                 20
-                                 (case sizing
+                              (make-idle-service
+                               20
+                               (case sizing
                                    ;;
-                                   :content 
-                                   (fn handle [entries]
-                                     (let [[_ entry] (reverse entries)
-                                           content-rect (.-contentRect entry)
-                                           dimensions {:width (.-width content-rect)
-                                                       :height (.-height content-rect)
-                                                       :top (.-top content-rect)
-                                                       :left (.-left content-rect)
-                                                       :right (.-right content-rect)
-                                                       :bottom (.-bottom content-rect)
-                                                       :x (.-x content-rect)
-                                                       :y (.-y content-rect)}]
-                                       (set-dimensions! dimensions)))
+                                 :content
+                                 (fn handle [entries]
+                                   (let [[_ entry] (reverse entries)
+                                         content-rect (.-contentRect entry)
+                                         dimensions {:width (.-width content-rect)
+                                                     :height (.-height content-rect)
+                                                     :top (.-top content-rect)
+                                                     :left (.-left content-rect)
+                                                     :right (.-right content-rect)
+                                                     :bottom (.-bottom content-rect)
+                                                     :x (.-x content-rect)
+                                                     :y (.-y content-rect)}]
+                                     (set-dimensions! dimensions)))
                                    ;; default
-                                   (fn handle [entries]
-                                     (let [[_ entry] (reverse entries)
-                                           [box-size] (.-borderBoxSize entry)
-                                           dimensions {:width (.-inlineSize box-size) 
-                                                       :height (.-blockSize box-size) }]
-                                       (set-dimensions! dimensions))))))]
+                                 (fn handle [entries]
+                                   (let [[_ entry] (reverse entries)
+                                         [box-size] (.-borderBoxSize entry)
+                                         dimensions {:width (.-inlineSize box-size)
+                                                     :height (.-blockSize box-size)}]
+                                     (set-dimensions! dimensions))))))]
      (hooks/use-effect
        :always
        (when (and (some? @node) (nil? dimensions))
@@ -450,8 +431,6 @@
          (when @observer (.disconnect @observer))))
      [node dimensions])))
 
-
-
 (defhook use-scroll-offset
   ([body] (use-scroll-offset body 50))
   ([body threshold]
@@ -461,8 +440,8 @@
                (let [scrolled (+ (.-scrollTop @body) (.-clientHeight @body))
                      content-height (.-scrollHeight @body)]
                  (when (and
-                         (not= @cached-height content-height)
-                         (>= (+ scrolled threshold) content-height))
+                        (not= @cached-height content-height)
+                        (>= (+ scrolled threshold) content-height))
                    (set-offset! inc)
                    (reset! cached-height content-height))))
              (reset []
@@ -475,78 +454,74 @@
            (when @body (.removeEventListener @body "scroll" check-offset))))
        [offset reset]))))
 
-
-
 (defhook use-multi-dimensions
   "Similar to use dimensions, only for tracking multiple elements.
   Input are sequence of references, i.e keywords, and output is vector
   of two elements. First element is map of reference to React ref, and
   second is map of reference to element dimensions."
   ([ks]
-    (let [nodes (hooks/use-ref nil)
-          refs (hooks/use-memo
-                 [ks]
-                 (reduce
-                   (fn [r k]
-                     (assoc r k (fn [node]
-                                  (swap! nodes assoc k node))))
-                   nil
-                   ks))
-          observers (hooks/use-ref nil)
-          [dimensions set-dimensions!] (hooks/use-state nil)]
+   (let [nodes (hooks/use-ref nil)
+         refs (hooks/use-memo
+                [ks]
+                (reduce
+                 (fn [r k]
+                   (assoc r k (fn [node]
+                                (swap! nodes assoc k node))))
+                 nil
+                 ks))
+         observers (hooks/use-ref nil)
+         [dimensions set-dimensions!] (hooks/use-state nil)]
       ;; Always check if everything is observedd!
-      (hooks/use-effect
-        :always
-        (doseq [k ks
-                :let [observer (get @observers k)
-                      node (get @nodes k)]
-                :when (and node (nil? observer))]
-          (letfn [(reset [[entry]]
-                    (let [content-rect (.-contentRect entry)]
-                      (set-dimensions! assoc k
-                                       {:width (.-width content-rect)
-                                        :height (.-height content-rect)
-                                        :top (.-top content-rect)
-                                        :left (.-left content-rect)
-                                        :right (.-right content-rect)
-                                        :bottom (.-bottom content-rect)
-                                        :x (.-x content-rect)
-                                        :y (.-y content-rect)})))]
-            (swap! observers assoc k (js/ResizeObserver. reset))
-            (.observe (get @observers k) node))))
+     (hooks/use-effect
+       :always
+       (doseq [k ks
+               :let [observer (get @observers k)
+                     node (get @nodes k)]
+               :when (and node (nil? observer))]
+         (letfn [(reset [[entry]]
+                   (let [content-rect (.-contentRect entry)]
+                     (set-dimensions! assoc k
+                                      {:width (.-width content-rect)
+                                       :height (.-height content-rect)
+                                       :top (.-top content-rect)
+                                       :left (.-left content-rect)
+                                       :right (.-right content-rect)
+                                       :bottom (.-bottom content-rect)
+                                       :x (.-x content-rect)
+                                       :y (.-y content-rect)})))]
+           (swap! observers assoc k (js/ResizeObserver. reset))
+           (.observe (get @observers k) node))))
       ;; Register on remove cleanup
-      (hooks/use-effect
-        :once
-        (fn []
-          (doseq [k ks
-                  :let [observer (get @observers k)]
-                  :when observer]
-            (.disconnect observer))))
-      [refs dimensions])))
-
+     (hooks/use-effect
+       :once
+       (fn []
+         (doseq [k ks
+                 :let [observer (get @observers k)]
+                 :when observer]
+           (.disconnect observer))))
+     [refs dimensions])))
 
 (defhook use-parent [_ref]
   (util/dom-parent _ref))
 
-
 (defhook use-on-parent-resized [_ref handler]
   (let [observer (hooks/use-ref nil)
         resize-idle-service (hooks/use-ref
-                              (make-idle-service
-                                300
-                                (fn handle [entries]
-                                  (when (ifn? handler)
-                                    (let [[_ entry] (reverse entries)
-                                          content-rect (.-contentRect entry)
-                                          dimensions {:width (.-width content-rect)
-                                                      :height (.-height content-rect)
-                                                      :top (.-top content-rect)
-                                                      :left (.-left content-rect)
-                                                      :right (.-right content-rect)
-                                                      :bottom (.-bottom content-rect)
-                                                      :x (.-x content-rect)
-                                                      :y (.-y content-rect)}]
-                                      (handler dimensions (.-target entry)))))))]
+                             (make-idle-service
+                              300
+                              (fn handle [entries]
+                                (when (ifn? handler)
+                                  (let [[_ entry] (reverse entries)
+                                        content-rect (.-contentRect entry)
+                                        dimensions {:width (.-width content-rect)
+                                                    :height (.-height content-rect)
+                                                    :top (.-top content-rect)
+                                                    :left (.-left content-rect)
+                                                    :right (.-right content-rect)
+                                                    :bottom (.-bottom content-rect)
+                                                    :x (.-x content-rect)
+                                                    :y (.-y content-rect)}]
+                                    (handler dimensions (.-target entry)))))))]
     (hooks/use-effect
       :always
       (when-not @observer
@@ -559,10 +534,9 @@
     (hooks/use-effect
       :once
       #_(when-let [parent (util/dom-parent @_ref)]
-        (when (ifn? handler)
-          (handler (util/bounding-client-rect parent) parent)))
+          (when (ifn? handler)
+            (handler (util/bounding-client-rect parent) parent)))
       (fn [] (when @observer (.disconnect @observer))))))
-
 
 (defhook use-publisher
   "Generic publisher function. Provide topic fn
@@ -579,38 +553,35 @@
    (let [[pc set-pc] (hooks/use-state nil)
          [publisher set-publisher] (hooks/use-state nil)
          publish (hooks/use-memo
-                  [publisher]
-                  (fn [data]
-                    (when pc (async/put! pc data))))]
+                   [publisher]
+                   (fn [data]
+                     (when pc (async/put! pc data))))]
      (hooks/use-effect
-      :once
-      (let [pc' (async/chan buffer-size)
-            p (async/pub pc' topic-fn)]
-        (set-pc pc')
-        (set-publisher p))
-      #(do
-         (when pc (async/close! pc))))
+       :once
+       (let [pc' (async/chan buffer-size)
+             p (async/pub pc' topic-fn)]
+         (set-pc pc')
+         (set-publisher p))
+       #(do
+          (when pc (async/close! pc))))
      [publisher publish])))
-
 
 (defhook use-listener
   "Generic listener hook. For given publisher and topic apply handler."
   [publisher topic handler]
   (hooks/use-effect
-   [publisher handler]
-   (when publisher
-     (let [c (async/chan 100)]
-       (async/sub publisher topic c)
-       (go-loop []
-         (let [v (async/<! c)]
-           (when v
-             (handler v)
-             (recur))))
-       #(when publisher
-          (async/unsub publisher topic c)
-          (async/close! c))))))
-
-
+    [publisher handler]
+    (when publisher
+      (let [c (async/chan 100)]
+        (async/sub publisher topic c)
+        (go-loop []
+          (let [v (async/<! c)]
+            (when v
+              (handler v)
+              (recur))))
+        #(when publisher
+           (async/unsub publisher topic c)
+           (async/close! c))))))
 
 (defhook use-toddler-listener
   "Function will register handler for topic on global
@@ -621,12 +592,11 @@
     (let [c (async/chan 10)]
       (async/sub app/signal-publisher topic c)
       (async/go-loop []
-                     (let [v (async/<! c)]
-                       (when v
-                         (handler v)
-                         (recur))))
+        (let [v (async/<! c)]
+          (when v
+            (handler v)
+            (recur))))
       (fn [] (async/close! c)))))
-
 
 (defhook use-toddler-publisher
   "Function will forward all input data to global
@@ -641,109 +611,105 @@
                       (async/put! app/signal-channel data)))]
     publisher))
 
-
 (defhook use-query
   ([{query-name :query
      selection :selection
      alias :alias
      args :args
      :keys [on-load on-error]}]
-    (let [[token] (use-token)
-          url (use-graphql-url)]
-      (hooks/use-memo
-        [(name query-name) args selection]
-        (fn send
-          []
-          (let [query-name (name query-name)
-                query-key (keyword query-name)
-                query (graphql/wrap-queries
-                        (graphql/->graphql 
-                          (graphql/->GraphQLQuery
-                            query-name alias selection args)))]
-            (async/go
-              (let [{:keys [errors]
-                     {data query-key} :data
-                     :as response}
-                    (async/<! 
-                      (send-query 
-                        query 
-                        :url url
-                        :token token
-                        :on-load on-load
-                        :on-error on-error))]
-                (if (some? errors)
-                  (ex-info "Remote query failed"
-                           {:query query
-                            :args args
-                            :selection selection
-                            :response response})
-                  data)))))))))
-
+   (let [[token] (use-token)
+         url (use-graphql-url)]
+     (hooks/use-memo
+       [(name query-name) args selection]
+       (fn send
+         []
+         (let [query-name (name query-name)
+               query-key (keyword query-name)
+               query (graphql/wrap-queries
+                      (graphql/->graphql
+                       (graphql/->GraphQLQuery
+                        query-name alias selection args)))]
+           (async/go
+             (let [{:keys [errors]
+                    {data query-key} :data
+                    :as response}
+                   (async/<!
+                    (send-query
+                     query
+                     :url url
+                     :token token
+                     :on-load on-load
+                     :on-error on-error))]
+               (if (some? errors)
+                 (ex-info "Remote query failed"
+                          {:query query
+                           :args args
+                           :selection selection
+                           :response response})
+                 data)))))))))
 
 (defhook use-queries
   ([queries] (use-queries queries nil))
   ([queries {:keys [on-load on-error]}]
-    (let [[token] (use-token)
-          url (use-graphql-url)]
-      (hooks/use-memo
-        [queries]
-        (fn send
-          []
-          (let [query (graphql/queries queries)]
-            (async/go
-              (let [{:keys [errors]
-                     data :data
-                     :as response}
-                    (async/<! 
-                      (send-query 
-                        query 
-                        :url url
-                        :token token
-                        :on-load on-load
-                        :on-error on-error))]
-                (if (some? errors)
-                  (ex-info "Remote query failed"
-                           {:queries queries
-                            :response response})
-                  data)))))))))
-
+   (let [[token] (use-token)
+         url (use-graphql-url)]
+     (hooks/use-memo
+       [queries]
+       (fn send
+         []
+         (let [query (graphql/queries queries)]
+           (async/go
+             (let [{:keys [errors]
+                    data :data
+                    :as response}
+                   (async/<!
+                    (send-query
+                     query
+                     :url url
+                     :token token
+                     :on-load on-load
+                     :on-error on-error))]
+               (if (some? errors)
+                 (ex-info "Remote query failed"
+                          {:queries queries
+                           :response response})
+                 data)))))))))
 
 (defhook use-mutation
   ([{:keys [mutation selection types alias args on-load on-error]}]
-    (let [[token] (use-token)
+   (let [[token] (use-token)
           ;;
-          url (use-graphql-url)]
+         url (use-graphql-url)]
       ; (when (ifn? on-load) (on-load "109"))
-      (hooks/use-callback
-        [mutation selection types args]
-        (fn [data]
-          (async/go
-            (let [{:keys [query variables]}
-                  (graphql/mutations [{:mutation mutation
-                                       :selection selection
-                                       :alias alias
-                                       :args args
-                                       :variables data
-                                       :types types}])
+     (hooks/use-callback
+       [mutation selection types args]
+       (fn [data]
+         (async/go
+           (let [{:keys [query variables]}
+                 (graphql/mutations [{:mutation mutation
+                                      :selection selection
+                                      :alias alias
+                                      :args args
+                                      :variables data
+                                      :types types}])
                   ;;
-                  {:keys [errors]
-                   {data mutation} :data}
-                  (async/<! 
-                    (send-query 
-                      query 
-                      :url url
-                      :token token
-                      :variables variables 
-                      :on-load on-load
-                      :on-error on-error))]
-              (if (some? errors)
-                (ex-info
-                  (str "Mutation " mutation " failed")
-                  {:query query
+                 {:keys [errors]
+                  {data mutation} :data}
+                 (async/<!
+                  (send-query
+                   query
+                   :url url
+                   :token token
                    :variables variables
-                   :errors errors})
-                data))))))))
-
+                   :on-load on-load
+                   :on-error on-error))]
+             (if (some? errors)
+               (ex-info
+                (str "Mutation " mutation " failed")
+                {:query query
+                 :variables variables
+                 :errors errors})
+               data))))))))
 
 (defhook use-mutations
   ([{:keys [mutations on-load on-error]}]
@@ -757,18 +723,18 @@
                  ;;
                  {:keys [errors]
                   data :data}
-                 (async/<! 
-                   (send-query 
-                     query 
-                     :url url
-                     :token token
-                     :variables variables 
-                     :on-load on-load
-                     :on-error on-error))]
+                 (async/<!
+                  (send-query
+                   query
+                   :url url
+                   :token token
+                   :variables variables
+                   :on-load on-load
+                   :on-error on-error))]
              (if (some? errors)
                (ex-info
-                 (str "Mutations " (str/join ", " (map :mutation mutations)) " failed")
-                 {:query query
-                  :variables variables
-                  :errors errors})
+                (str "Mutations " (str/join ", " (map :mutation mutations)) " failed")
+                {:query query
+                 :variables variables
+                 :errors errors})
                data))))))))

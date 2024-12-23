@@ -2,7 +2,8 @@
   (:require
    [clojure.java.io :as io]
    [shadow.css.build :as cb]
-   [shadow.cljs.devtools.server.fs-watch :as fs-watch])
+   [shadow.cljs.devtools.server.fs-watch :as fs-watch]
+   [toddler.css :as css])
   (:import java.util.zip.ZipInputStream))
 
 (defonce css-ref (atom nil))
@@ -36,6 +37,7 @@
 (defn init []
   (->
    (cb/init)
+   (update :aliases merge css/aliases)
    (cb/start)
    (cb/index-path (io/file "src") {})
    (cb/index-path (io/file "showcase") {})))
@@ -56,7 +58,7 @@
            {}
            [(io/file "src")
             (io/file "showcase")]
-           ["cljs" "cljc" "clj"]
+           ["cljs" "cljc" "clj" "css"]
            (fn [updates]
              (try
                (doseq [{:keys [file event]} updates
@@ -87,5 +89,6 @@
   (-> css-ref deref :colors)
   (-> css-ref deref)
   (-> css-ref deref :namespaces keys)
+  (-> css-ref deref :border-positive)
   (spit "aliases.edn" (-> css-ref deref :aliases keys))
   (go))

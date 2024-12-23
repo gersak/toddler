@@ -14,3 +14,9 @@ release/js/
 .calva/
 .DS_Store
 icons/.repos
+
+
+dev/css/
+.icons/
+release/
+*.old
