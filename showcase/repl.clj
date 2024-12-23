@@ -1,8 +1,8 @@
 (ns repl
   (:require
-    [clojure.java.io :as io]
-    [shadow.css.build :as cb]
-    [shadow.cljs.devtools.server.fs-watch :as fs-watch])
+   [clojure.java.io :as io]
+   [shadow.css.build :as cb]
+   [shadow.cljs.devtools.server.fs-watch :as fs-watch])
   (:import java.util.zip.ZipInputStream))
 
 (defonce css-ref (atom nil))
@@ -22,10 +22,8 @@
       (prn [:CSS (name warning-type) (dissoc warning :warning-type)]))
     (println)))
 
-
 (comment
   (file-seq (io/file "src"))
-  (io/resource "neyho")
   (def s (ZipInputStream. (io/input-stream (io/resource "shadow/css"))))
   (.available s)
   (.getNextEntry s)
@@ -35,14 +33,12 @@
         (recur (conj dirs (.getName entry)))
         dirs))))
 
-
 (defn init []
-  (-> 
-    (cb/init)
-    (cb/start)
-    (cb/index-path (io/file "src") {})
-    (cb/index-path (io/file "showcase") {})))
-
+  (->
+   (cb/init)
+   (cb/start)
+   (cb/index-path (io/file "src") {})
+   (cb/index-path (io/file "showcase") {})))
 
 (defn start
   {:shadow/requires-server true}
@@ -57,40 +53,39 @@
   ;; then setup the watcher that rebuilds everything on change
   (reset! css-watch-ref
           (fs-watch/start
-            {}
-            [(io/file "src")
-             (io/file "showcase")]
-            ["cljs" "cljc" "clj"]
-            (fn [updates]
-              (try
-                (doseq [{:keys [file event]} updates
-                        :when (not= event :del)]
+           {}
+           [(io/file "src")
+            (io/file "showcase")]
+           ["cljs" "cljc" "clj"]
+           (fn [updates]
+             (try
+               (doseq [{:keys [file event]} updates
+                       :when (not= event :del)]
                   ;; re-index all added or modified files
-                  (swap! css-ref cb/index-file file))
+                 (swap! css-ref cb/index-file file))
 
-                (generate-css)
-                (catch Exception e
-                  (prn :css-build-failure)
-                  (prn e))))))
+               (generate-css)
+               (catch Exception e
+                 (prn :css-build-failure)
+                 (prn e))))))
 
   ::started)
 
 (defn stop []
-    (when-some [css-watch @css-watch-ref]
-          (fs-watch/stop css-watch)
-              (reset! css-ref nil))
-    
-      ::stopped)
+  (when-some [css-watch @css-watch-ref]
+    (fs-watch/stop css-watch)
+    (reset! css-ref nil))
+
+  ::stopped)
 
 (defn go []
   (stop)
   (start))
 
-
 (comment
   (-> css-ref deref keys)
   (-> css-ref deref :colors)
-  (-> css-ref deref )
+  (-> css-ref deref)
   (-> css-ref deref :namespaces keys)
-  (spit "aliases.edn" (-> css-ref deref :aliases keys ))
+  (spit "aliases.edn" (-> css-ref deref :aliases keys))
   (go))
