@@ -99,8 +99,8 @@
   (css
    :flex
    :text-normal
-   :border
-   :border-normal
+   ; :border
+   ; :border-normal
    :rounded-md
    :justify-center
    :items-center
@@ -127,11 +127,8 @@
     ;;
    ["&.negative" :button-negative]
    ["&.negative:hover" :button-negative-hover]
-    ;;
-   ; ["&.neutral" :button-neutral]
-   ; ["&.neutral:hover" :button-neutral-hvoer]
-    ;;
-   ["&[disabled]" :cursor-default :pointer-events-none]))
+   ;;
+   ["&[disabled]" :button-disabled]))
 
 (defnc button
   {:wrap [(ui/forward-ref)]}
@@ -595,32 +592,19 @@
    {:padding-left "3px"
     :padding-right "8px"
     :min-height "26px"}
-   ["& svg" :ml-2 :pr-1]
+   ; ["& svg" :ml-2 :pr-1]
    :text-xs
    :text-normal
    :border
    :border-normal
    :cursor-pointer
+   {:color "var(--tag-color-normal)"
+    :background-color "var(--tag-bg-normal)"}
    ["& .avatar" :mr-2 :rounded-sm :bg-normal-highlighted]
-
+   ["&.negative" {:color "var(--tag-color-negative)" :background-color "var(--tag-bg-negative)"}]
+   ["&.positive" {:color "var(--tag-color-positive)" :background-color "var(--tag-bg-positive)"}]
+   ["&.fun" {:color "var(--tag-color-negative)" :background-color "var(--tag-bg-negative)"}]
    ["&.selected" :border-highlighted]))
-
-(defnc multiselect-option
-  {:wrap [(ui/forward-ref)]}
-  [{:keys [value context class className selected] :as props} _ref]
-  (d/div
-   {:ref _ref
-    :class (cond-> ["toddler-multiselect-option"
-                    $tag
-                    (when context (name context))
-                    (when selected "selected")]
-             (string? class) (conj class)
-             (sequential? class) (into class)
-             (string? className) (conj className))
-    & (dissoc props :value :context :className :on-remove :onRemove)}
-   (if-some [children (c/children props)]
-     children
-     value)))
 
 (def $multiselect-wrapper
   (css

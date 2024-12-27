@@ -18,11 +18,11 @@
    ; :bg-highlighted {:background "var(--bg-highlighted)"}
    ; :bg-hover {:background primary-green}
 
-;; REACHER
+   ;; REACHER
    ; :reacher-download {:cursor "pointer" :color medium-green}
    ; :reacher-download-hover {:cursor "pointer" :color primary-green}
 
-;; Modal
+   ;; Modal
    ; :button {:color dark-green
    ;          :background-color "transparent"
    ;          :border-radius "1px"
@@ -41,10 +41,13 @@
    :button-negative-hover {:border-color "var(--button-negative-hover-border)"
                            :background-color "var(--button-negative-hover-bg)"}
    :button-neutral {:color "var(--button-neutral-color)"
-                    :border-color "var(--button-neutral-border)"
+                    ; :border-color "var(--button-neutral-border)"
                     :background-color "var(--button-neutral-bg)"}
    :button-neutral-hover {:border-color "var(--button-neutral-hover-border)"
                           :background-color "var(--button-neutral-hover-bg)"}
+   :button-disabled {:color "var(--button-disabled-color)"
+                     :border-color "var(--button-disabled-border)"
+                     :background-color "var(--button-disabled-bg)"}
 
    :animate-border-click {:animation-name "var(--input-normal-click)"
                           :animation-duration ".5s"}
@@ -72,7 +75,7 @@
    :bg-exception- {:background-color "var(--color-exception-light)"}
    :bg-exception+ {:background-color "var(--color-exception-heavy)"}
 
-;; Borders
+   ;; Borders
    ; :border-modal {:border-color bg-modal}
    :border-positive {:border-color "var(--color-positive)"}
    :border-negative {:border-color "var(--color-negative)"}
@@ -81,7 +84,7 @@
    :border-important {:border-color "var(--color-important)"}
    :border-exception {:border-color "var(--color-exception)"}
 
-;; Micro Actions
+   ;; Micro Actions
    :box-action {:background-color "var(--box-action-bg)"
                 :color "var(--box-action-color)"
                 :transition "color .3s ease-in-out"}

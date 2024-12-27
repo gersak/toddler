@@ -2,9 +2,8 @@
   (:refer-clojure :exclude [identity])
   (:require-macros [toddler.ui :refer [defcomponent]])
   (:require
-    ["react" :as react]
-    [helix.core :refer [create-context]]))
-
+   ["react" :as react]
+   [helix.core :refer [create-context]]))
 
 (declare avatar row column form checkbox drawer tab
          button buttons simplebar popup option input clear
@@ -19,14 +18,9 @@
          text-cell enum-cell currency-cell hash-cell uuid-cell identity-cell
          timestamp-cell expand-cell delete-cell forward-ref)
 
-
-
-
 (def ^js __components__ (create-context))
 
-
 (def forward-ref ^js react/forwardRef)
-
 
 (defcomponent avatar :avatar)
 (defcomponent avatar-editor :avatar/editor)
@@ -58,22 +52,18 @@
 (defcomponent checklist :checklist)
 (defcomponent drawer :drawer)
 
-
 (defcomponent modal-avatar-editor :modal/avatar-editor)
 (defcomponent modal-background :modal/background)
 (defcomponent modal-dialog :modal/dialog)
 (defcomponent modal-pavement :modal/pavement)
 (defcomponent modal-strip :modal/strip)
 
-
 (defcomponent card :card)
 (defcomponent card-action :card/action)
 (defcomponent card-actions :card/actions)
 
-
 (defcomponent tabs :tabs)
 (defcomponent tab :tab)
-
 
 (defcomponent calendar-month-dropdown :calendar/month-dropdown)
 (defcomponent calendar-year-dropdown :calendar/year-dropdown)
@@ -85,11 +75,9 @@
 (defcomponent calendar :calendar)
 (defcomponent calendar-period :calendar/period)
 
-
 (defcomponent search-field :field/search)
 (defcomponent identity-field :field/identity)
 (defcomponent identity-multiselect-field :field/identity-multiselect)
-
 
 (defcomponent text-field :field/text)
 (defcomponent integer-field :field/integer)
@@ -108,7 +96,6 @@
 (defcomponent idle-field :field/idle)
 (defcomponent copy-field :field/copy)
 
-
 (defcomponent table :table)
 (defcomponent table-row :table/row)
 (defcomponent table-cell :table/cell)
@@ -121,7 +108,6 @@
 (defcomponent user-header :header/user)
 (defcomponent timestamp-header :header/timestamp)
 (defcomponent plain-header :header/plain)
-
 
 (defcomponent boolean-cell :cell/boolean)
 (defcomponent integer-cell :cell/integer)

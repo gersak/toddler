@@ -4,14 +4,14 @@
    [toddler.i18n.time :as t]
    [toddler.util :refer [deep-merge]]))
 
-
 (defonce translations (atom nil))
 
+(comment
+  (cljs.pprint/pprint @translations))
 
 (defn add-translations
   [mapping]
   (swap! translations deep-merge mapping))
-
 
 (defn remove-translations
   [key locales]
@@ -23,7 +23,6 @@
                 (contains? locales k) (dissoc k)))
             translations
             translations))))
-
 
 (extend-protocol toddler.i18n/Translator
   cljs.core.Keyword
@@ -39,7 +38,6 @@
      (if-let [w (get @translations (keyword (name this) (name locale)))]
        w
        (get @translations (keyword (name this) :default))))))
-
 
 (extend-protocol toddler.i18n/Locale
   cljs.core.Keyword
@@ -65,9 +63,7 @@
         :weekends (set (map inc (.-WEEKENDRANGE symbols)))
         :weekdays/first (inc (.-FIRSTDAYOFWEEK symbols))))))
 
-
 (.log js/console "Loaded toddler.i18n.keywords")
-
 
 (comment
   (inc (mod 1 7))

@@ -6,23 +6,22 @@
 
 (ns toddler.multiselect
   (:require
-    [helix.core :refer [$ defhook defnc provider <>]]
-    [helix.hooks :as hooks]
-    [helix.dom :as d]
-    [helix.children :as c]
-    clojure.string
-    [toddler.dropdown
-     :refer [*dropdown*]]
-    [toddler.popup
-     :as popup]
-    [toddler.ui :as ui]))
+   [helix.core :refer [$ defhook defnc provider <>]]
+   [helix.hooks :as hooks]
+   [helix.dom :as d]
+   [helix.children :as c]
+   clojure.string
+   [toddler.dropdown
+    :refer [*dropdown*]]
+   [toddler.popup
+    :as popup]
+   [toddler.ui :as ui]))
 
-(defn get-available-options 
+(defn get-available-options
   ([search options search-fn]
    (let [options (distinct options)
          regex (when (not-empty search)
                  (re-pattern (apply str "(?i)" (clojure.string/replace search #"\s+" ".*"))))
-         ; _ (println "OPTIONS: " options)
          available-options (if regex
                              (let [predicate (fn [v]
                                                (when-let [text (search-fn v)]
@@ -33,11 +32,10 @@
                                  options
                                  ;; Otherwise return filtered options
                                  (filter predicate options)))
-                               options)]
-     (if (empty? available-options) 
+                             options)]
+     (if (empty? available-options)
        (vec options)
        (vec available-options)))))
-
 
 (defn next-option  [cursor [option :as options]]
   (let [cursor-position (inc (.indexOf options cursor))
@@ -55,7 +53,7 @@
                                   cursor
                                   options
                                   new-fn
-                                  position 
+                                  position
                                   search-fn
                                   on-change
                                   set-opened!
@@ -66,12 +64,12 @@
     ;; BACKSPACE
     8 (do
         (set-opened! true)
-        (when (<= (count search) 1) 
+        (when (<= (count search) 1)
           (when (= search "") (on-change (vec (butlast value))))
           (set-search! "")))
     ;; TAB
     9 (do
-        (set-opened! false) 
+        (set-opened! false)
         (if (fn? new-fn)
           (on-change (new-fn search))
           (set-search! "")))
@@ -81,9 +79,9 @@
            (on-change ((fnil conj []) value cursor))
            (let [v (.. e -target -value)
                  option (some
-                          (fn [option]
-                            (when (= (search-fn option) v) option))
-                          options)]
+                         (fn [option]
+                           (when (= (search-fn option) v) option))
+                         options)]
              (cond
                (some? option) (on-change ((fnil conj []) value option))
                (fn? new-fn) (on-change ((fnil conj []) value (new-fn v)))
@@ -97,22 +95,22 @@
          (set-cursor! nil))
     ;; KEY UP
     38 (do
-         (when-not opened 
+         (when-not opened
            (set-opened! true))
          (.preventDefault e)
          (set-cursor!
-           (if (position :top)
-             (next-option cursor options)
-             (previous-option cursor options))))
+          (if (position :top)
+            (next-option cursor options)
+            (previous-option cursor options))))
     ;; KEY DOWN
     40 (do
          (.preventDefault e)
-         (when-not opened 
+         (when-not opened
            (set-opened! true))
-         (set-cursor! 
-           (if (position :top)
-             (previous-option cursor options)
-             (next-option cursor options))))
+         (set-cursor!
+          (if (position :top)
+            (previous-option cursor options)
+            (next-option cursor options))))
     ;; ALPHA-NUMERIC
     (48 49 50 51 52 53 54 55 56 57 65 66
         67 68 69 70 71 72 73 74 75 76 77 78
@@ -121,10 +119,10 @@
     ;; EVERYTHING ELSE
     "default"))
 
-
 (defhook use-multiselect
-  [{:keys [value options on-change onChange new-fn search-fn area area-position read-only]
-    :or {search-fn str}
+  [{:keys [value options on-change onChange new-fn search-fn context-fn area area-position read-only]
+    :or {search-fn str
+         context-fn (constantly nil)}
     :as props}]
   (let [on-change (or onChange on-change identity)
         [search set-search!] (hooks/use-state nil)
@@ -145,7 +143,7 @@
         direction (condp #(contains? %2 %1) area-position
                     :top true
                     :center true
-                    false) 
+                    false)
         available-options (get-available-options search options search-fn)
         [ref-fn focus] (popup/use-focusable-items direction)]
     (hooks/use-effect
@@ -161,51 +159,51 @@
       [opened]
       (when opened (focus value)))
     (popup/use-outside-action
-      opened area popup 
-      #(when opened (set-opened! false)))
+     opened area popup
+     #(when opened (set-opened! false)))
     (assoc props
-           :search search
-           :opened opened
-           :cursor cursor
-           :input input
-           :area area
-           :popup popup
-           :ref-fn ref-fn
-           :read-only read-only
-           :toggle! (fn []
-                      (when @input (.focus @input))
-                      (set-opened! not))
-           :open! (fn []
-                    (when @input (.focus @input))
-                    (set-opened! true))
-           :close! #(set-opened! false)
-           :select! #(let [current ((fnil conj []) value %)]
-                       (on-change current)
-                       #_(set-search! "")
-                       #_(.focus @input))
-           :remove! #(do
-                       (on-change
-                         (when-let [v (not-empty (remove #{%} value))]
-                           (vec v)))
-                       #_(.focus @input))
-           :on-change (fn [e] (set-search! (.. e -target -value)))
-           :on-key-down (fn [e]
-                          (key-down-handler e
-                                            {:value value
-                                             :search search
-                                             :opened opened
-                                             :cursor cursor
-                                             :options available-options
-                                             :new-fn new-fn
-                                             :search-fn search-fn
-                                             :on-change on-change
-                                             :set-opened! set-opened!
-                                             :set-search! set-search!
-                                             :set-cursor! set-cursor!
-                                             :position area-position 
-                                             :input @input}))
-           :options available-options)))
-
+      :search search
+      :opened opened
+      :cursor cursor
+      :input input
+      :area area
+      :popup popup
+      :context-fn context-fn
+      :ref-fn ref-fn
+      :read-only read-only
+      :toggle! (fn []
+                 (when @input (.focus @input))
+                 (set-opened! not))
+      :open! (fn []
+               (when @input (.focus @input))
+               (set-opened! true))
+      :close! #(set-opened! false)
+      :select! #(let [current ((fnil conj []) value %)]
+                  (on-change current)
+                  #_(set-search! "")
+                  #_(.focus @input))
+      :remove! #(do
+                  (on-change
+                   (when-let [v (not-empty (remove #{%} value))]
+                     (vec v)))
+                  #_(.focus @input))
+      :on-change (fn [e] (set-search! (.. e -target -value)))
+      :on-key-down (fn [e]
+                     (key-down-handler e
+                                       {:value value
+                                        :search search
+                                        :opened opened
+                                        :cursor cursor
+                                        :options available-options
+                                        :new-fn new-fn
+                                        :search-fn search-fn
+                                        :on-change on-change
+                                        :set-opened! set-opened!
+                                        :set-search! set-search!
+                                        :set-cursor! set-cursor!
+                                        :position area-position
+                                        :input @input}))
+      :options available-options)))
 
 (defnc Element
   [{:keys [context-fn search-fn disabled placeholder]
@@ -217,40 +215,38 @@
                 new-fn
                 area]
          :as multiselect} (use-multiselect
-                            (assoc props
-                                   :search-fn search-fn))]
+                           (assoc props
+                             :search-fn search-fn))]
     (provider
-      {:context *dropdown*
-       :value multiselect}
-      (<>
-        (map
-          (fn [option]
-            ($ ui/option
-               {:key (search-fn option)
-                :value option
-                :onRemove #(remove! option)
-                :context (if disabled :stale
-                           (when (fn? context-fn)
-                             (context-fn option)))}))
-          (:value props))
-        ($ popup/Area
-           {:ref area
-            :onClick #(when-not (empty? options) (open!))
-            :className "dropdown"}
-           (when (or (fn? new-fn) (not-empty options))
-             ($ ui/input {:placeholder placeholder}))
-           ($ ui/popup))))))
-
+     {:context *dropdown*
+      :value multiselect}
+     (<>
+      (map
+       (fn [option]
+         ($ ui/option
+            {:key (search-fn option)
+             :value option
+             :onRemove #(remove! option)
+             :context (if disabled :stale
+                          (when (fn? context-fn)
+                            (context-fn option)))}))
+       (:value props))
+      ($ popup/Area
+         {:ref area
+          :onClick #(when-not (empty? options) (open!))
+          :className "dropdown"}
+         (when (or (fn? new-fn) (not-empty options))
+           ($ ui/input {:placeholder placeholder}))
+         ($ ui/popup))))))
 
 (defnc Option
   [{:keys [value]
     :as props}]
   (d/div
-    {& props}
-    (if-some [children (c/children props)]
-      children
-      value)))
-
+   {& props}
+   (if-some [children (c/children props)]
+     children
+     value)))
 
 (defnc Options
   [{:keys [render context-fn]}]
@@ -263,24 +259,25 @@
          :or {search-fn str}} (hooks/use-context *dropdown*)
         popup-position (hooks/use-context popup/*position*)
         is-selected? (hooks/use-memo
-                   [value]
-                   (set value))]
+                       [value]
+                       (set value))
+        not-selected (remove is-selected? options)]
     (map
-      (fn [option]
-        (let [selected (is-selected? option)]
-          ($ render
-             {:key (search-fn option)
-              :ref (ref-fn option)
-              :value option
-              :context (when (ifn? context-fn)
-                         (context-fn option))
-              :selected selected
-              :onMouseDown (fn []
-                             ((if selected remove! select!)
-                              option))
-              & (cond-> nil
-                  (nil? option) (assoc :style #js {:color "transparent"}))}
-             (if (nil? option) "nil" (search-fn option)))))
-      (if (:top popup-position)
-        (reverse options)
-        options))))
+     (fn [option]
+       (let [selected (is-selected? option)]
+         ($ render
+            {:key (search-fn option)
+             :ref (ref-fn option)
+             :value option
+             :context (when (ifn? context-fn)
+                        (context-fn option))
+             :selected selected
+             :onMouseDown (fn []
+                            ((if selected remove! select!)
+                             option))
+             & (cond-> nil
+                 (nil? option) (assoc :style #js {:color "transparent"}))}
+            (if (nil? option) "nil" (search-fn option)))))
+     (if (:top popup-position)
+       (reverse not-selected)
+       not-selected))))

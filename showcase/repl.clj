@@ -89,6 +89,6 @@
   (-> css-ref deref :colors)
   (-> css-ref deref)
   (-> css-ref deref :namespaces keys)
-  (-> css-ref deref :border-positive)
+  (-> css-ref deref :aliases :button-disabled)
   (spit "aliases.edn" (-> css-ref deref :aliases keys))
   (go))

@@ -224,8 +224,10 @@
       (async/go
         (loop []
           (if-some [html (.querySelector js/document "html")]
-            (when-not (= (.getAttribute html "data-theme") "dark")
-              (.setAttribute html "data-theme" "dark"))
+            (when-not (= (.getAttribute html "data-theme") "light")
+              (.setAttribute html "data-theme" "light"))
+            #_(when-not (= (.getAttribute html "data-theme") "dark")
+                (.setAttribute html "data-theme" "dark"))
             (do
               (async/<! (async/timeout 100))
               (recur))))))

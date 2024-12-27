@@ -221,6 +221,11 @@ html[data-theme="light"] {
   --input-normal-click: input-normal-click-light;
   --box-button-normal-click: box-button-normal-click-light;
 
+  /* Tag */
+  /*--tag-color-normal: #d6d6d6;*/
+  --tag-bg-normal: #d6d6d6;
+  --tag-bg-positive: #99cd88;
+  --tag-bg-negative: #eb8b84;
 
   /* Table */
   --table-bg: #FCFCFC;
@@ -410,6 +415,9 @@ html[data-theme="dark"] {
   --button-neutral-bg: #4c4c4c;
   --button-neutral-hover-bg: #222222;
   --button-neutral-hover-border: #7f7f7f;
+  --button-disabled-color: #707070;
+  --button-disabled-border: #2d2d2d;
+  --button-disabled-bg: #2d2d2d;
 
 
 
@@ -627,7 +635,8 @@ h4 {
   transform: translate3d(0px, 12px, 100)
 }
 
-.disabled {
+.disabled,
+[disabled] {
   pointer-events: none;
   cursor: not-allowed;
 }
