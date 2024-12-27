@@ -222,10 +222,23 @@ html[data-theme="light"] {
   --box-button-normal-click: box-button-normal-click-light;
 
   /* Tag */
-  /*--tag-color-normal: #d6d6d6;*/
+  --tag-color-normal: #484848;
   --tag-bg-normal: #d6d6d6;
-  --tag-bg-positive: #99cd88;
+  --tag-border-normal: #d6d6d6;
+  --tag-border-normal-hover: #484848;
+  --tag--remove-hover: #B56B6B;
+
+  --tag-color-positive: #0d3300;
+  --tag-bg-positive: #7bc065;
+  --tag-border-positive: #7bc065;
+  --tag-border-positive-hover: #0d3300;
+  --tag-positive-remove-hover: #000;
+
   --tag-bg-negative: #eb8b84;
+  --tag-border-negative: #eb8b84;
+  --tag-color-negative: #7a0000;
+  --tag-border-negative-hover: #7a0000;
+  --tag-negative-remove-hover: #000;
 
   /* Table */
   --table-bg: #FCFCFC;

@@ -382,10 +382,6 @@
      (when opened
        (letfn [(handle-outside-click [e]
                  (cond
-                   ;; If element doesn't have parent, that is if it was removed
-                   ;; it is likely because user picked it, so do nothing
-                   (nil? (.-parentNode (.-target e))) nil
-                   ;;
                    (and (some? area) (some? @area) (.contains @area (.-target e))) nil
                    ;; When clicke on popup do nothing
                    (and (some? popup) (some? @popup) (.contains @popup (.-target e))) nil

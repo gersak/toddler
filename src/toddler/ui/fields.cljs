@@ -407,7 +407,8 @@
                    $input-field]}
           ($ dropdown/Popup
              {:style {:width width}
-              :className "dropdown-popup"}
+              :class ["dropdown-popup"
+                      (css :shadow-md)]}
              ($ e/dropdown-wrapper
                 {:width width}
                 ($ dropdown/Options
@@ -418,7 +419,7 @@
               :autoCorrect "off"
               :spellCheck "false"
               :autoCapitalize "false"
-              & (dissoc props :onChange :name :className :style :label)})
+              & (dissoc props :on-change :onChange :name :className :style :label)})
           ($ outlined/keyboard-arrow-down {:className "decorator"})))))))
 
 (def $multiselect-options
@@ -477,7 +478,7 @@
       :class (cond-> ["toddler-multiselect-option"
                       e/$tag
                       (css :my-2 :mx-1
-                           ["& .remove" :ml-2]
+                           ["& .remove" :ml-3]
                            ["& .remove:hover" :color-negative])
                       (when (ifn? context-fn)
                         (when-some [context (context-fn value)]
@@ -543,7 +544,8 @@
           (when (or (fn? new-fn) (not-empty not-selected-options))
             (<>
              ($ dropdown/Popup
-                {:className "dropdown-popup"}
+                {:class ["dropdown-popup"
+                         (css :shadow-md)]}
                 ($ e/dropdown-wrapper
                    {:style {:width width}}
                    (d/div
@@ -698,15 +700,22 @@
              :on-click (fn [] (toggle! true))}
             (d/input
              {:read-only true
-              :value (if value
-                       (translate value :medium-date)
-                       (translate :not-available))})
-            ($ outlined/calendar-month))
+              :value (try
+                       (if value
+                         (translate value :medium-date)
+                         (translate :not-available))
+                       (catch js/Error e
+                         (.log js/console e)))})
+            (if (nil? value)
+              ($ outlined/calendar-month)
+              ($ outlined/close
+                 {:onClick (fn [] (on-change nil))})))
            (when show-dropdown?
              ($ popup/Element
                 {:ref _popup
                  :style {:width width}
-                 :className "dropdown-popup"}
+                 :class ["dropdown-popup"
+                         (css :shadow-md)]}
                 ($ e/dropdown-wrapper
                    {:max-height "30rem"
                     :width width}
@@ -772,15 +781,19 @@
    #_["& .inputs .date"]))
 
 (defnc timestamp-period-field
-  [{[start end] :value
+  [{[start end :as value] :value
     :keys [onChange on-change dropdown?]
     :as props
     :or {dropdown? true}}]
   (let [translate (toddler/use-translate)
         on-change  (or onChange on-change)
-        area (hooks/use-ref nil)
+        _area (hooks/use-ref nil)
+        _popup (hooks/use-ref nil)
         [show-dropdown? toggle!] (hooks/use-state nil)
         width 300]
+    (popup/use-outside-action
+     show-dropdown? _area _popup
+     #(toggle! false))
     (d/div
      {:className "toddler-field"}
      (d/div
@@ -790,8 +803,7 @@
          {:class ["toddler-field-label" $label]}
          (:name props)))
       ($ popup/Area
-         {:ref area
-          :on-click (fn [] (toggle! not))}
+         {:ref _area}
          (d/div
           {:class [$period-field]}
           (d/div
@@ -799,7 +811,8 @@
            (d/div
             {:className "from-row"}
             (d/div
-             {:className "date"}
+             {:className "date"
+              :onClick (fn [] (toggle! true))}
              (d/input
               {:read-only true
                :value (if start
@@ -818,7 +831,8 @@
            (d/div
             {:className "to-row"}
             (d/div
-             {:className "date"}
+             {:className "date"
+              :onClick (fn [] (toggle! true))}
              (d/input
               {:read-only true
                :value (if end
@@ -836,15 +850,21 @@
              ($ outlined/schedule))))
           (when-not dropdown?
             ($ ui/calendar-period
-               {& (select-keys props [:value :onChange :on-change])})))
-         (when show-dropdown?
-           ($ dropdown/Popup
-              {:style {:width width}
-               :className "dropdown-popup"}
-              ($ e/dropdown-wrapper
-                 {:width width}
-                 ($ ui/calendar-period
-                    {& (select-keys props [:value :onChange on-change])})))))))))
+               {& (select-keys props [:value :onChange :on-change])}))
+          (when show-dropdown?
+            ($ popup/Element
+               {:ref _popup
+                :style {:width width}
+                :class ["dropdown-popup"
+                        (css :shadow-md)]}
+               ($ e/dropdown-wrapper
+                  {:max-height "30rem"
+                   :width width}
+                  ($ ui/calendar-period
+                     {& (select-keys props [:value])
+                      :on-change (fn [v]
+                                   (when (ifn? on-change)
+                                     (on-change v)))}))))))))))
 
 (defnc date-period-field
   [props]
@@ -990,7 +1010,8 @@
                    $input-field]}
           ($ dropdown/Popup
              {:style {:width width}
-              :className "dropdown-popup"}
+              :class ["dropdown-popup"
+                      (css :shadow-md)]}
              ($ e/dropdown-wrapper
                 {:width width}
                 ($ dropdown/Options
@@ -1079,7 +1100,8 @@
           (when (or (fn? new-fn) (not-empty options))
             (<>
              ($ dropdown/Popup
-                {:className "dropdown-popup"}
+                {:class ["dropdown-popup"
+                         (css :shadow-md)]}
                 ($ e/dropdown-wrapper
                    {:style {:width width}
                     :max-height nil}

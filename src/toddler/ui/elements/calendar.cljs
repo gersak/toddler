@@ -128,6 +128,7 @@
     :px-2
     :justify-between
     :text-normal]
+   ["& .header" :select-none]
    ["& .header svg"
     :border :border-transparent
     {:transition "border-color .3s ease-in-out, background-color .3s ease-in-out, color .3s ease-in-out"}]

@@ -12,6 +12,10 @@
 
 (add-translations
  (merge
+  #:chose {:default "Choose"
+           :hr "Odaberi"}
+  #:not-available {:default "N/A"
+                   :hr "-"}
   #:showcase.fields {:default "Fields"
                      :hr "Polja"}
       ;;
@@ -203,14 +207,12 @@
                       ($ ui/dropdown-field
                          {:name (translate :showcase.fields.dropdown)
                           :value (:dropdown-field state)
-                          :new-fn identity
-                          :search-fn #(translate (keyword (str "option-" (:value %))))
-                          ; :search-fn (fn [v] (println "Searching: " v) v)
-                          :context-fn {:odd :positive
-                                       :even :negative}
+                          :search-fn #(when-let [value (:value %)]
+                                        (let [option-key (keyword (str "option-" value))]
+                                          (translate option-key)))
+                          :context-fn :context
                           :options test-options
-                          :onRemove (fn [v] (set-state! assoc :dropdown-field v))
-                          :onChange (fn [v] (set-state! assoc :dropdown-field v))}))
+                          :onChange (fn [v] (println "CHANGING: " v) (set-state! assoc :dropdown-field v))}))
                    ($ ui/row
                       ($ ui/text-field
                          {:name (translate :showcase.fields.text)

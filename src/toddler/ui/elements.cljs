@@ -589,8 +589,8 @@
    :text-xxxs
    :uppercase
    :font-semibold
-   {:padding-left "3px"
-    :padding-right "8px"
+   {:padding-left "12px"
+    :padding-right "12px"
     :min-height "26px"}
    ; ["& svg" :ml-2 :pr-1]
    :text-xs
@@ -599,12 +599,24 @@
    :border-normal
    :cursor-pointer
    {:color "var(--tag-color-normal)"
-    :background-color "var(--tag-bg-normal)"}
+    :background-color "var(--tag-bg-normal)"
+    :border-color "var(--tag-border-normal)"}
+   ["& .remove" :w-4 :h-4]
+   ["&:hover" {:border-color "var(--tag-border-normal-hover)"}]
    ["& .avatar" :mr-2 :rounded-sm :bg-normal-highlighted]
-   ["&.negative" {:color "var(--tag-color-negative)" :background-color "var(--tag-bg-negative)"}]
-   ["&.positive" {:color "var(--tag-color-positive)" :background-color "var(--tag-bg-positive)"}]
+   ["&.negative" {:color "var(--tag-color-negative)"
+                  :background-color "var(--tag-bg-negative)"
+                  :border-color "var(--tag-border-negative)"}]
+   ["&.negative:hover" {:border-color "var(--tag-border-negative-hover)"}]
+   ["&.positive" {:color "var(--tag-color-positive)"
+                  :background-color "var(--tag-bg-positive)"
+                  :border-color "var(--tag-border-positive)"}]
+   ["&.positive:hover" {:border-color "var(--tag-border-positive-hover)"}]
    ["&.fun" {:color "var(--tag-color-negative)" :background-color "var(--tag-bg-negative)"}]
-   ["&.selected" :border-highlighted]))
+   ["&.selected" :border-highlighted]
+   ["& .remove:hover" {:color "var(--tag-normal-remove-hover)"}]
+   ["&.negative .remove:hover" {:color "var(--tag-negative-remove-hover)"}]
+   ["&.positive .remove:hover" {:color "var(--tag-positive-remove-hover)"}]))
 
 (def $multiselect-wrapper
   (css
