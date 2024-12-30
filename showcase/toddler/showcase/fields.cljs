@@ -51,7 +51,7 @@
                    :hr "Krava"}
   #:checklist.boar {:default "Boar"
                     :hr "Vepar"}
-  #:showcasel.fields.input
+  #:showcase.fields.input
    {:default "Input Field"
     :hr "Unos Polje"}
   #:showcase.fields.boolean

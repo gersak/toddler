@@ -651,6 +651,7 @@
    ["& .row .date, & .row .time"
     :flex :items-center
     :relative :transition :grow :h-10
+    :rounded-md
     :cursor-pointer
     {:transition "background-color .4s ease-in-out, border-color .4s ease-in-out"
      :min-height "40px"
@@ -762,7 +763,7 @@
      :border-color "var(--field-border)"}]
    ["& .inputs .to-row" :mt-1]
    ["& .inputs .date, & .inputs .time"
-    :flex :items-center
+    :flex :items-center :rounded-md
     :relative :transition :grow :h-10
     :cursor-pointer
     {:transition "background-color .4s ease-in-out, border-color .4s ease-in-out"

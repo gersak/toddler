@@ -67,7 +67,8 @@
                   :items-center
                   :text-2xl
                   :justify-center
-                  {:font-family "Audiowide"}])]
+                  {:font-family "Caveat Brush, serif"
+                   :font-size "3rem"}])]
     ($ ui/simplebar
        {:ref _ref
         :className $navbar
@@ -76,7 +77,7 @@
                 :max-width 500}}
        (d/div
         {:className "title"}
-        "TODDLER")
+        "toddler")
        (d/div
         {:className "components-wrapper"}
         (d/div

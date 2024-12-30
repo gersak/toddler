@@ -99,7 +99,7 @@
 (def $button
   (css
    :flex
-   :text-normal
+   :text-sm
    ; :border
    ; :border-normal
    :rounded-md
@@ -117,7 +117,6 @@
    {:justify-content "center"
     :max-height "30px"
     :min-width "80px"
-    :font-size "1em"
     :cursor "pointer"
     :user-select "none"}
     ;; default

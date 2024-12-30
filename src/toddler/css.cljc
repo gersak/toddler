@@ -34,17 +34,20 @@
    :button-positive {:color "var(--button-positive-color)"
                      :background-color "var(--button-positive-bg)"}
    :button-positive-hover {:border-color "var(--button-positive-hover-border)"
+                           :color "var(--button-positive-hover-color)"
                            :background-color "var(--button-positive-hover-bg)"}
    :button-negative {:color "var(--button-negative-color)"
                      :background-color "var(--button-negative-bg)"}
 
    :button-negative-hover {:border-color "var(--button-negative-hover-border)"
+                           :color "var(--button-negative-hover-color)"
                            :background-color "var(--button-negative-hover-bg)"}
    :button-neutral {:color "var(--button-neutral-color)"
                     ; :border-color "var(--button-neutral-border)"
                     :background-color "var(--button-neutral-bg)"}
    :button-neutral-hover {:border-color "var(--button-neutral-hover-border)"
-                          :background-color "var(--button-neutral-hover-bg)"}
+                          :background-color "var(--button-neutral-hover-bg)"
+                          :color "var(--button-neutral-hover-color)"}
    :button-disabled {:color "var(--button-disabled-color)"
                      :border-color "var(--button-disabled-border)"
                      :background-color "var(--button-disabled-bg)"}

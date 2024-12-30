@@ -162,24 +162,18 @@ html[data-theme="light"] {
   --calendar-button-border-hover: #689579;
 
   /* Button */
-  --button-positive-color: #e5e5e5;
-  --button-positive-hover-color: #95e87a;
-  --button-positive-bg: #4a4a4a;
-  --button-positive-hover-bg: #4a4a4a;
-
-  --button-negative-color: #e5e5e5;
-  --button-negative-hover-color: #ff6155;
-  --button-negative-bg: #4a4a4a;
-  --button-negative-hover-bg: #4a4a4a;
-
-  --button-neutral-color: #e5e5e5;
-  --button-neutral-bg: #4a4a4a;
-  --button-neutral-hover-bg: #4a4a4a;
-  --button-neutral-hover-color: #ffffff;
-
-
-  --button-disabled-color: #ffffff;
-  --button-disabled-bg: #aaaaaa;
+  --button-positive-color: #E7EAE8;
+  --button-positive-bg: #2F3732;
+  --button-positive-hover-bg: #689579;
+  --button-positive-hover-border: #2F3732;
+  --button-negative-color: #E7EAE8;
+  --button-negative-bg: #2F3732;
+  --button-negative-hover-bg: #B56B6B;
+  --button-negative-hover-border: #B56B6B;
+  --button-neutral-color: #2F3732;
+  --button-neutral-bg: #FCFCFC;
+  --button-neutral-border: #2F3732;
+  --button-neutral-hover-bg: #E7EAE8;
 
 
   /* Tooltip */
@@ -235,7 +229,7 @@ html[data-theme="light"] {
   --tag--remove-hover: #B56B6B;
 
   --tag-color-positive: #0d3300;
-  --tag-bg-positive: #a5e78f;
+  --tag-bg-positive: #7bc065;
   --tag-border-positive: #7bc065;
   --tag-border-positive-hover: #0d3300;
   --tag-positive-remove-hover: #000;
