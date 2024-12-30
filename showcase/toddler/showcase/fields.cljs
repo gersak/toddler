@@ -196,6 +196,7 @@
                       ($ ui/multiselect-field
                          {:name (translate :showcase.fields.multiselect)
                           :value (:multiselect-field state)
+                          :placeholder (translate :chose)
                           :search-fn #(when-let [value (:value %)]
                                         (let [option-key (keyword (str "option-" value))]
                                           (translate option-key)))
@@ -212,7 +213,7 @@
                                           (translate option-key)))
                           :context-fn :context
                           :options test-options
-                          :onChange (fn [v] (println "CHANGING: " v) (set-state! assoc :dropdown-field v))}))
+                          :onChange (fn [v] (set-state! assoc :dropdown-field v))}))
                    ($ ui/row
                       ($ ui/text-field
                          {:name (translate :showcase.fields.text)
@@ -242,6 +243,7 @@
                       ($ ui/identity-field
                          {:name "Identity Field"
                           :value (:identity-field state)
+                          :placeholder (translate :chose)
                           :options [{:name "John"}
                                     {:name "Harry"}
                                     {:name "Ivan"}]
@@ -250,9 +252,13 @@
                       ($ ui/identity-multiselect-field
                          {:name "Identity Multiselect Field"
                           :value (:identity-multiselect-field state)
+                          :placeholder (translate :chose)
                           :options [{:name "John"}
                                     {:name "Harry"}
-                                    {:name "Ivan"}]
+                                    {:name "Ivan"}
+                                    {:name "Kiki"}
+                                    {:name "Rita"}
+                                    {:name "Tia"}]
                           :onRemove (fn [v] (set-state! assoc :identity-multiselect-field v))
                           :onChange (fn [v] (set-state! assoc :identity-multiselect-field v))})))))))))
 

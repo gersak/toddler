@@ -202,7 +202,7 @@
               ($ navbar {:ref _navbar})
               (let [header-height 50
                     header-width (- (:width window) navigation-width)
-                    content-height (- (:height window) content-height)
+                    content-height (- (:height window) header-height)
                     content-width (- (:width window) navigation-width)]
                 (d/div
                  {:className "content"}

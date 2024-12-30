@@ -16,6 +16,7 @@
    [helix.hooks :as hooks]
    [helix.dom :as d]
    [helix.children :as c]
+   [toddler.avatar :refer [avatar]]
    [toddler.input
     :refer [AutosizeInput
             IdleInput]]
@@ -463,7 +464,7 @@
    :flex
    :flex-col
    :m-0
-   :rounded-sm
+   :rounded-md
    :border
    {:background-color "var(--dropdown-bg)"
     :border-color "var(--dropdown-border)"}
@@ -835,10 +836,10 @@
   ($ dropdown-option
      {:ref ref
       & (dissoc props :ref :value)}
-     #_($ avatar
-          {:size 18
-           :className "avatar"
-           & value})
+     ($ avatar
+        {:size 18
+         :className "avatar"
+         & value})
      (:name value)))
 
 (defnc Drawer
@@ -1210,7 +1211,7 @@
     :card/action card-action
     :card/actions card-actions
     :identity identity
-    ; :avatar avatar
+    :avatar avatar
     ; :avatar/editor avatar/editor
     :column column
     :checkbox checkbox
