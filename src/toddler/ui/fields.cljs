@@ -665,7 +665,7 @@
     :absolute
     :h-6 :w-6
     :right-2
-    :top-2]
+    #_:top-2]
    ["& .row .date:hover:not(:focus-within), & .row .time:hover:not(:focus-within)"
     {:border-color "var(--field-border-hover)"}]
    ["& .row .date:hover:not(:focus-within) svg, & .row .time:hover:not(:focus-within) svg" :text-hover]
@@ -777,8 +777,7 @@
    ["& .inputs .date svg, & .inputs .time svg"
     :absolute
     :h-6 :w-6
-    :right-2
-    :top-2]
+    :right-2]
    ["& .inputs .date:hover:not(:focus-within), & .inputs .time:hover:not(:focus-within)"
     {:border-color "var(--field-border-hover)"}]
    ["& .inputs .date:hover:not(:focus-within) svg, & .inputs .time:hover:not(:focus-within) svg" :text-hover]

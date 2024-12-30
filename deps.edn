@@ -1,5 +1,5 @@
 {;; REPL
- :paths ["src" "resources" "gen"]
+ :paths ["src" "resources" "gen" "themes/default"]
  :deps
  {org.github.gersak/toddler-graphql          {:local/root  "graphql"}
   org.clojure/clojurescript                  {:mvn/version "1.11.54"}
