@@ -495,7 +495,6 @@
        ($ outlined/close
           {:className "remove"
            :onClick (fn [e]
-                      (.stopPropagation e)
                       (when (ifn? on-remove) (on-remove value)))})))))
 
 (defnc multiselect-field

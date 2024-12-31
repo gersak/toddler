@@ -160,7 +160,8 @@
       (when opened (focus value)))
     (popup/use-outside-action
      opened area popup
-     #(when opened (set-opened! false)))
+     #(when opened
+        (set-opened! false)))
     (assoc props
       :search search
       :opened opened
@@ -249,7 +250,8 @@
      value)))
 
 (defnc Options
-  [{:keys [render context-fn]}]
+  [{:keys [render context-fn ignore-select]
+    :or {ignore-select true}}]
   (let [{:keys [options
                 search-fn
                 ref-fn
@@ -272,7 +274,8 @@
              :context (when (ifn? context-fn)
                         (context-fn option))
              :selected selected
-             :onMouseDown (fn []
+             :onMouseDown (fn [e]
+                            (when ignore-select (.stopPropagation e))
                             ((if selected remove! select!)
                              option))
              & (cond-> nil

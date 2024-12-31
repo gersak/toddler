@@ -1,6 +1,7 @@
 (ns toddler.showcase
   (:require
    ["react-dom/client" :refer [createRoot]]
+   [taoensso.telemere :as t]
    [toddler.dev :as dev]
    [helix.core :refer [$ defnc]]
    [helix.hooks :as hooks]
@@ -40,6 +41,7 @@
 
 (defn ^:dev/after-load start! []
   (.log js/console "Starting Toddler showcase!")
+  (t/set-min-level! :info)
   (let [target ^js (.getElementById js/document "app")]
     (when-not @root
       (reset! root ^js (createRoot target)))

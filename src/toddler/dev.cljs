@@ -63,7 +63,7 @@
                  :toddler/menu-link-selected
                  ["& .title"
                   :flex
-                  :h-28
+                  :h-20
                   :items-center
                   :text-2xl
                   :justify-center

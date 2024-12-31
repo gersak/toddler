@@ -2,6 +2,7 @@
   (:require
    clojure.string
    [clojure.core.async :as async]
+   [taoensso.telemere :as t]
    ["react" :as react]
    ["react-dom" :as rdom]
    [helix.core
@@ -381,21 +382,37 @@
      [opened]
      (when opened
        (letfn [(handle-outside-click [e]
+
                  (cond
                    (and (some? area) (some? @area) (.contains @area (.-target e))) nil
                    ;; When clicke on popup do nothing
                    (and (some? popup) (some? @popup) (.contains @popup (.-target e))) nil
                    ;; Else call outside action handler
                    (and (some? area) (some? @area) (some? popup) (some? @popup))
-                   (handler e)
+                   (do
+                     (t/log!
+                      {:id ::outside-click
+                       :level :debug
+                       :data {:element e
+                              :area @area
+                              :popup @popup}})
+                     (handler e))
                    ;;
                    :else nil))
                (handle-outside-scroll [e]
+
                  (cond
                    (and (some? popup) (some? @popup) (.contains @popup (.-target e))) nil
                    ;; Else call outside action handler
                    (and (some? popup) (some? @popup))
-                   (handler e)
+                   (do
+                     (t/log!
+                      {:id ::outside-scroll
+                       :level :debug
+                       :data {:element e
+                              :area @area
+                              :popup @popup}})
+                     (handler e))
                    ;;
                    :else nil))]
          (async/go
