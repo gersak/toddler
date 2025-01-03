@@ -250,8 +250,15 @@
      value)))
 
 (defnc Options
+  "Component will use options from *dropdown* context to
+  render data from context using :render prop.
+  
+  ignore-select will stop propagation of mouse-down event. Should
+  be true if you don't want popup to close, or false if you wan't
+  to close popup on multiselect option select."
   [{:keys [render context-fn ignore-select]
-    :or {ignore-select true}}]
+    :or {ignore-select true
+         render Option}}]
   (let [{:keys [options
                 search-fn
                 ref-fn
