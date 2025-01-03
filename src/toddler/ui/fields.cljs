@@ -376,6 +376,8 @@
   [area]
   (when @area (.-width (.getBoundingClientRect ^js @area))))
 
+(def $dropdown-popup (css :shadow-md :rounded-lg))
+
 (defnc dropdown-field
   [{:keys [disabled] :as props}]
   (let [{:keys [input area toggle!] :as dropdown}
@@ -407,8 +409,7 @@
                    $input-field]}
           ($ dropdown/Popup
              {:style {:width width}
-              :class ["dropdown-popup"
-                      (css :shadow-md)]}
+              :class ["dropdown-popup" $dropdown-popup]}
              ($ e/dropdown-wrapper
                 {:width width}
                 ($ dropdown/Options
@@ -545,8 +546,7 @@
           (if (or (fn? new-fn) (not-empty not-selected-options))
             (<>
              ($ dropdown/Popup
-                {:class ["dropdown-popup"
-                         (css :shadow-md)]}
+                {:class ["dropdown-popup" $dropdown-popup]}
                 ($ e/dropdown-wrapper
                    {:style {:width width}}
                    (d/div
@@ -663,7 +663,7 @@
      :animation-duration ".5s"}]
    ["& .row .date svg, & .row .time svg"
     :absolute
-    :h-6 :w-6
+    :h-4 :w-4
     :right-2
     #_:top-2]
    ["& .row .date:hover:not(:focus-within), & .row .time:hover:not(:focus-within)"
@@ -720,8 +720,7 @@
              ($ popup/Element
                 {:ref _popup
                  :style {:width width}
-                 :class ["dropdown-popup"
-                         (css :shadow-md)]}
+                 :class ["dropdown-popup" $dropdown-popup]}
                 ($ e/dropdown-wrapper
                    {:max-height "30rem"
                     :width width}
@@ -776,7 +775,7 @@
      :animation-duration ".5s"}]
    ["& .inputs .date svg, & .inputs .time svg"
     :absolute
-    :h-6 :w-6
+    :h-4 :w-4
     :right-2]
    ["& .inputs .date:hover:not(:focus-within), & .inputs .time:hover:not(:focus-within)"
     {:border-color "var(--field-border-hover)"}]
@@ -860,8 +859,7 @@
             ($ popup/Element
                {:ref _popup
                 :style {:width width}
-                :class ["dropdown-popup"
-                        (css :shadow-md)]}
+                :class ["dropdown-popup" $dropdown-popup]}
                ($ e/dropdown-wrapper
                   {:max-height "30rem"
                    :width width}
@@ -1015,8 +1013,7 @@
                    $input-field]}
           ($ dropdown/Popup
              {:style {:width width}
-              :class ["dropdown-popup"
-                      (css :shadow-md)]}
+              :class ["dropdown-popup" $dropdown-popup]}
              ($ e/dropdown-wrapper
                 {:width width}
                 ($ dropdown/Options
@@ -1113,8 +1110,7 @@
           (if (or (fn? new-fn) (not-empty not-selected-options))
             (<>
              ($ dropdown/Popup
-                {:class ["dropdown-popup"
-                         (css :shadow-md)]}
+                {:class ["dropdown-popup" $dropdown-popup]}
                 ($ e/dropdown-wrapper
                    {:style {:width width}}
                    (d/div

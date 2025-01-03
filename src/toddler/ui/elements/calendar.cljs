@@ -113,8 +113,8 @@
    {:display "flex"
     :flex-direction "column"
     :background-color "transparent"}
-   :border
-   :border-normal
+   ; :border
+   ; :border-normal
    :rounded-sm
    :py-2
     ; (str popup/dropdown-container) {:overflow "hidden"}
