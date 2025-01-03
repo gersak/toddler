@@ -54,6 +54,9 @@
   #:showcase.fields.input
    {:default "Input Field"
     :hr "Unos Polje"}
+  #:showcase.fields.password
+   {:default "Password Field"
+    :hr "Lozinka Polje"}
   #:showcase.fields.boolean
    {:default "Checkbox Field"
     :hr "Označeno polje"}
@@ -159,6 +162,11 @@
                           :value (:free-input state)
                           :onChange (fn [v] (set-state! assoc :free-input v))}))
                    ($ ui/row
+                      ($ ui/password-field
+                         {:name (translate :showcase.fields.password)
+                          :value (:password state)
+                          :onChange (fn [v] (set-state! assoc :password v))}))
+                   ($ ui/row
                       ($ ui/boolean-field
                          {:name (translate :showcase.fields.boolean)
                           :value (:boolean-field state)
@@ -260,7 +268,16 @@
                                     {:name "Rita"}
                                     {:name "Tia"}]
                           :onRemove (fn [v] (set-state! assoc :identity-multiselect-field v))
-                          :onChange (fn [v] (set-state! assoc :identity-multiselect-field v))})))))))))
+                          :onChange (fn [v] (set-state! assoc :identity-multiselect-field v))}))
+                   ($ ui/row
+                      {:className (css
+                                   ["& .toddler-field:not(:first-child)" :ml-2])}
+                      ($ ui/input-field
+                         {:name "In Row 1"})
+                      ($ ui/input-field
+                         {:name "In Row 2"})
+                      ($ ui/input-field
+                         {:name "In Row 3"})))))))))
 
 (dev/add-component
  {:id :showcase.fields

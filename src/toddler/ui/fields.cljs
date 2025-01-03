@@ -83,7 +83,7 @@
     :color "var(--field-text)"
     :border-color "var(--field-border)"}
    ["& .icon" :w-6 :h-6 :ml-2 :user-no-select]
-   ["& .icon.right" :mr-2]
+   ["& .icon.right" :flex :items-center :justify-center :cursor-pointer]
    ["&:focus-within"
     :animate-border-click
     {:background-color "var(--field-bg-active)"}]
