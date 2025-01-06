@@ -11,11 +11,13 @@
    [toddler.hooks :refer [use-delayed
                           use-translate
                           use-dimensions]]
+   [toddler.ui.fields :refer [$dropdown-popup]]
+   [toddler.material.outlined :as outlined]
    [toddler.table :as table]
    [toddler.popup :as popup]
    [toddler.layout :as layout]
    [toddler.dropdown :as dropdown]
-   [toddler.input :refer [TextAreaElement]]
+   [toddler.input :refer [TextAreaElement AutosizeInput]]
    [toddler.ui.elements :as e]
    [toddler.ui :as ui]
    [toddler.i18n :as i18n]))
@@ -27,16 +29,16 @@
   nil)
 
 (defnc row
-  [props _ref]
   {:wrap [(ui/forward-ref)]}
+  [props _ref]
   ($ table/Row
      {:ref _ref
       :className "trow"
       & (dissoc props :className :class)}))
 
 (defnc cell
-  [props _ref]
   {:wrap [(ui/forward-ref)]}
+  [props _ref]
   ($ table/Cell
      {:ref _ref
       :className "tcell"
@@ -127,7 +129,7 @@
                     (when-not copied?
                       (.writeText js/navigator.clipboard (str value))
                       (set-copied! true)))}
-        #_($ icon/uuid))
+        ($ outlined/code))
        (when visible?
          ($ popup/Element
             {:ref popup
@@ -223,9 +225,7 @@
         :spellCheck false
         :auto-complete "off"
         :style {:maxWidth width}
-        :onChange (fn [e]
-                    (set-value!
-                     (not-empty (.. e -target -value))))
+        :onChange set-value!
         :options options
         :placeholder (or placeholder label)})))
 
@@ -549,9 +549,10 @@
                 value (conj $active)
                 (not value) (conj $inactive))
        :onClick #(set-value! (not value))}
-      #_($ (case value
-             nil icon/checkboxDefault
-             icon/checkbox))))))
+      ($ (case value
+           nil outlined/check-box-outline-blank
+           outlined/check)
+         {:className (css :w-6 :h-6)})))))
 
 (defnc identity-cell
   []
@@ -561,6 +562,7 @@
         ;;
         {:keys [input
                 search
+                on-change
                 on-key-down
                 sync-search!
                 disabled
@@ -572,6 +574,7 @@
          :as dropdown}
         (dropdown/use-dropdown (assoc column
                                  :value value
+                                 :on-change set-value!
                                  :search-fn :name))
         $alignment (use-cell-alignment-css column)]
     (provider
@@ -583,12 +586,14 @@
          :className (str/join
                      " "
                      [$alignment
-                      (css :text-sm)])}
+                      (css :text-sm :pl-10)])}
         (d/div
          {:className (css
                       :flex
                       :items-center
                       :py-2
+                      {:max-height "40px"
+                       :position "relative"}
                       ["& .decorator"
                        :text-transparent
                        {:transition "color .2s ease-in-out"
@@ -596,32 +601,35 @@
                         :right "0px"}]
                       ["&:hover .decorator" :text-gray-400])}
          ($ ui/avatar
-            {:className (css :mr-2
-                             :border
-                             :border-solid
-                             :border-gray-500
-                             {:border-radius "20px"})
+            {:className (css
+                         :border
+                         :border-solid
+                         :border-gray-500
+                         :w-6 :h-6
+                         :absolute
+                         {:border-radius "20px"
+                          :left "-32px"
+                          :top "50%"
+                          :transform "translateY(-50%)"})
              :size :small
              & value})
-         (d/input
-          {:ref input
-           :className "input"
-           :value search
-           :read-only (or read-only (not searchable?))
-           :disabled disabled
-           :spellCheck false
-           :auto-complete "off"
-           :placeholder placeholder
-           :onChange #(set-value! %)
-           :onBlur sync-search!
-           :onKeyDown on-key-down})
-         (d/span
-          {:className "decorator"}
-          #_($ icon/dropdownDecorator)))
+         ($ AutosizeInput
+            {:ref input
+             :value (or search "")
+             :read-only (or read-only (not searchable?))
+             :disabled disabled
+             :spellCheck false
+             :auto-complete "off"
+             :placeholder placeholder
+             :onChange on-change
+             :onBlur sync-search!
+             :onKeyDown on-key-down}))
         ($ dropdown/Popup
-           {:className "dropdown-popup"
-            :render/option e/identity-dropdown-option
-            :render/wrapper e/dropdown-wrapper})))))
+           {;:style {:width width}
+            :class ["dropdown-popup" $dropdown-popup]}
+           ($ e/dropdown-wrapper
+              ($ dropdown/Options
+                 {:render e/identity-dropdown-option})))))))
 
 (defnc delete-cell [])
 
@@ -660,15 +668,15 @@
 
 (defnc SortElement
   [{{:keys [order]} :column}]
-  (case order
-    :desc
-    #_($ icon/sortDesc
+  #_(case order
+      :desc
+      ($ outlined/arrow-drop-down
          {:className "sort-marker"})
-    :asc
-    #_($ icon/sortAsc
+      :asc
+      ($ outlined/arrow-drop-up
          {:className "sort-marker"})
     ;;
-    #_($ icon/sortDesc
+      ($ outlined/arrow-drop-down
          {:className "sort-marker hidden"})))
 
 (defnc plain-header
@@ -994,6 +1002,7 @@
    :shadow-lg
    {:background-color "#e2f1fc"
     :border-color "#8daeca"}
+   ["& .tcell" :overflow-hidden]
    ["& .trow"
     :my-1
     :border-b
@@ -1055,7 +1064,7 @@
                              :border-transparent
                              ["& .simplebar-scrollbar:before"
                               {:visibility "hidden"}]
-                             ["& .trow" :items-start])}))
+                             ["& .trow" :items-start :flex])}))
         (when body-style
           (provider
            {:context layout/*container-dimensions*

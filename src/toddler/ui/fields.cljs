@@ -83,7 +83,7 @@
     :color "var(--field-text)"
     :border-color "var(--field-border)"}
    ["& .icon" :w-6 :h-6 :ml-2 :user-no-select]
-   ["& .icon.right" :flex :items-center :justify-center :cursor-pointer]
+   ["& .icon.right" :flex :items-center :justify-center :cursor-pointer :mr-1]
    ["&:focus-within"
     :animate-border-click
     {:background-color "var(--field-bg-active)"}]
@@ -96,6 +96,7 @@
    ["& .avatar" :ml-2 :bg-avatar]
    ["& .avatar img" :rounded-sm]
    ["& .decorator" {:width "24px" :height "24px"
+                    :margin-right "0.25rem"
                     :transition "color .3s ease-in-out, transform .3s ease-in-out"}]
    ["&:focus-within .decorator" {:transform "rotate(180deg)"}]
    ["& textarea" {:resize "none"}]
@@ -451,6 +452,7 @@
     {:background-color "var(--field-bg-active)"}]
    ["& .decorator"
     {:width "24px" :height "24px"
+     :margin-right "0.25rem"
      :transition "color .3s ease-in-out, transform .3s ease-in-out"}]
    ["&:focus-within .decorator" :text-click {:transform "rotate(180deg)"}]
    ["&:hover:not(.disabled):not(:focus-within)"
@@ -982,7 +984,7 @@
       ($ outlined/content-copy))))))
 
 (defnc checklist-field
-  [props])
+  [_])
 
 (defnc identity-field
   [{:keys [disabled] :as props}]

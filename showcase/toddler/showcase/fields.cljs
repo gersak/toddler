@@ -87,6 +87,15 @@
   #:showcase.fields.datetime-period
    {:default "Date Time Period Field"
     :hr "Polje Vremenskog Perioda"}
+  #:showcase.fields.identity
+   {:default "Identity Field"
+    :hr "Identitet Polje"}
+  #:showcase.fields.identity-multiselect
+   {:default "Identity Multiselect Field"
+    :hr "Višeznačno Identitet Polje"}
+  #:showcase.fields.in-row
+   {:default "In Row "
+    :hr "Isti Redak "}
   #:option-0 {:default "zero" :hr "nula"}
   #:option-1 {:default "one" :hr "jedan"}
   #:option-2 {:default "two" :hr "dva"}
@@ -145,7 +154,9 @@
              ($ ui/row
                 {:style {:max-width 500}}
                 ($ ui/column
-                   {:label "Fields showcase"}
+                   {:label "Fields showcase"
+                    :className (css
+                                ["& > .toddler-row" :my-2])}
                    ($ ui/row
                       {:label "Buttons"
                        :className (css :flex-wrap)}
@@ -171,20 +182,6 @@
                          {:name (translate :showcase.fields.boolean)
                           :value (:boolean-field state)
                           :onChange (fn [] (set-state! update :boolean-field not))}))
-                   #_($ ui/row
-                        ($ ui/checklist-field
-                           {:name "Checklist field"
-                            :value (:checklist-field state)
-                            :multiselect? true
-                            :options [{:name (translate :checklist.horse)
-                                       :value :konj}
-                                      {:name (translate :checklist.sheep)
-                                       :value :ovca}
-                                      {:name (translate :checklist.cow)
-                                       :value :krava}
-                                      {:name (translate :checklist.boar)
-                                       :value :vepar}]
-                            :onChange (fn [v] (set-state! assoc :checklist-field v))}))
                    ($ ui/row
                       ($ ui/integer-field
                          {:name (translate :showcase.fields.int)
@@ -249,7 +246,7 @@
                           :onChange (fn [v] (set-state! assoc :timestamp-period-field v))}))
                    ($ ui/row
                       ($ ui/identity-field
-                         {:name "Identity Field"
+                         {:name (translate :showcase.fields.identity)
                           :value (:identity-field state)
                           :placeholder (translate :chose)
                           :options [{:name "John"}
@@ -258,7 +255,7 @@
                           :onChange (fn [v] (set-state! assoc :identity-field v))}))
                    ($ ui/row
                       ($ ui/identity-multiselect-field
-                         {:name "Identity Multiselect Field"
+                         {:name (translate :showcase.fields.identity-multiselect)
                           :value (:identity-multiselect-field state)
                           :placeholder (translate :chose)
                           :options [{:name "John"}
@@ -273,11 +270,11 @@
                       {:className (css
                                    ["& .toddler-field:not(:first-child)" :ml-2])}
                       ($ ui/input-field
-                         {:name "In Row 1"})
+                         {:name (str (translate :showcase.fields.in-row) 1)})
                       ($ ui/input-field
-                         {:name "In Row 2"})
+                         {:name (str (translate :showcase.fields.in-row) 2)})
                       ($ ui/input-field
-                         {:name "In Row 3"})))))))))
+                         {:name (str (translate :showcase.fields.in-row) 3)})))))))))
 
 (dev/add-component
  {:id :showcase.fields

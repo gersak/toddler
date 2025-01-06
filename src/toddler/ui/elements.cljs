@@ -581,7 +581,6 @@
 
 (def $tag
   (css
-   :rounded-sm
    :flex
    :justify-center
    :items-center
@@ -591,7 +590,8 @@
    :font-semibold
    {:padding-left "12px"
     :padding-right "12px"
-    :min-height "26px"}
+    :min-height "26px"
+    :border-radius "0.25rem"}
    ; ["& svg" :ml-2 :pr-1]
    :text-xs
    :text-normal
