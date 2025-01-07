@@ -13,6 +13,7 @@
                           use-dimensions]]
    [toddler.ui.fields :refer [$dropdown-popup]]
    [toddler.material.outlined :as outlined]
+   [toddler.fav6.solid :refer [barcode]]
    [toddler.table :as table]
    [toddler.popup :as popup]
    [toddler.layout :as layout]
@@ -117,7 +118,7 @@
                              [$alignment
                               (css
                                :grow
-                               {:padding-top "0.4em"})])
+                               {:padding-top "0.5em"})])
         :onMouseLeave (fn [] (set-visible! false))
         :onMouseEnter (fn []
                         (set-copied! nil)
@@ -129,7 +130,7 @@
                     (when-not copied?
                       (.writeText js/navigator.clipboard (str value))
                       (set-copied! true)))}
-        ($ outlined/code))
+        ($ barcode))
        (when visible?
          ($ popup/Element
             {:ref popup
@@ -196,14 +197,12 @@
            :placeholder (or placeholder label)
            :onChange on-change
            :onBlur sync-search!
-           :onKeyDown on-key-down})
-         (d/span
-          {:className "decorator"}
-          #_($ icon/dropdownDecorator)))
+           :onKeyDown on-key-down}))
         ($ dropdown/Popup
-           {:className "dropdown-popup"
-            :render/option e/dropdown-option
-            :render/wrapper e/dropdown-wrapper})))))
+           {:class ["dropdown-popup" $dropdown-popup]}
+           ($ e/dropdown-wrapper
+              ($ dropdown/Options
+                 {:render e/dropdown-option})))))))
 
 (defnc text-cell
   []
@@ -241,9 +240,7 @@
         $alignment (use-cell-alignment-css column)]
     (popup/use-outside-action
      opened area popup
-     (fn [e]
-       (when (.contains js/document.body (.-target e))
-         (set-opened! false))))
+     #(set-opened! false))
     ($ popup/Area
        {:ref area
         :onClick (fn []
@@ -285,23 +282,12 @@
        (when opened
          ($ popup/Element
             {:ref popup
-             ; :className className 
-             :wrapper e/dropdown-wrapper
-             :preference popup/cross-preference}
-            #_($ e/timestamp-calendar
-                 {:value value
-                  :disabled disabled
-                  :read-only read-only
-                  :onChange (fn [x]
-                              (set-value! x)
-                              (when-not show-time (set-opened! false)))})
-            #_(when show-time
-                ($ e/timestamp-time
-                   {:value value
-                    :disabled (if-not value true
-                                      disabled)
-                    :read-only read-only
-                    :onChange set-value!})))))))
+             :class ["dropdown-popup" $dropdown-popup]}
+            ($ e/dropdown-wrapper
+               {:max-height "30rem"}
+               ($ ui/calendar
+                  {:value value
+                   :on-change set-value!})))))))
 
 (letfn [(text->number [text]
           (cond
@@ -532,11 +518,9 @@
                  :justify-center
                  :items-center
                  {:transition "color .3s ease-in-out"})
-        $active (css #_:bg-green-400
-                 :text-neutral-900)
-        $inactive (css #_:bg-gray-200
-                   :text-neutral-400)
-        $alignment (use-cell-alignment-css column)]
+        $active (css :text-neutral-900)
+        $inactive (css  :text-neutral-400)
+        $alignment (use-cell-alignment-css (update column :align #(or % :center)))]
     (d/div
      {:class [(css
                :py-2)
@@ -625,8 +609,7 @@
              :onBlur sync-search!
              :onKeyDown on-key-down}))
         ($ dropdown/Popup
-           {;:style {:width width}
-            :class ["dropdown-popup" $dropdown-popup]}
+           {:class ["dropdown-popup" $dropdown-popup]}
            ($ e/dropdown-wrapper
               ($ dropdown/Options
                  {:render e/identity-dropdown-option})))))))
@@ -733,8 +716,8 @@
    #{:top :center}])
 
 (defnc header-popup-wrapper
-  [{:keys [style] :as props} _ref]
   {:wrap [(ui/forward-ref)]}
+  [{:keys [style] :as props} _ref]
   (let [$layout (css
                  :flex
                  :flex-col
@@ -1000,8 +983,9 @@
    :border-solid
    :rounded-md
    :shadow-lg
-   {:background-color "#e2f1fc"
-    :border-color "#8daeca"}
+   {:background-color "var(--table-bg)"
+    :border-color "var(--table-border)"
+    :color "var(--table-text)"}
    ["& .tcell" :overflow-hidden]
    ["& .trow"
     :my-1
@@ -1010,8 +994,8 @@
     {:min-height "2em"
      :transition "all .5s ease-in-out"}]
    ["& .trow:hover, & .trow:focus-within" :border-b
-    {:border-color "#69b5f3"
-     :background-color "#d0e9fb"}]))
+    {:border-color "var(--table-hover-border)"
+     :background-color "var(--table-hover-bg)"}]))
 
 (defnc table
   [props]
@@ -1057,7 +1041,7 @@
          {:context layout/*container-dimensions*
           :value header-style}
          ($ table/Header
-            {:ref (fn [el] #_(.log js/console "SETTING HEADER: " el) (reset! header el))
+            {:ref (fn [el] (reset! header el))
              :className (css :flex
                              :p-3
                              :border-1

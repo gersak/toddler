@@ -11,13 +11,13 @@
    [toddler.util :as util]))
 
 (defnc IdleInput
+  {:wrap [(react/forwardRef)]}
   [{:keys [value
            timeout
            onChange]
     :or {timeout 500}
     :as props}
    _ref]
-  {:wrap [(react/forwardRef)]}
   (let [[_value set-value!] (hooks/use-state (or value ""))
         input (hooks/use-ref nil)
         idle-channel (hooks/use-ref nil)]
@@ -199,8 +199,9 @@
             focused?)
        (d/pre
         {:ref #(do
-                   ;(when-not initialized? (set-initialized! true))
+                 (when-not initialized? (set-initialized! true))
                  (reset! dummy %))
+         :key :dummy
          :className className
          :style (merge
                  dummy-style

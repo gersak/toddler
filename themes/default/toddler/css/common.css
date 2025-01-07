@@ -247,7 +247,11 @@ html[data-theme="light"] {
   --tag-negative-remove-hover: #000;
 
   /* Table */
-  --table-bg: #FCFCFC;
+  --table-bg: #e2f1fc;
+  --table-text: #484848;
+  --table-border: #8daeca;
+  --table-hover-bg: #d0e9fb;
+  --table-hover-border: #69b5f3;
 
 
   /* Tree */
