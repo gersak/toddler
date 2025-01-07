@@ -306,7 +306,12 @@
         table-width (use-table-width)
         rows (use-rows)
         style {:minWidth table-width}
-        columns (use-columns)]
+        columns (use-columns)
+        columns (map
+                 (fn [{:keys [header] :as column}]
+                   (if (contains? column :header) column
+                       (assoc column :header ui/plain-header)))
+                 columns)]
     (when (some :header columns)
       ($ ui/simplebar
          {:key :thead/simplebar

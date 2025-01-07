@@ -43,42 +43,38 @@
 (def columns
   [{:cursor [:ui :expand]
     :cell ui/expand-cell
+    :header nil
     :style {:width 20}}
    {:cursor :euuid
     :label "UUID"
     :align :center
+    :header nil
     :cell ui/uuid-cell
     :style {:width 50}}
    {:cursor :user
     :label "User"
-    :header ui/plain-header
     :cell ui/identity-cell
     :options (repeatedly 3 random-user)
     :style {:width 100}}
    {:cursor :float
-    :header ui/plain-header
     :cell ui/float-cell
     :label "Float"
     :style {:width 100}}
    {:cursor :integer
-    :header ui/plain-header
     :cell ui/integer-cell
     :label "Integer"
     :style {:width 100}}
    {:cursor :text
-    :header ui/text-header
     :cell ui/text-cell
     :label "Text"
     :style {:width 250}}
    {:cursor :currency
-    :header ui/currency-header
     :cell ui/currency-cell
     :style {:width 150}
     :label "Money"}
    {:cursor :enum
     :label "ENUM"
     :cell ui/enum-cell
-    :header ui/enum-header
     :options [{:name "Dog"
                :value :dog}
               {:name "Cat"
@@ -91,13 +87,11 @@
     :style {:width 100}}
    {:cursor :timestamp
     :cell ui/timestamp-cell
-    :header ui/timestamp-header
     :label "Timestamp"
     :show-time false
     :style {:width 120}}
    {:cursor :boolean
     :cell ui/boolean-cell
-    :header ui/boolean-header
     :label "Boolean"
     :type "boolean"
     :style {:width 50}}])

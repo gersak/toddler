@@ -90,5 +90,5 @@
   (-> css-ref deref)
   (-> css-ref deref :namespaces keys)
   (-> css-ref deref :aliases :button-disabled)
-  (spit "aliases.edn" (-> css-ref deref :aliases keys))
+  (spit "aliases.edn" (-> css-ref deref :aliases :text-sm))
   (go))

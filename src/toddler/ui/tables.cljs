@@ -672,8 +672,10 @@
       ($ SortElement {& props})
       ($ table/ColumnNameElement {& props})))))
 
+;; DEPRECATED
 (defnc identity-header [])
 
+;; DEPRECATED
 (defnc text-header
   [{{:keys [filter :filter/placeholder] :as column
      :or {placeholder "Filter..."}} :column
@@ -741,6 +743,7 @@
       :style style}
      (c/children props))))
 
+;; DEPRECATED
 (defnc boolean-header
   [{:keys [className] :as props
     {:keys [filter] :as column} :column}]
@@ -808,6 +811,7 @@
                                :column column
                                :value (when (not-empty %) (set %))})}))))))))
 
+;; DEPRECATED
 (defnc enum-header
   [{:keys [className] :as props
     {:keys [filter options] :as column} :column}]
@@ -875,6 +879,7 @@
                                :column column
                                :value (when (not-empty %) (set %))})}))))))))
 
+;; DEPRECATED
 (defnc currency-header
   [{:keys [className column] :as props}]
   (let [$alignment (use-header-alignment-css column)]
@@ -885,6 +890,7 @@
       ($ SortElement {& props})
       ($ table/ColumnNameElement {& props})))))
 
+;; DEPRECATED
 (defnc timestamp-header
   [{:keys [className disabled read-only show-time] :as props
     {:keys [filter] :as column} :column}]
