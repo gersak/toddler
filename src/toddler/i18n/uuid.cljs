@@ -3,14 +3,20 @@
    [toddler.i18n :as i18n]
    [toddler.util :refer [deep-merge]]))
 
-
 (defonce translations (atom nil))
-
 
 (defn add-translations
   [mapping]
   (swap! translations deep-merge mapping))
 
+(defn add-locale
+  [mapping]
+  (swap! translations deep-merge
+         (reduce-kv
+          (fn [r k v]
+            (assoc r (keyword (name k) (namespace k)) v))
+          nil
+          mapping)))
 
 (defn remove-translations
   [uuid locales]
@@ -23,7 +29,6 @@
             translations
             translations))))
 
-
 (extend-protocol toddler.i18n/Translator
   cljs.core.UUID
   (translate
@@ -35,11 +40,10 @@
        w
        (i18n/translate this)))))
 
-
 (comment
   (def component #uuid "52bd2dec-7024-4062-baf1-6c3fc7b87492")
   (add-translations
-    {component {:default "Data" :hr "Podaci"}})
+   {component {:default "Data" :hr "Podaci"}})
   (i18n/translate component)
   (i18n/translate component :hr)
   (inc (mod 1 7))

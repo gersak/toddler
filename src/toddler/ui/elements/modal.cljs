@@ -70,27 +70,7 @@
    ["& .buttons, & .footer"
     :mt-2 :pt-4
     :px-8 :flex :justify-end :mt-6 :pb-4 {:gap "0.5rem"}]
-   ["& .buttons button, & .footer button" :mx-0 :my-0]
-
-   ;; ["& .buttons, & .footer" :flex :flex-row :justify-end :mt-10 {:gap "0.5rem"}]
-   ;; ["& .buttons button, & .footer button"
-   ;;  :flex :grow :justify-center :h-6
-   ;;  :uppercase :rounded-sm :border-normal
-   ;;  :items-center {:max-width "8.75rem"} :transition-colors]
-   ;; ["& .buttons button, & .footer button"
-   ;;  :border :font-semibold :text-xs
-   ;;  {:display "flex" :flex "100 0 auto" :width "100px"}]
-   ;; ["& .buttons button:hover, & .footer button:hover" :button-neutral-hover]
-   ;; ["& .buttons button:hover, & .footer button:hover" :border-normal-hover]
-   ;; ["& .buttons button:active, & .footer button:active" :border-normal-click]
-   ;;  ; ["&:hover" :border-highlighted]
-   ;;  ;;
-   ;; ["& .buttons button.positive, & .footer button.positive" :button-positive]
-   ;; ["& .buttons button.positive:hover, & .footer button.positive:hover" :button-positive-hover]
-   ;;  ;;
-   ;; ["& .buttons button.negative, & .footer button.negative" :button-negative]
-   ;; ["& .buttons button.negative:hover, & .footer button.negative:hover" :button-negative-hover]
-   ))
+   ["& .buttons button, & .footer button" :mx-0 :my-0]))
 
 (defnc modal-dialog
   [{:keys [class className on-close style] :as props}]
@@ -108,7 +88,8 @@
                    :flex
                    :z-20
                    :justify-center
-                   :items-center)])
+                   :items-center
+                   {:animation "fade-in .4s ease-in-out"})])
 
          & (dissoc props :class :className)}
         (d/div
@@ -126,8 +107,8 @@
                (css :w-6 :h-6
                     :absolute :select-none :pointer-events-none
                     {:color "var(--button-neutral-bg)"
-                     :top "-28px"
-                     :right "-28px"})}))
+                     :top "-24px"
+                     :right "-24px"})}))
          (c/children props))))))
 
 (def $strip

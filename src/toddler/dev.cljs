@@ -97,11 +97,13 @@
     (let [[{{locale :locale
              :or {locale :en}} :settings} set-user!] (use-user)
           ;;
+          translate (toddler/use-translate)
+          ;;
           {:keys [toggle! opened area] :as dropdown}
           (dropdown/use-dropdown
            {:value locale
-            :options [:en :hr :fr :fa]
-            :search-fn #(when % (name %))
+            :options [:en :de :fr :hr]
+            :search-fn #(i18n/translate :locale %)
             :area-position #{:bottom :center}
             :onChange (fn [v]
                         (set-user! assoc-in [:settings :locale] v))})]
@@ -118,7 +120,7 @@
                      :items-center
                      ["&:hover" :toddler/menu-link-selected])
                     (when opened (css :toddler/menu-link-selected))]}
-           (str/upper-case (name locale)))
+           (translate :locale))
           ($ dropdown/Popup
              {:className "dropdown-popup"
               :preference popup-preference}
@@ -127,8 +129,8 @@
                    {:render e/dropdown-option}))))))))
 
 (defnc header
-  [{:keys [style]} _ref]
   {:wrap [(react/forwardRef)]}
+  [{:keys [style]} _ref]
   (d/div
    {:className (css
                 :flex

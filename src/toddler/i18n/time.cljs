@@ -6,10 +6,8 @@
    [goog.i18n.DateTimeFormat]
    [goog.i18n.DateTimeSymbols]))
 
-
 (defn generate-binding [locale]
   (str locale " goog.i18n.DateTimeSymbols_" (name locale)))
-
 
 (def symbols
   {:fr goog.i18n.DateTimeSymbols_fr
@@ -131,12 +129,10 @@
    :fa_u_nu_latn goog.i18n.DateTimeSymbols_fa_u_nu_latn
    :ky goog.i18n.DateTimeSymbols_ky})
 
-
 (defn get-date-symbols
   "Supported localizations"
   [locale]
   (get symbols locale goog.i18n.DateTimeSymbols_en))
-
 
 (def date-formatter
   (memoize
@@ -160,10 +156,9 @@
                     type)
             pattern-idx (if (neg? target) 10 target)
             formatter ^js (goog.i18n.DateTimeFormat.
-                            pattern-idx
-                            (get-date-symbols locale))]
+                           pattern-idx
+                           (get-date-symbols locale))]
         formatter)))))
-
 
 (extend-protocol toddler.i18n/Translator
   js/Date
@@ -178,8 +173,6 @@
      (assert (keyword? locale) "Locale isn't keyword")
      (let [formatter ^js (date-formatter locale option)]
        (.format formatter data)))))
-
-
 
 (comment
   (time (def hr (date-formatter :hr)))

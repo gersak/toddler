@@ -1,10 +1,16 @@
 (ns toddler.util
+  (:require-macros [toddler.util :refer [mlf]])
   (:require
    goog.object
    clojure.string
+   [goog.string :refer [format]]
    [clojure.core.async :as async]))
 
 (set! *warn-on-infer* true)
+
+(defn ml
+  [& lines]
+  (clojure.string/join "\n" lines))
 
 (defn deep-merge
   "Recursively merges maps."

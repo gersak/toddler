@@ -13,6 +13,15 @@
   [mapping]
   (swap! translations deep-merge mapping))
 
+(defn add-locale
+  [mapping]
+  (swap! translations deep-merge
+         (reduce-kv
+          (fn [r k v]
+            (assoc r (keyword (name k) (namespace k)) v))
+          nil
+          mapping)))
+
 (defn remove-translations
   [key locales]
   (swap! translations update key

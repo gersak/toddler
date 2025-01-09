@@ -26,11 +26,11 @@
    [toddler.popup :as popup]
    [toddler.layout :as layout]
    [toddler.ui.elements.calendar :refer [calendar period-calendar]]
-   [toddler.ui.elements.modal
-    :refer [modal-dialog
-            modal-pavement
-            modal-strip
-            modal-background]]
+   ; [toddler.ui.elements.modal
+   ;  :refer [modal-dialog
+   ;          modal-pavement
+   ;          modal-strip
+   ;          modal-background]]
    [toddler.provider :refer [UI]]))
 
 (defnc simplebar
@@ -321,11 +321,12 @@
       (d/div
        {:className (css :flex :flex-col
                         ["& .label"
-                         :text-neutral-400
+                         :text-normal
                          :font-bold
                          :m-1
+                         :select-none
                          {:text-transform "uppercase"
-                          :font-size "1em"}])}
+                          :font-size "0.75rem"}])}
        (d/div
         {:className "label"}
         (d/label label))
@@ -356,7 +357,7 @@
     {:margin "4px 4px 4px 4px"
      :padding-bottom "2px"
      :text-transform "uppercase"
-     :font-size "1em"}]))
+     :font-size "0.75rem"}]))
 
 #_(defnc column
     {:wrap [(ui/forward-ref)]}
@@ -428,10 +429,12 @@
                   :flex-direction "column"
                   :flex-grow "1"}
                  ["& > .toddler-column-label"
+                  :select-none
+                  :font-bold
                   {:margin "4px 4px 4px 4px"
                    :padding-bottom "2px"
                    :text-transform "uppercase"
-                   :font-size "1em"}])
+                   :font-size "0.75em"}])
         $start (css {:justify-content "flex-start"})
         $center (css {:justify-content "center"})
         $end (css {:justify-content "flex-end"})

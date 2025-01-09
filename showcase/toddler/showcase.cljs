@@ -12,7 +12,10 @@
    [toddler.showcase.table :refer [Table TableGrid]]
    [toddler.showcase.layout :refer [Layout]]
    [toddler.showcase.modal :refer [Modal]]
-   [toddler.showcase.prosemirror :refer [ProseMirror]]
+   [toddler.showcase.i18n :refer [i18n]]
+   [toddler.showcase.routing :refer [Routing]]
+   ; [toddler.showcase.prosemirror :refer [ProseMirror]]
+   toddler.i18n.common
    ; toddler.showcase.avatar
    [toddler.router :as router]))
 
@@ -41,6 +44,14 @@
     :name :showcase.modal
     :render Modal
     :segment "modal"}
+   {:id :toddler.routing
+    :name :showcase.routing
+    :render Routing
+    :segment "routing"}
+   {:id :toddler.i18n
+    :name :showcase.i18n
+    :render i18n
+    :segment "i18n"}
    #_{:id :toddler.prosemirror
       :name :showcase.prosemirror
       :render ProseMirror
