@@ -1,7 +1,4 @@
 (ns toddler.ui.elements
-  {:shadow.css/include
-   ["toddler/css/simplebar.css"
-    "toddler/css/common.css"]}
   (:require
    [clojure.set :as set]
    [clojure.core.async :as async]
@@ -99,23 +96,24 @@
 (def $button
   (css
    :flex
-   :text-sm
+   :text-xs
    ; :border
    ; :border-normal
    :rounded-md
    :justify-center
    :items-center
    :px-2
-   :py-2
+   ; :py-2
    :leading-loose
-   :mx-3
+   :mx-2
    :my-2
    :button-neutral
    :animate-border-click
+   :font-semibold
    ["&:hover" :button-neutral-hover]
    {:transition "all .2s ease-in"}
    {:justify-content "center"
-    :max-height "30px"
+    :min-height "2rem"
     :min-width "80px"
     :cursor "pointer"
     :user-select "none"}
@@ -301,8 +299,9 @@
 
 (defnc row
   {:wrap [(ui/forward-ref)]}
-  [{:keys [className label position style] :as props} _ref]
-  (let [$layout (css
+  [{:keys [className label position style align] :as props} _ref]
+  (let [position (or position align)
+        $layout (css
                  :text-gray-800
                  :m-1
                  {:display "flex"
@@ -394,9 +393,10 @@
 
 (defnc column
   {:wrap [(ui/forward-ref)]}
-  [{:keys [label position class className] :as props
+  [{:keys [label position align class className] :as props
     {:keys [width] :as style} :style} _ref]
-  (let [$start (css :items-start)
+  (let [position (or position align)
+        $start (css :items-start)
         $center (css :items-center)
         $end (css :items-end)
         $explode (css :items-between)
@@ -919,8 +919,10 @@
 
 (defnc tabs
   {:wrap [(ui/forward-ref)]}
-  [{:keys [class className] :as props} _ref]
-  (let [tabs-target (hooks/use-ref nil)
+  [{:keys [class className]
+    :as props} _ref]
+  (let [;on-change (or on-change onChange)
+        tabs-target (hooks/use-ref nil)
         _tabs (hooks/use-ref nil)
         _tabs (or _tabs _ref)
         [selected on-select!] (hooks/use-state nil)
@@ -1013,9 +1015,10 @@
         (c/children props)))))))
 
 (defnc tab
-  [{:keys [tab id focus? position] :as props
+  [{:keys [name tab id focus? position] :as props
     :or {id tab}}]
-  (let [{:keys [select!
+  (let [tab (or name tab)
+        {:keys [select!
                 selected
                 register
                 unregister
@@ -1220,12 +1223,6 @@
     :simplebar simplebar
     :calendar calendar
     :calendar/period period-calendar}
-   #:modal {:background modal-background
-            :pavement modal-pavement
-            :strip modal-strip
-            :dialog modal-dialog
-             ; :avatar-editor modal-avatar-editor
-            }
    #:input {:autosize autosize-input
             :idle idle-input}))
 

@@ -1,0 +1,264 @@
+/* ==================== LIGHT ==================== */
+
+
+
+html[data-theme="light"] {
+
+  /* Background */
+  --background-normal: #f0f0f0;
+
+  /* Navigation */
+  --navigation-bar-breadcrumb: #E7EAE8;
+  --navigation-bar-bg: #2F3732;
+  --navigation-menu-item: #6C736C;
+  /* --navigation-menu-item-hover: #689579; */
+  /* --navigation-menu-item-selected: #E7EAE8; */
+  --navigation-menu-item-hover: #E7EAE8;
+  --navigation-menu-item-selected: #689579;
+  --navigation-submenu-item: #E7EAE8;
+  --navigation-submenu-item-hover: #689579;
+  --navigation-submenu-menu-item-selected-border: #6C736C;
+  --navigation-menu-avatar-border: #6C736C;
+
+  --settings-bg: #e8e8e8;
+  --settings-theme-text: #E7EAE8;
+  --settings-theme-bg: #2F3732;
+
+
+  /* Action Bar */
+  --action-bar-bg: #FCFCFC;
+  --action-bar-action: #575757;
+  --action-bar-action-hover: #689579;
+  --action-bar-action-selected: #2F3732;
+
+
+  /* Drawer */
+  --drawer-bg: #FCFCFC;
+
+
+  /* Tag */
+  --tag-c: #575757;
+  --tag-bg: #C6C9C6;
+
+
+  /* Tabs */
+  --tab-color: #575757;
+  --tab-bg: transparent;
+  --tab-hover-color: #689579;
+  --tab-hover-bg: transparent;
+  --tab-selected-color: #2F3732;
+  --tab-selected-bg: #C6C9C6;
+
+
+  /* Colors */
+  --color-positive: #689579;
+  --color-negative: #B56B6B;
+  --color-warn: #7C9FB2;
+  --color-important: #C6C9C6;
+  --color-exception: #736D9B;
+  --color-neutral: #C6C9C6;
+
+
+  /* Text */
+  --text-normal: #484848;
+  --text-highlight: #484848;
+  --text-hover: #689579;
+  --text-click: #2F3732;
+  --text-selected: #689579;
+  --text-inactive: #787b78;
+
+
+  /* Background */
+  --bg-focused: #e8e8e8;
+  --bg-hover: #689579;
+  --bg-highlighted: #2F3732;
+  --bg-opaque: #101010cc;
+  --bg-card: #fcfcfc;
+  --bg-card-focused: #E7EAE8;
+
+
+  /* Modeling */
+  --grid-dots: #d2d2d2;
+  --grid-menu-bg: #FCFCFC;
+  --grid-menu-border: #2F3732;
+  --grid-menu-action: #575757;
+  --grid-menu-action-hover: #689579;
+
+
+  --erd-relation: #C6C9C6;
+  --erd-relation-text: #575757;
+  --erd-relation-selected: #2F3732;
+  --erd-relation-selected-text: #2F3732;
+  --erd-relation-added: #387E53;
+  --erd-relation-added-text: #387E53;
+  --erd-relation-changed: #B03E96;
+  --erd-relation-changed-text: #B03E96;
+
+  --erd-relation-edge: #689579;
+  --erd-relation-edge-hover: #B03E96;
+
+  --erd-entity-bg: #FCFCFC;
+  --erd-entity-name: #2F3732;
+  --erd-entity-attribute-name: #484848;
+  --erd-entity-attribute-type: #575757;
+  --erd-entity-border: #C6C9C6;
+  --erd-entity-border-selected: #2F3732;
+  --erd-entity-border-connected: #2F3732;
+
+
+  --erd-attribute-added: #387E53;
+  --erd-attribute-changed: #B03E96;
+  --erd-attribute-removed: #C35757;
+
+
+
+  /* Borders */
+  --border-light: #C6C9C6;
+  --border-heavy: #484848;
+  --border-normal: #C6C9C6;
+  --border-highlighted: #575757;
+  --border-hover: #689579;
+  --border-click: #477759;
+
+
+  /* Actions */
+  --box-action-bg: #C6C9C6;
+  --box-action-color: #575757;
+  --box-action-color-hover: #689579;
+  --box-action-color-selected: #2F3732;
+
+
+  /* Calendar */
+  --cd-other-color: #6C736C;
+  --cd-hover-color: #689579;
+  --cd-hover-border: #C6C9C6;
+  --cd-selected-color: #484848;
+  --cd-selected-border: #C6C9C6;
+  --cd-period-marker-bg: #e8e8e8;
+  --cd-period-marker-color: #484848;
+  --calendar-button-bg-hover: #E7EAE8;
+  --calendar-button-color-hover: #689579;
+  --calendar-button-border-hover: #689579;
+
+  /* Button */
+  --button-positive-color: #e5e5e5;
+  --button-positive-hover-color: #95e87a;
+  --button-positive-bg: #4a4a4a;
+  --button-positive-hover-bg: #4a4a4a;
+
+  --button-negative-color: #e5e5e5;
+  --button-negative-hover-color: #ff7267;
+  --button-negative-bg: #4a4a4a;
+  --button-negative-hover-bg: #4a4a4a;
+
+  --button-neutral-color: #e5e5e5;
+  --button-neutral-bg: #4a4a4a;
+  --button-neutral-hover-bg: #4a4a4a;
+  --button-neutral-hover-color: #ffffff;
+
+
+  --button-disabled-color: #ffffff;
+  --button-disabled-bg: #aaaaaa;
+
+
+  /* Tooltip */
+  --tooltip-color: #2F3732;
+  --tooltip-bg: #F0F0F0;
+  --tooltip-border: #C6C9C6;
+  --tooltip-positive: #689579;
+  --tooltip-positive-text: #161616;
+  --tooltip-positive-border: #689579;
+  --tooltip-negative: #B56B6B;
+  --tooltip-negative-text: #161616;
+  --tooltip-negative-border: #B56B6B;
+  --tooltip-warn: #E7A387;
+  --tooltip-warn-text: #161616;
+  --tooltip-warn-border: #E7A387;
+  --tooltip-important: #C6C9C6;
+  --tooltip-important-text: #161616;
+  --tooltip-important-border: #C6C9C6;
+  --tooltip-exception: #736D9B;
+  --tooltip-exception-text: #161616;
+  --tooltip-exception-border: #736D9B;
+  --tooltip-neutral: #C6C9C6;
+  --tooltip-neutral-text: #161616;
+  --tooltip-neutral-border: #C6C9C6;
+
+
+  /* Notifications */
+  --notification-positive: #9FCCA9;
+  --notification-negative: #D88080;
+  --notification-warn: #A1C9DF;
+  --notification-neutral: #C6C9C6;
+
+  /* Fields */
+  --placeholder-normal: #787b78;
+  --field-label: #484848;
+  --field-text: #2F3732;
+  --field-border: #C6C9C6;
+  --field-border-hover: #689579;
+  --field-border-active: #C6C9C6;
+  --field-bg: transparent;
+  --field-bg-hover: #E7EAE8;
+  --field-bg-active: #E7EAE8;
+  --dropdown-bg: #F0F0F0;
+  --dropdown-border: #C6C9C6;
+  --input-normal-click: input-normal-click-light;
+  --box-button-normal-click: box-button-normal-click-light;
+
+  /* Tag */
+  --tag-color-normal: #484848;
+  --tag-bg-normal: #d6d6d6;
+  --tag-border-normal: #d6d6d6;
+  --tag-border-normal-hover: #484848;
+  --tag--remove-hover: #B56B6B;
+
+  --tag-color-positive: #0d3300;
+  --tag-bg-positive: #a5e78f;
+  --tag-border-positive: #7bc065;
+  --tag-border-positive-hover: #0d3300;
+  --tag-positive-remove-hover: #000;
+
+  --tag-bg-negative: #eb8b84;
+  --tag-border-negative: #eb8b84;
+  --tag-color-negative: #7a0000;
+  --tag-border-negative-hover: #7a0000;
+  --tag-negative-remove-hover: #000;
+
+  /* Table */
+  --table-bg: #e2f1fc;
+  --table-text: #484848;
+  --table-border: #8daeca;
+  --table-hover-bg: #d0e9fb;
+  --table-hover-border: #69b5f3;
+
+
+  /* Tree */
+  --tree-color: #6C736C;
+  --tree-color-hover: #2F3732;
+
+
+  /* Robot Tasks */
+  --task-queued: #C6C9C6;
+  --task-future: #ffaf89;
+  --task-processing-1: #689579;
+  --task-processing-2: #4bc479;
+
+
+  /* Explorer */
+  --tag-cell-border: #C6C9C6;
+  --tag-cell-bg: #e8e8e8;
+  --tag-cell-text: #484848;
+  --tag-cell-bg-hover: ;
+  --tag-cell-border-hover: #689579;
+  --tag-cell-text-hover: #689579;
+
+
+  /* Misc */
+  --avatar-bg: #484848;
+  --modal-bg: #fcfcfc;
+  --modal-layer-bg: #e1e1e1e5;
+  --modal-close: #787878;
+  --modal-close-hover: #2F3732;
+
+}

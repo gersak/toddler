@@ -1,21 +1,21 @@
 (ns toddler.ui.components
   (:require
-    [helix.core :refer [$ defnc]]
+   [helix.core :refer [$ defnc]]
     ; [toddler.head :as head]
-    [toddler.ui.fields :as fields]
-    [toddler.ui.elements :as elements]
-    [toddler.ui.tables :as tables]
-    [toddler.provider :as provider]))
-
+   [toddler.ui.fields :as fields]
+   [toddler.ui.elements :as elements]
+   [toddler.ui.tables :as tables]
+   [toddler.ui.elements.modal :as modal]
+   [toddler.provider :as provider]))
 
 (def components
   (merge
-    fields/components
-    elements/components
-    tables/components))
-
+   elements/components
+   modal/components
+   fields/components
+   tables/components))
 
 (defnc Provider [props]
   ($ provider/UI
-    {:components components
-     & props}))
+     {:components components
+      & props}))

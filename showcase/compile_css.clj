@@ -1,4 +1,4 @@
-(ns repl
+(ns compile-css
   (:require
    [clojure.java.io :as io]
    [shadow.css.build :as cb]
@@ -15,6 +15,7 @@
             (cb/generate '{:ui {:include [toddler.ui*
                                           toddler]}
                            :dev {:include [toddler.dev
+                                           toddler.showcase
                                            toddler.showcase*]}})
             (cb/write-outputs-to (io/file "dev" "css")))]
     (prn :CSS-GENERATED)

@@ -57,6 +57,10 @@
    :animate-text-click {:animation-name "var(--box-button-normal-click)"
                         :animation-duration ".3s"}
 
+   :modal-positive {:background-color "var(--background-positive)"}
+   :modal-negative {:background-color "var(--background-negative)"}
+   :modal-warn {:background-color "var(--background-warn)"}
+
    ;; Colors
    :color-highlight {:color "var(--color-highlight)"}
    :color-hover {:color "var(--color-hover)"}

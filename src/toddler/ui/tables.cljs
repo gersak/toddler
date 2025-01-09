@@ -118,7 +118,7 @@
                              [$alignment
                               (css
                                :grow
-                               {:padding-top "0.5em"})])
+                               {:padding-top "0.4em"})])
         :onMouseLeave (fn [] (set-visible! false))
         :onMouseEnter (fn []
                         (set-copied! nil)
@@ -174,7 +174,7 @@
          :onClick toggle!
          :className (str/join " "
                               [$alignment
-                               (css :text-sm)])}
+                               (css :text-xs)])}
         (d/div
          {:className (css
                       :flex
@@ -211,7 +211,7 @@
          :as column} (table/use-column)
         [value set-value!] (table/use-cell-state column)
         $text (css
-               :text-sm
+               :text-xs
                :outline-none
                :py-2
                :w-full
@@ -252,7 +252,7 @@
                                :py-2
                                :grow
                                :flex
-                               :text-sm
+                               :text-xs
                                ["& .clear"
                                 :self-center
                                 :text-transparent
@@ -262,7 +262,7 @@
                                ["&:hover .clear " :text-gray-400]
                                ["& .clear:hover" :text-gray-900 :cursor-pointer])])}
        (d/input
-        {:className (css :text-sm)
+        {:className (css :text-xs)
          :readOnly true
          :value (if (some? value) (translate value format) "")
          :spellCheck false
@@ -306,7 +306,7 @@
           $input (css
                   :outline-none
                   :border-0
-                  :text-sm
+                  :text-xs
                   :w-full
                   :py-2)
           $alignment (use-cell-alignment-css column)]
@@ -356,7 +356,7 @@
           $float (css
                   :border-0
                   :outline-0
-                  :text-sm
+                  :text-xs
                   :py-2)
           $alignment (use-cell-alignment-css column)]
       (hooks/use-effect
@@ -432,7 +432,7 @@
                          :py-2
                          :flex
                          :grow
-                         :text-sm
+                         :text-xs
                          ["& .clear"
                           :text-md
                           :self-center
@@ -510,7 +510,7 @@
   (let [{:keys [read-only disabled] :as column} (table/use-column)
         [value set-value!] (table/use-cell-state column)
         $button (css
-                 :text-sm
+                 :text-xs
                  :w-5
                  :h-5
                  :flex
@@ -570,7 +570,7 @@
          :className (str/join
                      " "
                      [$alignment
-                      (css :text-sm :pl-10)])}
+                      (css :text-xs :pl-10)])}
         (d/div
          {:className (css
                       :flex
@@ -621,7 +621,7 @@
   (let [column (table/use-column)
         [value set-value!] (table/use-cell-state column)
         $expand (css
-                 :text-sm
+                 :text-xs
                  :outline-none
                  :w-full
                  :flex
@@ -638,7 +638,7 @@
 (def $header
   (css
    :flex
-   :text-sm
+   :text-xs
    :font-bold
    :flex-col
    :h-full
@@ -689,7 +689,7 @@
                  :border-0
                  :w-full
                  :font-thin
-                 :text-sm)]
+                 :text-xs)]
     (d/div
      {:class [$header className]}
      (d/div
@@ -803,7 +803,7 @@
                               ["& .row .name"
                                :ml-2
                                :select-none
-                               :text-sm
+                               :text-xs
                                :font-bold
                                :uppercase])
                   :onChange #(dispatch
@@ -871,7 +871,7 @@
                               ["& .row .name"
                                :ml-2
                                :select-none
-                               :text-sm
+                               :text-xs
                                :font-bold
                                :uppercase])
                   :onChange #(dispatch

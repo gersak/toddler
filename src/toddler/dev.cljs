@@ -158,8 +158,7 @@
 (defnc content
   {:wrap [(react/forwardRef)]}
   [{:keys [style]}]
-  (let [[{:keys [rendered]}] (router/use-query)
-        rendered-components (router/use-url->components)
+  (let [rendered-components (router/use-url->components)
         render (last (filter some? (map :render rendered-components)))
         $content (css
                   :background-normal

@@ -1,4 +1,6 @@
 (ns toddler.showcase
+  {:shadow.css/include
+   ["css/toddler.css"]}
   (:require
    ["react-dom/client" :refer [createRoot]]
    [taoensso.telemere :as t]
@@ -9,6 +11,8 @@
    [toddler.showcase.fields :refer [Fields]]
    [toddler.showcase.table :refer [Table TableGrid]]
    [toddler.showcase.layout :refer [Layout]]
+   [toddler.showcase.modal :refer [Modal]]
+   [toddler.showcase.prosemirror :refer [ProseMirror]]
    ; toddler.showcase.avatar
    [toddler.router :as router]))
 
@@ -32,7 +36,15 @@
    {:id :toddler.multi-table
     :name :showcase.multi-tables
     :render TableGrid
-    :segment "multi-tables"}])
+    :segment "multi-tables"}
+   {:id :toddler.modal
+    :name :showcase.modal
+    :render Modal
+    :segment "modal"}
+   #_{:id :toddler.prosemirror
+      :name :showcase.prosemirror
+      :render ProseMirror
+      :segment "prosemirror"}])
 
 (defnc Showcase
   []

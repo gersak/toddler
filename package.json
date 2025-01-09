@@ -14,18 +14,18 @@
   "author": "Robert Gersak",
   "license": "ISC",
   "devDependencies": {
-    "server": "^1.0.37",
-    "shadow-cljs": "^2.20.2",
-    "webpack": "^5.74.0",
+    "prosemirror-keymap": "^1.2.2",
+    "prosemirror-markdown": "^1.13.1",
+    "prosemirror-state": "^1.4.3",
+    "prosemirror-transform": "^1.10.2",
     "react-icons": "^4.7.1",
-    "react-spring": "^9.5.5",
-    "styled-components": "^5.3.6",
-    "webpack-cli": "^4.10.0",
-    "use-image": "^1.1.0"
+    "server": "^1.0.37",
+    "shadow-cljs": "^2.20.2"
   },
   "dependencies": {
+    "prosemirror-example-setup": "^1.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "simplebar-react": "^2.4.3"
+    "simplebar-react": "^3.3.0"
   }
 }

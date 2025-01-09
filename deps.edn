@@ -13,7 +13,7 @@
   ;                                             :git/sha "697f2937345be9d187b6bce73ff4f50613f7ece8"}
   com.github.gersak/shadow-css               {:mvn/version "0.5.0"}
   ; com.thheller/shadow-css                    {:mvn/version "0.4.2"} 
-  lilactown/helix                            {:mvn/version "0.1.10"}}
+  lilactown/helix                            {:mvn/version "0.1.11"}}
  :aliases
  {:shadow
   {:extra-deps
