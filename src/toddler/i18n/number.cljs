@@ -131,11 +131,10 @@
   (reduce
    (fn [cm ^js s]
      (assoc cm
-            (.-DEF_CURRENCY_CODE s)
-            (.-CURRENCY_PATTERN s)))
+       (.-DEF_CURRENCY_CODE s)
+       (.-CURRENCY_PATTERN s)))
    nil
    (vals symbols)))
-
 
 (def currency-formatters
   (reduce-kv
@@ -143,7 +142,6 @@
      (assoc cf currency (goog.i18n.NumberFormat. pattern currency)))
    nil
    currency-map))
-
 
 (defn number-formatter [locale]
   (let [^js symbols (get symbols locale (:en symbols))
@@ -177,7 +175,6 @@
            :else (str "Unsupported input: " format))
          (catch js/Error e (str "Invalid currency or locale: " format)))))))
 
-
 (comment
   (i18n/translate 2500 :en_US)
   (i18n/translate 25.5 "HRK")
@@ -185,7 +182,6 @@
   (i18n/translate 69999.99 "EUR")
   (i18n/translate 12345 :kk)
   (i18n/translate 12325.39 "JPY"))
-
 
 (comment
   (keys symbols)

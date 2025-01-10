@@ -4,20 +4,14 @@
    [toddler.layout :as layout]
    [toddler.router :as router]
    [toddler.ui :as ui]
-   [toddler.util :as util]
    [helix.core :refer [$ defnc <> defhook]]
    [helix.dom :as d]
    [helix.hooks :as hooks]
    toddler.showcase.content
+   [toddler.showcase.common
+    :refer [$info use-code-refresh]]
    [toddler.hooks :as toddler]
    [toddler.i18n.keyword :refer [add-translations]]))
-
-(def $info
-  (css :mt-4 :text-xs
-       ["& h4" :uppercase]
-       ["& p" :mt-2]
-       ["& br" {:height "8px"}]
-       ["& ul" :mt-2 :ml-4 {:list-style-type "disc"}]))
 
 (defnc ModalInfo
   []
@@ -387,6 +381,7 @@
   []
   (let [{:keys [height width]} (layout/use-container-dimensions)
         translate (toddler/use-translate)]
+    (use-code-refresh)
     ($ ui/simplebar
        {:style {:height height
                 :width width}}
