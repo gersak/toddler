@@ -61,22 +61,22 @@
    :text-normal
    :text-xs
    {:background "var(--modal-bg)"}
-   ["& .content" :px-8]
-   ["& .title" :px-8 :pt-6 :text-highlight :text-sm :font-semibold :pb-2]
+   ["& > .content" :px-8]
+   ["& > .title" :px-8 :pt-6 :text-highlight :text-sm :font-semibold :pb-2]
    ["&.positive" :modal-positive]
    ["&.negative" :modal-negative]
    ["&.warn" :modal-warn]
    ["&.warn" :modal-warn]
-   ["& .buttons, & .footer"
+   ["& > .buttons, & > .footer"
     :mt-2 :pt-4
     :px-8 :flex :justify-end :mt-6 :pb-4 {:gap "0.5rem"}]
-   ["& .buttons button, & .footer button" :mx-0 :my-0]))
+   ["& > .buttons button, & > .footer button" :mx-0 :my-0]))
 
 (defnc modal-dialog
   [{:keys [class className on-close style] :as props}]
   (let [{modal-width :width} (layout/use-container-dimensions)
         width (:width props (min 400 modal-width))
-        [can-close? enable-close!] (hooks/use-state true)]
+        [can-close? enable-close!] (hooks/use-state (some? on-close))]
     ($ modal-background
        {:class (css :flex :justify-center)
         :can-close? can-close?

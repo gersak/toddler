@@ -14,6 +14,7 @@
    [toddler.showcase.modal :refer [Modal]]
    [toddler.showcase.i18n :refer [i18n]]
    [toddler.showcase.routing :refer [Routing]]
+   [toddler.showcase.icons :refer [Icons]]
    ; [toddler.showcase.prosemirror :refer [ProseMirror]]
    toddler.i18n.common
    ; toddler.showcase.avatar
@@ -52,6 +53,11 @@
     :name :showcase.i18n
     :render i18n
     :segment "i18n"}
+
+   {:id :toddler.icons
+    :name :showcase.icons
+    :render Icons
+    :segment "icons"}
    #_{:id :toddler.prosemirror
       :name :showcase.prosemirror
       :render ProseMirror
