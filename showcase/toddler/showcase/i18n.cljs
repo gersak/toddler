@@ -43,24 +43,89 @@
   (let [translate (toddler.hooks/use-translate)]
     ($ (translate :i18n.showcase.example))))
 
-(defnc i18nStory []
-  (let [locale (toddler/use-current-locale)
-        _translate (toddler/use-translate)]
-    (use-code-refresh)
-    (letfn [(translator-definition []
-              (d/pre
-               {:className "code"}
-               (d/code
-                "(defprotocol Translator
+(defnc intro
+  []
+  (let [_translate (toddler/use-translate)
+        locale (toddler/use-current-locale)]
+    (<>
+     (case locale
+       :de
+       (<>
+        (d/p "Hallo,")
+        (d/p "Willkommen zur i18n-Demonstration. Im folgenden Text zeigen wir, wie "
+             "man Übersetzungen hinzufügt und wie man \"use-translate\" in UI-Komponenten "
+             "verwendet.")
+        (d/p "Vorher schauen wir uns an, wie Toddler Übersetzungen angeht. "
+             "Im Namespace " (d/b "toddler.i18n") " gibt es eine Definition für das "
+             (d/b "Translator") "-Protokoll. Es ist eine einfache Definition, die "
+             "basierend auf einer bestimmten Locale und optionalen Optionen \"übersetzt\"."))
+       :fr
+       (<>
+        (d/p "Bonjour,")
+        (d/p "Bienvenue à la démonstration i18n. Dans le texte suivant, nous allons présenter "
+             "comment ajouter des traductions et comment utiliser \"use-translate\" dans des "
+             "composants d'interface utilisateur.")
+        (d/p "Avant cela, examinons comment Toddler aborde la traduction. "
+             "Dans l'espace de noms " (d/b "toddler.i18n") ", il y a une définition pour le "
+             (d/b "Translator") " protocole. C'est une définition simple qui "
+             "« traduit » en fonction d'une certaine locale et d'options facultatives."))
+       :es
+       (<>
+        (d/p "Hola,")
+        (d/p "Bienvenido a la demostración de i18n. En el siguiente texto, presentaremos cómo "
+             "agregar traducciones y cómo usar \"use-translate\" dentro de los componentes de la UI.")
+        (d/p "Antes de eso, repasemos cómo Toddler aborda las traducciones. "
+             "En el espacio de nombres " (d/b "toddler.i18n") " hay una definición para el "
+             (d/b "Translator") " protocolo. Es una definición simple que "
+             "\"traduce\" según una configuración regional específica y opciones opcionales."))
+       :hr
+       (<>
+        (d/p "Pozdrav,")
+        (d/p "Dobrodošli u i18n prikaz. U sljedećem tekstu ćemo prikazati kako "
+             "dodati prijevode i kako koristiti \"use-translate\" unutar UI komponenti.")
+        (d/p "Prije toga, pogledajmo kako Toddler pristupa prijevodima. "
+             "U imeniku " (d/b "toddler.i18n") " nalazi se definicija za "
+             (d/b "Translator") " protokol. To je jednostavna definicija koja "
+             "\"prevodi\" na temelju određene lokalne postavke i opcionalnih opcija."))
+       (<>
+        (d/p "Hi,")
+        (d/p "Welcome to i18n showcase. In following text we'll present how "
+             "to add translations and how to use-translate inside of UI "
+             "components.")
+        (d/p "Before that, lets go through how toddler aproaches translation."
+             " In namespace " (d/b "toddler.i18n") " there is definition for "
+             (d/b "Translator") " protocol. It is simple definition that "
+             " \"translates\" based on some locale and optional options.")))
+     (d/pre
+      {:className "code"}
+      (d/code
+       {:className "language-clojure"}
+       "(defprotocol Translator
   (translate
     [this]
     [this locale]
     [this locale options]
-    \"Translates input data by using additional opitons\"))")))
+    \"Translates input data by using additional opitons\"))")))))
+
+(defnc adding-translations
+  [])
+
+(defnc adding-locale
+  [])
+
+(defnc translating-components
+  [])
+
+(defnc i18nStory []
+  (let [locale (toddler/use-current-locale)
+        _translate (toddler/use-translate)]
+    (use-code-refresh)
+    (letfn [(translator-definition [])
             (translate-code-example []
               (d/pre
                {:className "code"}
                (d/code
+                {:className "language-clojure"}
                 "
 (translate 100000.001 :en_US) ;; \"100,000.001\"
 (translate 100000.001 :fr)    ;; \"100 000,001\"
@@ -78,6 +143,7 @@
               (d/pre
                {:className "code"}
                (d/code
+                {:className "language-clojure"}
                 "(ns toddler.i18n.common
   (:require
    [toddler.i18n.keyword :refer [add-translations]]))
@@ -138,6 +204,7 @@
               (d/pre
                {:class "code"}
                (d/code
+                {:className "language-clojure"}
                 "(defnc i18n-example []
   (let [locale (toddler.hooks/use-current-locale)]
     (d/div
@@ -169,54 +236,7 @@
     ($ (translate :i18n.showcase.example))))")))]
       (d/div
        {:className $info}
-       (case locale
-         :de
-         (<>
-          (d/p "Hallo,")
-          (d/p "Willkommen zur i18n-Demonstration. Im folgenden Text zeigen wir, wie "
-               "man Übersetzungen hinzufügt und wie man \"use-translate\" in UI-Komponenten "
-               "verwendet.")
-          (d/p "Vorher schauen wir uns an, wie Toddler Übersetzungen angeht. "
-               "Im Namespace " (d/b "toddler.i18n") " gibt es eine Definition für das "
-               (d/b "Translator") "-Protokoll. Es ist eine einfache Definition, die "
-               "basierend auf einer bestimmten Locale und optionalen Optionen \"übersetzt\"."))
-         :fr
-         (<>
-          (d/p "Bonjour,")
-          (d/p "Bienvenue à la démonstration i18n. Dans le texte suivant, nous allons présenter "
-               "comment ajouter des traductions et comment utiliser \"use-translate\" dans des "
-               "composants d'interface utilisateur.")
-          (d/p "Avant cela, examinons comment Toddler aborde la traduction. "
-               "Dans l'espace de noms " (d/b "toddler.i18n") ", il y a une définition pour le "
-               (d/b "Translator") " protocole. C'est une définition simple qui "
-               "« traduit » en fonction d'une certaine locale et d'options facultatives."))
-         :es
-         (<>
-          (d/p "Hola,")
-          (d/p "Bienvenido a la demostración de i18n. En el siguiente texto, presentaremos cómo "
-               "agregar traducciones y cómo usar \"use-translate\" dentro de los componentes de la UI.")
-          (d/p "Antes de eso, repasemos cómo Toddler aborda las traducciones. "
-               "En el espacio de nombres " (d/b "toddler.i18n") " hay una definición para el "
-               (d/b "Translator") " protocolo. Es una definición simple que "
-               "\"traduce\" según una configuración regional específica y opciones opcionales."))
-         :hr
-         (<>
-          (d/p "Pozdrav,")
-          (d/p "Dobrodošli u i18n prikaz. U sljedećem tekstu ćemo prikazati kako "
-               "dodati prijevode i kako koristiti \"use-translate\" unutar UI komponenti.")
-          (d/p "Prije toga, pogledajmo kako Toddler pristupa prijevodima. "
-               "U imeniku " (d/b "toddler.i18n") " nalazi se definicija za "
-               (d/b "Translator") " protokol. To je jednostavna definicija koja "
-               "\"prevodi\" na temelju određene lokalne postavke i opcionalnih opcija."))
-         (<>
-          (d/p "Hi,")
-          (d/p "Welcome to i18n showcase. In following text we'll present how "
-               "how to add translations and how to use-translate inside of UI "
-               "components.")
-          (d/p "Before that, lets go through how toddler aproaches translation."
-               " In namespace " (d/b "toddler.i18n") " there is definition for "
-               (d/b "Translator") " protocol. It is simple definition that "
-               " \"translates\" based on some locale and optional options.")))
+
        (translator-definition)
        (case locale
          :de (d/p "Implementierungen dieses Protokolls existieren für:")
@@ -449,7 +469,9 @@
           (d/p "Sure that is possible. Check it out:")))
        (d/pre
         {:className "code"}
-        (d/code "(add-locale
+        (d/code
+         {:className "language-clojure"}
+         "(add-locale
  #:default {:light \"Light\"
             :fatal.error \"Shit hit the fan!\"
             :some.specific.thing \"Gold\"})
@@ -465,8 +487,8 @@
           (d/h4 "Translating components")
           (d/p
            "Sooner or later even this won't be enough to use-translate. Sometimes "
-           "situation will get complex, using many keywords to translate parts "
-           "sentence or text will be hard.")
+           "situation will get complex, using many keywords to translate sentence "
+           "parts or text will be hard.")
           (d/p
            "In cases like this it is possible to create " (d/b "Helix") " component and "
            "add that component to translations. Then render that component in respect to "

@@ -280,7 +280,7 @@
              {:on-close close!})))
      (d/pre
       (d/code
-       {:class ["clojure"]}
+       {:class ["language-clojure"]}
        "(defnc modal-background
   [{:keys [class className can-close? on-close]
     :or {can-close? true
@@ -355,6 +355,7 @@
               ($ ui/button {:on-click close!} (translate :cancel))))))
      (d/pre
       (d/code
+       {:className "language-clojure"}
        "($ ui/modal-dialog
  {:on-close close!
   :width 300
