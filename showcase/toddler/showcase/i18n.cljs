@@ -1,5 +1,6 @@
 (ns toddler.showcase.i18n
   (:require
+   [clojure.core.async :as async]
    [helix.core :refer [defnc $ <>]]
    [helix.dom :as d]
    [helix.hooks :as hooks]
@@ -441,6 +442,47 @@
     (<>
      (d/br)
      (case locale
+       :de
+       (<>
+        (d/h4 "Komponenten übersetzen")
+        (d/p
+         "Früher oder später wird selbst das nicht ausreichen, um \"use-translate\" zu verwenden. "
+         "Manchmal wird die Situation komplex, und die Verwendung vieler Schlüsselwörter, um Teile "
+         "von Sätzen oder Texte zu übersetzen, wird schwierig.")
+        (d/p
+         "In solchen Fällen ist es möglich, eine " (d/b "Helix") "-Komponente zu erstellen und "
+         "diese Komponente zu den Übersetzungen hinzuzufügen. Dann wird diese Komponente entsprechend "
+         "der ausgewählten Locale gerendert."))
+       :fr
+       (<>
+        (d/h4 "Traduire des composants")
+        (d/p
+         "Tôt ou tard, cela ne suffira même plus pour utiliser \"use-translate\". Parfois, "
+         "la situation deviendra complexe, et utiliser de nombreux mots-clés pour traduire des "
+         "parties de phrases ou de textes sera difficile.")
+        (d/p
+         "Dans de tels cas, il est possible de créer un composant " (d/b "Helix") " et de "
+         "l'ajouter aux traductions. Ensuite, ce composant est rendu en fonction de la locale sélectionnée."))
+       :es
+       (<>
+        (d/h4 "Traducir componentes")
+        (d/p
+         "Tarde o temprano, incluso esto no será suficiente para usar \"use-translate\". "
+         "A veces, la situación se volverá compleja, y usar muchas palabras clave para traducir "
+         "partes de oraciones o textos será complicado.")
+        (d/p
+         "En casos como este, es posible crear un componente " (d/b "Helix") " y agregarlo a las "
+         "traducciones. Luego, ese componente se renderiza según la configuración regional seleccionada."))
+       :hr
+       (<>
+        (d/h4 "Prevođenje komponenti")
+        (d/p
+         "Prije ili kasnije ni ovo neće biti dovoljno za korištenje \"use-translate\". "
+         "Ponekad će situacija postati složena, a korištenje mnogo ključnih riječi za prevođenje "
+         "dijelova rečenica ili tekstova bit će teško.")
+        (d/p
+         "U takvim slučajevima moguće je stvoriti " (d/b "Helix") " komponentu i dodati tu komponentu "
+         "prijevodima. Zatim se ta komponenta prikazuje u skladu s odabranim lokalnim postavkama."))
        (<>
         (d/h4 "Translating components")
         (d/p
@@ -477,31 +519,35 @@
         (d/p \"hello this is example component. \"
              \"Try and change locale to see how this sentence will change\"))))))
 
-(add-translations
- #:i18n.showcase.example {:default i18n-example})
-
-(defnc show-i18n-example
-  []
-  (let [translate (toddler.hooks/use-translate)]
-    ($ (translate :i18n.showcase.example))))"))
+"))
      (d/br)
      (d/h4 (_translate :result))
-     ($ show-i18n-example))))
+     ($ i18n-example))))
+
+(defnc hooks-example []
+  (let [locale (toddler/use-current-locale)
+        translate (toddler/use-translate)
+        translatef (toddler/use-translatef)]
+    (<>
+     (d/br)
+     (d/h4 "React Hooks (Helix)"))))
 
 (defnc i18nStory []
-  (let [locale (toddler/use-current-locale)
-        _translate (toddler/use-translate)]
-    (use-code-refresh)
-    (letfn [(translator-definition [])
-            (translate-code-example [])
-            (add-translations-code [])
-            (add-component-code [])]
-      (d/div
-       {:className $info}
-       ($ intro)
-       ($ adding-translations)
-       ($ adding-locale)
-       ($ translating-components)))))
+  (use-code-refresh)
+  #_(hooks/use-effect
+      :once
+      (async/go
+        (async/<! (async/timeout 400))
+        (when-let [el (.getElementById js/document "test")]
+          (.log js/console "Scrolling into " el)
+          (.scrollIntoView el #js {:block "start" :behavior "smooth"}))))
+  (d/div
+   {:className $info}
+   ($ intro)
+   ($ adding-translations)
+   ($ adding-locale)
+   ($ translating-components)
+   ($ hooks-example)))
 
 (comment
   (translate 100000.001 :en_US) ;; "100,000.001"

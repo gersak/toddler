@@ -12,9 +12,11 @@
        ["& b, & strong" :font-semibold]
        ["& br" {:height "8px"}]
        ["& ul" :mt-2 :ml-4 :border {:list-style-type "disc" :border "none"}]
-       ["& pre code" {:line-height "1.3"}]
+       ["& ul li" :text-xs]
+       ["& pre code" :rounded-lg {:line-height "1.3"}]
        ["& .table-container" :border :my-6 :p-2 :rounded-lg {:background-color "var(--background-lighter)"}]
        ["& table tr" :h-6 :text-xxs]
+       ["& .hljs" {:background-color "var(--background-lighter)"}]
        ; ["& table thead tr"]
        ["& table tbody" :mt-2 :p-1]))
 
