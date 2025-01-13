@@ -231,10 +231,11 @@
       (.setItem js/sessionStorage last-rendered-key [id original-pathname]))
     (hooks/use-effect
       [hash]
-      (async/go
-        (async/<! (async/timeout 1000))
-        (when-some [el (.getElementById js/document hash)]
-          (.scrollIntoView el #js {:block "start" :behavior "smooth"}))))
+      (when hash
+        (async/go
+          (async/<! (async/timeout 1000))
+          (when-some [el (.getElementById js/document hash)]
+            (.scrollIntoView el #js {:block "start" :behavior "smooth"})))))
     on-path?))
 
 (defhook use-component-name

@@ -9,7 +9,7 @@
              {:entries [toddler.showcase]
               :init-fn toddler.showcase/start!}
              :markdown
-             {:entries [toddler.md.lazy]
+             {:entries [toddler.md]
               :depends-on #{:main}}}
    :output-dir "dev/js"
    :output-to "dev/js/main.js"

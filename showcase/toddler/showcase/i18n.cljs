@@ -12,7 +12,8 @@
    [toddler.i18n.keyword
     :refer [add-translations
             add-locale]]
-   [toddler.md :as md]
+   ; [toddler.md :as md]
+   [toddler.md.lazy :as md]
    [toddler.core :as toddler]
    [toddler.showcase.common :refer [$info use-code-refresh]]))
 
@@ -64,9 +65,9 @@
        ($ ui/row {:align :center}
           ($ ui/column
              {:align :center
-              :style {:max-width "40rem"}}
+              :style {:max-width "40rem"
+                      :min-height 2000}}
              ($ md/watch-url {:url "/doc/en/i18n.md"})
-             (when-some [el (.getElementById js/document "component-translation-example")]
-               (rdom/createPortal
-                ($ i18n-example)
-                el)))))))
+             ($ toddler/portal
+                {:locator #(.getElementById js/document "component-translation-example")}
+                ($ i18n-example)))))))

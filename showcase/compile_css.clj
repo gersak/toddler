@@ -13,6 +13,7 @@
   (let [result
         (-> @css-ref
             (cb/generate '{:ui {:include [toddler.ui*
+                                          toddler.md
                                           toddler]}
                            :dev {:include [toddler.dev
                                            toddler.showcase

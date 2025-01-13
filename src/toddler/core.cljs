@@ -1,5 +1,8 @@
 (ns toddler.core
   (:require
+   ["react" :as react]
+   ["react-dom" :as rdom]
+   [shadow.loader]
    [clojure.set]
    [clojure.edn :as edn]
    [clojure.pprint :refer [pprint]]
@@ -7,8 +10,9 @@
    [goog.string :as gstr]
    [goog.string.format]
    [clojure.core.async :as async :refer-macros [go-loop]]
-   [helix.core :refer-macros [defhook]]
+   [helix.core :refer-macros [defnc defhook]]
    [helix.hooks :as hooks]
+   [helix.children :refer [children]]
    [toddler.app :as app]
    [toddler.util :as util]
    [toddler.i18n :as i18n :refer [translate]]
@@ -19,6 +23,23 @@
    [toddler.graphql.transport :refer [send-query]]))
 
 ; (.log js/console "Loading toddler.core")
+
+(defnc portal
+  [{:keys [timeout locator] :or {timeout 2000} :as props}]
+  (let [[target set-target!] (hooks/use-state nil)
+        now (.now js/Date)]
+    (hooks/use-effect
+      :once
+      (async/go-loop
+       []
+        (if-some [target (locator)]
+          (set-target! target)
+          (when (< (- (.now js/Date) now) timeout)
+            (do
+              (async/<! (async/timeout 40))
+              (recur))))))
+    (when target
+      (rdom/createPortal (children props) target))))
 
 (defhook use-url
   "Returns root application root URL"

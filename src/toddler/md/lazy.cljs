@@ -1,33 +1,45 @@
 (ns toddler.md.lazy
   (:require
    ["react" :as react]
-   [shadow.loader]
-   [toddler.md :as md]))
+   [helix.core :refer [$ Suspense defnc]]
+   [shadow.loader]))
 
-(def show
-  (react/lazy
-   (fn []
-     (->
-      (shadow.loader/load "markdown")
-      (.then (fn [_] #js {:default toddler.md/show}))))))
+(defnc show
+  [props]
+  ($ Suspense
+     ($ (react/lazy
+         (fn []
+           (->
+            (shadow.loader/load "markdown")
+            (.then (fn [_] #js {:default toddler.md/show})))))
+        {:& props})))
 
-(def fetch
-  (react/lazy
-   (fn []
-     (->
-      (shadow.loader/load "markdown")
-      (.then (fn [_] #js {:default toddler.md/fetch}))))))
+(defnc fetch
+  [props]
+  ($ Suspense
+     ($ (react/lazy
+         (fn []
+           (->
+            (shadow.loader/load "markdown")
+            (.then (fn [_] #js {:default toddler.md/fetch})))))
+        {:& props})))
 
-(def from-url
-  (react/lazy
-   (fn []
-     (->
-      (shadow.loader/load "markdown")
-      (.then (fn [_] #js {:default toddler.md/from-url}))))))
+(defnc from-url
+  [props]
+  ($ Suspense
+     ($ (react/lazy
+         (fn []
+           (->
+            (shadow.loader/load "markdown")
+            (.then (fn [_] #js {:default toddler.md/from-url})))))
+        {:& props})))
 
-(def watch-url
-  (react/lazy
-   (fn []
-     (->
-      (shadow.loader/load "markdown")
-      (.then (fn [_] #js {:default toddler.md/watch-url}))))))
+(defnc watch-url
+  [props]
+  ($ Suspense
+     ($ (react/lazy
+         (fn []
+           (->
+            (shadow.loader/load "markdown")
+            (.then (fn [_] #js {:default toddler.md/watch-url})))))
+        {:& props})))

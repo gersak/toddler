@@ -151,7 +151,6 @@
       ;; was changed in on-change handler... This is a bug
       ;; [value search-fn]
       (when (not= (search-fn value) search)
-        (println "SETTING SEARCH: " value (search-fn value))
         (set-search! (search-fn value))))
     (hooks/use-effect
       [opened]
