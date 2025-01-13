@@ -5,17 +5,16 @@
 
 
 (ns toddler.search
-  (:require 
-    clojure.string
-    [helix.core
-     :refer [defnc $]]
-    [helix.hooks :as hooks]
-    [helix.dom :as d]
-    [toddler.hooks
-     :refer [use-idle]]
-    [toddler.elements.input
-     :refer [AutosizeInput]]))
-
+  (:require
+   clojure.string
+   [helix.core
+    :refer [defnc $]]
+   [helix.hooks :as hooks]
+   [helix.dom :as d]
+   [toddler.core
+    :refer [use-idle]]
+   [toddler.elements.input
+    :refer [AutosizeInput]]))
 
 (defnc Search
   [{:keys [value icon on-change idle-timeout className onChange]
@@ -30,15 +29,15 @@
       (when (not= value input)
         (set-input! value)))
     (d/div
-      {:className className}
-      (d/div
-        {:class "value"}
-        ($ AutosizeInput
-           {& (merge
-                (dissoc props :className)
-                {:value input
-                 :on-change (fn [e] (set-input! (.. e -target -value)))})}))
-      (when icon
-        (d/div
-          {:class "icon"} 
-          ($ icon))))))
+     {:className className}
+     (d/div
+      {:class "value"}
+      ($ AutosizeInput
+         {& (merge
+             (dissoc props :className)
+             {:value input
+              :on-change (fn [e] (set-input! (.. e -target -value)))})}))
+     (when icon
+       (d/div
+        {:class "icon"}
+        ($ icon))))))

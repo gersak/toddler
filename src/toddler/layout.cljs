@@ -10,7 +10,7 @@
    [vura.core :as vura]
     ; [toddler.ui :refer [forward-ref]]
    [toddler.app :as app]
-   [toddler.hooks
+   [toddler.core
     :refer [use-dimensions]]))
 
 (defhook use-layout

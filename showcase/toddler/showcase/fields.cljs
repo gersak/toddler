@@ -6,7 +6,7 @@
    [toddler.ui :as ui]
    [toddler.layout :as layout]
    [toddler.ui.components :as components]
-   [toddler.hooks :refer [use-translate]]
+   [toddler.core :refer [use-translate]]
    [toddler.i18n.keyword :refer [add-translations]]
    [toddler.dev :as dev]))
 

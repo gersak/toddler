@@ -21,6 +21,7 @@
        ["& table tbody" :mt-2 :p-1]))
 
 (defn refresh-highlight []
+  (.log js/console "Calling refresh")
   (js/hljs.highlightAll))
 
 (defhook use-code-refresh

@@ -8,7 +8,7 @@
    [helix.dom :as d]
    [helix.children :as c]
    [toddler.material.outlined :as outlined]
-   [toddler.hooks :as toddler]
+   [toddler.core :as toddler]
    [toddler.ionic :as ionic]
    [toddler.popup :as popup]
    [toddler.layout :as layout]))

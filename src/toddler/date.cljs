@@ -4,7 +4,7 @@
    [vura.core :as vura]
    [helix.core :refer [defnc defhook create-context]]
    [helix.hooks :as hooks]
-   [toddler.hooks :as th]))
+   [toddler.core :as th]))
 
 ;; CALENDAR
 ; (def ^:dynamic ^js *calendar-selected* (create-context))

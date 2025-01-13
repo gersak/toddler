@@ -9,7 +9,7 @@
     ; [toddler.dev.context
     ;  :refer [*components*]]
    [toddler.router :as router]
-   [toddler.hooks
+   [toddler.core
     :as toddler
     :refer [use-user
             use-window-dimensions
@@ -102,7 +102,7 @@
           {:keys [toggle! opened area] :as dropdown}
           (dropdown/use-dropdown
            {:value locale
-            :options [:en :de :fr :hr]
+            :options [:en :es :de :fr :hr]
             :search-fn #(i18n/translate :locale %)
             :area-position #{:bottom :center}
             :onChange (fn [v]
@@ -219,7 +219,9 @@
 
 (defnc playground
   [{:keys [components]}]
-  (let [[user set-user!] (hooks/use-state {:settings {:locale i18n/*locale*}})
+  (let [[{{locale :locale
+           :or {locale :en}} :settings :as user} set-user!]
+        (hooks/use-state {:settings {:locale i18n/*locale*}})
         [theme set-theme!] (hooks/use-state nil)]
     (hooks/use-effect
       :once
@@ -238,7 +240,10 @@
        (provider
         {:context app/user
          :value [user set-user!]}
-        ($ playground-layout)))))
+        (provider
+         {:context app/locale
+          :value locale}
+         ($ playground-layout))))))
 
 (defn add-component
   [c]

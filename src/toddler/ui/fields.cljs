@@ -16,7 +16,7 @@
     :refer [TextAreaElement
             IdleInput]]
    [toddler.mask :refer [use-mask]]
-   [toddler.hooks :as toddler :refer [use-translate]]
+   [toddler.core :as toddler :refer [use-translate]]
    [toddler.ui.elements :as e]
    ; [toddler.ui.elements.calendar
    ;  :refer [calendar period-calendar]]

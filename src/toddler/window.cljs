@@ -3,7 +3,7 @@
    [clojure.core.async :as async]
    [vura.core :refer [round-number]]
    [toddler.app :as app]
-   [toddler.hooks :refer [make-idle-service]]
+   [toddler.core :refer [make-idle-service]]
    [helix.core :refer [defnc provider fnc $]]
    [helix.hooks :as hooks]
    [helix.children :as c]))

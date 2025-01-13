@@ -1,12 +1,11 @@
 (ns toddler.app
   (:require
    [clojure.core.async :as async]
-   [helix.core :refer [create-context provider defhook defnc]]
-   [helix.hooks :as hooks]
-   [helix.children :refer [children]]))
-
+   [helix.core :refer [create-context defhook]]
+   [helix.hooks :as hooks]))
 
 (def url (create-context))
+(def locale (create-context))
 (def user (create-context))
 (def token (create-context))
 (def currency (create-context))
@@ -17,29 +16,11 @@
 (def avatars (create-context))
 (def graphql-url (create-context))
 
-
 (defhook use-window [] (hooks/use-context window))
 (defhook use-currency-options [] (hooks/use-context currency))
 
-
-(defnc Avatars
-  [props]
-  (let [avatars_ (atom nil)]
-    (provider
-      {:context avatars
-       :value avatars_}
-      (children props))))
-
-
 (defonce signal-channel (async/chan 100))
 (defonce signal-publisher (async/pub signal-channel :topic))
-
-
-(def local-storage 
-  (try
-    js/window.localStorage
-    (catch js/Error _ nil)))
-
 
 (defn listen-to-signal [topic handler]
   (let [c (async/chan 10)]

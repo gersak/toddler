@@ -5,7 +5,7 @@
    [helix.hooks :as hooks]
    [helix.dom :as d]
    [helix.children :as c]
-   [toddler.hooks :refer [use-idle]]
+   [toddler.core :refer [use-idle]]
    [toddler.popup :as popup]))
 
 (defn get-available-options

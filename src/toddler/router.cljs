@@ -1,6 +1,7 @@
 (ns toddler.router
   (:require
    [clojure.set :as set]
+   [clojure.core.async :as async]
    [goog.string :refer [format]]
    goog.object
    [clojure.edn :as edn]
@@ -16,7 +17,7 @@
    [helix.hooks :as hooks]
    [helix.children :refer [children]]
    [clojure.zip :as zip]
-   [toddler.hooks :refer [use-translate use-delayed]]))
+   [toddler.core :refer [use-translate use-delayed]]))
 
 (def -dispatch- (create-context))
 (def -router- (create-context))
@@ -29,6 +30,7 @@
 
 (defn location->map [^js location]
   {:pathname (.-pathname location)
+   :hash (subs (.-hash location) 1)
    :origin (.-origin location)
    :search (.-search location)})
 
@@ -219,13 +221,20 @@
 (def last-rendered-key "toddler.router/last-rendered")
 
 (defhook use-rendered? [id]
-  (let [{original-pathname :pathname} (use-location)
+  (let [{original-pathname :pathname
+         hash :hash} (use-location)
         {:keys [tree]} (hooks/use-context -router-)
         prefix (hooks/use-context -prefix-)
         pathname (maybe-remove-prefix prefix original-pathname)
         on-path? (on-path? tree pathname id)]
     (when on-path?
       (.setItem js/sessionStorage last-rendered-key [id original-pathname]))
+    (hooks/use-effect
+      [hash]
+      (async/go
+        (async/<! (async/timeout 1000))
+        (when-some [el (.getElementById js/document hash)]
+          (.scrollIntoView el #js {:block "start" :behavior "smooth"}))))
     on-path?))
 
 (defhook use-component-name

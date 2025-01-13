@@ -18,7 +18,7 @@
     :refer [AutosizeInput
             IdleInput]]
    [toddler.material.outlined :as outlined]
-   [toddler.hooks :refer [use-delayed] :as toddler]
+   [toddler.core :refer [use-delayed] :as toddler]
    [toddler.dropdown :as dropdown]
    [toddler.multiselect :as multiselect]
    [toddler.scroll :as scroll]

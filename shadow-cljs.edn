@@ -4,14 +4,19 @@
  {:dev
   {:target :browser
    :entries [toddler.showcase]
+   :module-loader true
    :modules {:main
              {:entries [toddler.showcase]
-              :init-fn toddler.showcase/start!}}
+              :init-fn toddler.showcase/start!}
+             :markdown
+             {:entries [toddler.md.lazy]
+              :depends-on #{:main}}}
    :output-dir "dev/js"
    :output-to "dev/js/main.js"
    :devtools {:http-root "dev"
-              :http-port 8000 
-              :preloads []}}
+              :http-port 8000
+              :preloads []
+              :watch-dirs ["dev/doc"]}}
   :icons
   {:target :browser
    :entries [toddler.icons]
@@ -21,13 +26,5 @@
    :output-dir "dev/js"
    :output-to "dev/js/main.js"
    :devtools {:http-root "dev"
-              :http-port 8000 
-              :preloads []}}
-  :webpack
-  {:target :esm
-   :output-dir "release/js"
-   :js-options {:js-provider :import}
-   :modules {:showcase
-             {:entries [toddler.showcase]
-              :exports {default toddler.showcase/start!}
-              :init-fn toddler.showcase/start!}}}}}
+              :http-port 8000
+              :preloads []}}}}

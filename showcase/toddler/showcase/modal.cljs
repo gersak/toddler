@@ -10,7 +10,7 @@
    toddler.showcase.content
    [toddler.showcase.common
     :refer [$info use-code-refresh]]
-   [toddler.hooks :as toddler]
+   [toddler.core :as toddler]
    [toddler.i18n.keyword :refer [add-translations]]))
 
 (defnc ModalInfo

@@ -1,4 +1,4 @@
-(ns toddler.hooks
+(ns toddler.core
   (:require
    [clojure.set]
    [clojure.edn :as edn]
@@ -18,7 +18,7 @@
    [toddler.graphql :as graphql]
    [toddler.graphql.transport :refer [send-query]]))
 
-; (.log js/console "Loading toddler.hooks")
+; (.log js/console "Loading toddler.core")
 
 (defhook use-url
   "Returns root application root URL"
@@ -193,9 +193,10 @@
 (defhook use-current-locale
   "Returns value for :locale in current user settings"
   []
-  (let [[{{locale :locale
-           :or {locale :default}} :settings}] (use-user)]
-    (keyword locale)))
+  (hooks/use-context app/locale)
+  #_(let [[{{locale :locale
+             :or {locale :default}} :settings}] (use-user)]
+      (keyword locale)))
 
 (defhook use-translate
   []

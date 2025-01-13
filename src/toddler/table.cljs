@@ -11,7 +11,7 @@
    [helix.children :as c]
    [toddler.i18n]
    [toddler.ui :as ui]
-   [toddler.hooks :as toddler]
+   [toddler.core :as toddler]
    [toddler.layout :as layout]))
 
 (def ^:dynamic ^js *column* (create-context))
