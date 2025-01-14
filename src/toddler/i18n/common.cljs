@@ -24,34 +24,121 @@
   #:examples {:default "Examples" :hr "Primjeri" :es "Ejemplos" :de "Beispiele" :fr "Exemples"}
   #:result {:default "Result" :de "Ergebnis" :fr "Résultat" :es "Resultado" :hr "Rezultat"}
   #:locale {:default "English"
-            :hr "Hrvatski"        ;; Croatian
-            :de "Deutsch"         ;; German
-            :fr "Français"        ;; French
-            :es "Español"         ;; Spanish
-            :it "Italiano"        ;; Italian
-            :pt "Português"       ;; Portuguese
-            :ru "Русский"         ;; Russian
-            :zh "中文"            ;; Chinese
-            :ja "日本語"          ;; Japanese
-            :ko "한국어"          ;; Korean
-            :ar "العربية"         ;; Arabic
-            :nl "Nederlands"      ;; Dutch
-            :sv "Svenska"         ;; Swedish
-            :fi "Suomi"           ;; Finnish
-            :no "Norsk"           ;; Norwegian
-            :da "Dansk"           ;; Danish
-            :pl "Polski"          ;; Polish
-            :tr "Türkçe"          ;; Turkish
-            :el "Ελληνικά"        ;; Greek
-            :cs "Čeština"         ;; Czech
-            :sk "Slovenčina"      ;; Slovak
-            :hu "Magyar"          ;; Hungarian
-            :ro "Română"          ;; Romanian
-            :bg "Български"       ;; Bulgarian
-            :sr "Српски"          ;; Serbian
-            :uk "Українська"      ;; Ukrainian
-            :he "עברית"           ;; Hebrew
-            :th "ไทย"             ;; Thai
-            :vi "Tiếng Việt"      ;; Vietnamese
-            :sw "Kiswahili"       ;; Swahili
-            }))
+            :af            "Afrikaans"
+            :am            "አማርኛ"
+            :ar            "العربية"
+            :ar_DZ         "العربية (الجزائر)"
+            :ar_EG         "العربية (مصر)"
+            :ar_EG_u_nu_la "العربية (مصر, لاتيني)"
+            :az            "Azərbaycan"
+            :be            "Беларуская"
+            :bg            "Български"
+            :bn            "বাংলা"
+            :bn_u_nu_latn  "বাংলা (ল্যাটিন)"
+            :br            "Brezhoneg"
+            :bs            "Bosanski"
+            :ca            "Català"
+            :chr           "ᏣᎳᎩ"
+            :cs            "Čeština"
+            :cy            "Cymraeg"
+            :da            "Dansk"
+            :de            "Deutsch"
+            :de_AT         "Deutsch (Österreich)"
+            :de_CH         "Deutsch (Schweiz)"
+            :el            "Ελληνικά"
+            :en            "English"
+            :en_AU         "English (Australia)"
+            :en_CA         "English (Canada)"
+            :en_GB         "English (UK)"
+            :en_IE         "English (Ireland)"
+            :en_IN         "English (India)"
+            :en_SG         "English (Singapore)"
+            :en_US         "English (USA)"
+            :en_ZA         "English (South Africa)"
+            :es            "Español"
+            :es_419        "Español (Latinoamérica)"
+            :es_ES         "Español (España)"
+            :es_MX         "Español (México)"
+            :es_US         "Español (EE.UU.)"
+            :et            "Eesti"
+            :eu            "Euskara"
+            :fa            "فارسی"
+            :fa_u_nu_latn  "فارسی (لاتین)"
+            :fi            "Suomi"
+            :fil           "Filipino"
+            :fr            "Français"
+            :fr_CA         "Français (Canada)"
+            :ga            "Gaeilge"
+            :gl            "Galego"
+            :gsw           "Schwiizerdütsch"
+            :gu            "ગુજરાતી"
+            :haw           "ʻŌlelo Hawaiʻi"
+            :he            "עברית"
+            :hi            "हिन्दी"
+            :hr            "Hrvatski"
+            :hu            "Magyar"
+            :hy            "Հայերեն"
+            :id            "Bahasa Indonesia"
+            :in            "Bahasa Indonesia"
+            :is            "Íslenska"
+            :it            "Italiano"
+            :iw            "עברית"
+            :ja            "日本語"
+            :ka            "ქართული"
+            :kk            "Қазақша"
+            :km            "ភាសាខ្មែរ"
+            :kn            "ಕನ್ನಡ"
+            :ko            "한국어"
+            :ky            "Кыргызча"
+            :ln            "Lingála"
+            :lo            "ພາສາລາວ"
+            :lt            "Lietuvių"
+            :lv            "Latviešu"
+            :mk            "Македонски"
+            :ml            "മലയാളം"
+            :mn            "Монгол"
+            :mo            "Moldovenească"
+            :mr            "मराठी"
+            :mr_u_nu_latn  "मराठी (लॅटिन)"
+            :ms            "Bahasa Melayu"
+            :mt            "Malti"
+            :my            "မြန်မာစာ"
+            :my_u_nu_latn  "မြန်မာစာ (လက်တင်)"
+            :nb            "Norsk Bokmål"
+            :ne            "नेपाली"
+            :ne_u_nu_latn  "नेपाली (लॅटिन)"
+            :nl            "Nederlands"
+            :no            "Norsk"
+            :no_NO         "Norsk (Norge)"
+            :or            "ଓଡ଼ିଆ"
+            :pa            "ਪੰਜਾਬੀ"
+            :pl            "Polski"
+            :pt            "Português"
+            :pt_BR         "Português (Brasil)"
+            :pt_PT         "Português (Portugal)"
+            :ro            "Română"
+            :ru            "Русский"
+            :sh            "Srpskohrvatski"
+            :si            "සිංහල"
+            :sk            "Slovenčina"
+            :sl            "Slovenščina"
+            :sq            "Shqip"
+            :sr            "Српски"
+            :sr_Latn       "Srpski (Latinica)"
+            :sv            "Svenska"
+            :sw            "Kiswahili"
+            :ta            "தமிழ்"
+            :te            "తెలుగు"
+            :th            "ไทย"
+            :tl            "Tagalog"
+            :tr            "Türkçe"
+            :u_nu_latn     "Latin"
+            :uk            "Українська"
+            :ur            "اردو"
+            :uz            "Oʻzbek"
+            :vi            "Tiếng Việt"
+            :zh            "中文"
+            :zh_CN         "中文 (中国)"
+            :zh_HK         "中文 (香港)"
+            :zh_TW         "中文 (台灣)"
+            :zu            "IsiZulu"}))

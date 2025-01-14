@@ -14,7 +14,9 @@
 
    :bg-normal {:background-color "var(--background-normal)"}
    :bg-opaque {:background-color "var(--bg-opaque)"}
-   :bg-focused {:background "var(--bg-focused)"}
+   :bg-focused {:background "var(--background-focused)"}
+   :bg-normal+ {:background "var(--background-normal-plus)"}
+   :bg-normal- {:background "var(--background-normal-minus)"}
    ; :bg-highlighted {:background "var(--bg-highlighted)"}
    ; :bg-hover {:background primary-green}
 

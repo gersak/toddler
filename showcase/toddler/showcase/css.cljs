@@ -1,0 +1,20 @@
+(ns toddler.showcase.css
+  (:require
+   [shadow.css :refer [css]]))
+
+(def $default
+  (css :mt-4 :text-sm
+       ["& .code" :mt-2]
+       ["& h1,& h2,& h3,& h4" :uppercase :mt-4]
+       ["& p" :mt-2]
+       ["& b, & strong" :font-semibold]
+       ["& br" {:height "8px"}]
+       ["& ul" :mt-2 :ml-4 :border {:list-style-type "disc" :border "none"}]
+       ["& ul li" :text-xs]
+       ["& pre > code" :rounded-lg :my-2 {:line-height "1.5"}]
+       ["& p > code" :py-1 :px-2 :rounded-md :text-xxs :bg-normal- :font-semibold]
+       ["& .table-container" :border :my-6 :p-2 :rounded-lg :bg-normal+ :border]
+       ["& table tr" :h-6 :text-xxs]
+       ["& .hljs" :bg-normal+]
+        ; ["& table thead tr"]
+       ["& table tbody" :mt-2 :p-1]))

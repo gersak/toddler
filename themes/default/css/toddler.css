@@ -29,7 +29,8 @@ html[data-theme="light"] {
   --background-negative: #f0d4d4;
   --background-warn: #f0dfd4;
   --background-lighter: #f5f6f8;
-  --background-darker: #e1e3e7;
+  --background-normal-plus: #f5f6f8;
+  --background-normal-minus: #cccccc;
 
   /* Navigation */
   --navigation-bar-breadcrumb: #E7EAE8;

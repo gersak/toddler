@@ -5,7 +5,8 @@
    [helix.core :refer [defnc $ <> memo]]
    [helix.dom :as d]
    [helix.hooks :as hooks]
-   [shadow.css :refer [css]]
+   [toddler.core :refer [fetch]]
+   [toddler.showcase.css :refer [$default]]
    ["markdown-it" :as markdownit]
    ["markdown-it-anchor" :as anchor]
    ["markdown-it-emoji"
@@ -13,21 +14,22 @@
     :rename {full emoji}]
    ["highlight.js" :as hljs]))
 
-(def $info
-  (css :mt-4 :text-sm
-       ["& .code" :mt-2]
-       ["& h1,& h2,& h3,& h4" :uppercase :mt-4]
-       ["& p" :mt-2]
-       ["& b, & strong" :font-semibold]
-       ["& br" {:height "8px"}]
-       ["& ul" :mt-2 :ml-4 :border {:list-style-type "disc" :border "none"}]
-       ["& ul li" :text-xs]
-       ["& pre code" :rounded-lg {:line-height "1.3"}]
-       ["& .table-container" :border :my-6 :p-2 :rounded-lg {:background-color "var(--background-lighter)"}]
-       ["& table tr" :h-6 :text-xxs]
-       ["& .hljs" {:background-color "var(--background-lighter)"}]
+#_(def $default
+    (css :mt-4 :text-sm
+         ["& .code" :mt-2]
+         ["& h1,& h2,& h3,& h4" :uppercase :mt-4]
+         ["& p" :mt-2]
+         ["& b, & strong" :font-semibold]
+         ["& br" {:height "8px"}]
+         ["& ul" :mt-2 :ml-4 :border {:list-style-type "disc" :border "none"}]
+         ["& ul li" :text-xs]
+         ["& pre > code" :rounded-lg :my-2 {:line-height "1.5"}]
+         ["& p > code" :py-1 :px-2 :rounded-md :text-xxs :bg-normal- :font-semibold]
+         ["& .table-container" :border :my-6 :p-2 :rounded-lg :bg-normal+ :border]
+         ["& table tr" :h-6 :text-xxs]
+         ["& .hljs" :bg-normal+]
        ; ["& table thead tr"]
-       ["& table tbody" :mt-2 :p-1]))
+         ["& table tbody" :mt-2 :p-1]))
 
 (def md (->
          (markdownit
@@ -73,29 +75,15 @@
      {:id ::refreshing
       :level :debug
       :data {:id id}})
-    (d/div
-     {:ref #(reset! editor %)
-      :dangerouslySetInnerHTML #js {:__html text}
-      :class (cond-> [$info "toddler-markdown"]
-               (string? className) (conj className)
-               (string? class) (conj class)
-               (sequential? class) (into class))
-      & (dissoc props :class :className :content)})))
-
-(defn fetch [url]
-  (let [result (async/promise-chan)]
-    (-> (js/fetch url)
-        (.then
-         (fn [response]
-           (if (.-ok response)
-             (-> (.text response)
-                 (.then (fn [text] (async/put! result text)))
-                 (.catch (fn [err] (async/put! result err))))
-             (.error js/console (js/Error (str "Failed to fetch: " url))))))
-        (.catch
-         (fn [err]
-           (.error js/console (str "Failed fetching file: " url) err))))
-    result))
+    (when text
+      (d/div
+       {:ref #(reset! editor %)
+        :dangerouslySetInnerHTML #js {:__html text}
+        :class (cond-> [$default "toddler-markdown"]
+                 (string? className) (conj className)
+                 (string? class) (conj class)
+                 (sequential? class) (into class))
+        & (dissoc props :class :className :content)}))))
 
 (defnc from-url
   [{:keys [url] :as props}]
@@ -111,7 +99,7 @@
 (defnc watch-url
   {:wrap [(memo #(= (:url %1) (:url %2)))]}
   [{:keys [url interval]
-    :or {interval 1000}
+    :or {interval 4000}
     :as props}]
   (let [[content set-content!] (hooks/use-state nil)]
     (hooks/use-effect

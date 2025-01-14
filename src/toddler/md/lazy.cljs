@@ -14,16 +14,6 @@
             (.then (fn [_] #js {:default toddler.md/show})))))
         {:& props})))
 
-(defnc fetch
-  [props]
-  ($ Suspense
-     ($ (react/lazy
-         (fn []
-           (->
-            (shadow.loader/load "markdown")
-            (.then (fn [_] #js {:default toddler.md/fetch})))))
-        {:& props})))
-
 (defnc from-url
   [props]
   ($ Suspense

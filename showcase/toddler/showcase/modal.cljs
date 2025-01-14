@@ -10,8 +10,6 @@
    [helix.hooks :as hooks]
    [toddler.md.lazy :as md]
    toddler.showcase.content
-   [toddler.showcase.common
-    :refer [$info use-code-refresh]]
    [toddler.core :as toddler]
    [toddler.i18n.keyword :refer [add-translations]]))
 
@@ -73,7 +71,6 @@
              ($ toddler/portal
                 {:locator #(.getElementById js/document "modal-dialog-example")}
                 (<>
-                 ($ (translate :showcase.modal.dialog.info))
                  ($ ui/row
                     ($ ui/button
                        {:on-click #(do
@@ -115,8 +112,4 @@
                          (d/div
                           {:className "footer"}
                           ($ ui/button {:on-click close!} (translate :ok))
-                          ($ ui/button {:on-click close!} (translate :cancel))))))))
-             #_($ (translate :showcase.modal.info))
-             #_($ Background)
-             #_($ Dialog)
-             #_($ Complex))))))
+                          ($ ui/button {:on-click close!} (translate :cancel)))))))))))))

@@ -1,4 +1,5 @@
 (ns toddler.core
+  (:require-macros [toddler.util :refer [mlf]])
   (:require
    ["react" :as react]
    ["react-dom" :as rdom]
@@ -25,6 +26,11 @@
 ; (.log js/console "Loading toddler.core")
 
 (defnc portal
+  "Use when you wan't to mount react component on some
+  DOM element that can be found by locator function.
+  
+  portal will try to locate element. If it is not found inside
+  timeout period, portal will give up"
   [{:keys [timeout locator] :or {timeout 2000} :as props}]
   (let [[target set-target!] (hooks/use-state nil)
         now (.now js/Date)]
@@ -40,6 +46,24 @@
               (recur))))))
     (when target
       (rdom/createPortal (children props) target))))
+
+(defn fetch
+  "Function will fetch content from URL and return string
+  representation"
+  [url]
+  (let [result (async/promise-chan)]
+    (-> (js/fetch url)
+        (.then
+         (fn [response]
+           (if (.-ok response)
+             (-> (.text response)
+                 (.then (fn [text] (async/put! result text)))
+                 (.catch (fn [err] (async/put! result err))))
+             (.error js/console (js/Error (str "Failed to fetch: " url))))))
+        (.catch
+         (fn [err]
+           (.error js/console (str "Failed fetching file: " url) err))))
+    result))
 
 (defhook use-url
   "Returns root application root URL"
@@ -70,6 +94,11 @@
             (str _ns \/ (name location))
             (name location)))]
   (defhook use-local-storage
+    "For local storage usage. Hook will return local state
+    and second argument is set-local! that will store/update values
+    in local storage at 'location'
+    
+    Location can be string, keyword, symbol"
     ([location] (use-local-storage
                  location
                  (fn [v] (when v (edn/read-string v)))))
@@ -90,6 +119,12 @@
             (str _ns \/ (name location))
             (name location)))]
   (defhook use-session-storage
+    "For session storage usage. Hook will return session storage state
+    and second argument is set-local! that will store/update values
+    in session storage at 'location'
+
+    Location can be string, keyword, symbol"
+
     ([location] (use-session-storage
                  location
                  (fn [v]
@@ -221,16 +256,27 @@
 
 (defhook use-translate
   []
+  "Hook will return function that when called will based
+  on toddler.app/locale context translate input value.
+  
+  Supported translation values are number,Date,keyword and UUID"
   (let [locale (use-current-locale)
         translate (hooks/use-memo
                     [locale]
                     (fn
                       ([data] (translate data locale))
-                      ([data options] (translate data locale options))))]
+                      ([data options]
+                       (if (number? data)
+                         (translate data options)
+                         (translate data locale options)))))]
     translate))
 
 (defhook use-translatef
   []
+  "Hook will return function that when called will based
+  on toddler.app/locale context translate input value.
+
+  Supported translation values are number,Date,keyword and UUID"
   (let [locale (use-current-locale)
         translate (hooks/use-memo
                     [locale]
