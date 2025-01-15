@@ -29,7 +29,7 @@
     #(close!)))
 
 (defhook use-register [id segment]
-  (router/use-component-children
+  (router/use-link
    :toddler.modal
    [{:id id :segment segment}]))
 

@@ -71,7 +71,7 @@
 (defn ^:dev/after-load start! []
   (.log js/console "Starting Toddler showcase!")
   (t/set-min-level! :info)
-  (t/set-min-level! :log "toddler.md" :debug)
+  ; (t/set-min-level! :log "toddler.md" :debug)
   (let [target ^js (.getElementById js/document "app")]
     (when-not @root
       (reset! root ^js (createRoot target)))

@@ -1,13 +1,154 @@
 (ns toddler.showcase.routing
   (:require
-   [helix.core :refer [defnc]]
+   [cljs.pprint :refer [pprint]]
+   [helix.core :refer [$ defnc <>]]
    [helix.dom :as d]
    [helix.hooks :as hooks]
-   [toddler.i18n.keyword :refer [add-translations]]))
+   [shadow.css :refer [css]]
+   [toddler.i18n.keyword :refer [add-translations]]
+   [toddler.md.lazy :as md]
+   [toddler.ui :as ui]
+   [toddler.core :as toddler]
+   [toddler.router :as router]
+   [toddler.layout :as layout]))
 
 (add-translations
- #:showcase.routing {:default "Routing"
-                     :hr "Usmjeravanje"})
+ #:showcase.routing {:default "Routing"})
+
+(defnc ModalTest
+  {:wrap [(router/wrap-rendered ::modal)]}
+  []
+  (let [back (router/use-go-to ::router/ROOT)]
+    ($ ui/modal-dialog
+       {:on-close #(back)
+        :style {:max-width 300}}
+       (d/div {:className "title"} "Testing modal")
+       (d/div {:className "content"}
+              (toddler/mlf
+               "Hello from testing modal window. You have successfully"
+               "changed URL!"))
+       (d/div {:className "footer"}
+              ($ ui/button {:on-click #(back)}
+                 "CLOSE")))))
+
+(defn p [text]
+  (with-out-str
+    (pprint text)))
+
+(defnc Root []
+  (let [{:keys [go back]} (router/use-navigate)
+        location (router/use-location)
+        [query set-query!] (router/use-query)
+        open-modal (router/use-go-to ::modal)
+        go-to-landing (router/use-go-to ::protection)
+        reset (router/use-go-to ::router/ROOT)
+        tree (router/use-component-tree)]
+    (router/use-link
+     ::router/ROOT
+     [{:id ::basics
+       :hash "basics"}
+      {:id ::modal
+       :name :routing.modal
+       :segment "modal"}
+      {:id ::protection
+       :hash "route-protection"}
+      {:id ::landing
+       :hash "landing"}])
+    (<>
+     ($ md/show
+        {:content
+         (str
+          "```clojure\n"
+          (p
+           {:location location
+            :query query
+            :tree tree})
+          "\n```")})
+     ($ ui/row
+        {:position :center}
+        ($ ui/button {:on-click #(open-modal)} "GO TO MODAL")
+        ($ ui/button {:on-click #(set-query!
+                                  {:test1 100
+                                   :test2 "John"
+                                   :test3 :test3
+                                   :test4 ["100" "200" :goo 400]})}
+           "CHANGE QUERY")
+        ($ ui/button {:on-click #(reset)} "RESET")
+        ($ ui/button {:on-click #(go-to-landing)} "GO TO FRAGMENT"))
+     ($ ModalTest))))
+
+(defnc public-route
+  []
+  (d/div
+   {:className (css :p-4 :my-3 :rounded-xl :text-lg :font-semibold :bg-normal-)}
+   "This data is publicly available!"))
+
+(defnc admin-route
+  []
+  (let [authorized? (router/use-authorized? ::admin)]
+    (when authorized?
+      (d/div
+       {:className (css :p-4 :my-3 :rounded-xl :text-lg :font-semibold :bg-warn)}
+       "This data is only available to route administrator!"))))
+
+(defnc super-route
+  {:wrap [(router/wrap-authorized)]}
+  []
+  (d/div
+   {:className (css :p-4 :my-3 :rounded-xl :text-lg :font-semibold :bg-positive)}
+   "This data is only available to route SUPERUSER!!!"))
+
+(defnc RouteProtection []
+  (let [[{:keys [roles]} set-user!] (hooks/use-state nil)]
+    (router/use-link
+     ::protection
+     [{:id ::everyone}
+      {:id ::admin
+       :roles #{"admin"}}
+      {:id ::superuser}])
+    ($ router/Protect
+       {:roles (set roles)
+        :super "superuser"}
+       (<>
+        ($ public-route)
+        ($ admin-route)
+        ($ super-route)
+        ($ ui/row
+           ($ ui/multiselect-field
+              {:name "USER ROLES"
+               :options ["admin" "superuser"]
+               :value roles
+               :on-change #(set-user! assoc :roles %)}))))))
+
+(defnc App []
+  (let []
+    ($ router/Provider
+       {:base "routing"}
+       ($ Root))))
+
+(defnc MyApp
+  []
+  ($ router/Provider
+     ($ router/LandingPage
+        {:url "/landing"}
+        ($ Root))))
 
 (defnc Routing []
-  (d/div "hi"))
+  (let [{:keys [height width]} (layout/use-container-dimensions)]
+    ($ router/Provider
+       {:base "routing"}
+       ($ ui/simplebar
+          {:style {:height height
+                   :width width}}
+          ($ ui/row {:align :center}
+             ($ ui/column
+                {:align :center
+                 :style {:max-width "40rem"
+                         :min-height 2000}}
+                ($ md/watch-url {:url "/doc/en/routing.md"})
+                ($ toddler/portal
+                   {:locator #(.getElementById js/document "router-basics")}
+                   ($ Root))
+                ($ toddler/portal
+                   {:locator #(.getElementById js/document "route-protection-example")}
+                   ($ RouteProtection))))))))

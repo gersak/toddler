@@ -5,7 +5,9 @@
 (def $default
   (css :mt-4 :text-sm
        ["& .code" :mt-2]
-       ["& h1,& h2,& h3,& h4" :uppercase :mt-4]
+       ["& h1,& h2,& h3,& h4" :uppercase]
+       ["& h3" :mt-12]
+       ["& h4" :mt-4]
        ["& p" :mt-2]
        ["& b, & strong" :font-semibold]
        ["& br" {:height "8px"}]

@@ -24,6 +24,7 @@ html[data-theme="light"] {
 
   /* Background */
   --background-normal: #f0f0f0;
+  --background-neutral: #f0f0f0;
   /*--background-positive: #d4f0e4;*/
   --background-positive: #e8f8f1;
   --background-negative: #f0d4d4;

@@ -68,8 +68,7 @@
    ["&.warn" :modal-warn]
    ["&.warn" :modal-warn]
    ["& > .buttons, & > .footer"
-    :mt-2 :pt-4
-    :px-8 :flex :justify-end :mt-6 :pb-4 {:gap "0.5rem"}]
+    :pt-4 :px-8 :flex :justify-end :pb-4 {:gap "0.5rem"}]
    ["& > .buttons button, & > .footer button" :mx-0 :my-0]))
 
 (defnc modal-dialog

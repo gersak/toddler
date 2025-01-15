@@ -235,7 +235,7 @@
             (do
               (async/<! (async/timeout 100))
               (recur))))))
-    (router/use-component-children ::router/ROOT components)
+    (router/use-link ::router/ROOT components)
     ($ window/DimensionsProvider
        (provider
         {:context app/user

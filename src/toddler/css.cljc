@@ -75,10 +75,10 @@
    :color-warning {:color "var (--color-warning)"}
 
    ;; Backgrounds
-   :bg-positive {:background-color "var(--color-positive)"}
-   :bg-negative {:background-color "var(--color-negative)"}
-   :bg-neutral {:background-color "var(--color-neutral)"}
-   :bg-warn {:background-color "var(--color-warning)"}
+   :bg-positive {:background-color "var(--background-positive)"}
+   :bg-negative {:background-color "var(--background-negative)"}
+   :bg-neutral {:background-color "var(--background-neutral)"}
+   :bg-warn {:background-color "var(--background-warn)"}
    :bg-important {:background-color "var(--color-important)"}
    :bg-exception {:background-color "var(--color-exception)"}
    :bg-exception- {:background-color "var(--color-exception-light)"}
