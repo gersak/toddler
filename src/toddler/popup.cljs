@@ -509,9 +509,6 @@
                      (not (pos? (:popup-height computed)))
                      (assoc :visibility "hidden"
                             :opacity "0"))]
-         ; (.log js/console @_el)
-         ; (println "COMPUTED: " computed)
-         ; (println "STYLE: " style)
          (d/div
           {:ref #(reset! _el %)
            :style style

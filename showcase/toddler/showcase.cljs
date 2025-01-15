@@ -65,9 +65,12 @@
 
 (defnc Showcase
   []
-  ($ react/StrictMode
-     ($ router/Provider
-        ($ dev/playground {:components components}))))
+  ($ router/Provider
+     ($ dev/playground {:components components}))
+  ;; TODO - Strict mode causes problems with popup window
+  #_($ react/StrictMode
+       ($ router/Provider
+          ($ dev/playground {:components components}))))
 
 (defn ^:dev/after-load start! []
   (.log js/console "Starting Toddler showcase!")
