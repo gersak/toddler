@@ -136,7 +136,7 @@ approach is targeting low maintainance. When components
 are rendered and ```use-link``` hook is present, this hook will call dispatch
 on **-router-** context that will ::add-component if it is not allready there.
 
-If component wasn't present in routing tree, than context is changed,
+If component wasn't present in routing tree, then context is changed,
 components are re-redered and registration continues.
 
 You can control what components are rendered by using ```use-rendered?```

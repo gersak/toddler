@@ -41,32 +41,14 @@
         text (hooks/use-memo
                [content]
                (when content
-                 (.render md content)))
-        id (hooks/use-memo
-             :once
-             (gensym "md_"))]
-    (hooks/use-effect
-      :once
-      (t/log!
-       {:id ::mounting
-        :level :debug
-        :data {:id id
-               :content content
-               :class class
-               :className className}}))
-    (t/log!
-     {:id ::refreshing
-      :level :debug
-      :data {:id id}})
-    (when text
-      (d/div
-       {:ref #(reset! editor %)
-        :dangerouslySetInnerHTML #js {:__html text}
-        :class (cond-> [$default "toddler-markdown"]
-                 (string? className) (conj className)
-                 (string? class) (conj class)
-                 (sequential? class) (into class))
-        & (dissoc props :class :className :content)}))))
+                 (.render md content)))]
+    (d/div
+     {:ref #(reset! editor %)
+      :dangerouslySetInnerHTML #js {:__html text}
+      :class (cond-> [$default "toddler-markdown"]
+               (string? className) (conj className)
+               (string? class) (conj class)
+               (sequential? class) (into class))})))
 
 (defnc from-url
   [{:keys [url] :as props}]
@@ -95,7 +77,7 @@
               (set-content! _content)))
           (async/alt!
             close
-            ([_] (.log js/console (str "Removing watch for URL" url)))
+            ([_] (.log js/console (str "Removing watch for URL: " url)))
             ;;
             (async/timeout interval)
             ([_] (when (pos? interval) (recur)))))

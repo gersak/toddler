@@ -29,8 +29,6 @@
    [shadow.css :refer [css]]
    [clojure.string :as str]))
 
-(defonce component-db (atom nil))
-
 (defnc component
   [{:keys [component]}]
   (let [rendered? (router/use-rendered? (:id component))
@@ -161,7 +159,9 @@
   {:wrap [(react/forwardRef)]}
   [{:keys [style]}]
   (let [rendered-components (router/use-url->components)
-        render (last (filter some? (map :render rendered-components)))
+        render (hooks/use-memo
+                 [rendered-components]
+                 (last (filter some? (map :render rendered-components))))
         $content (css
                   :background-normal
                   :rounded-md)]
@@ -177,24 +177,13 @@
 
 (defnc playground-layout
   []
-  (let [[components set-components!] (hooks/use-state @component-db)
-        window (use-window-dimensions)
+  (let [window (use-window-dimensions)
         [_navbar {navigation-width :width}] (use-dimensions)
         [_header] (use-dimensions)
         [_content {content-height :height}] (use-dimensions)
         $playground (css
                      :flex
                      ["& .content" :flex :flex-col])]
-    (hooks/use-effect
-      :once
-      (.log js/console "Adding playground watcher!")
-      (add-watch
-       component-db
-       ::playground
-       (fn [_ _ _ components]
-         (set-components! components)))
-      (fn []
-        (remove-watch component-db ::playground)))
     ($ UI
        {:components default/components}
        ($ popup/Container
@@ -244,16 +233,6 @@
          {:context app/locale
           :value locale}
          ($ playground-layout))))))
-
-(defn add-component
-  [c]
-  (swap! component-db
-         (fn [current]
-           (if (empty? current) [c]
-               (let [idx (.indexOf (map :key current) (:id c))]
-                 (if (neg? idx)
-                   (conj current c)
-                   (assoc current idx c)))))))
 
 ;; Component wrappers
 

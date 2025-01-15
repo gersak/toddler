@@ -2,6 +2,7 @@
   {:shadow.css/include
    ["css/toddler.css"]}
   (:require
+   ["react" :as react]
    ["react-dom/client" :refer [createRoot]]
    [taoensso.telemere :as t]
    [toddler.dev :as dev]
@@ -53,7 +54,6 @@
     :name :showcase.i18n
     :render i18n
     :segment "i18n"}
-
    {:id :toddler.icons
     :name :showcase.icons
     :render Icons
@@ -65,8 +65,9 @@
 
 (defnc Showcase
   []
-  ($ router/Provider
-     ($ dev/playground {:components components})))
+  ($ react/StrictMode
+     ($ router/Provider
+        ($ dev/playground {:components components}))))
 
 (defn ^:dev/after-load start! []
   (.log js/console "Starting Toddler showcase!")

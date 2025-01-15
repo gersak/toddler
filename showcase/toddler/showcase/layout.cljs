@@ -87,9 +87,3 @@
                              #_($ ui/input-field)))
                         (range 3)))))
                (range 10))))))))
-
-(dev/add-component
- {:id :showcase.layout
-  :name "Layout"
-  :segment "layout"
-  :render Layout})

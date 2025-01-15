@@ -275,9 +275,3 @@
                          {:name (str (translate :showcase.fields.in-row) 2)})
                       ($ ui/input-field
                          {:name (str (translate :showcase.fields.in-row) 3)})))))))))
-
-(dev/add-component
- {:id :showcase.fields
-  :name "Fields"
-  :segment "fields"
-  :render Fields})
