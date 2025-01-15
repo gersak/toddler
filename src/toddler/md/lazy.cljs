@@ -1,7 +1,6 @@
 (ns toddler.md.lazy
   (:require
-   ["react" :as react]
-   [helix.core :refer [$ Suspense defnc]]
+   [helix.core :refer [$ defnc defhook]]
    [helix.hooks :as hooks]
    [shadow.loader]))
 
@@ -18,26 +17,33 @@
                      ::from-url toddler.md/from-url
                      ::watch-url toddler.md/watch-url))))))
 
+(defnc not-found [])
+
+(defhook use-function
+  [k]
+  (let [[f f!] (hooks/use-state (get @module k))]
+    (hooks/use-effect
+      :once
+      (load-markdown))
+    (hooks/use-effect
+      :once
+      (when-not f
+        (let [w (gensym "md_loaded")]
+          (add-watch module w
+                     (fn [_ _ _ {f k}]
+                       (f! f)))
+          (fn []
+            (remove-watch module w)))))
+    (or f not-found)))
+
 (defnc show
   [props]
-  (hooks/use-effect
-    :once
-    (load-markdown))
-  (when-some [comp (get @module ::show)]
-    ($ comp {:& props})))
+  ($ (use-function ::show) {:& props}))
 
 (defnc from-url
   [props]
-  (hooks/use-effect
-    :once
-    (load-markdown))
-  (when-some [comp (get @module ::from-url)]
-    ($ comp {:& props})))
+  ($ (use-function ::from-url) {:& props}))
 
 (defnc watch-url
   [props]
-  (hooks/use-effect
-    :once
-    (load-markdown))
-  (when-some [comp (get @module ::watch-url)]
-    ($ comp {:& props})))
+  ($ (use-function ::watch-url) {:& props}))
