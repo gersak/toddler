@@ -497,20 +497,24 @@
       (provider
        {:context *container-dimensions*
         :value computed}
-       (d/div
-        {:ref #(reset! _el %)
-         :style (cond->
-                 (merge
-                  style
-                  {:top top :left left
-                   :position "fixed"
-                   :box-sizing "border-box"
-                   :zIndex "1000"
-                   :visibility (if computed "visible" "hidden")})
-                      ;;
-                  (not (pos? (:popup-height computed)))
-                  (assoc :visibility "hidden"
-                         :opacity "0"))
-         & (select-keys props [:class :className])}
-        (c/children props))))
+       (let [style (cond->
+                    (merge
+                     style
+                     {:top top :left left
+                      :position "fixed"
+                      :box-sizing "border-box"
+                      :zIndex "1000"
+                      :visibility (if computed "visible" "hidden")})
+                     ;;
+                     (not (pos? (:popup-height computed)))
+                     (assoc :visibility "hidden"
+                            :opacity "0"))]
+         ; (.log js/console @_el)
+         ; (println "COMPUTED: " computed)
+         ; (println "STYLE: " style)
+         (d/div
+          {:ref #(reset! _el %)
+           :style style
+           & (select-keys props [:class :className])}
+          (c/children props)))))
      @container-node)))
