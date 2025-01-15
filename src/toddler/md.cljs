@@ -18,15 +18,14 @@
          (markdownit
           #js {:html true
                :highlight (fn [text lang]
-                            (if (and lang (.getLanguage hljs lang))
-                              (try
-                                (str
-                                 "<pre><code class=hljs>"
-                                 (.-value (.highlightAuto hljs text))
-                                 "</code></pre>")
-                                (catch js/Error ex
-                                  (.error js/console ex)))
-                              (str "")))})
+                            (try
+                              (str
+                               "<pre><code class=hljs>"
+                               (.-value (.highlight hljs lang text))
+                               "</code></pre>")
+                              (catch js/Error ex
+                                (.error js/console ex)
+                                (str ""))))})
          (.use anchor)
          (.use emoji)))
 
@@ -36,7 +35,7 @@
 
 (defnc show
   {:wrap [(memo check-diff)]}
-  [{:keys [content class className] :as props}]
+  [{:keys [content class className]}]
   (let [editor (hooks/use-ref nil)
         text (hooks/use-memo
                [content]
