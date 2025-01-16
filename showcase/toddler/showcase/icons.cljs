@@ -7,6 +7,7 @@
    [toddler.ui :as ui]
    [toddler.md.lazy :as md]
    [toddler.showcase.icons.material :as material]
+   [toddler.showcase.icons.fav6 :as fav6]
    [toddler.i18n.keyword :refer [add-translations]]))
 
 (add-translations
@@ -55,4 +56,16 @@
         ($ ui/tab
            {:id ::material-sharp
             :name "Material Sharp"}
-           ($ display-icons {:height height :icons material/sharp}))))))
+           ($ display-icons {:height height :icons material/sharp}))
+        ($ ui/tab
+           {:id ::fav6-regular
+            :name "FA Regular"}
+           ($ display-icons {:height height :icons fav6/regular}))
+        ($ ui/tab
+           {:id ::fav6-solid
+            :name "FA Solid"}
+           ($ display-icons {:height height :icons fav6/solid}))
+        ($ ui/tab
+           {:id ::fav6-brands
+            :name "FA Brands"}
+           ($ display-icons {:height height :icons fav6/brands}))))))
