@@ -11,7 +11,7 @@ code splitting. For that use **shadow.loader** and react **Suspense** as demonst
 in ```toddler.md.lazy``` namespace.
 
 
-### BASICS
+## BASICS
 
 Toddler routing namespace has Helix component called ```Provider```
 that accepts almost no arguments and provides few contexts that are
@@ -165,7 +165,7 @@ when linking components read following docs from ```use-link``` hook.
   :name        Name of component. Can be used to resolve what to display.
                If :name is of type string than use-component-name hook
                will return that name.
-               
+           
                When keyword is used as name value use-component-name will
                try to resolve that keyword as translation in respect to
                locale in current app/locale context.
@@ -181,7 +181,7 @@ when linking components read following docs from ```use-link``` hook.
 
   :permissions #{} with permissions that are allowed to access this component
   
-  :landing     [true] to mark this component as possible landing site
+  :landing     [number] to mark this component as possible landing site with number priority
   
   Linking should start with parent :toddler.router/ROOT component, as this
   component is parent to all other components"
@@ -198,7 +198,7 @@ when linking components read following docs from ```use-link``` hook.
 ```
 
 
-### ROUTE PROTECTION
+## ROUTE PROTECTION
 Modern applications mostly use access token to communicate with resource
 providers. Usually this token, access token, can contain information about
 user roles or/and permissions.
@@ -282,15 +282,15 @@ if modal is displayed or not.
 Components like actions, buttons, sensitive information should be protected as well.
 This components don't require **:segment** and can also be protected by Toddler Router.
 
-### LANDING PAGE
-Component is here as drop in component when working with OAuth. When user logs in to
-authorization server that is compliant with OAuth authorization code flow, then authorization
-server will return response to client on URL that client sent during authorization flow
-request. 
+## LANDING PAGE
+Landing page component will come in handy when working with OAuth authorization code flow.
+When user logs in to authorization server that is compliant with OAuth authorization code flow,
+then authorization server will return response to client on URL that client sent
+during authorization flow request. 
 
 In short client will redirect user to authorize on authorization server and when user
 logs in on authorization server (not client), than authorization server needs to know
-where to redirect user. So usually client sends something like
+where to redirect user. Client sends something like
 
 **https://example.app.com/oauth/callback**
 
@@ -312,7 +312,7 @@ triggered when process is finished. Still question remains...
         ($ Root))))
 ```
 
-Answer is ```LandingPage```. You should add on sign in finished callback handler that
+Answer is ```LandingPage```. You should add "on sign in finished" callback handler that
 will redirect browser to **/landing** URL. LandingPage will listen location changes
 (when URL changes) and if **/landing** URL is current browser location, than LandingPage
 component will walk through component tree and isolate all components that are marked
@@ -321,5 +321,5 @@ with positive ```:landing *priority*``` and check if user is authorized to acces
 When all accessible components are filtered, than those components are sorted by landing
 priority and component with highest priority is selected.
 
-URL for that component is resolved by Toddler Router and once again user is redirected
-URL with highest priority.
+URL for that component is resolved by Toddler Router and once again user is redirected to
+URL (component) with highest priority.

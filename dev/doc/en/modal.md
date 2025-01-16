@@ -7,7 +7,7 @@ Modal dialog and modal strip use modal background component
 to display components that you will design and implement.
 
 
-### MODAL BACKGROUND
+## MODAL BACKGROUND
 
 As you can see in code bellow, modal-background component will
 use react/createPortal to mount modal backround on popup/*container* 
@@ -41,7 +41,7 @@ Optional properties for modal-background component include:
      @container-node)))
 ```
 
-### MODAL DIALOG
+## MODAL DIALOG
 
 Dialog component will create dialog window and adjust its 
 size to inside content. Same as modal-background it supports 

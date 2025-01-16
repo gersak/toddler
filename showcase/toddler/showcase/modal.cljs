@@ -72,6 +72,7 @@
                 {:locator #(.getElementById js/document "modal-dialog-example")}
                 (<>
                  ($ ui/row
+                    {:position :center}
                     ($ ui/button
                        {:on-click #(do
                                      (set-context! nil)

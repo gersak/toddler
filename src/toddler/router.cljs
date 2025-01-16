@@ -319,28 +319,28 @@
   component tree for current -router- context. Children is expected
   to be map of:
 
-  :id       Component ID. Should uniquely identify component
+  :id          Component ID. Should uniquely identify component
 
-  :name     Name of component. Can be used to resolve what to display.
-           If :name is of type string than use-component-name hook
-           will return that name.
+  :name        Name of component. Can be used to resolve what to display.
+               If :name is of type string than use-component-name hook
+               will return that name.
            
-           When keyword is used as name value use-component-name will
-           try to resolve that keyword as translation in respect to
-           locale in current app/locale context.
+               When keyword is used as name value use-component-name will
+               try to resolve that keyword as translation in respect to
+               locale in current app/locale context.
 
-  :hash     Optional hash that is appended to component URL
+  :hash        Optional hash that is appended to component URL
 
-  :segment  Segment of path that is conjoined to all parent segments. Used
-           to resolve if component is rendered or not and in use-go-to
-           hook to resolve what is target path if I wan't to \"go\" to
-           component with id
+  :segment     Segment of path that is conjoined to all parent segments. Used
+               to resolve if component is rendered or not and in use-go-to
+               hook to resolve what is target path if I wan't to \"go\" to
+               component with id
   
-  :roles    #{} with roles that are allowed to access this component
+  :roles       #{} with roles that are allowed to access this component
 
   :permissions #{} with permissions that are allowed to access this component
   
-  :landing [number] to mark this component as possible landing site with number priority
+  :landing     [number] to mark this component as possible landing site with number priority
   
   Linking should start with parent :toddler.router/ROOT component, as this
   component is parent to all other components"
