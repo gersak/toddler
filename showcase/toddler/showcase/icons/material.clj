@@ -8600,15 +8600,11 @@
 "query-stats"
 "align-vertical-bottom"])
 
-
 (defn build [namespace names]
   (mapv
    (fn [icon]
      [icon (symbol namespace icon)])
-   round-names))
-
-
-
+   names))
 
 (defn gen-defs []
   (spit "outlined.clj" (with-out-str (pprint (build "toddler.material.outlined" outlined-names))))

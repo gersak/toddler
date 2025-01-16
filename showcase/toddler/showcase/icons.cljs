@@ -15,8 +15,27 @@
 
 (declare outlined)
 
-(defn show-icon
-  [icon-symbol])
+(defnc display-icons
+  [{:keys [height icons]}]
+  ($ ui/simplebar
+     {:style {:height (- height 200)}
+      :className (css :pt-4)}
+     (d/div
+      {:className (css
+                   :flex :flex-wrap
+                   ["& .icon-wrapper" :m-4 :flex :flex-col :justify-center :items-center]
+                   ["& .icon" {:font-size "24px"} :cursor-pointer]
+                   ["& .name" :font-semibold {:font-size "10px"}])}
+      (map
+       (fn [[name icon]]
+         ($ ui/tooltip
+            {:key name
+             :message (d/div {:className "name"} name)}
+            (d/div
+             {:className "icon-wrapper"}
+             ($ icon {:className "icon"
+                      :onClick (fn [] (.writeText js/navigator.clipboard name))}))))
+       icons))))
 
 (defnc Icons
   []
@@ -24,21 +43,8 @@
     (d/div
      {:className (css :flex :flex-col)}
      ($ md/watch-url {:url "/doc/en/icons.md"})
-     ($ ui/simplebar
-        {:style {:height (- height 150)}}
-        (d/div
-         {:className (css
-                      :flex :flex-wrap
-                      ["& .icon-wrapper" :m-4 :flex :flex-col :justify-center :items-center]
-                      ["& .icon" {:font-size "24px"} :cursor-pointer]
-                      ["& .name" :font-semibold {:font-size "10px"}])}
-         (map
-          (fn [[name icon]]
-            ($ ui/tooltip
-               {:key name
-                :message (d/div {:className "name"} name)}
-               (d/div
-                {:className "icon-wrapper"}
-                ($ icon {:className "icon"
-                         :onClick (fn [] (.writeText js/navigator.clipboard name))}))))
-          material/sharp))))))
+     ($ ui/tabs
+        ($ ui/tab
+           {:id ::jfioq
+            :name "Material Outlined"}
+           ($ display-icons {:height height :icons material/outlined}))))))

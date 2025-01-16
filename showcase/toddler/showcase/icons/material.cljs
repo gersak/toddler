@@ -1,15 +1,11 @@
 (ns toddler.showcase.icons.material
   (:require
-   [helix.core :refer [defnc $ <>]]
-   [helix.dom :as d]
-   [helix.hooks :as hooks]
-   [toddler.md.lazy :as md]
-   [toddler.material.outlined]
-   [toddler.material.round]
-   [toddler.material.sharp]
    ;; TODO - two tone is not working yet
    ; [toddler.material.two-tone]
-   [toddler.i18n.keyword :refer [add-translations]]))
+   [toddler.material.outlined]
+   [toddler.material.round]
+   [toddler.material.sharp]))
+
 
 (def outlined
    [["agriculture" toddler.material.outlined/agriculture]
@@ -4537,7 +4533,6 @@
  ["checklist" toddler.material.round/checklist]
  ["query-stats" toddler.material.round/query-stats]
  ["align-vertical-bottom" toddler.material.round/align-vertical-bottom]])
-
 
 
 (def sharp
@@ -9072,6 +9067,3 @@
  ["query-stats" toddler.material.two-tone/query-stats]
  ["align-vertical-bottom"
   toddler.material.two-tone/align-vertical-bottom]])
-
-
-
