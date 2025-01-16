@@ -62,17 +62,12 @@ html[data-theme="light"] {
   --drawer-bg: #FCFCFC;
 
 
-  /* Tag */
-  --tag-c: #575757;
-  --tag-bg: #C6C9C6;
-
-
   /* Tabs */
   --tab-color: #575757;
   --tab-bg: transparent;
-  --tab-hover-color: #689579;
+  --tab-hover-color: #000000;
   --tab-hover-bg: transparent;
-  --tab-selected-color: #2F3732;
+  --tab-selected-color: #000000;
   --tab-selected-bg: #C6C9C6;
 
 

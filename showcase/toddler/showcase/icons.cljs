@@ -45,6 +45,14 @@
      ($ md/watch-url {:url "/doc/en/icons.md"})
      ($ ui/tabs
         ($ ui/tab
-           {:id ::jfioq
+           {:id ::material-outlined
             :name "Material Outlined"}
-           ($ display-icons {:height height :icons material/outlined}))))))
+           ($ display-icons {:height height :icons material/outlined}))
+        ($ ui/tab
+           {:id ::material-round
+            :name "Material Round"}
+           ($ display-icons {:height height :icons material/round}))
+        ($ ui/tab
+           {:id ::material-sharp
+            :name "Material Sharp"}
+           ($ display-icons {:height height :icons material/sharp}))))))

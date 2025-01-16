@@ -164,11 +164,12 @@
   (boolean (fixed-parent node)))
 
 (defn dom-dimensions [node]
-  (let [rect (.getBoundingClientRect node)]
-    [(+ (.-left rect) (.-scrollX js/window))
-     (+ (.-top rect) (.-scrollY js/window))
-     (.-width rect)
-     (.-height rect)]))
+  (when node
+    (let [rect (.getBoundingClientRect node)]
+      [(+ (.-left rect) (.-scrollX js/window))
+       (+ (.-top rect) (.-scrollY js/window))
+       (.-width rect)
+       (.-height rect)])))
 
 (defn dom-element-center
   "Function returns [x,y] center position of DOM element"
