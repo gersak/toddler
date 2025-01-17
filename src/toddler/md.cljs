@@ -1,6 +1,7 @@
 (ns toddler.md
   (:require
    [toddler.app :as app]
+   [clojure.string :as str]
    [clojure.core.async :as async]
    [helix.core :refer [defnc $ <> memo]]
    [helix.dom :as d]
@@ -15,20 +16,38 @@
     :rename {full emoji}]
    ["highlight.js" :as hljs]))
 
-(def md (->
-         (markdownit
-          #js {:html true
-               :highlight (fn [text lang]
-                            (try
-                              (str
-                               "<pre><code class=hljs>"
-                               (.-value (.highlight hljs lang text))
-                               "</code></pre>")
-                              (catch js/Error ex
-                                (.error js/console ex)
-                                (str ""))))})
-         (.use anchor)
-         (.use emoji)))
+(def md
+  (let [md (->
+            (markdownit
+             #js {:html true
+                  :highlight (fn [text lang]
+                               (try
+                                 (str
+                                  "<pre><code class=hljs>"
+                                  (.-value (.highlight hljs lang text))
+                                  "</code></pre>")
+                                 (catch js/Error ex
+                                   (.error js/console ex)
+                                   (str ""))))})
+            ; (.use anchor)
+            (.use emoji))]
+    (set! (.. md -renderer -rules -heading_open)
+          (fn [tokens idx _ _ _]
+            (let [level (.-tag (get tokens idx))]
+              (if (#{"h2" "h1"} level)
+                (let [id (when-some [_id (get tokens (inc idx))]
+                           (some-> (not-empty (.-content _id))
+                                   (str/lower-case)
+                                   (str/replace #"\s+" "-")))]
+                  (str "</section><section id=\"" id "\"><" level ">"))
+                level))))
+    (set! (.. md -renderer -rules -heading_close)
+          (fn [tokens idx _ _ _]
+            (let [level (.-tag (get tokens idx))]
+              (str "</" level ">"))))
+    md))
+
+(.log js/console "MD: " md)
 
 (defn check-diff
   [a b]
@@ -56,12 +75,13 @@
                          :rootmargin "0"}))]
     (hooks/use-effect
       :always
-      (let [headings (.querySelectorAll js/document "h1,h2,h3,h4,h5,h6")]
-        (doseq [heading headings]
-          (.observe observer heading))
+      (let [sections (.querySelectorAll js/document "section")]
+        (.log js/console "HEAD")
+        (doseq [section sections]
+          (.observe observer section))
         (fn []
-          (doseq [heading headings]
-            (.unobserve observer heading)))))
+          (doseq [section sections]
+            (.unobserve observer section)))))
     (d/div
      {:ref #(reset! editor %)
       :dangerouslySetInnerHTML #js {:__html text}

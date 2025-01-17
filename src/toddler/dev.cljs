@@ -40,11 +40,10 @@
         (let [close-channel (app/listen-to-signal
                              :toddler.md/intersection
                              (fn [{_id :id}]
+                               (println "NOTICED: " _id)
                                (set-visible!
                                 (fn [current]
                                   (let [targeting? (= _id (cljs.core/name id))]
-                                    (println "CURRENT: " [id current])
-                                    (println "TARGETING: " targeting?)
                                     (cond
                                       (and (not current) targeting?)
                                       (do
@@ -56,7 +55,6 @@
           (fn []
             (set-visible! false)
             (async/close! close-channel)))))
-    (println "REAL: " [id visible?])
     (when name
       (<>
        (d/div
