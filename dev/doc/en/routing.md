@@ -7,7 +7,7 @@ of core features from react-router, there are significant differences on how
 toddler approaches route composition.
 
 Also ```toddler.router``` does not and will not go in direction of supporting
-code splitting. For that use **shadow.loader** and react **Suspense** as demonstrated
+code splitting. For that use **shadow.loader** as demonstrated
 in ```toddler.md.lazy``` namespace.
 
 

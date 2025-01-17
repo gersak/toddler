@@ -1,13 +1,10 @@
 (ns toddler.dev
   (:require
-    ; [cljs-bean.core :refer [->clj ->js]]
    [clojure.core.async :as async]
    [helix.core
-    :refer [defnc $ provider]]
+    :refer [defnc $ provider create-context <>]]
    [helix.hooks :as hooks]
    [helix.dom :as d]
-    ; [toddler.dev.context
-    ;  :refer [*components*]]
    [toddler.router :as router]
    [toddler.core
     :as toddler
@@ -29,31 +26,86 @@
    [shadow.css :refer [css]]
    [clojure.string :as str]))
 
+(def -level- (create-context))
+
+(defnc subcomponent
+  [{:keys [id name children]}]
+  (let [level (hooks/use-context -level-)
+        rendered? (router/use-rendered? id)
+        on-click (router/use-go-to id)
+        [visible? set-visible!] (hooks/use-state false)]
+    (hooks/use-effect
+      [rendered?]
+      (when rendered?
+        (let [close-channel (app/listen-to-signal
+                             :toddler.md/intersection
+                             (fn [{_id :id}]
+                               (set-visible!
+                                (fn [current]
+                                  (let [targeting? (= _id (cljs.core/name id))]
+                                    (println "CURRENT: " [id current])
+                                    (println "TARGETING: " targeting?)
+                                    (cond
+                                      (and (not current) targeting?)
+                                      (do
+                                        true)
+                                      (and current (not targeting?))
+                                      (do
+                                        false)
+                                      :else current))))))]
+          (fn []
+            (set-visible! false)
+            (async/close! close-channel)))))
+    (println "REAL: " [id visible?])
+    (when name
+      (<>
+       (d/div
+        {:class ["subcomponent" (str "level-" level)]}
+        (d/a
+         {:class ["name"
+                  (when (and rendered? visible?) "selected")]
+          :on-click #(on-click)}
+         name))
+       (map
+        (fn [{:keys [id] :as props}]
+          ($ subcomponent {& props}))
+        children)))))
+
 (defnc component
   [{:keys [component]}]
   (let [rendered? (router/use-rendered? (:id component))
+        level (hooks/use-context -level-)
         path (router/use-go-to (:id component))
         $component (css :mx-3 :my-2
-                        :flex
-                        :items-center
-                        ["& .name" :toddler/menu-link]
+                        ["& a" :no-underline :select-none]
+                        ["& .name" :text-sm :font-semibold {:color "var(--color-inactive)"}]
                         ["& .icon" :w-5 :text-transparent :mr-1]
-                        ["&.selected .icon" :toddler/menu-link-selected]
-                        ["&.selected .name" :toddler/menu-link-selected])
+                        ["& .level-1" :pl-4]
+                        ["& .level-8" :pl-8]
+                        ["& .level-8" :pl-12]
+                        ; ["&.selected .icon" :color-hover]
+                        ["& .name" :text-xs {:color "var(--color-inactive)"}]
+                        ["& .selected.name" {:color "var(--color-normal)"}]
+                        ["& .name.selected" {:color "var(--color-normal)"}])
         translate (toddler/use-translate)]
     (d/div
-     {:class [$component
-              (when rendered? "selected")]}
-      ; ($ icon/selectedRow {:className "icon"})
+     {:class [$component]}
      (d/a
-      {:className "name"
+      {:class ["name" (when rendered? "selected")]
        :onClick #(path)}
-      (str (translate (:name component)))))))
+      (str (translate (:name component))))
+     (provider
+      {:context -level-
+       :value (inc level)}
+      (map
+       (fn [{:keys [id] :as props}]
+         ($ subcomponent {:key id & props}))
+       (:children component))))))
 
 (defnc navbar
   {:wrap [(react/forwardRef)]}
   [_ _ref]
-  (let [links (:children (router/use-component-tree))
+  (let [{links :children} (router/use-component-tree)
         {:keys [height]} (use-window-dimensions)
         $navbar (css
                  :flex
@@ -67,6 +119,7 @@
                   :justify-center
                   {:font-family "Caveat Brush, serif"
                    :font-size "3rem"}])]
+
     ($ ui/simplebar
        {:ref _ref
         :className $navbar
@@ -80,12 +133,15 @@
         {:className "components-wrapper"}
         (d/div
          {:className "components-list"}
-         (map
-          (fn [c]
-            ($ component
-               {:key (:id c)
-                :component c}))
-          links))))))
+         (provider
+          {:context -level-
+           :value 0}
+          (map
+           (fn [c]
+             ($ component
+                {:key (:id c)
+                 :component c}))
+           links)))))))
 
 (let [popup-preference
       [#{:bottom :center}

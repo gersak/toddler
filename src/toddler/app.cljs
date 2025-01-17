@@ -27,6 +27,9 @@
     (async/sub signal-publisher topic c)
     (async/go-loop []
       (let [v (async/<! c)]
-        (when v
-          (handler v)
-          (recur))))))
+        (if-not v
+          (async/unsub signal-publisher topic c)
+          (do
+            (handler v)
+            (recur)))))
+    c))

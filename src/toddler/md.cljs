@@ -1,6 +1,6 @@
 (ns toddler.md
   (:require
-   [taoensso.telemere :as t]
+   [toddler.app :as app]
    [clojure.core.async :as async]
    [helix.core :refer [defnc $ <> memo]]
    [helix.dom :as d]
@@ -41,7 +41,27 @@
         text (hooks/use-memo
                [content]
                (when content
-                 (.render md content)))]
+                 (.render md content)))
+        observer (hooks/use-memo
+                   :once
+                   (js/IntersectionObserver.
+                    (fn [entries _observer]
+                      (doseq [entry entries]
+                        (when (.-isIntersecting entry)
+                          (async/put!
+                           app/signal-channel
+                           {:topic ::intersection
+                            :id (.. entry -target -id)}))))
+                    #js {:root nil
+                         :rootmargin "0"}))]
+    (hooks/use-effect
+      :always
+      (let [headings (.querySelectorAll js/document "h1,h2,h3,h4,h5,h6")]
+        (doseq [heading headings]
+          (.observe observer heading))
+        (fn []
+          (doseq [heading headings]
+            (.unobserve observer heading)))))
     (d/div
      {:ref #(reset! editor %)
       :dangerouslySetInnerHTML #js {:__html text}

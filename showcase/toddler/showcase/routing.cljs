@@ -23,10 +23,11 @@
        {:on-close #(back)
         :style {:max-width 300}}
        (d/div {:className "title"} "Testing modal")
-       (d/div {:className "content"}
-              (toddler/mlf
-               "Hello from testing modal window. You have successfully"
-               "changed URL!"))
+       (d/div
+        {:className "content"}
+        (toddler/mlf
+         "Hello from testing modal window. You have successfully"
+         "changed URL!"))
        (d/div {:className "footer"}
               ($ ui/button {:on-click #(back)}
                  "CLOSE")))))
@@ -133,7 +134,9 @@
         {:url "/landing"}
         ($ Root))))
 
-(defnc Routing []
+(defnc doc
+  {:wrap [(router/wrap-rendered :toddler.routing)]}
+  []
   (let [{:keys [height width]} (layout/use-container-dimensions)]
     ($ router/Provider
        {:base "routing"}
@@ -151,3 +154,17 @@
                 ($ toddler/portal
                    {:locator #(.getElementById js/document "route-protection-example")}
                    ($ RouteProtection))))))))
+
+(defnc Routing []
+  (router/use-link
+   :toddler.routing
+   [{:id ::basics
+     :name "Basics"
+     :hash "basics"}
+    {:id ::route-protection
+     :name "Route Protection"
+     :hash "route-protection"}
+    {:id ::landing-page
+     :name "LandingPage"
+     :hash "landing-page"}])
+  ($ doc))

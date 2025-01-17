@@ -78,6 +78,8 @@ html[data-theme="light"] {
   --color-important: #C6C9C6;
   --color-exception: #736D9B;
   --color-neutral: #C6C9C6;
+  --color-inactive: #909090;
+  --color-normal: #484848;
 
 
   /* Text */
@@ -97,40 +99,12 @@ html[data-theme="light"] {
   --bg-card: #fcfcfc;
   --bg-card-focused: #E7EAE8;
 
-
-  /* Modeling */
-  --grid-dots: #d2d2d2;
-  --grid-menu-bg: #FCFCFC;
-  --grid-menu-border: #2F3732;
-  --grid-menu-action: #575757;
-  --grid-menu-action-hover: #689579;
-
-
-  --erd-relation: #C6C9C6;
-  --erd-relation-text: #575757;
-  --erd-relation-selected: #2F3732;
-  --erd-relation-selected-text: #2F3732;
-  --erd-relation-added: #387E53;
-  --erd-relation-added-text: #387E53;
-  --erd-relation-changed: #B03E96;
-  --erd-relation-changed-text: #B03E96;
-
-  --erd-relation-edge: #689579;
-  --erd-relation-edge-hover: #B03E96;
-
-  --erd-entity-bg: #FCFCFC;
-  --erd-entity-name: #2F3732;
-  --erd-entity-attribute-name: #484848;
-  --erd-entity-attribute-type: #575757;
-  --erd-entity-border: #C6C9C6;
-  --erd-entity-border-selected: #2F3732;
-  --erd-entity-border-connected: #2F3732;
-
-
-  --erd-attribute-added: #387E53;
-  --erd-attribute-changed: #B03E96;
-  --erd-attribute-removed: #C35757;
-
+  /* Modal */
+  --modal-bg: #f2f2f2;
+  --modal-layer-bg: #aaaaaac4;
+  --modal-layer-bg-filter: blur(2px);
+  --modal-close: #fefefe;
+  --modal-close-hover: #000000;
 
 
   /* Borders */
@@ -140,13 +114,6 @@ html[data-theme="light"] {
   --border-highlighted: #575757;
   --border-hover: #689579;
   --border-click: #477759;
-
-
-  /* Actions */
-  --box-action-bg: #C6C9C6;
-  --box-action-color: #575757;
-  --box-action-color-hover: #689579;
-  --box-action-color-selected: #2F3732;
 
 
   /* Calendar */
@@ -253,37 +220,6 @@ html[data-theme="light"] {
   --table-border: #8daeca;
   --table-hover-bg: #d0e9fb;
   --table-hover-border: #69b5f3;
-
-
-  /* Tree */
-  --tree-color: #6C736C;
-  --tree-color-hover: #2F3732;
-
-
-  /* Robot Tasks */
-  --task-queued: #C6C9C6;
-  --task-future: #ffaf89;
-  --task-processing-1: #689579;
-  --task-processing-2: #4bc479;
-
-
-  /* Explorer */
-  --tag-cell-border: #C6C9C6;
-  --tag-cell-bg: #e8e8e8;
-  --tag-cell-text: #484848;
-  --tag-cell-bg-hover: ;
-  --tag-cell-border-hover: #689579;
-  --tag-cell-text-hover: #689579;
-
-
-  /* Misc */
-  --avatar-bg: #484848;
-  /*--modal-bg: #fcfcfc;*/
-  --modal-bg: #f2f2f2;
-  --modal-layer-bg: #aaaaaac4;
-  --modal-layer-bg-filter: blur(2px);
-  --modal-close: #fefefe;
-  --modal-close-hover: #000000;
 
 }
 

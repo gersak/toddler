@@ -58,7 +58,7 @@
    :relative
    :border
    :border-normal
-   :text-normal
+   :color-normal
    :text-xs
    {:background "var(--modal-bg)"}
    ["& > .content" :px-8]
