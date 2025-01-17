@@ -1048,7 +1048,8 @@
    :flex
    :justify-between
    :relative
-   ["& .tabs" :flex]))
+   :pb-2
+   ["& .tabs" :flex :flex-wrap :px-8]))
 
 (def $tab
   (css
@@ -1067,7 +1068,7 @@
    :rounded-md
    :font-semibold
    {:min-width "5em"}
-   ["&:first-child" :ml-8]
+   ; ["&:first-child" :ml-8]
    ["&:hover"
     {:text-decoration "none"
      :color "var(--tab-hover-color)"

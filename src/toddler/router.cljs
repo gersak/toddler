@@ -247,7 +247,7 @@
         {:keys [tree]} (hooks/use-context -router-)
         base (hooks/use-context -base-)
         on-path? (hooks/use-memo
-                   [base original-pathname]
+                   [tree base original-pathname]
                    (on-path? tree (maybe-remove-base base original-pathname) id))]
     (when on-path?
       (.setItem js/sessionStorage last-rendered-key [id original-pathname]))
@@ -424,10 +424,10 @@
 (defn wrap-authorized
   ([component]
    (fnc Authorized [props]
-        ($ Authorized ($ component {& props}))))
+     ($ Authorized ($ component {& props}))))
   ([component id]
    (fnc Authorized [props]
-        ($ Authorized {:id id} ($ component {& props})))))
+     ($ Authorized {:id id} ($ component {& props})))))
 
 (defnc Rendered
   [{:keys [id] :as props}]
@@ -438,10 +438,10 @@
 (defn wrap-rendered
   ([component]
    (fnc Rendered [props]
-        ($ Rendered ($ component {& props}))))
+     ($ Rendered ($ component {& props}))))
   ([component id]
    (fnc Rendered [props]
-        ($ Rendered {:id id} ($ component {& props})))))
+     ($ Rendered {:id id} ($ component {& props})))))
 
 (defhook use-url->components
   []

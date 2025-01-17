@@ -7,6 +7,7 @@
    [helix.hooks :as hooks]
    [toddler.core :refer [fetch]]
    [toddler.showcase.css :refer [$default]]
+   [toddler.showcase]
    ["markdown-it" :as markdownit]
    ["markdown-it-anchor" :as anchor]
    ["markdown-it-emoji"

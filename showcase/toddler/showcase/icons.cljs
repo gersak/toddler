@@ -3,11 +3,15 @@
    [helix.core :refer [defnc $ <>]]
    [helix.dom :as d]
    [shadow.css :refer [css]]
+   [toddler.core :as toddler]
    [toddler.layout :as layout]
    [toddler.ui :as ui]
    [toddler.md.lazy :as md]
+   [toddler.router :as router]
+   [toddler.fav6.solid :as solid]
    [toddler.showcase.icons.material :as material]
    [toddler.showcase.icons.fav6 :as fav6]
+   [toddler.showcase.icons.ionic :as ionic]
    [toddler.i18n.keyword :refer [add-translations]]))
 
 (add-translations
@@ -19,7 +23,7 @@
 (defnc display-icons
   [{:keys [height icons]}]
   ($ ui/simplebar
-     {:style {:height (- height 200)}
+     {:style {:height (- height 80)}
       :className (css :pt-4)}
      (d/div
       {:className (css
@@ -40,10 +44,50 @@
 
 (defnc Icons
   []
-  (let [{:keys [height]} (layout/use-container-dimensions)]
+  (let [{:keys [height]} (layout/use-container-dimensions)
+        [message {message-height :height}] (toddler/use-dimensions)
+        height (- height message-height)
+        opened (router/use-rendered? ::info)
+        open-modal (router/use-go-to ::info)
+        close-modal (router/use-go-to :toddler.icons)]
+    (router/use-link
+     :toddler.icons
+     [{:id ::info
+       :segment "info"}])
     (d/div
      {:className (css :flex :flex-col)}
-     ($ md/watch-url {:url "/doc/en/icons.md"})
+     (d/div
+      {:ref #(reset! message %)
+       :className (css
+                   :relative
+                   :flex
+                   :flex-col
+                   :text-xs
+                   :pl-20
+                   :pr-10
+                   :mb-2
+                   {:max-width "700px"}
+                   ["& p" :my-1])}
+      (d/p "Toddler generates helix components by cloning target icons repo and than processing source code. Why?")
+      (d/p "Because of " (d/b "advanced compilation") " and dead code elimination of Closure compiler.")
+      (d/div
+       {:className (css :absolute ["& svg" :cursor-pointer {:font-size "24px"}])
+        :style {:top 3 :right 10}}
+       ($ solid/circle-info
+          {:on-click #(open-modal)})))
+     (when opened
+       ($ ui/modal-dialog
+          {:on-close #(close-modal)
+           :className (css {:max-width "700px"})}
+          (d/div {:className "title"} "How?")
+          (d/div
+           {:className "content"}
+           ($ ui/simplebar
+              {:style {:max-height (- height 100)
+                       :min-width 600}}
+              ($ md/watch-url {:url "/doc/en/icons.md"})))
+          (d/div
+           {:className "footer"})))
      ($ ui/tabs
         ($ ui/tab
            {:id ::material-outlined
@@ -68,4 +112,8 @@
         ($ ui/tab
            {:id ::fav6-brands
             :name "FA Brands"}
-           ($ display-icons {:height height :icons fav6/brands}))))))
+           ($ display-icons {:height height :icons fav6/brands}))
+        ($ ui/tab
+           {:id ::ionic
+            :name "Ionic"}
+           ($ display-icons {:height height :icons ionic/icons}))))))
