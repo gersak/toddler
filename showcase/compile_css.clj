@@ -14,6 +14,7 @@
         (-> @css-ref
             (cb/generate '{:ui {:include [toddler.ui*
                                           toddler.md
+                                          toddler.notifications
                                           toddler]}
                            :dev {:include [toddler.dev
                                            toddler.showcase

@@ -5,6 +5,7 @@
    [toddler.grid :as grid]
    [toddler.ui :as ui]
    [toddler.ui.components :as components]
+   [toddler.router :as router]
    [vura.core :as vura]
    [helix.core :refer [$ defnc]]
    [helix.dom :as d]
@@ -196,6 +197,7 @@
        apply-filters))))
 
 (defnc Table
+  {:wrap [(router/wrap-rendered :toddler.table)]}
   []
   ($ components/Provider
      (d/div
@@ -234,6 +236,7 @@
                :xs small}
       grid-columns {:lg 10 :md 10 :sm 1 :xs 1}]
   (defnc TableGrid
+    {:wrap [(router/wrap-rendered :toddler.multi-tables)]}
     []
     (let [{:keys [height width]} (layout/use-container-dimensions)]
       ($ ui/simplebar

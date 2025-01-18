@@ -6,6 +6,7 @@
    [shadow.css :refer [css]]
    [toddler.ui :as ui]
    [toddler.app :as app]
+   [toddler.router :as router]
    [toddler.layout :as layout]
    [toddler.i18n :as i18n]
    [toddler.i18n.keyword
@@ -198,7 +199,9 @@
         (d/p "Hello, this is an example component. "
              "Try and change locale to see how this sentence will change"))))))
 
-(defnc i18n []
+(defnc i18n-content
+  {:wrap [(router/wrap-rendered :toddler.i18n)]}
+  []
   (let [{:keys [height width]} (layout/use-container-dimensions)
         [locale set-locale!] (hooks/use-state :en)]
     (provider
@@ -227,3 +230,17 @@
                          :options [:en :en_US :en_IN :en :de :fr :es :ja :zh_CN]
                          :search-fn #(i18n/translate :locale %)}))
                   ($ translate-example)))))))))
+
+(defnc i18n []
+  (router/use-link
+   :toddler.i18n
+   [{:id ::adding-translations
+     :name "Adding Translations"
+     :hash "adding-translations"}
+    {:id ::adding-locale
+     :name "Adding Locale"
+     :hash "adding-locale"}
+    {:id ::hooks
+     :name "Hooks"
+     :hash "hooks"}])
+  ($ i18n-content))

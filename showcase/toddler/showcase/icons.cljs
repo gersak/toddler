@@ -44,6 +44,7 @@
 
 (defnc Icons
   []
+  {:wrap [(router/wrap-rendered :toddler.icons)]}
   (let [{:keys [height]} (layout/use-container-dimensions)
         [message {message-height :height}] (toddler/use-dimensions)
         height (- height message-height)

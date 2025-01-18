@@ -6,10 +6,8 @@
    [shadow.css :refer [css]]
    [toddler.ui :as ui]
    [toddler.layout :as layout]
-   [toddler.ui.components :as components]
-   [toddler.core :refer [use-translate]]
    [toddler.i18n.keyword :refer [add-translations]]
-   [toddler.dev :as dev]))
+   [toddler.router :as router]))
 
 (add-translations
  (merge
@@ -50,6 +48,7 @@
                     :hr "Vepar"}))
 
 (defnc Layout
+  {:wrap [(router/wrap-rendered :toddler.layout)]}
   []
   (let [{:keys [height width]} (layout/use-container-dimensions)]
     ($ ui/simplebar

@@ -65,6 +65,14 @@
            (.error js/console (str "Failed fetching file: " url) err))))
     result))
 
+(defn conj-prop-classes
+  ([props] (conj-prop-classes nil props))
+  ([classes {:keys [class className]}]
+   (cond-> (or classes [])
+     (string? class) (conj class)
+     (string? className) (conj className)
+     (sequential? class) (into class))))
+
 (defhook use-url
   "Returns root application root URL"
   []

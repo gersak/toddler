@@ -40,14 +40,12 @@
                                    (str/lower-case)
                                    (str/replace #"\s+" "-")))]
                   (str "</section><section id=\"" id "\"><" level ">"))
-                level))))
+                (str "<" level ">")))))
     (set! (.. md -renderer -rules -heading_close)
           (fn [tokens idx _ _ _]
             (let [level (.-tag (get tokens idx))]
               (str "</" level ">"))))
     md))
-
-(.log js/console "MD: " md)
 
 (defn check-diff
   [a b]
@@ -70,13 +68,13 @@
                           (async/put!
                            app/signal-channel
                            {:topic ::intersection
+                            ; :threshold 0.1
                             :id (.. entry -target -id)}))))
                     #js {:root nil
                          :rootmargin "0"}))]
     (hooks/use-effect
       :always
       (let [sections (.querySelectorAll js/document "section")]
-        (.log js/console "HEAD")
         (doseq [section sections]
           (.observe observer section))
         (fn []

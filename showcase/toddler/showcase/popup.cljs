@@ -1,5 +1,6 @@
-(ns toddler.showcase.modal
+(ns toddler.showcase.popup
   (:require
+   [clojure.core.async :as async]
    [shadow.css :refer [css]]
    [toddler.layout :as layout]
    [toddler.router :as router]
@@ -9,8 +10,8 @@
    [helix.hooks :as hooks]
    [toddler.md.lazy :as md]
    toddler.showcase.content
-   [toddler.router :as router]
    [toddler.core :as toddler]
+   [toddler.notifications :as notifications]
    [toddler.i18n.keyword :refer [add-translations]]))
 
 (add-translations
@@ -25,31 +26,81 @@
                                  :hr "Ovo je naslov za digitalni modalni prozor"}))
 
 (defhook use-close []
-  (let [close! (router/use-go-to :toddler.modal)]
+  (let [close! (router/use-go-to :toddler.popup)]
     #(close!)))
 
 (defhook use-register [id segment]
   (router/use-link
-   :toddler.modal
+   :toddler.popup
    [{:id id :segment segment}]))
 
 (defnc Complex
   []
   (use-register :toddler.modal.complex "complex"))
 
-(defnc Modal
-  {:wrap [(router/wrap-rendered :toddler.modal)]}
+(defnc notifications-example
+  []
+  (let [[message set-message!] (hooks/use-state "")
+        send-message (hooks/use-callback
+                       [message]
+                       (fn [context]
+                         ((case context
+                            :positive notifications/positive
+                            :negative notifications/negative
+                            :warn notifications/warning
+                            notifications/neutral)
+                          (or (not-empty message) "You should type something in :)")
+                          3000)
+                         (set-message! "")))]
+    #_(hooks/use-effect
+        :once
+        (notifications/positive "Message" 0)
+        (notifications/negative "Message" 0)
+        (notifications/warning "Message" 0)
+        (notifications/neutral "Message" 0))
+    ($ ui/row
+       {:align :center}
+       ($ ui/row
+          {:className (css :mt-4 :items-center)}
+          ($ ui/text-field
+             {:name "MESSAGE"
+              :className (css ["& textarea" {:min-height "176px"}])
+              :value message
+              :on-change set-message!})
+          ($ ui/column
+             {:className (css :px-4 :pt-5)}
+             ($ ui/button {:className "positive" :on-click #(send-message nil)} "Neutral")
+             ($ ui/button {:className "positive" :on-click #(send-message :positive)} "Positive")
+             ($ ui/button {:className "negative" :on-click #(send-message :negative)} "Negative")
+             ($ ui/button {:className "warn" :on-click #(send-message :warn)} "Warning"))))))
+
+(defnc Popup
+  {:wrap [(router/wrap-rendered :toddler.popup)
+          (router/wrap-link
+           :toddler.popup
+           [{:id ::popup
+             :name "Elements"
+             :hash "elements"}
+            {:id ::modal-dialog
+             :name "Modal Dialog"
+             :hash "modal-dialog"}
+            {:id ::notifications
+             :name "Notifications"
+             :hash "notifications"}
+            {:id ::customizing-notifications
+             :name "Customizing Notifications"
+             :hash "customizing-notifications"}])]}
   []
   (let [{:keys [height width]} (layout/use-container-dimensions)
         translate (toddler/use-translate)
-        show-background! (router/use-go-to :toddler.modal.background)
-        background-opened? (router/use-rendered? :toddler.modal.background)
-        show-dialog! (router/use-go-to :toddler.modal.dialog)
-        dialog-opened? (router/use-rendered? :toddler.modal.dialog)
+        show-background! (router/use-go-to :toddler.popup.background)
+        background-opened? (router/use-rendered? :toddler.popup.background)
+        show-dialog! (router/use-go-to :toddler.popup.dialog)
+        dialog-opened? (router/use-rendered? :toddler.popup.dialog)
         [context set-context!] (hooks/use-state nil)
         close! (use-close)]
-    (use-register :toddler.modal.background "background")
-    (use-register :toddler.modal.dialog "dialog")
+    (use-register :toddler.popup.background "background")
+    (use-register :toddler.popup.dialog "dialog")
     ($ ui/simplebar
        {:style {:height height
                 :width width}}
@@ -58,7 +109,7 @@
              {:align :center
               :style {:max-width "30rem"
                       :min-height 1500}}
-             ($ md/watch-url {:url "/doc/en/modal.md"})
+             ($ md/watch-url {:url "/doc/en/popup.md"})
              ($ toddler/portal
                 {:locator #(.getElementById js/document "modal-background-example")}
                 ($ ui/row
@@ -114,4 +165,7 @@
                          (d/div
                           {:className "footer"}
                           ($ ui/button {:on-click close!} (translate :ok))
-                          ($ ui/button {:on-click close!} (translate :cancel)))))))))))))
+                          ($ ui/button {:on-click close!} (translate :cancel))))))))
+             ($ toddler/portal
+                {:locator #(.getElementById js/document "notifications-example")}
+                ($ notifications-example)))))))

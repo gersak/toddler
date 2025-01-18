@@ -106,13 +106,15 @@
    ["& input::placeholder, & textarea::placeholder" :text-normal :font-medium {:user-select "none" :font-style "normal"}]))
 
 (defnc textarea-field
-  [{:keys [onChange on-change disabled placeholder error] :as props}]
+  [{:keys [onChange on-change disabled placeholder error className class] :as props}]
   (let [onChange (hooks/use-memo
                    [onChange on-change]
                    (or onChange on-change identity))
         _input (hooks/use-ref nil)]
     (d/div
-     {:class ["toddler-field" $field (when error "error")]}
+     {:class (toddler/conj-prop-classes
+              ["toddler-field" $field (when error "error")]
+              props)}
      (d/div
       {:className "content"}
       (when (:name props)
@@ -478,18 +480,17 @@
          :or {search-fn identity}} (hooks/use-context dropdown/*dropdown*)]
     (d/div
      {:ref _ref
-      :class (cond-> ["toddler-multiselect-option"
-                      e/$tag
-                      (css :my-2 :mx-1
-                           ["& .remove" :ml-3]
-                           ["& .remove:hover" :color-negative])
-                      (when (ifn? context-fn)
-                        (when-some [context (context-fn value)]
-                          (name context)))
-                      (when selected "selected")]
-               (string? class) (conj class)
-               (sequential? class) (into class)
-               (string? className) (conj className))
+      :class (toddler/conj-prop-classes
+              ["toddler-multiselect-option"
+               e/$tag
+               (css :my-2 :mx-1
+                    ["& .remove" :ml-3]
+                    ["& .remove:hover" :color-negative])
+               (when (ifn? context-fn)
+                 (when-some [context (context-fn value)]
+                   (name context)))
+               (when selected "selected")]
+              props)
       & (dissoc props :value :context :className :on-remove :onRemove)}
      (if-some [children (c/children props)]
        children
@@ -531,7 +532,9 @@
      {:context dropdown/*dropdown*
       :value multiselect}
      (d/div
-      {:class ["toddler-field" $field]}
+      {:class (toddler/conj-prop-classes
+               ["toddler-field" $field]
+               props)}
       (d/div
        {:className "content"}
        (when (:name props)

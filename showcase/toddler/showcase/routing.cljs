@@ -155,16 +155,17 @@
                    {:locator #(.getElementById js/document "route-protection-example")}
                    ($ RouteProtection))))))))
 
-(defnc Routing []
-  (router/use-link
-   :toddler.routing
-   [{:id ::basics
-     :name "Basics"
-     :hash "basics"}
-    {:id ::route-protection
-     :name "Route Protection"
-     :hash "route-protection"}
-    {:id ::landing-page
-     :name "LandingPage"
-     :hash "landing-page"}])
+(defnc Routing
+  {:wrap [(router/wrap-link
+           :toddler.routing
+           [{:id ::basics
+             :name "Basics"
+             :hash "basics"}
+            {:id ::route-protection
+             :name "Route Protection"
+             :hash "route-protection"}
+            {:id ::landing-page
+             :name "LandingPage"
+             :hash "landing-page"}])]}
+  []
   ($ doc))

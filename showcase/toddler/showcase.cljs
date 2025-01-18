@@ -6,19 +6,21 @@
    ["react-dom/client" :refer [createRoot]]
    [taoensso.telemere :as t]
    [toddler.dev :as dev]
+   [toddler.provider :refer [UI]]
+   [toddler.ui.components :as default]
    [helix.core :refer [$ defnc]]
    [helix.hooks :as hooks]
    [toddler.showcase.fields :refer [Fields]]
    [toddler.showcase.table :refer [Table TableGrid]]
    [toddler.showcase.layout :refer [Layout]]
-   [toddler.showcase.modal :refer [Modal]]
+   [toddler.showcase.popup :refer [Popup]]
    [toddler.showcase.i18n :refer [i18n]]
    [toddler.showcase.routing :refer [Routing]]
    [toddler.showcase.icons :refer [Icons]]
+   [toddler.notifications :as notifications]
    [toddler.showcase.prosemirror :refer [ProseMirror]]
-   toddler.i18n.common
-   ; toddler.showcase.avatar
-   [toddler.router :as router]))
+   [toddler.router :as router]
+   toddler.i18n.common))
 
 (.log js/console "Loaded showcase!")
 
@@ -37,14 +39,14 @@
     :name :showcase.tables
     :render Table
     :segment "tables"}
-   {:id :toddler.multi-table
-    :name :showcase.multi-tables
-    :render TableGrid
-    :segment "multi-tables"}
-   {:id :toddler.modal
-    :name :showcase.modal
-    :render Modal
-    :segment "modal"}
+   #_{:id :toddler.multi-table
+      :name :showcase.multi-tables
+      :render TableGrid
+      :segment "multi-tables"}
+   {:id :toddler.popup
+    :name "Popup"
+    :render Popup
+    :segment "popup"}
    {:id :toddler.routing
     :name :showcase.routing
     :render Routing
@@ -57,15 +59,21 @@
     :name :showcase.icons
     :render Icons
     :segment "icons"}
-   {:id :toddler.prosemirror
-    :name :showcase.prosemirror
-    :render ProseMirror
-    :segment "prosemirror"}])
+   #_{:id :toddler.prosemirror
+      :name :showcase.prosemirror
+      :render ProseMirror
+      :segment "prosemirror"}])
 
 (defnc Showcase
   []
   ($ router/Provider
-     ($ dev/playground {:components components}))
+     ($ UI
+        {:components default/components}
+        ($ notifications/Store
+           {:class notifications/$default}
+           ($ dev/playground
+              {:max-width 1000
+               :components components}))))
   ;; TODO - Strict mode causes problems with popup window
   #_($ react/StrictMode
        ($ router/Provider
@@ -73,7 +81,7 @@
 
 (defn ^:dev/after-load start! []
   (.log js/console "Starting Toddler showcase!")
-  (t/set-min-level! :info)
+  (t/set-min-level! :debug)
   ; (t/set-min-level! :log "toddler.md" :debug)
   (t/set-min-level! :log "toddler.routing" :debug)
   (let [target ^js (.getElementById js/document "app")]

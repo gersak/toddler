@@ -5,6 +5,7 @@
     :refer [defnc $ provider create-context <>]]
    [helix.hooks :as hooks]
    [helix.dom :as d]
+   [helix.children :refer [children]]
    [toddler.router :as router]
    [toddler.core
     :as toddler
@@ -15,8 +16,6 @@
    [toddler.app :as app]
    [toddler.ui :as ui]
    [toddler.ui.elements :as e]
-   [toddler.provider :refer [UI]]
-   [toddler.ui.components :as default]
    [toddler.layout :as layout]
    [toddler.window :as window]
    [toddler.popup :as popup]
@@ -29,7 +28,7 @@
 (def -level- (create-context))
 
 (defnc subcomponent
-  [{:keys [id name children]}]
+  [{:keys [id name children hash]}]
   (let [level (hooks/use-context -level-)
         rendered? (router/use-rendered? id)
         on-click (router/use-go-to id)
@@ -40,10 +39,9 @@
         (let [close-channel (app/listen-to-signal
                              :toddler.md/intersection
                              (fn [{_id :id}]
-                               (println "NOTICED: " _id)
                                (set-visible!
                                 (fn [current]
-                                  (let [targeting? (= _id (cljs.core/name id))]
+                                  (let [targeting? (= _id hash)]
                                     (cond
                                       (and (not current) targeting?)
                                       (do
@@ -78,11 +76,12 @@
                         ["& a" :no-underline :select-none]
                         ["& .name" :text-sm :font-semibold {:color "var(--color-inactive)"}]
                         ["& .icon" :w-5 :text-transparent :mr-1]
-                        ["& .level-1" :pl-4]
-                        ["& .level-8" :pl-8]
-                        ["& .level-8" :pl-12]
+                        ["& .level-1" :pl-2]
+                        ["& .level-2" :pl-4]
+                        ["& .level-3" :pl-6]
                         ; ["&.selected .icon" :color-hover]
                         ["& .name" :text-xs {:color "var(--color-inactive)"}]
+                        ["& .name:hover" :text-xs {:color "var(--color-active)"}]
                         ["& .selected.name" {:color "var(--color-normal)"}]
                         ["& .name.selected" {:color "var(--color-normal)"}])
         translate (toddler/use-translate)]
@@ -115,22 +114,25 @@
                   :items-center
                   :text-2xl
                   :justify-center
+                  :select-none
                   {:font-family "Caveat Brush, serif"
-                   :font-size "3rem"}])]
+                   :font-size "3rem"}]
+                 ["& .component-list"
+                  :ml-3])]
 
     ($ ui/simplebar
        {:ref _ref
         :className $navbar
         :style {:height height
                 :min-width 300
-                :max-width 500}}
+                :max-width 400}}
        (d/div
         {:className "title"}
         "toddler")
        (d/div
         {:className "components-wrapper"}
         (d/div
-         {:className "components-list"}
+         {:className "component-list"}
          (provider
           {:context -level-
            :value 0}
@@ -209,59 +211,82 @@
            :style #js {:height (:height window)}}
           "Select a component from the list"))))
 
+#_(defnc content
+    {:wrap [(react/forwardRef)]}
+    [{:keys [style]}]
+    (let [rendered-components (router/use-url->components)
+          render (hooks/use-memo
+                   [rendered-components]
+                   (last (filter some? (map :render rendered-components))))
+          $content (css
+                    :background-normal
+                    :rounded-md)]
+      (if render
+        (provider
+         {:context layout/*container-dimensions*
+          :value style}
+         (d/div
+          {:style style
+           :class [$content "render-zone"]}
+          ($ render)))
+        ($ empty-content))))
+
 (defnc content
   {:wrap [(react/forwardRef)]}
-  [{:keys [style]}]
-  (let [rendered-components (router/use-url->components)
-        render (hooks/use-memo
-                 [rendered-components]
-                 (last (filter some? (map :render rendered-components))))
-        $content (css
+  [{:keys [style] :as props}]
+  (let [$content (css
                   :background-normal
                   :rounded-md)]
-    (if render
-      (provider
-       {:context layout/*container-dimensions*
-        :value style}
-       (d/div
-        {:style style
-         :class [$content "render-zone"]}
-        ($ render)))
-      ($ empty-content))))
+    (provider
+     {:context layout/*container-dimensions*
+      :value style}
+     (d/div
+      {:style style
+       :class [$content "render-zone"]}
+      (children props)))))
 
 (defnc playground-layout
-  []
+  [{:keys [components max-width]}]
   (let [window (use-window-dimensions)
         [_navbar {navigation-width :width}] (use-dimensions)
         [_header] (use-dimensions)
         [_content {content-height :height}] (use-dimensions)
         $playground (css
                      :flex
-                     ["& .content" :flex :flex-col])]
-    ($ UI
-       {:components default/components}
-       ($ popup/Container
-          ($ window/DimensionsProvider
-             (d/div
-              {:className $playground}
-              ($ navbar {:ref _navbar})
-              (let [header-height 50
-                    header-width (- (:width window) navigation-width)
-                    content-height (- (:height window) header-height)
-                    content-width (- (:width window) navigation-width)]
-                (d/div
-                 {:className "content"}
-                 ($ header
-                    {:ref _header
-                     :style {:width header-width
-                             :height header-height}})
-                 ($ content
-                    {:ref _content
-                     :style {:height content-height
-                             :width content-width}})))))))))
+                     ["& .content" :flex :flex-col])
+        header-height 50
+        header-width (- (or max-width (:width window)) navigation-width)
+        content-height (- (:height window) header-height)
+        content-width (- (or max-width (:width window)) navigation-width)]
+    ($ popup/Container
+       ($ window/DimensionsProvider
+          ($ ui/row
+             {:key ::center
+              & (cond->
+                 {:position :center
+                  :style {:flex-grow "1"}})}
+             ($ ui/row
+                {:key ::wrapper
+                 :style {:max-width (+ content-width navigation-width)}}
+                ($ navbar {:ref _navbar})
+                ($ ui/column
+                   {:className "content"}
+                   ($ header
+                      {:ref _header
+                       :style {:width header-width
+                               :height header-height}})
+                   ($ content
+                      {:ref _content
+                       :style {:height content-height
+                               :width content-width}}
+                      (map
+                       (fn [{:keys [id render]}]
+                         (when render
+                           ($ render {:key id})))
+                       components)))))))))
 
 (defnc playground
-  [{:keys [components]}]
+  [{:keys [components max-width]}]
   (let [[{{locale :locale
            :or {locale :en}} :settings :as user} set-user!]
         (hooks/use-state {:settings {:locale i18n/*locale*}})
@@ -286,7 +311,9 @@
         (provider
          {:context app/locale
           :value locale}
-         ($ playground-layout))))))
+         ($ playground-layout
+            {:max-width max-width
+             :components components}))))))
 
 ;; Component wrappers
 

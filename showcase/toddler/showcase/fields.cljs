@@ -8,6 +8,7 @@
    [toddler.ui.components :as components]
    [toddler.core :refer [use-translate]]
    [toddler.i18n.keyword :refer [add-translations]]
+   [toddler.router :as router]
    [toddler.dev :as dev]))
 
 (add-translations
@@ -129,6 +130,7 @@
    (range 20)))
 
 (defnc Fields
+  {:wrap [(router/wrap-rendered :toddler.fields)]}
   []
   (let [[state set-state!] (hooks/use-state {:number-input 0
                                              :free-input ""

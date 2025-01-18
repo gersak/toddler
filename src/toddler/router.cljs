@@ -224,15 +224,18 @@
         zip/root)
     tree))
 
-(defn component-path
-  [tree id]
-  (let [location (component->location tree id)
-        parents (when location (zip/path location))]
-    (when location
-      (let [{:keys [segment hash]} (zip/node location)]
-        (str/join "/" (cond-> (mapv :segment parents)
-                        (not-empty segment) (conj segment)
-                        (not-empty hash) (conj (str "#" hash))))))))
+(let [cache (atom nil)]
+  (defn component-path
+    [tree id]
+    (let [location (component->location tree id)
+          parents (when location (zip/path location))]
+      (when location
+        (let [{:keys [segment hash]} (zip/node location)
+              path (str/join "/" (cond-> (mapv :segment parents)
+                                   (not-empty segment) (conj segment)
+                                   (not-empty hash) (conj (str "#" hash))))]
+          (swap! cache assoc :id path)
+          path)))))
 
 (defn on-path? [tree path id]
   (when (some? path)
@@ -255,7 +258,7 @@
       [hash]
       (when hash
         (async/go
-          (async/<! (async/timeout 1000))
+          (async/<! (async/timeout 500))
           (when-some [el (.getElementById js/document hash)]
             (.scrollIntoView el #js {:block "start" :behavior "smooth"})))))
     on-path?))
@@ -292,7 +295,11 @@
                     (assoc :tree tree')
                     (update :known (fnil conj #{}) (:id component))))
                  (catch js/Error _
-                   (update state :unknown (fnil conj #{} component))))))
+                   (update state :unknown
+                           (fn [components]
+                             (vec
+                              (distinct
+                               ((fnil conj []) components component)))))))))
            {:tree tree
             :unknown unknown}
            to-register)
@@ -304,10 +311,14 @@
                          (->
                           state
                           (assoc :tree tree')
-                          (update :unknown disj component)
+                          (update :unknown (fn [components] (vec (remove #{component} components))))
                           (update :known (fnil conj #{}) (:id component))))
                        (catch js/Error _
-                         (update state :unknown (fnil conj [] component)))))
+                         (update state :unknown
+                                 (fn [components]
+                                   (vec
+                                    (distinct
+                                     ((fnil conj []) components component))))))))
                    state'
                    (:unknown state'))]
       ; (log/debugf "New Tree:\n%s" (with-out-str (pprint tree')))
@@ -443,6 +454,17 @@
    (fnc Rendered [props]
      ($ Rendered {:id id} ($ component {& props})))))
 
+(defnc Link
+  [{:keys [parent links] :as props}]
+  (use-link parent links)
+  (children props))
+
+(defn wrap-link
+  ([component parent children]
+   (fnc Linked [props]
+     ($ Link {:parent parent :links children}
+        ($ component {& props})))))
+
 (defhook use-url->components
   []
   (let [{{url :pathname} :location
@@ -470,8 +492,11 @@
   [component]
   (let [{:keys [go]} (hooks/use-context -navigation-)
         {:keys [tree]} (hooks/use-context -router-)
-        base (hooks/use-context -base-)]
-    (if-some [url (component-path tree component)]
+        base (hooks/use-context -base-)
+        url (hooks/use-memo
+              [tree go]
+              (component-path tree component))]
+    (if url
       (fn redirect
         ([] (redirect nil))
         ([params]

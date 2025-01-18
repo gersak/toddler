@@ -2,9 +2,12 @@
 
 (def components
   {:transition-normal {:transition "color .3s ease-in-out, border-color .3s ease-in-out, background-color .3s ease-in-out"}
-   :border-normal- {:border-color "var(--border-light)"} ;; not used
-   :border-normal+ {:border-color "var(--border-heavy)"}
+   :border-normal- {:border-color "var(--border-normal-)"} ;; not used
+   :border-normal+ {:border-color "var(--border-normal+)"}
    :border-normal {:border-color "var(--border-normal)"}
+   :border-positive {:border-color "var(--border-positive)"}
+   :border-negative {:border-color "var(--border-negative)"}
+   :border-warning {:border-color "var(--border-warning)"}
 
    ;; Deprecate border-normal prefix and replace with border-
    :border-highlighted {:border-color "var(--border-highlighted)"}
