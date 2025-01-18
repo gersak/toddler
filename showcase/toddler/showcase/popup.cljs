@@ -12,6 +12,7 @@
    toddler.showcase.content
    [toddler.core :as toddler]
    [toddler.notifications :as notifications]
+   [toddler.fav6.solid :as solid]
    [toddler.i18n.keyword :refer [add-translations]]))
 
 (add-translations
@@ -73,6 +74,39 @@
              ($ ui/button {:className "positive" :on-click #(send-message :positive)} "Positive")
              ($ ui/button {:className "negative" :on-click #(send-message :negative)} "Negative")
              ($ ui/button {:className "warn" :on-click #(send-message :warn)} "Warning"))))))
+
+(defmethod notifications/render :custom/normal
+  [{:keys [message]}]
+  (d/div
+   {:className (css
+                :bg-yellow-400
+                :text-black
+                :border-black
+                :border-2
+                :px-3
+                :py-3
+                :rounded-lg
+                :flex
+                :items-center
+                ["& .icon" :mr-2 {:font-size "24px"}]
+                ["& .message" :font-semibold :text-sm])}
+   (d/div
+    {:className "icon"}
+    ($ solid/biohazard))
+   (d/pre
+    {:className "message"}
+    message)))
+
+(defnc custom-notification-example
+  []
+  ($ ui/row
+     {:align :center}
+     ($ ui/button
+        {:on-click (fn []
+                     (notifications/add
+                      :custom/normal
+                      "Test message for custom notification" nil 5000))}
+        "Show")))
 
 (defnc Popup
   {:wrap [(router/wrap-rendered :toddler.popup)
@@ -168,4 +202,7 @@
                           ($ ui/button {:on-click close!} (translate :cancel))))))))
              ($ toddler/portal
                 {:locator #(.getElementById js/document "notifications-example")}
-                ($ notifications-example)))))))
+                ($ notifications-example))
+             ($ toddler/portal
+                {:locator #(.getElementById js/document "custom-notification-example")}
+                ($ custom-notification-example)))))))

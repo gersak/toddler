@@ -50,9 +50,9 @@
   ([message autohide]
    (add ::negative message {:class "negative"} autohide)))
 
-(defmulti render-notification (fn [{:keys [type]}] type))
+(defmulti render (fn [{:keys [type]}] type))
 
-(defmethod render-notification :default
+(defmethod render :default
   [{:keys [type] :as message}]
   (.error js/console "Unknown notifcation renderer for: " type message))
 
@@ -90,10 +90,10 @@
      {:class "message"}
      (d/pre message)))))
 
-(defmethod render-notification ::neutral [data] (render-default data))
-(defmethod render-notification ::positive [data] (render-default (assoc data :class "positive")))
-(defmethod render-notification ::negative [data] (render-default (assoc data :class "negative")))
-(defmethod render-notification ::warning [data] (render-default (assoc data :class "warning")))
+(defmethod render ::neutral [data] (render-default data))
+(defmethod render ::positive [data] (render-default (assoc data :class "positive")))
+(defmethod render ::negative [data] (render-default (assoc data :class "negative")))
+(defmethod render ::warning [data] (render-default (assoc data :class "warning")))
 
 (defn notification-reducer
   [{:keys [notifications] :as state}
@@ -153,7 +153,7 @@
      {:className "notification-wrapper"
       :key id
       :ref #(reset! el %)}
-     (render-notification props))))
+     (render props))))
 
 (defnc Store
   "Returns component that will render notifications that are

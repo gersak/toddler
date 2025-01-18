@@ -104,16 +104,16 @@ This is channel that expects notifications to arive. You can add notification by
      options))))  ;; This notification will autohide after 'autohide' ms
 ```
 
-#### render-notification
+#### render
 Multifunction that will receive values from notification channel combined
 with additional data that is important to notification **Store**. As you can see
 dispatching function for multimethod is value of ```:type``` in data received from
 notification-channel.
 
 ```clojure
-(defmulti render-notification (fn [{:keys [type]}] type))
+(defmulti render (fn [{:keys [type]}] type))
 
-(defmethod render-notification :default
+(defmethod render :default
   [{:keys [type] :as message}]
   (.error js/console "Unknown notifcation renderer for: " type message))
 ```
@@ -191,3 +191,50 @@ Now lets try it out
 ```
 
 ## CUSTOMIZING NOTIFICATIONS
+In previous example we were testing default implementations of notifications
+for positive, negative, neutral and warning situations. Now what if we wan't
+to style notifications differently or extend current implementation with some
+extra notifications.
+
+As mentioned before with ```render``` multimethod we can extend how new notifications
+will be presented. 
+
+In following example we are adding implementation for **:custom/normal**
+type of notification. It will show *toddler.fav6.solid/biohazard* icon followed by text message.
+
+Lets go through code
+```clojure
+(defmethod notifications/render :custom/normal
+  [{:keys [message]}]
+  (d/div
+   {:className (css
+                :bg-yellow-400
+                :text-black
+                :border-black
+                :border-2
+                :px-3
+                :py-3
+                :rounded-lg
+                :flex
+                :items-center
+                ["& .icon" :mr-2 {:font-size "24px"}]
+                ["& .message" :font-semibold :text-sm])}
+   (d/div
+    {:className "icon"}
+    ($ solid/biohazard))
+   (d/pre
+    {:className "message"}
+    message)))
+
+(defnc custom-notification-example
+  []
+  ($ ui/row
+     {:align :center}
+     ($ ui/button
+        {:on-click (fn []
+                     (notifications/add
+                      :custom/normal
+                      "Test message for custom notification" nil 5000))}
+        "Show")))
+```
+<div id="custom-notification-example"></div>
