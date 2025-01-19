@@ -259,33 +259,33 @@
         content-height (- (:height window) header-height)
         content-width (- (or max-width (:width window)) navigation-width)]
     ($ popup/Container
-       ($ window/DimensionsProvider
+       ($ ui/row
+          {:key ::center
+           & (cond->
+              {:position :center
+               :style {:flex-grow "1"}})}
           ($ ui/row
-             {:key ::center
-              & (cond->
-                 {:position :center
-                  :style {:flex-grow "1"}})}
-             ($ ui/row
-                {:key ::wrapper
-                 :style {:max-width (+ content-width navigation-width)}}
-                ($ navbar {:ref _navbar})
-                ($ ui/column
-                   {:className "content"}
-                   ($ header
-                      {:ref _header
-                       :style {:width header-width
-                               :height header-height}})
-                   ($ content
-                      {:ref _content
-                       :style {:height content-height
-                               :width content-width}}
-                      (map
-                       (fn [{:keys [id render]}]
-                         (when render
-                           ($ render {:key id})))
-                       components)))))))))
+             {:key ::wrapper
+              :style {:max-width (+ content-width navigation-width)}}
+             ($ navbar {:ref _navbar})
+             ($ ui/column
+                {:className "content"}
+                ($ header
+                   {:ref _header
+                    :style {:width header-width
+                            :height header-height}})
+                ($ content
+                   {:ref _content
+                    :style {:height content-height
+                            :width content-width}}
+                   (map
+                    (fn [{:keys [id render]}]
+                      (when render
+                        ($ render {:key id})))
+                    components))))))))
 
 (defnc playground
+  {:wrap [(window/wrap-window-provider)]}
   [{:keys [components max-width]}]
   (let [[{{locale :locale
            :or {locale :en}} :settings :as user} set-user!]
@@ -304,16 +304,15 @@
               (async/<! (async/timeout 100))
               (recur))))))
     (router/use-link ::router/ROOT components)
-    ($ window/DimensionsProvider
-       (provider
-        {:context app/user
-         :value [user set-user!]}
-        (provider
-         {:context app/locale
-          :value locale}
-         ($ playground-layout
-            {:max-width max-width
-             :components components}))))))
+    (provider
+     {:context app/user
+      :value [user set-user!]}
+     (provider
+      {:context app/locale
+       :value locale}
+      ($ playground-layout
+         {:max-width max-width
+          :components components})))))
 
 ;; Component wrappers
 

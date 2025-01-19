@@ -1,5 +1,4 @@
 (ns toddler.util
-  (:require-macros [toddler.util :refer [mlf]])
   (:require
    goog.object
    clojure.string
@@ -7,10 +6,6 @@
    [clojure.core.async :as async]))
 
 (set! *warn-on-infer* true)
-
-(defn ml
-  [& lines]
-  (clojure.string/join "\n" lines))
 
 (defn deep-merge
   "Recursively merges maps."
@@ -318,12 +313,14 @@
              (recur (async/<! idle-channel))))))
      idle-channel)))
 
+;; DEPRECATED
 (defn index-by [k coll]
   (reduce
    (fn [r item] (assoc r (get item k) item))
    nil
    coll))
 
+;; DEPRECATED
 (defn sync-list
   ([items item] (sync-list items item :euuid))
   ([items item pred]
@@ -333,6 +330,7 @@
        (conj items item)
        (assoc (vec items) idx item)))))
 
+;; DEPRECATED
 (defn modify-item
   "Modify items in sequence of items by mergeing input item with
   present item. Two items are matched by predicate."
@@ -348,12 +346,14 @@
     []
     items)))
 
+;; DEPRECATED
 (defn add-to-list
   "Adds item to items collection and sorts that collection afterwards..."
   ([items item] (add-to-list items item :name))
   ([items item _comparator]
    (vec (sort-by _comparator (conj items item)))))
 
+;; DEPRECATED
 (defn remove-from-list
   "Removes item from items by matching item with pred"
   ([items item] (remove-from-list items item :euuid))
@@ -364,6 +364,7 @@
        #(= (pred %) x)
        items)))))
 
+;; DEPRECATED
 (defn wrap [o]
   (reify
     ILookup

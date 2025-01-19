@@ -6,7 +6,7 @@
   (css :mt-4 :mb-24 :text-sm
        ["& .code" :mt-2]
        ["& h1,& h2,& h3,& h4" :uppercase]
-       ["& h3" :mt-12]
+       ["& h3" :mt-4]
        ["& h2" :mt-12]
        ["& h4" :mt-4]
        ["& p" :mt-2]

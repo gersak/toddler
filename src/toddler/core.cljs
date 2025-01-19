@@ -25,6 +25,11 @@
 
 ; (.log js/console "Loading toddler.core")
 
+(defn ml
+  "Multiline function"
+  [& lines]
+  (clojure.string/join "\n" lines))
+
 (defnc portal
   "Use when you wan't to mount react component on some
   DOM element that can be found by locator function.

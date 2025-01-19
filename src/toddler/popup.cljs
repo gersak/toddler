@@ -316,11 +316,12 @@
             (+ left right bottom top))
           candidates))]
     (->
-     (cond-> candidate
-       (neg? top) (assoc :position/top 3)
-       (neg? bottom) (assoc :position/bottom (- window-height 5))
-       (neg? left) (assoc :position/left 3)
-       (neg? right) (assoc :position/right (- window-width 3)))
+     candidate
+     #_(cond-> candidate
+         (neg? top) (assoc :position/top 3)
+         (neg? bottom) (assoc :position/bottom (- window-height 5))
+         (neg? left) (assoc :position/left 3)
+         (neg? right) (assoc :position/right (- window-width 3)))
      (adjust-scroll-width 15)
      #_update-dropdown-size)))
 
@@ -449,9 +450,11 @@
       (c/children props)))))
 
 (defnc Element
+  "Creates fixed positioned div element that is positioned
+  based on prefrence to *area* context element."
   {:helix/features {:fast-refresh true}
    :wrap [forward-ref]}
-  [{:keys [preference style offset onChange]
+  [{:keys [preference style offset onChange on-change]
     :or {preference default-preference
          offset 5}
     :as props} ref]
@@ -461,20 +464,25 @@
                top -10000}}
          set-state!] (hooks/use-state nil)
         ;;
+        on-change (or on-change onChange)
+        ;;
         el (hooks/use-ref nil)
         _el (or ref el)
         observer (hooks/use-ref nil)
         target (hooks/use-context *area-element*)
-        container-node (hooks/use-context *container*)]
+        container-node (hooks/use-context *container*)
+        cache (hooks/use-ref {:preference preference :offset offset})]
     (letfn [(recalculate []
-              (binding [*offset* offset]
-                (let [_computed (compute-container-props target @_el preference)]
-                  (when (not= computed _computed)
-                    (set-state! _computed)
-                    (when (ifn? onChange) (onChange _computed))))))]
-      ; (hooks/use-layout-effect
-          ;   :always
-          ;   (recalculate))
+              (let [{:keys [offset preference]} @cache]
+                (binding [*offset* offset]
+                  (let [_computed (compute-container-props target @_el preference)]
+                    (when (not= computed _computed)
+                      (set-state! _computed)
+                      (when (ifn? on-change) (on-change _computed)))))))]
+      (hooks/use-layout-effect
+        [offset preference]
+        (reset! cache {:offset offset :preference preference})
+        (recalculate))
       (hooks/use-effect
         :always
         (when (and (some? @_el) (not @observer))
@@ -483,13 +491,15 @@
           (let [_computed (compute-container-props target @_el preference)]
             (when (not= computed _computed)
               (set-state! _computed)
-              (when (ifn? onChange) (onChange _computed))))))
+              (when (ifn? on-change) (on-change _computed))))))
       (hooks/use-effect
         :once
+        (.addEventListener js/document "wheel" recalculate)
         (fn []
-          (when @observer (.disconnect @observer)))))
+          (when @observer (.disconnect @observer))
+          (.removeEventListener js/document "wheel" recalculate))))
     (when (nil? container-node)
-      (.error js/console "Popup doesn't know where to render. Specify popup container. I.E. instantiate toddler.elements.popup/Container"))
+      (.error js/console "Popup doesn't know where to render. Specify popup container. I.E. instantiate toddler.popup/Container"))
     (rdom/createPortal
      (provider
       {:context *position*
@@ -500,7 +510,7 @@
        (let [style (cond->
                     (merge
                      style
-                     {:top top :left left
+                     {; :top top :left left
                       :position "fixed"
                       :box-sizing "border-box"
                       :zIndex "1000"

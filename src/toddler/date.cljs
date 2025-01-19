@@ -217,42 +217,43 @@
                   vura/time->value
                   vura/before-midnight
                   vura/value->time)]
-        (if (or (nil? period) (every? nil? period)) [s e]
+        (if (or (nil? period) (every? nil? period))
+          [s e]
           ;; Otherwise some value exists
-            (let [day-value (:value day)
-                  day-date (vura/value->time day-value)]
-              (cond
+          (let [day-value (:value day)
+                day-date (vura/value->time day-value)]
+            (cond
               ;; It is between start and end
-                (<= start-value day-value end-value)
-                (let [ld (- day-value start-value)
-                      rd (- end-value day-value)]
-                  (cond
+              (<= start-value day-value end-value)
+              (let [ld (- day-value start-value)
+                    rd (- end-value day-value)]
+                (cond
                   ;; If clicked on same day as start or end
-                    (or
-                     (< ld vura/day)
-                     (< rd vura/day))
-                    [s e]
+                  (or
+                   (< ld vura/day)
+                   (< rd vura/day))
+                  [s e]
                   ;; If closer to left
-                    (< ld rd) [(-> day-value vura/midnight vura/value->time) end]
+                  (< ld rd) [(-> day-value vura/midnight vura/value->time) end]
                   ;; If closer to right
-                    (> ld rd) [start (-> day-value vura/before-midnight vura/value->time)]))
-              ;; It is lower than start
-              ;; and ther is no end, switch
-                (and  (< day-value start-value) (nil? end))
-                [(-> end-value vura/midnight vura/value->time)
-                 (-> day-date vura/before-midnight vura/value->time)]
-              ;; It is lower than start but end
-              ;; value exists
-                (and (< day-value start-value) (some? end))
-                [(-> day-value vura/midnight vura/value->time)
-                 end]
+                  (> ld rd) [start (-> day-value vura/before-midnight vura/value->time)]))
+                 ;; It is lower than start
+                 ;; and ther is no end, switch
+              (and  (< day-value start-value) (nil? end))
+              [(-> end-value vura/midnight vura/value->time)
+               (-> day-date vura/before-midnight vura/value->time)]
+                ;; It is lower than start but end
+                ;; value exists
+              (and (< day-value start-value) (some? end))
+              [(-> day-value vura/midnight vura/value->time)
+               end]
               ;; It is higher than end and start doesn't exist
-                (and (> day-value end-value) (nil? start))
-                [(-> end-value vura/midnight vura/value->time)
-                 (-> day-value vura/before-midnight vura/value->time)]
+              (and (> day-value end-value) (nil? start))
+              [(-> end-value vura/midnight vura/value->time)
+               (-> day-value vura/before-midnight vura/value->time)]
               ;; It is higher than end
-                (> day-value end-value)
-                [start (-> day-value vura/before-midnight vura/value->time)])))))))
+              (> day-value end-value)
+              [start (-> day-value vura/before-midnight vura/value->time)])))))))
 
 (defhook use-period-days
   [[start end] days]

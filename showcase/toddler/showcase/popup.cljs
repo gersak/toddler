@@ -11,6 +11,7 @@
    [toddler.md.lazy :as md]
    toddler.showcase.content
    [toddler.core :as toddler]
+   [toddler.popup :as popup]
    [toddler.notifications :as notifications]
    [toddler.fav6.solid :as solid]
    [toddler.i18n.keyword :refer [add-translations]]))
@@ -35,9 +36,53 @@
    :toddler.popup
    [{:id id :segment segment}]))
 
-(defnc Complex
+(defnc popup-example
   []
-  (use-register :toddler.modal.complex "complex"))
+  (let [[opened? set-opened!] (hooks/use-state false)
+        [preference set-preference!] (hooks/use-state nil)
+        [offset set-offset!] (hooks/use-state 10)]
+    (<>
+     ;; Row that controls configuration of popup element
+     ($ ui/row
+        {:className (css {:gap "1em"})}
+        ($ ui/dropdown-field
+           {:name "Position"
+            :value preference
+            :on-change set-preference!
+            :placeholder "Choose position..."
+            :options popup/default-preference})
+        (d/div
+         {:style {:max-width 100}}
+         ($ ui/integer-field
+            {:name "Offset"
+             :value offset
+             :on-change set-offset!})))
+     ;; Popup button layout
+     ($ ui/row
+        {:align :center}
+        ($ ui/column
+           {:position :center}
+           ;; Popup Area defintion
+           ($ popup/Area
+              {:className (css :my-4)}
+              ;; That holds one button to toggle
+              ;; popup opened/closed
+              ($ ui/button
+                 {:on-click (fn [] (set-opened! not))}
+                 (if opened? "Close" "Open"))
+              ;; When it is opened, than show red popup
+              (when opened?
+                ($ popup/Element
+                   {:offset offset
+                    :preference (or
+                                 (when (some? preference) [preference])
+                                 popup/default-preference)}
+                   (d/div
+                    {:className (css
+                                 :w-14 :h-14
+                                 :bg-red-600
+                                 :border-2
+                                 :rounded-lg)})))))))))
 
 (defnc notifications-example
   []
@@ -145,8 +190,12 @@
                       :min-height 1500}}
              ($ md/watch-url {:url "/doc/en/popup.md"})
              ($ toddler/portal
+                {:locator #(.getElementById js/document "popup-example")}
+                ($ popup-example))
+             ($ toddler/portal
                 {:locator #(.getElementById js/document "modal-background-example")}
                 ($ ui/row
+                   {:align :center}
                    ($ ui/button
                       {:on-click #(show-background!)}
                       (translate :open))

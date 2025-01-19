@@ -397,34 +397,6 @@
   {:wrap [(ui/forward-ref)]}
   [{:keys [label position align class className] :as props
     {:keys [width] :as style} :style} _ref]
-  (let [position (or position align)
-        $start (css :items-start)
-        $center (css :items-center)
-        $end (css :items-end)
-        $explode (css :items-between)
-        $position (case position
-                    :center $center
-                    :end $end
-                    :explode $explode
-                    $start)
-        ;;
-        style (merge
-               style
-               (when width
-                 {:flex (when width (str width \space 0 \space "auto"))
-                  :minWidth (when width width)
-                  :width (when width width)}))]
-    (d/div
-     {:ref _ref
-      :class [$column
-              $position
-              "toddler-column"
-              className]}
-     (when label
-       (d/div
-        {:className "label"}
-        (d/label label)))
-     (c/children props)))
   (let [$layout (css
                  {:display "flex"
                   :flex-direction "column"
@@ -437,7 +409,8 @@
                    :text-transform "uppercase"
                    :font-size "0.75em"}])
         $start (css {:justify-content "flex-start"})
-        $center (css {:justify-content "center"})
+        $center (css {:justify-content "center"
+                      :align-items "center"})
         $end (css {:justify-content "flex-end"})
         $explode (css {:justify-content "space-between"})
         $position (case position

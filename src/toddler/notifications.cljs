@@ -265,6 +265,7 @@
     :relative
     :border
     :border-normal
+    :bg-normal+
     :shadow-lg
     :items-center
     {:z-index "200"
@@ -305,12 +306,7 @@
    ["& .notification.positive" {:background-color "var(--notification-positive)"
                                 :border-color "var(--border-positive)"}]
    ["& .notification.warning" {:background-color "var(--notification-warn)"
-                               :border-color "var(--border-warning)"}]
-   ["& .notification" {:background-color "var(--notification-neutral)"}]
-    ;;
-   ["& .notification.titled" :relative :p-4 :rounded-sm]
-   ["& .notification.titled .title" :font-semibold :text-xs :mb-1]
-   ["& .notification.titled .message" :font-medium :text-xxs]))
+                               :border-color "var(--border-warning)"}]))
 
 (comment
 

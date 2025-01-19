@@ -106,7 +106,8 @@
    ["& input::placeholder, & textarea::placeholder" :text-normal :font-medium {:user-select "none" :font-style "normal"}]))
 
 (defnc textarea-field
-  [{:keys [onChange on-change disabled placeholder error className class] :as props}]
+  [{:keys [onChange on-change disabled placeholder error
+           className class] :as props}]
   (let [onChange (hooks/use-memo
                    [onChange on-change]
                    (or onChange on-change identity))
@@ -256,7 +257,8 @@
             (let [number (js/parseInt  text)]
               (when-not (js/Number.isNaN number) (int number)))))]
   (defnc integer-field
-    [{:keys [onChange on-change disabled value] :as props}]
+    [{:keys [onChange on-change disabled value style className]
+      :as props}]
     (let [_input (hooks/use-ref nil)
           translate (use-translate)
           [focused? set-focused!] (hooks/use-state false)
