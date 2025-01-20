@@ -84,102 +84,52 @@
                                  :border-2
                                  :rounded-lg)})))))))))
 
-(defnc notifications-example
+(defn tooltip-example
   []
-  (let [[message set-message!] (hooks/use-state "")
-        send-message (hooks/use-callback
-                       [message]
-                       (fn [context]
-                         ((case context
-                            :positive notifications/positive
-                            :negative notifications/negative
-                            :warn notifications/warning
-                            notifications/neutral)
-                          (or (not-empty message) "You should type something in :)")
-                          3000)
-                         (set-message! "")))]
-    #_(hooks/use-effect
-        :once
-        (notifications/positive "Message" 0)
-        (notifications/negative "Message" 0)
-        (notifications/warning "Message" 0)
-        (notifications/neutral "Message" 0))
-    ($ ui/row
-       {:align :center}
-       ($ ui/row
-          {:className (css :mt-4 :items-center)}
-          ($ ui/text-field
-             {:name "MESSAGE"
-              :className (css ["& textarea" {:min-height "176px"}])
-              :value message
-              :on-change set-message!})
-          ($ ui/column
-             {:className (css :px-4 :pt-5)}
-             ($ ui/button {:className "positive" :on-click #(send-message nil)} "Neutral")
-             ($ ui/button {:className "positive" :on-click #(send-message :positive)} "Positive")
-             ($ ui/button {:className "negative" :on-click #(send-message :negative)} "Negative")
-             ($ ui/button {:className "warn" :on-click #(send-message :warn)} "Warning"))))))
-
-(defmethod notifications/render :custom/normal
-  [{:keys [message]}]
-  (d/div
-   {:className (css
-                :bg-yellow-400
-                :text-black
-                :border-black
-                :border-2
-                :px-3
-                :py-3
-                :rounded-lg
-                :flex
-                :items-center
-                ["& .icon" :mr-2 {:font-size "24px"}]
-                ["& .message" :font-semibold :text-sm])}
-   (d/div
-    {:className "icon"}
-    ($ solid/biohazard))
-   (d/pre
-    {:className "message"}
-    message)))
-
-(defnc custom-notification-example
-  []
-  ($ ui/row
-     {:align :center}
-     ($ ui/button
-        {:on-click (fn []
-                     (notifications/add
-                      :custom/normal
-                      "Test message for custom notification" nil 5000))}
-        "Show")))
+  (let [[state set-state!] (hooks/use-state "neutral")]
+    (<>
+     ($ ui/row
+        ($ ui/dropdown-field
+           {:name "Position"
+            :value state
+            :on-change set-state!
+            :placeholder "Choose context..."
+            :options ["neutral"
+                      "positive"
+                      "negative"
+                      "warning"]}))
+     ($ ui/row
+        {:align :center}
+        ($ ui/column
+           {:align :center}
+           ($ ui/tooltip
+              {:message (case state
+                          "positive" "I'm happy"
+                          "negative" "Don't feel so good"
+                          "warning"  (d/pre "I'm affraid that\nsomething might happen")
+                          "Just business as usual")
+               :className state}
+              (d/div
+               {:className (css
+                            :font-bold
+                            :text-base
+                            :text-center
+                            :cursor-default
+                            :my-5)}
+               "Hiii if you hover over me... Than")))))))
 
 (defnc Popup
   {:wrap [(router/wrap-rendered :toddler.popup)
           (router/wrap-link
            :toddler.popup
-           [{:id ::popup
-             :name "Elements"
-             :hash "elements"}
-            {:id ::modal-dialog
-             :name "Modal Dialog"
-             :hash "modal-dialog"}
-            {:id ::notifications
-             :name "Notifications"
-             :hash "notifications"}
-            {:id ::customizing-notifications
-             :name "Customizing Notifications"
-             :hash "customizing-notifications"}])]}
+           [{:id ::general
+             :name "In general"
+             :hash "intro"}
+            {:id ::tooltip
+             :name "Tooltip"
+             :hash "tooltip"}])]}
   []
-  (let [{:keys [height width]} (layout/use-container-dimensions)
-        translate (toddler/use-translate)
-        show-background! (router/use-go-to :toddler.popup.background)
-        background-opened? (router/use-rendered? :toddler.popup.background)
-        show-dialog! (router/use-go-to :toddler.popup.dialog)
-        dialog-opened? (router/use-rendered? :toddler.popup.dialog)
-        [context set-context!] (hooks/use-state nil)
-        close! (use-close)]
-    (use-register :toddler.popup.background "background")
-    (use-register :toddler.popup.dialog "dialog")
+  (let [{:keys [height width]} (layout/use-container-dimensions)]
     ($ ui/simplebar
        {:style {:height height
                 :width width}}
@@ -193,65 +143,5 @@
                 {:locator #(.getElementById js/document "popup-example")}
                 ($ popup-example))
              ($ toddler/portal
-                {:locator #(.getElementById js/document "modal-background-example")}
-                ($ ui/row
-                   {:align :center}
-                   ($ ui/button
-                      {:on-click #(show-background!)}
-                      (translate :open))
-                   (when background-opened?
-                     ($ ui/modal-background
-                        {:on-close close!}))))
-             ;;
-             ($ toddler/portal
-                {:locator #(.getElementById js/document "modal-dialog-example")}
-                (<>
-                 ($ ui/row
-                    {:position :center}
-                    ($ ui/button
-                       {:on-click #(do
-                                     (set-context! nil)
-                                     (show-dialog!))}
-                       (translate :neutral))
-                    ($ ui/button
-                       {:on-click #(do
-                                     (set-context! "positive")
-                                     (show-dialog!))
-                        :class ["positive"]}
-                       (translate :positive))
-                    ($ ui/button
-                       {:on-click #(do
-                                     (set-context! "negative")
-                                     (show-dialog!))
-                        :class ["negative"]}
-                       (translate :button.negative))
-                    ($ ui/button
-                       {:on-click #(do
-                                     (set-context! "warn")
-                                     (show-dialog!))
-                        :class ["warn"]}
-                       (translate :warn))
-                    (when dialog-opened?
-                      ($ ui/modal-dialog
-                         {:on-close close!
-                          :width 300
-                          :className (when context (name context))}
-                         (d/span
-                          {:className "title"}
-                          (translate :showcase.modal.dialog.title))
-                         (d/div
-                          {:class "content"
-                           :style {:max-width 400}}
-                          (d/pre
-                           {:className (css :mt-4 :word-break :whitespace-pre-wrap)}
-                           (translate :showcase.content.large)))
-                         (d/div
-                          {:className "footer"}
-                          ($ ui/button {:on-click close!} (translate :ok))
-                          ($ ui/button {:on-click close!} (translate :cancel))))))))
-             ($ toddler/portal
-                {:locator #(.getElementById js/document "notifications-example")}
-                ($ notifications-example))
-             ($ toddler/portal
-                {:locator #(.getElementById js/document "custom-notification-example")}
-                ($ custom-notification-example)))))))
+                {:locator #(.getElementById js/document "tooltip-example")}
+                ($ tooltip-example)))))))

@@ -9,7 +9,6 @@
    [helix.hooks :as hooks]
    [toddler.md.lazy :as md]
    toddler.showcase.content
-   [toddler.router :as router]
    [toddler.core :as toddler]
    [toddler.i18n.keyword :refer [add-translations]]))
 
@@ -37,6 +36,74 @@
   []
   (use-register :toddler.modal.complex "complex"))
 
+(defnc dialog-example
+  [{:keys [opened? context]}]
+  (use-register :toddler.modal.background "background")
+  (use-register :toddler.modal.dialog "dialog")
+  (let [close! (use-close)
+        translate (toddler/use-translate)]
+    (when opened?
+      ($ ui/modal-dialog
+         {:on-close close!
+          :width 300
+          :className (when context (name context))}
+         (d/span
+          {:className "title"}
+          (translate :showcase.modal.dialog.title))
+         (d/div
+          {:class "content"
+           :style {:max-width 400}}
+          (d/pre
+           {:className (css :mt-4 :word-break :whitespace-pre-wrap)}
+           (translate :showcase.content.large)))
+         (d/div
+          {:className "footer"}
+          ($ ui/button {:on-click close!} (translate :ok))
+          ($ ui/button {:on-click close!} (translate :cancel)))))))
+
+(defnc text-tab
+  []
+  (let [{:keys [height]} (layout/use-container-dimensions)
+        translate (toddler/use-translate)]
+    ($ ui/tab
+       {:id ::text
+        :name "Message"}
+       ($ ui/simplebar
+          {:style {:height height}
+           :shadow true}
+          (d/pre
+           {:className (css :mt-4 :p-4 :word-break :whitespace-pre-wrap)}
+           (translate :showcase.content.large))))))
+
+(defnc complex-dialog-example
+  [{:keys [opened? context]}]
+  (use-register :toddler.modal.background "background")
+  (use-register :toddler.modal.dialog "dialog")
+  (let [close! (use-close)
+        translate (toddler/use-translate)]
+    (when opened?
+      ($ ui/modal-dialog
+         {:on-close close!
+          :width 300
+          :className (when context (name context))}
+         (d/span
+          {:className "title"}
+          (translate :showcase.modal.dialog.title))
+         ($ layout/Container
+            {:class "content"
+             :style {:width 400
+                     :height 400}}
+            ($ ui/tabs
+               {:style {:max-height 400}}
+               ($ text-tab)
+               ($ ui/tab
+                  {:id ::form
+                   :name "Form"})))
+         (d/div
+          {:className "footer"}
+          ($ ui/button {:on-click close!} (translate :ok))
+          ($ ui/button {:on-click close!} (translate :cancel)))))))
+
 (defnc Modal
   {:wrap [(router/wrap-rendered :toddler.modal)]}
   []
@@ -48,20 +115,23 @@
         dialog-opened? (router/use-rendered? :toddler.modal.dialog)
         [context set-context!] (hooks/use-state nil)
         close! (use-close)]
-    (use-register :toddler.modal.background "background")
-    (use-register :toddler.modal.dialog "dialog")
     ($ ui/simplebar
        {:style {:height height
-                :width width}}
+                :width width}
+        :shadow true}
        ($ ui/row {:align :center}
           ($ ui/column
              {:align :center
               :style {:max-width "30rem"
                       :min-height 1500}}
              ($ md/watch-url {:url "/doc/en/modal.md"})
+             ($ complex-dialog-example
+                {:opened? dialog-opened?
+                 :context context})
              ($ toddler/portal
                 {:locator #(.getElementById js/document "modal-background-example")}
                 ($ ui/row
+                   {:align :center}
                    ($ ui/button
                       {:on-click #(show-background!)}
                       (translate :open))
@@ -96,22 +166,4 @@
                                      (set-context! "warn")
                                      (show-dialog!))
                         :class ["warn"]}
-                       (translate :warn))
-                    (when dialog-opened?
-                      ($ ui/modal-dialog
-                         {:on-close close!
-                          :width 300
-                          :className (when context (name context))}
-                         (d/span
-                          {:className "title"}
-                          (translate :showcase.modal.dialog.title))
-                         (d/div
-                          {:class "content"
-                           :style {:max-width 400}}
-                          (d/pre
-                           {:className (css :mt-4 :word-break :whitespace-pre-wrap)}
-                           (translate :showcase.content.large)))
-                         (d/div
-                          {:className "footer"}
-                          ($ ui/button {:on-click close!} (translate :ok))
-                          ($ ui/button {:on-click close!} (translate :cancel)))))))))))))
+                       (translate :warn))))))))))

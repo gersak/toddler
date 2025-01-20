@@ -37,18 +37,19 @@
          on-close identity}
     :as props}]
   (let [container-node (hooks/use-context popup/*container*)]
-    (rdom/createPortal
-     (d/div
-      {:key ::background
-       :on-click (fn [] (when can-close? (on-close)))
-       :class (cond-> [$modal-background
-                       (when-not can-close? "block")]
-                (string? class) (conj class)
-                (sequential? class) (into class)
-                (string? className) (conj className))
-       & (dissoc props :class :className :can-close? :on-click :onClick)}
-      (c/children props))
-     @container-node)))
+    (when @container-node
+      (rdom/createPortal
+       (d/div
+        {:key ::background
+         :on-click (fn [] (when can-close? (on-close)))
+         :class (cond-> [$modal-background
+                         (when-not can-close? "block")]
+                  (string? class) (conj class)
+                  (sequential? class) (into class)
+                  (string? className) (conj className))
+         & (dissoc props :class :className :can-close? :on-click :onClick)}
+        (c/children props))
+       @container-node))))
 
 (def $modal-dialog
   (css
@@ -227,7 +228,6 @@
 
 (def components
   #:modal {:background modal-background
-           :pavement modal-pavement
            :strip modal-strip
            :dialog modal-dialog
            ; :avatar-editor modal-avatar-editor

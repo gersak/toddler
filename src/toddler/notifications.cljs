@@ -235,7 +235,7 @@
           {:class (cond-> ["notifications"]
                     (and opened? (not-empty notifications))
                     (conj "opened"))}
-                ;;
+          ;;
           (keep-indexed
            (fn [idx notification]
              (when (or

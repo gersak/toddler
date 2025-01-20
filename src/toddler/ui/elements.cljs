@@ -1,5 +1,6 @@
 (ns toddler.ui.elements
   (:require
+   ["react" :as react]
    [clojure.set :as set]
    [clojure.core.async :as async]
    [clojure.string :as str]
@@ -27,28 +28,98 @@
    [toddler.popup :as popup]
    [toddler.layout :as layout]
    [toddler.ui.elements.calendar :refer [calendar period-calendar]]
-   ; [toddler.ui.elements.modal
-   ;  :refer [modal-dialog
-   ;          modal-pavement
-   ;          modal-strip
-   ;          modal-background]]
    [toddler.provider :refer [UI]]))
 
 (defnc simplebar
   {:wrap [(ui/forward-ref)]}
-  [{:keys [className shadow hidden] :as props
-    :or {shadow #{}}}
+  [{:keys [className hidden]
+    show-shadow? :shadow
+    :as props}
    _ref]
-  (let [$default (css {:transition "box-shadow 0.3s ease-in-out"})
-        $shadow-top (css {:box-shadow "inset 0px 11px 8px -10px #CCC"})
-        $shadow-bottom (css {:box-shadow "inset 0px -11px 8px -10px #CCC"})
+  (let [$default (css
+                  {:transition "box-shadow 0.3s ease-in-out"}
+                  ; ["&.shadow-top:before" {:top "0px" :box-shadow "inset 0 10px 8px -12px rgb(0 0 0 / 29%)"}]
+                  ; ["&.shadow-bottom:after" {:bottom "0px" :box-shadow "inset 0 -10px 8px -12px rgb(0 0 0 / 29%)"}]
+                  ["&.shadow-top:before" :opacity-100 {:z-index "100"}]
+                  ["&.shadow-bottom:after" :opacity-100 {:z-index "100"}])
+        [shadow set-shadow!] (hooks/use-state #{})
+        ; $shadow-top (css)
+        ; $shadow-bottom (css)
         $hidden (css ["& .simplebar-track" {:display "none"}])
         className (str/join
                    " "
                    (cond-> [className $default]
-                     (shadow :top) (conj $shadow-top)
-                     (shadow :bottom) (conj $shadow-bottom)
-                     hidden (conj $hidden)))]
+                     (shadow :top) (conj "shadow-top")
+                     (shadow :bottom) (conj "shadow-bottom")
+                     hidden (conj $hidden)))
+        local-ref (react/useRef nil)
+        _ref (or _ref local-ref)]
+    (hooks/use-effect
+      :once
+      (when show-shadow?
+        (when-some [el (.-current _ref)]
+          (letfn [(init-shadow []
+                    (let [client-height (.-clientHeight el)
+                          scroll-height (.-scrollHeight el)]
+                      (when (and
+                             (>= scroll-height client-height)
+                             (not (contains? shadow :bottom)))
+                        (set-shadow! conj :bottom))))
+                  (track-shadow []
+                    (let [scroll-top (.-scrollTop el)
+                          scroll-height (-
+                                         (.-scrollHeight el)
+                                         (.-clientHeight el))]
+                      (println "SSSSJOSOS: " [scroll-top scroll-height])
+                      (println "DECISIONS: "
+                               (zero? scroll-top)
+                               (>= scroll-top scroll-height)
+                               (and
+                                (> scroll-top 0)
+                                (not (>= scroll-top scroll-height)))
+                               (and
+                                (> scroll-top 0)
+                                (not (>= scroll-top scroll-height)))
+                               (> scroll-top 0))
+                      (cond
+                        ;;
+                        (zero? scroll-top)
+                        (set-shadow!
+                         (fn [shadow]
+                           (if (contains? shadow :top)
+                             (disj shadow :top)
+                             shadow)))
+                        ;;
+                        (>= (+ scroll-top 10) scroll-height)
+                        (set-shadow!
+                         (fn [shadow]
+                           (if (contains? shadow :bottom)
+                             (disj shadow :bottom)
+                             shadow)))
+                        ;;
+                        (and
+                         (> scroll-top 0)
+                         (not (>= scroll-top scroll-height)))
+                        (set-shadow!
+                         (fn [shadow]
+                           (if (not= shadow #{:top :bottom})
+                             #{:top :bottom}
+                             shadow)))
+                        ;;
+                        (> scroll-top 0)
+                        (set-shadow!
+                         (fn [shadow]
+                           (if (not (contains? shadow :top))
+                             (conj shadow :top)
+                             shadow)))
+                        ;;
+                        (= shadow #{}) nil
+                        ;;
+                        :else (set-shadow! #{}))))]
+            (init-shadow)
+            (.addEventListener el "scroll" track-shadow)
+            (fn []
+              (.removeEventListener el "scroll" track-shadow))))))
     ($ scroll/_SimpleBar
        {:className className
         & (cond->
@@ -263,48 +334,12 @@
      :align-items "center"
      :flex-grow "1"}]))
 
-#_(defnc row
-    {:wrap [(ui/forward-ref)]}
-    [{:keys [label position style className] :as props} _ref]
-    (let [$start (css {:justify-content "flex-start"})
-          $center (css {:justify-content "center"})
-          $end (css {:justify-content "flex-end"})
-          $explode (css {:justify-content "space-between"})
-          $position (case position
-                      :center $center
-                      :end $end
-                      :explode $explode
-                      $start)]
-      (if label
-        (d/div
-         {:class ["toddler-labeled-row"
-                  $row]
-          :style style}
-         (d/div
-          {:className "toddler-row-label"}
-          (d/label label))
-         (d/div
-          {:ref _ref
-           :class ["toddler-row"
-                   $position
-                   className]}
-          (c/children props)))
-        (d/div
-         {:ref _ref
-          :style style
-          :class [$row
-                  "toddler-row"
-                  $position
-                  className]}
-         (c/children props)))))
-
 (defnc row
   {:wrap [(ui/forward-ref)]}
   [{:keys [className label position style align] :as props} _ref]
   (let [position (or position align)
         $layout (css
                  :text-gray-800
-                 :m-1
                  {:display "flex"
                   :flex-direction "row"
                   :align-items "center"
@@ -638,8 +673,8 @@
    {:opacity "0"
     :color "var(--tooltip-color)"
     :background-color "var(--tooltip-bg)"
-    :border "2px solid var(--tooltip-border) "
-    :border-radius "3px"
+    :border "1px solid var(--tooltip-border) "
+    :border-radius "5px"
     :padding-left  "1rem"
     :padding-right "1rem"
     :padding-top "0.375rem"
@@ -650,7 +685,7 @@
     {:background-color "var(--tooltip-positive)"
      :color "var(--tooltip-positive-text)"
      :border-color "var(--tooltip-positive-border)"}]
-   ["&.warn, &.danger"
+   ["&.warn, &.warning,  &.danger"
     {:background-color "var(--tooltip-warn)"
      :color "var(--tooltip-warn-text)"
      :border-color "var(--tooltip-warn-border)"}]
@@ -685,10 +720,10 @@
         area (hooks/use-ref nil)
         popup (hooks/use-ref nil)
         _popup (or ref popup)]
-    (if (and (some? message) (not disabled))
+    (if (and (not disabled) (some? message))
       ($ popup/Area
          {:ref area
-          :className "popup_area"
+          :className "tooltip-popup-area"
           :onMouseLeave (fn [] (change-visible! false))
           :onMouseEnter (fn []
                           (change-visible! true)
@@ -861,168 +896,13 @@
 (defonce tabs-context (create-context))
 (defonce actions-context (create-context))
 
-; (def $tabs
-;   (css
-;    :flex :border-b :border-normal
-;    :justify-between
-;    ["& .tabs" :flex]))
-;
-; (def $tab
-;   (css
-;    :uppercase
-;    :h-6
-;    :px-3
-;    :flex
-;    :items-center
-;    :justify-center
-;    :select-none
-;    :cursor-pointer
-;    :text-normal
-;    :border-t
-;    :border-l
-;    :border-r
-;    :border-normal
-;    :text-xxs
-;    :font-semibold
-;    {:min-width "5em"}
-;    ["&:first-child" :ml-8]
-;    ["&:hover"
-;     {:text-decoration "none"
-;      :color "var(--tab-hover-color)"
-;      :background-color "var(--tab-hover-bg)"}]
-;    ["&.selected"
-;     {:color "var(--tab-selected-color)"
-;      :background-color "var(--tab-selected-bg)"}]))
-;
-; (defnc tabs
-;   {:wrap [(ui/forward-ref)]}
-;   [{:keys [class className]
-;     :as props} _ref]
-;   (let [;on-change (or on-change onChange)
-;         tabs-target (hooks/use-ref nil)
-;         _tabs (hooks/use-ref nil)
-;         _tabs (or _tabs _ref)
-;         [selected on-select!] (hooks/use-state nil)
-;         [available set-available!] (toddler/use-idle
-;                                     nil (fn [tabs]
-;                                           (on-select!
-;                                            (fn [id]
-;                                              (when-not (= tabs :NULL)
-;                                                (if-not (nil? id) id
-;                                                        (ffirst tabs))))))
-;                                     {:initialized? true})
-;         register (hooks/use-callback
-;                    [selected]
-;                    (fn register
-;                      ([tab] (register tab tab nil))
-;                      ([tab order] (register tab tab order))
-;                      ([id tab order]
-;                       (set-available!
-;                        (fn [tabs]
-;                          (vec (sort-by #(nth % 2) (conj tabs [id tab order]))))))))
-;         unregister (hooks/use-callback
-;                      [selected]
-;                      (fn [tab]
-;                        (set-available!
-;                         (fn [tabs]
-;                           (vec
-;                            (sort-by
-;                             #(nth % 2)
-;                             (remove
-;                              (fn [[_ _tab _]]
-;                                (= tab _tab))
-;                              tabs)))))))
-;         update-tab (hooks/use-callback
-;                      [selected]
-;                      (fn [key tab order]
-;                        (set-available!
-;                         (fn [tabs]
-;                           (let [next (mapv
-;                                       (fn [[k t o]]
-;                                         (if (= key k) [k tab order]
-;                                             [k t o]))
-;                                       tabs)]
-;                             next)))))
-;         tabs (map #(take 2 %) available)
-;         container-dimensions (layout/use-container-dimensions)
-;         [_ {tabs-height :height}] (toddler/use-dimensions _tabs)
-;         tab-content-dimensions  (hooks/use-memo
-;                                   [(:height container-dimensions) tabs-height]
-;                                   (assoc container-dimensions :height
-;                                          (- (:height container-dimensions)
-;                                             tabs-height)))
-;         translate (toddler/use-translate)]
-;     (<>
-;      (d/div
-;       {:ref _tabs
-;        :class (cond->
-;                (list "toddler-tabs" $tabs)
-;                 className (conj className)
-;                 (string? class) (conj class)
-;                 (sequential? class) (into class))}
-;       (d/div
-;        {:ref #(reset! tabs-target %)
-;         :class ["tabs"]}
-;        (map
-;         (fn [[id tab]]
-;           (d/div
-;            {:key tab
-;             :class (cond->
-;                     (list "toddler-tab" $tab)
-;                      (= id selected) (conj "selected")
-;                      className (conj className)
-;                      (string? class) (conj class)
-;                      (sequential? class) (into class))
-;             :on-click (fn [] (on-select! id))}
-;            (if (string? tab) tab
-;                (translate tab))))
-;         tabs)))
-;      (provider
-;       {:context tabs-context
-;        :value {:register register
-;                :unregister unregister
-;                :update update-tab
-;                :select! on-select!
-;                :selected selected}}
-;       (provider
-;        {:context layout/*container-dimensions*
-;         :value tab-content-dimensions}
-;        (d/div
-;         {:className "tab-content"}
-;         (c/children props)))))))
-;
-; (defnc tab
-;   [{:keys [name tab id focus? position] :as props
-;     :or {id tab}}]
-;   (let [tab (or name tab)
-;         {:keys [select!
-;                 selected
-;                 register
-;                 unregister
-;                 update]} (hooks/use-context tabs-context)]
-;     (hooks/use-effect
-;       :once
-;       (register id tab position)
-;       (when focus?
-;         (async/go
-;           (async/<! (async/timeout 1000))
-;           (select! id)))
-;       (fn []
-;         (unregister id)))
-;     (hooks/use-effect
-;       [tab]
-;       (update id tab position))
-;     (when (= id selected)
-;       (c/children props))))
-;
-
 (def $tabs
   (css
    :flex
    :justify-between
    :relative
    :pb-2
-   ["& .tabs" :flex :flex-wrap :px-8]))
+   ["& .tabs" :flex :flex-wrap :px-2]))
 
 (def $tab
   (css
@@ -1110,30 +990,24 @@
                                          (- (:height container-dimensions)
                                             tabs-height)))
         translate (toddler/use-translate)
-        tab-elements (hooks/use-ref nil)]
-    (hooks/use-effect
-      [selected]
-      (if selected
-        (let [selected-el (get @tab-elements selected)
-              mark-el (get @tab-elements ::marker)
-              [left top width height] (util/dom-dimensions selected-el)
-              [tabs-left tabs-top] (util/dom-dimensions @_tabs)
-              top (- top tabs-top)
-              left (- left tabs-left)]
-          (set! (.. mark-el -style -top) (str top "px"))
-          (set! (.. mark-el -style -left) (str left "px"))
-          (set! (.. mark-el -style -width) (str width "px"))
-          (set! (.. mark-el -style -height) (str height "px")))
-        (let [selected-el (get @tab-elements selected)
-              mark-el (get @tab-elements ::marker)
-              [left top width height] (util/dom-dimensions selected-el)
-              [tabs-left tabs-top] (util/dom-dimensions @_tabs)
-              top (- top tabs-top)
-              left (- left tabs-left)]
-          (set! (.. mark-el -style -top) (str tabs-top "px"))
-          (set! (.. mark-el -style -left) (str tabs-left "px"))
-          (set! (.. mark-el -style -width) (str width "0px"))
-          (set! (.. mark-el -style -height) (str height "0px")))))
+        tab-elements (hooks/use-ref nil)
+        ;;
+        {marker-top :top
+         marker-left :left
+         marker-height :height
+         marker-width :width}
+        (hooks/use-memo
+          [selected]
+          (if-not selected
+            {:top 0 :left 0}
+            (if-some [selected-el (get @tab-elements selected)]
+              (let [[left top width height] (util/dom-dimensions selected-el)
+                    [tabs-left tabs-top] (util/dom-dimensions @_tabs)
+                    top (- top tabs-top)
+                    left (- left tabs-left)]
+                {:top top :left left
+                 :width width :height height})
+              {:top 0 :left 0})))]
     (<>
      (d/div
       {:ref _tabs
@@ -1144,6 +1018,8 @@
                 (sequential? class) (into class))}
       (d/div
        {:ref #(swap! tab-elements assoc ::marker %)
+        :style {:top marker-top :left marker-left
+                :width marker-width :height marker-height}
         :className (css
                     :bg-normal-
                     :z-0
@@ -1378,6 +1254,8 @@
     :card card
     :tooltip tooltip
     :drawer Drawer
+    :popup/area popup/Area
+    :popup/element popup/Element
     :card/action card-action
     :card/actions card-actions
     :identity identity

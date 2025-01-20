@@ -1,12 +1,13 @@
 (ns toddler.showcase
   {:shadow.css/include
-   ["css/toddler.css"]}
+   ["css/toddler.css"
+    "css/simplebar.css"]}
   (:require
    ["react" :as react]
    ["react-dom/client" :refer [createRoot]]
    [taoensso.telemere :as t]
    [toddler.dev :as dev]
-   [toddler.provider :refer [UI]]
+   [toddler.provider :refer [wrap-ui]]
    [toddler.ui.components :as default]
    [helix.core :refer [$ defnc]]
    [helix.hooks :as hooks]
@@ -17,6 +18,8 @@
    [toddler.showcase.i18n :refer [i18n]]
    [toddler.showcase.routing :refer [Routing]]
    [toddler.showcase.icons :refer [Icons]]
+   [toddler.showcase.modal :refer [Modal]]
+   [toddler.showcase.notifications :refer [Notifications]]
    [toddler.notifications :as notifications]
    [toddler.showcase.prosemirror :refer [ProseMirror]]
    [toddler.router :as router]
@@ -47,6 +50,14 @@
     :name "Popup"
     :render Popup
     :segment "popup"}
+   {:id :toddler.modal
+    :name "Modal"
+    :render Modal
+    :segment "modal"}
+   {:id :toddler.notifications
+    :name "Notifications"
+    :render Notifications
+    :segment "notifications"}
    {:id :toddler.routing
     :name :showcase.routing
     :render Routing
@@ -65,15 +76,14 @@
       :segment "prosemirror"}])
 
 (defnc Showcase
+  {:wrap [(wrap-ui default/components)]}
   []
   ($ router/Provider
-     ($ UI
-        {:components default/components}
-        ($ notifications/Store
-           {:class notifications/$default}
-           ($ dev/playground
-              {:max-width 1000
-               :components components}))))
+     ($ notifications/Store
+        {:class notifications/$default}
+        ($ dev/playground
+           {:max-width 1000
+            :components components})))
   ;; TODO - Strict mode causes problems with popup window
   #_($ react/StrictMode
        ($ router/Provider
@@ -81,9 +91,9 @@
 
 (defn ^:dev/after-load start! []
   (.log js/console "Starting Toddler showcase!")
-  (t/set-min-level! :debug)
+  (t/set-min-level! :info)
   ; (t/set-min-level! :log "toddler.md" :debug)
-  (t/set-min-level! :log "toddler.routing" :debug)
+  ; (t/set-min-level! :log "toddler.routing" :debug)
   (let [target ^js (.getElementById js/document "app")]
     (when-not @root
       (reset! root ^js (createRoot target)))

@@ -26,7 +26,7 @@ html[data-theme="light"] {
   --background-positive: #e8f8f1;
   /*--background-positive: #caedde;*/
   --background-negative: #f0d4d4;
-  --background-warn: #f0dfd4;
+  --background-warn: #ffdcc6;
   --background-lighter: #f5f6f8;
   --background-normal-plus: #f5f6f8;
   --background-normal-minus: #cccccc;
@@ -152,16 +152,16 @@ html[data-theme="light"] {
 
 
   /* Tooltip */
-  --tooltip-color: #2F3732;
-  --tooltip-bg: #F0F0F0;
+  --tooltip-color: #ffffff;
+  --tooltip-bg: #4a4a4a;
   --tooltip-border: #C6C9C6;
-  --tooltip-positive: #689579;
+  --tooltip-positive: #e8f8f1;
   --tooltip-positive-text: #161616;
   --tooltip-positive-border: #689579;
-  --tooltip-negative: #B56B6B;
+  --tooltip-negative: #f0d4d4;
   --tooltip-negative-text: #161616;
   --tooltip-negative-border: #B56B6B;
-  --tooltip-warn: #E7A387;
+  --tooltip-warn: #ffdcc6;
   --tooltip-warn-text: #161616;
   --tooltip-warn-border: #E7A387;
   --tooltip-important: #C6C9C6;
@@ -178,7 +178,7 @@ html[data-theme="light"] {
   /* Notifications */
   --notification-positive: #e8f8f1;
   --notification-negative: #f0d4d4;
-  --notification-warn: #f0dfd4;
+  --notification-warn: #ffdcc6;
   --notification-neutral: #f5f6f8;
 
   /* Fields */

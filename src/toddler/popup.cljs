@@ -510,7 +510,7 @@
        (let [style (cond->
                     (merge
                      style
-                     {; :top top :left left
+                     {:top top :left left
                       :position "fixed"
                       :box-sizing "border-box"
                       :zIndex "1000"

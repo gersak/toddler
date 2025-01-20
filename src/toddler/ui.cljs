@@ -31,7 +31,8 @@
 (defcomponent button :button)
 (defcomponent buttons :buttons)
 (defcomponent simplebar :simplebar)
-(defcomponent popup :popup)
+(defcomponent popup-area :popup-area)
+(defcomponent popup-element :popup-element)
 (defcomponent option :option)
 (defcomponent input :input)
 (defcomponent clear :clear)
@@ -65,8 +66,9 @@
 (defcomponent tabs :tabs)
 (defcomponent tab :tab)
 
-(defcomponent calendar-month-dropdown :calendar/month-dropdown)
-(defcomponent calendar-year-dropdown :calendar/year-dropdown)
+;; DEPRECATED
+; (defcomponent calendar-month-dropdown :calendar/month-dropdown)
+; (defcomponent calendar-year-dropdown :calendar/year-dropdown)
 
 (defcomponent calendar-day :calendar/day)
 (defcomponent calendar-week :calendar/week)
