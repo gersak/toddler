@@ -75,6 +75,29 @@
            {:className (css :mt-4 :p-4 :word-break :whitespace-pre-wrap)}
            (translate :showcase.content.large))))))
 
+(defnc form-tab
+  []
+  ($ ui/tab
+     {:id ::form
+      :name "Form"}
+     (d/div
+      {:className (css
+                   ["& .toddler-row" :my-2 {:gap "0.75em"}])}
+      ($ ui/row
+         ($ ui/input-field
+            {:name "First Name"})
+         ($ ui/input-field
+            {:name "Last Name"}))
+      ($ ui/row
+         ($ ui/input-field
+            {:name "Address"}))
+      ($ ui/row
+         ($ ui/input-field
+            {:name "City"}))
+      ($ ui/row
+         ($ ui/input-field
+            {:name "Country"})))))
+
 (defnc complex-dialog-example
   [{:keys [opened? context]}]
   (use-register :toddler.modal.background "background")
@@ -96,9 +119,7 @@
             ($ ui/tabs
                {:style {:max-height 400}}
                ($ text-tab)
-               ($ ui/tab
-                  {:id ::form
-                   :name "Form"})))
+               ($ form-tab)))
          (d/div
           {:className "footer"}
           ($ ui/button {:on-click close!} (translate :ok))

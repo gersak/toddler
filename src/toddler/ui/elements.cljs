@@ -40,8 +40,8 @@
                   {:transition "box-shadow 0.3s ease-in-out"}
                   ; ["&.shadow-top:before" {:top "0px" :box-shadow "inset 0 10px 8px -12px rgb(0 0 0 / 29%)"}]
                   ; ["&.shadow-bottom:after" {:bottom "0px" :box-shadow "inset 0 -10px 8px -12px rgb(0 0 0 / 29%)"}]
-                  ["&.shadow-top:before" :opacity-100 {:z-index "100"}]
-                  ["&.shadow-bottom:after" :opacity-100 {:z-index "100"}])
+                  ["&.shadow-top:before" {:z-index "100" :opacity "1 !important"}]
+                  ["&.shadow-bottom:after" {:z-index "100" :opacity "1 !important"}])
         [shadow set-shadow!] (hooks/use-state #{})
         ; $shadow-top (css)
         ; $shadow-bottom (css)

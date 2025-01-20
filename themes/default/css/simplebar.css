@@ -48,16 +48,25 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -40px;
-  height: 80px;
-  background: radial-gradient(ellipse 100% 30% at center,
-      rgba(0, 0, 0, 0.15),
+  bottom: -30px;
+  height: 60px;
+  background: radial-gradient(ellipse 100% 20% at center,
+      rgba(0, 0, 0, 0.3),
       rgba(0, 0, 0, 0),
       transparent);
   clip-path: inset(0 0 50% 0);
   pointer-events: none;
   transition: opacity 0.3s ease;
   opacity: 0;
+}
+
+.modal-dialog [data-simplebar="init"]::after {
+  bottom: -30px;
+  height: 60px;
+  background: radial-gradient(ellipse 100% 20% at center,
+      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0),
+      transparent);
 }
 
 
