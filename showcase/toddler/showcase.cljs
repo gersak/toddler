@@ -1,7 +1,6 @@
 (ns toddler.showcase
   {:shadow.css/include
-   ["css/toddler.css"
-    "css/simplebar.css"]}
+   ["css/toddler.css"]}
   (:require
    ["react" :as react]
    ["react-dom/client" :refer [createRoot]]

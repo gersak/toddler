@@ -27,19 +27,8 @@
   (let [close! (router/use-go-to :toddler.modal)]
     #(close!)))
 
-(defhook use-register [id segment]
-  (router/use-link
-   :toddler.modal
-   [{:id id :segment segment}]))
-
-(defnc Complex
-  []
-  (use-register :toddler.modal.complex "complex"))
-
 (defnc dialog-example
   [{:keys [opened? context]}]
-  (use-register :toddler.modal.background "background")
-  (use-register :toddler.modal.dialog "dialog")
   (let [close! (use-close)
         translate (toddler/use-translate)]
     (when opened?
@@ -77,31 +66,50 @@
 
 (defnc form-tab
   []
-  ($ ui/tab
-     {:id ::form
-      :name "Form"}
-     (d/div
-      {:className (css
-                   ["& .toddler-row" :my-2 {:gap "0.75em"}])}
-      ($ ui/row
-         ($ ui/input-field
-            {:name "First Name"})
-         ($ ui/input-field
-            {:name "Last Name"}))
-      ($ ui/row
-         ($ ui/input-field
-            {:name "Address"}))
-      ($ ui/row
-         ($ ui/input-field
-            {:name "City"}))
-      ($ ui/row
-         ($ ui/input-field
-            {:name "Country"})))))
+  (let [[{:keys [first-name last-name address
+                 city country date-of-birth]} set-state!] (hooks/use-state nil)
+        change-field (hooks/use-callback
+                       :once
+                       (fn [k v]
+                         (set-state! assoc k v)))]
+    ($ ui/tab
+       {:id ::form
+        :name "Form"}
+       (d/div
+        {:className (css
+                     ["& .toddler-row" :my-2 {:gap "0.75em"}])}
+        ($ ui/row
+           ($ ui/input-field
+              {:name "First Name"
+               :value first-name
+               :on-change #(change-field :first-name %)})
+           ($ ui/input-field
+              {:name "Last Name"
+               :value last-name
+               :on-change #(change-field :last-name %)}))
+        ($ ui/row
+           ($ ui/input-field
+              {:name "Address"
+               :value address
+               :on-change #(change-field :address %)}))
+        ($ ui/row
+           ($ ui/input-field
+              {:name "City"
+               :value city
+               :on-change #(change-field :city %)}))
+        ($ ui/row
+           ($ ui/input-field
+              {:name "Country"
+               :value country
+               :on-change #(change-field :country %)}))
+        ($ ui/row
+           ($ ui/date-field
+              {:name "Date of birth"
+               :value date-of-birth
+               :on-change #(change-field :date-of-birth %)}))))))
 
 (defnc complex-dialog-example
   [{:keys [opened? context]}]
-  (use-register :toddler.modal.background "background")
-  (use-register :toddler.modal.dialog "dialog")
   (let [close! (use-close)
         translate (toddler/use-translate)]
     (when opened?
@@ -126,14 +134,33 @@
           ($ ui/button {:on-click close!} (translate :cancel)))))))
 
 (defnc Modal
-  {:wrap [(router/wrap-rendered :toddler.modal)]}
+  {:wrap [(router/wrap-rendered :toddler.modal)
+          (router/wrap-link
+           :toddler.modal
+           [{:id ::intro
+             :name "Intro"
+             :hash "intro"}
+            {:id ::modal-dialog
+             :name "Dialog"
+             :hash "modal-dialog"}
+            {:id ::complex-dialog
+             :name "Complex"
+             :hash "complex-dialog"}
+            {:id :toddler.modal.background
+             :segment "background"}
+            {:id :toddler.modal.dialog
+             :segment "dialog"}
+            {:id :toddler.modal.complex-dialog
+             :segment "complex-dialog"}])]}
   []
   (let [{:keys [height width]} (layout/use-container-dimensions)
         translate (toddler/use-translate)
         show-background! (router/use-go-to :toddler.modal.background)
         background-opened? (router/use-rendered? :toddler.modal.background)
         show-dialog! (router/use-go-to :toddler.modal.dialog)
+        show-complex! (router/use-go-to :toddler.modal.complex-dialog)
         dialog-opened? (router/use-rendered? :toddler.modal.dialog)
+        complex-dialog-opened? (router/use-rendered? :toddler.modal.complex-dialog)
         [context set-context!] (hooks/use-state nil)
         close! (use-close)]
     ($ ui/simplebar
@@ -146,8 +173,11 @@
               :style {:max-width "30rem"
                       :min-height 1500}}
              ($ md/watch-url {:url "/doc/en/modal.md"})
-             ($ complex-dialog-example
+             ($ dialog-example
                 {:opened? dialog-opened?
+                 :context context})
+             ($ complex-dialog-example
+                {:opened? complex-dialog-opened?
                  :context context})
              ($ toddler/portal
                 {:locator #(.getElementById js/document "modal-background-example")}
@@ -187,4 +217,11 @@
                                      (set-context! "warn")
                                      (show-dialog!))
                         :class ["warn"]}
-                       (translate :warn))))))))))
+                       (translate :warn)))))
+             ($ toddler/portal
+                {:locator #(.getElementById js/document "complex-modal-dialog-example")}
+                ($ ui/row
+                   {:align :center}
+                   ($ ui/button
+                      {:on-click #(show-complex!)}
+                      (translate :open)))))))))

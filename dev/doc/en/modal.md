@@ -94,3 +94,94 @@ by adding class to content that is added to ui/modal-dialog component
 ```
 
 
+## Complex Modal
+This is more complex example that combines two tabs. First tab is
+some message that demonstrates how scrollbar will behave. Second
+tab represents example form for user information.
+
+<div id="complex-modal-dialog-example"></div>
+
+```clojure
+(defnc text-tab
+  []
+  (let [{:keys [height]} (layout/use-container-dimensions)
+        translate (toddler/use-translate)]
+    ($ ui/tab
+       {:id ::text
+        :name "Message"}
+       ($ ui/simplebar
+          {:style {:height height}
+           :shadow true}
+          (d/pre
+           {:className (css :mt-4 :p-4 :word-break :whitespace-pre-wrap)}
+           (translate :showcase.content.large))))))
+
+(defnc form-tab
+  []
+  (let [[{:keys [first-name last-name address
+                 city country date-of-birth]} set-state!] (hooks/use-state nil)
+        change-field (hooks/use-callback
+                       :once
+                       (fn [k v]
+                         (set-state! assoc k v)))]
+    ($ ui/tab
+       {:id ::form
+        :name "Form"}
+       (d/div
+        {:className (css
+                     ["& .toddler-row" :my-2 {:gap "0.75em"}])}
+        ($ ui/row
+           ($ ui/input-field
+              {:name "First Name"
+               :value first-name
+               :on-change #(change-field :first-name %)})
+           ($ ui/input-field
+              {:name "Last Name"
+               :value last-name
+               :on-change #(change-field :last-name %)}))
+        ($ ui/row
+           ($ ui/input-field
+              {:name "Address"
+               :value address
+               :on-change #(change-field :address %)}))
+        ($ ui/row
+           ($ ui/input-field
+              {:name "City"
+               :value city
+               :on-change #(change-field :city %)}))
+        ($ ui/row
+           ($ ui/input-field
+              {:name "Country"
+               :value country
+               :on-change #(change-field :country %)}))
+        ($ ui/row
+           ($ ui/date-field
+              {:name "Date of birth"
+               :value date-of-birth
+               :on-change #(change-field :date-of-birth %)}))))))
+
+(defnc complex-dialog-example
+  [{:keys [opened? context]}]
+  (let [close! (use-close)
+        translate (toddler/use-translate)]
+    (when opened?
+      ($ ui/modal-dialog
+         {:on-close close!
+          :width 300
+          :className (when context (name context))}
+         (d/span
+          {:className "title"}
+          (translate :showcase.modal.dialog.title))
+         ($ layout/Container
+            {:class "content"
+             :style {:width 400
+                     :height 400}}
+            ($ ui/tabs
+               {:style {:max-height 400}}
+               ($ text-tab)
+               ($ form-tab)))
+         (d/div
+          {:className "footer"}
+          ($ ui/button {:on-click close!} (translate :ok))
+          ($ ui/button {:on-click close!} (translate :cancel)))))))
+```

@@ -625,7 +625,6 @@ body {
 
 
 /* Simplebar */
-
 [data-simplebar] {
   position: relative;
   flex-direction: column;
@@ -634,6 +633,64 @@ body {
   align-content: flex-start;
   align-items: flex-start
 }
+
+[data-simplebar="init"] {
+  /*overflow: hidden;*/
+}
+
+/* Inner shadow styles */
+[data-simplebar="init"]::before,
+[data-simplebar="init"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 10px;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+
+[data-simplebar="init"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -40px;
+  height: 80px;
+  /* Adjust height for a larger glow area */
+  background: radial-gradient(ellipse 100% 30% at center,
+      rgba(0, 0, 0, 0.1),
+      rgba(0, 0, 0, 0),
+      transparent);
+  clip-path: inset(50% 0 0 0);
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+  /* Initially hidden */
+}
+
+[data-simplebar="init"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -30px;
+  height: 60px;
+  background: radial-gradient(ellipse 100% 20% at center, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0), transparent);
+  clip-path: inset(0 0 50% 0);
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+.modal-dialog [data-simplebar="init"]::after {
+  bottom: -30px;
+  height: 60px;
+  background: radial-gradient(ellipse 100% 20% at center, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0), transparent);
+}
+
+
 
 .simplebar-wrapper {
   overflow: hidden;
@@ -771,13 +828,13 @@ body {
   border-radius: 2px;
   left: 2px;
   right: 2px;
-  /* opacity: 0; */
-  transition: opacity .2s linear
+  opacity: 0;
+  transition: opacity .4s linear
 }
 
 .simplebar-scrollbar.simplebar-visible:before {
-  /* opacity: .5; */
-  /* transition: opacity 0s linear */
+  opacity: 1;
+  transition: opacity 0s linear
 }
 
 .simplebar-track.simplebar-vertical {
@@ -815,6 +872,8 @@ body {
   right: auto;
   left: 0
 }
+
+/*inset 0 -10px 8px -12px rgb(0 0 0 / 29%)*/
 
 .hs-dummy-scrollbar-size {
   direction: rtl;
