@@ -22,8 +22,7 @@
    [toddler.dropdown :as dropdown]
    ["react" :as react]
    [toddler.i18n :as i18n]
-   [shadow.css :refer [css]]
-   [clojure.string :as str]))
+   [shadow.css :refer [css]]))
 
 (def -level- (create-context))
 
@@ -38,10 +37,11 @@
       (when rendered?
         (let [close-channel (app/listen-to-signal
                              :toddler.md/intersection
-                             (fn [{_id :id}]
+                             (fn [{ids :ids}]
+                               (println "CHECKING " ids)
                                (set-visible!
                                 (fn [current]
-                                  (let [targeting? (= _id hash)]
+                                  (let [targeting? (contains? ids hash)]
                                     (cond
                                       (and (not current) targeting?)
                                       (do

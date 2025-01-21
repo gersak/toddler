@@ -24,7 +24,8 @@
   [{:keys [height icons]}]
   ($ ui/simplebar
      {:style {:height (- height 80)}
-      :className (css :pt-4)}
+      :className (css :pt-4)
+      :shadow true}
      (d/div
       {:className (css
                    :flex :flex-wrap

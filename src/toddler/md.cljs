@@ -9,8 +9,9 @@
    [toddler.core :refer [fetch]]
    [toddler.showcase.css :refer [$default]]
    [toddler.showcase]
+   [toddler.util :as util]
+   [toddler.router :as router]
    ["markdown-it" :as markdownit]
-   ["markdown-it-anchor" :as anchor]
    ["markdown-it-emoji"
     :refer [full]
     :rename {full emoji}]
@@ -59,27 +60,67 @@
                [content]
                (when content
                  (.render md content)))
-        observer (hooks/use-memo
-                   :once
-                   (js/IntersectionObserver.
-                    (fn [entries _observer]
-                      (doseq [entry entries]
-                        (when (.-isIntersecting entry)
-                          (async/put!
-                           app/signal-channel
-                           {:topic ::intersection
-                            ; :threshold 0.1
-                            :id (.. entry -target -id)}))))
-                    #js {:root nil
-                         :rootmargin "0"}))]
+        {:keys [hash]} (router/use-location)
+        scroll (hooks/use-ref nil)]
     (hooks/use-effect
-      :always
-      (let [sections (.querySelectorAll js/document "section")]
-        (doseq [section sections]
-          (.observe observer section))
-        (fn []
-          (doseq [section sections]
-            (.unobserve observer section)))))
+      :once
+      (when-let [scroll-element (util/find-parent
+                                 @editor
+                                 (fn [^js el]
+                                   (let [class (.getAttribute el "class")]
+                                     (when (and el class (.includes class "simplebar-content-wrapper"))
+                                       el))))]
+        (letfn [(on-scroll [event]
+                  (let [{:keys [sections]
+                         currently-visible :visible} @scroll
+                        scroll-element (.-target event)
+                        scroll-dimensions (.getBoundingClientRect scroll-element)
+                        scroll-height (.-height scroll-dimensions)
+                        start (.-scrollTop scroll-element)
+                        end (+ start scroll-height)
+                        visible (set
+                                 (keep
+                                  (fn [^js el]
+                                    (let [section-start (.-offsetTop el)
+                                          section-height (.-height (.getBoundingClientRect el))
+                                          section-end (+ section-start section-height)]
+                                      (when (or
+                                                ;; If section start is currently visible
+                                             (<= start section-start end)
+                                                ;; if section start isn't visible but
+                                                ;; section hasn't ended jet
+                                             (<= section-start start section-end)
+                                                ;;
+                                             (<= section-start end section-end))
+                                        (.getAttribute el "id"))))
+                                  sections))]
+                    (when (not= currently-visible visible)
+                      (swap! scroll assoc :visible visible)
+                      (async/put!
+                       app/signal-channel
+                       {:topic ::intersection
+                        :ids visible}))))]
+          (.addEventListener scroll-element "scroll" on-scroll)
+          (reset! scroll {:scroll-element scroll-element})
+          (fn []
+            (.removeEventListener scroll-element "scroll" on-scroll)))))
+    (hooks/use-layout-effect
+      [hash]
+      (when hash
+        (async/go
+          (async/<! (async/timeout 500))
+          (when-let [el (.getElementById js/document hash)]
+            (when (.contains (:scroll-element @scroll) el)
+              (let [offset-top (.-offsetTop el)
+                    scroll (:scroll-element @scroll)]
+                (.scrollTo scroll
+                           #js {:top offset-top
+                                :behavior "smooth"}))))
+          (let [sections (filter
+                          (fn [el]
+                            (.contains (:scroll-element @scroll) el))
+                          (.querySelectorAll js/document "section"))]
+            (swap! scroll assoc :sections sections)))))
     (d/div
      {:ref #(reset! editor %)
       :dangerouslySetInnerHTML #js {:__html text}
