@@ -254,13 +254,16 @@
                    (on-path? tree (maybe-remove-base base original-pathname) id))]
     (when on-path?
       (.setItem js/sessionStorage last-rendered-key [id original-pathname]))
-    (hooks/use-effect
-      [hash]
-      (when hash
-        (async/go
-          (async/<! (async/timeout 500))
-          (when-some [el (.getElementById js/document hash)]
-            (.scrollIntoView el #js {:block "start" :behavior "smooth"})))))
+    #_(hooks/use-effect
+        [hash]
+        (when hash
+          (async/go
+            (async/<! (async/timeout 500))
+            (when-some [el (.getElementById js/document hash)]
+              (.scrollIntoView el #js {:block "nearest"
+                                       :inline "nearest"
+                                     ;:behavior "smooth"
+                                       })))))
     on-path?))
 
 (defhook use-component-name

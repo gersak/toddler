@@ -132,7 +132,8 @@
   (let [{:keys [height width]} (layout/use-container-dimensions)]
     ($ ui/simplebar
        {:style {:height height
-                :width width}}
+                :width width}
+        :shadow true}
        ($ ui/row {:align :center}
           ($ ui/column
              {:align :center

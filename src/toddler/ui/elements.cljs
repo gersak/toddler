@@ -70,17 +70,6 @@
                           scroll-height (-
                                          (.-scrollHeight el)
                                          (.-clientHeight el))]
-                      (println "SSSSJOSOS: " [scroll-top scroll-height])
-                      (println "DECISIONS: "
-                               (zero? scroll-top)
-                               (>= scroll-top scroll-height)
-                               (and
-                                (> scroll-top 0)
-                                (not (>= scroll-top scroll-height)))
-                               (and
-                                (> scroll-top 0)
-                                (not (>= scroll-top scroll-height)))
-                               (> scroll-top 0))
                       (cond
                         ;;
                         (zero? scroll-top)
@@ -359,7 +348,7 @@
                         ["& .label"
                          :text-normal
                          :font-bold
-                         :m-1
+                         ; :m-1
                          :select-none
                          {:text-transform "uppercase"
                           :font-size "0.75rem"}])}

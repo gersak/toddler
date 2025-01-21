@@ -109,14 +109,13 @@
                :on-change #(change-field :date-of-birth %)}))))))
 
 (defnc complex-dialog-example
-  [{:keys [opened? context]}]
+  [{:keys [opened?]}]
   (let [close! (use-close)
         translate (toddler/use-translate)]
     (when opened?
       ($ ui/modal-dialog
          {:on-close close!
-          :width 300
-          :className (when context (name context))}
+          :width 300}
          (d/span
           {:className "title"}
           (translate :showcase.modal.dialog.title))
@@ -177,8 +176,7 @@
                 {:opened? dialog-opened?
                  :context context})
              ($ complex-dialog-example
-                {:opened? complex-dialog-opened?
-                 :context context})
+                {:opened? complex-dialog-opened?})
              ($ toddler/portal
                 {:locator #(.getElementById js/document "modal-background-example")}
                 ($ ui/row
