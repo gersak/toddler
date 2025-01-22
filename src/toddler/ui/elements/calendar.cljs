@@ -9,18 +9,6 @@
    [toddler.material.outlined :as outlined]
    [toddler.date :as date]))
 
-(def $calendar-month-dropdown
-  (css
-   {:margin "5px 0"
-    :cursor "pointer"}
-   ["& input" :cursor-pointer :text-inactive]))
-
-(def $calendar-year-dropdown
-  (css
-   {:margin "5px 0"
-    :cursor "pointer"}
-   ["& input" :cursor-pointer :text-inactive]))
-
 (def $calendar-month-header
   (css
    :flex
@@ -50,7 +38,7 @@
 (def $calendar-day
   (css
     ;;
-   :text-inactive
+   :color-inactive
     ;;
    ["& .day"
     :w-10 :h-6 :flex :items-center :justify-center
@@ -65,7 +53,7 @@
     :border
     :border-solid
     :border-transparent
-    :text-inactive
+    :color-inactive
     :cursor-default]
     ;;
    ["&:hover:not(.empty):not(.period-start):not(.period-end):not(.picked) .day"
@@ -75,38 +63,43 @@
    ["&.selected .day"
     {:border-top "1px solid var(--cd-selected-border)"
      :border-bottom "1px solid var(--cd-selected-border)"
-     :color "var(--cd-selected-color)"}]
+     :color "var(--cd-selected-color) !important"}]
    ["&.picked .day"
-    {:border-left "1px solid var(--cd-selected-border)"
+    {:color "var(--cd-selected-color)"
+     :border-left "1px solid var(--cd-selected-border)"
      :border-right "1px solid var(--cd-selected-border)"
      :border-top "1px solid var(--cd-selected-border)"
      :border-bottom "1px solid var(--cd-selected-border)"
-     :border-top-left-radius "1px"
-     :border-bottom-left-radius "1px"
-     :border-top-right-radius "1px"
-     :border-bottom-right-radius "1px"}]
+     :border-top-left-radius "3px"
+     :border-bottom-left-radius "3px"
+     :border-top-right-radius "3px"
+     :border-bottom-right-radius "3px"}]
     ;;
    ["&.prev-month:not(.period-start):not(.period-end):not(.picked) .day, &.next-month .day:not(.period-end):not(.picked)"
     {:color "var(--cd-other-color)"}]
     ;;
    ["&.selected:first-child .day, &.period-start .day"
     {:border-left "1px solid var(--cd-selected-border) "
-     :border-top-left-radius "1px"
-     :border-bottom-left-radius "1px"}]
+     :border-top-left-radius "3px"
+     :border-bottom-left-radius "3px"}]
     ;;
    ["&.period-start .day"
     {:border-right "1px solid var(--cd-selected-border)"
      :background-color "var(--cd-period-marker-bg)"
+     :border-top-left-radius "3px"
+     :border-bottom-left-radius "3px"
      :color "var(--cd-period-marker-color)"}]
     ;;
    ["&.selected:last-child .day, &.period-end .day"
     {:border-right "1px solid var(--cd-selected-border) "
-     :border-top-right-radius "1px"
-     :border-bottom-right-radius "1px"}]
+     :border-top-right-radius "3px"
+     :border-bottom-right-radius "3px"}]
    ["&.period-end .day"
     {:border-left "1px solid var(--cd-selected-border)"
      :background-color "var(--cd-period-marker-bg) "
-     :color "var(--cd-period-marker-color)"}]))
+     :color "var(--cd-period-marker-color)"
+     :border-top-right-radius "3px"
+     :border-bottom-right-radius "3px"}]))
 
 (def $calendar
   (css
@@ -131,12 +124,12 @@
    ["& .header" :select-none]
    ["& .header svg"
     :border :border-transparent
-    {:transition "border-color .3s ease-in-out, background-color .3s ease-in-out, color .3s ease-in-out"}]
+    {:transition "border-color .3s ease-in-out, background-color .3s ease-in-out, color .3s ease-in-out"
+     :color "var(--calendar-button-color)"}]
    ["& .header svg:hover"
     :rounded-sm
     {:background-color "var(--calendar-button-bg-hover)"
-     :color "var(--calendar-button-color-hover)"
-     :border-color "var(--calendar-button-border-hover)"}]
+     :color "var(--calendar-button-color-hover)"}]
    ["& .header .back, & .header .forward" :flex]
    ["& .header .info" :flex :justify-center :items-center :px-2]
    ["& .header .info .month" :uppercase

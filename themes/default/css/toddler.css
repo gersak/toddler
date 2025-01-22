@@ -20,45 +20,14 @@ html[data-theme="light"] {
   --font-family: 'Montserrat';
 
   /* Background */
-  --background-normal: #f0f0f0;
+  --background: #f0f0f0;
+  --background-p1: #f5f6f8;
+  --background-m1: #cccccc;
   --background-neutral: #f0f0f0;
-  /*--background-positive: #d4f0e4;*/
   --background-positive: #e8f8f1;
-  /*--background-positive: #caedde;*/
   --background-negative: #f0d4d4;
   --background-warn: #ffdcc6;
   --background-lighter: #f5f6f8;
-  --background-normal-plus: #f5f6f8;
-  --background-normal-minus: #cccccc;
-
-  /* Navigation */
-  --navigation-bar-breadcrumb: #E7EAE8;
-  --navigation-bar-bg: #2F3732;
-  --navigation-menu-item: #6C736C;
-  /* --navigation-menu-item-hover: #689579; */
-  /* --navigation-menu-item-selected: #E7EAE8; */
-  --navigation-menu-item-hover: #E7EAE8;
-  --navigation-menu-item-selected: #689579;
-  --navigation-submenu-item: #E7EAE8;
-  --navigation-submenu-item-hover: #689579;
-  --navigation-submenu-menu-item-selected-border: #6C736C;
-  --navigation-menu-avatar-border: #6C736C;
-
-  --settings-bg: #e8e8e8;
-  --settings-theme-text: #E7EAE8;
-  --settings-theme-bg: #2F3732;
-
-
-  /* Action Bar */
-  --action-bar-bg: #FCFCFC;
-  --action-bar-action: #575757;
-  --action-bar-action-hover: #689579;
-  --action-bar-action-selected: #2F3732;
-
-
-  /* Drawer */
-  --drawer-bg: #FCFCFC;
-
 
   /* Tabs */
   --tab-color: #575757;
@@ -106,13 +75,12 @@ html[data-theme="light"] {
 
 
   /* Borders */
-  --border-normal-: #C6C9C6;
-  --border-normal+: #484848;
+  --border-normal-m1: #C6C9C6;
+  --border-normal-p1: #575757;
   --border-normal: #C6C9C6;
   --border-negative: #c5a4a4;
   --border-positive: #b3d1c5;
   --border-warning: #d2b49f;
-  --border-highlighted: #575757;
   --border-hover: #689579;
   --border-click: #477759;
 
@@ -222,6 +190,178 @@ html[data-theme="light"] {
   --table-hover-bg: #d0e9fb;
   --table-hover-border: #69b5f3;
 
+  --scroll-shadow-top: radial-gradient(ellipse 100% 30% at center, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0), transparent);
+  --scroll-shadow-bottom: radial-gradient(ellipse 100% 20% at center, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0), transparent);
+  --scroll-shadow-modal-bottom: radial-gradient(ellipse 100% 20% at center, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0), transparent);
+}
+
+
+html[data-theme="dark"] {
+  --font-family: 'Montserrat';
+
+  /* Background */
+  --background: #262626;
+  --background-p1: #202020;
+  --background-m1: #474747;
+  --background-neutral: #262626;
+  --background-positive: #253d33;
+  --background-negative: #4c2222;
+  /*--background-warn: #91561a;*/
+  --background-warn: #814f41;
+
+  /* Tabs */
+  --tab-color: #575757;
+  --tab-bg: transparent;
+  --tab-hover-color: #000000;
+  --tab-hover-bg: transparent;
+  --tab-selected-color: #000000;
+  --tab-selected-bg: #C6C9C6;
+
+
+  /* Colors */
+  --color-positive: #689579;
+  --color-negative: #B56B6B;
+  --color-warn: #7C9FB2;
+  --color-important: #C6C9C6;
+  --color-exception: #736D9B;
+  --color-neutral: #eaeaea;
+  --color-inactive: #828282;
+  --color-normal: #eaeaea;
+  --color-m1: #828282;
+  --color: #eaeaea;
+  --color-p1: #ffffff;
+  --color-p2: #ffffff;
+
+
+  /* Modal */
+  --modal-bg: #000000;
+  --modal-layer-bg: #232323c4;
+  --modal-layer-bg-filter: blur(2px);
+  --modal-close: #f3f3f3;
+  --modal-close-hover: #ffffff;
+
+
+  /* Borders */
+  --border-normal-m1: #C6C9C6;
+  --border-normal-p1: #838383;
+  --border-normal: #404040;
+  --border-positive: #253d33;
+  --border-negative: #4c2222;
+  --border-warning: #814f41;
+  --border-highlighted: #575757;
+  --border-hover: #689579;
+  --border-click: #477759;
+
+
+  /* Calendar */
+  --cd-other-color: #6C736C;
+  --cd-hover-color: #689579;
+  --cd-hover-border: #C6C9C6;
+  --cd-selected-color: #efefef;
+  --cd-selected-border: #505050;
+  --cd-period-marker-bg: #494949;
+  --cd-period-marker-color: #484848;
+  /*--calendar-button-bg-hover: #E7EAE8;*/
+  --calendar-button-color: #828282;
+  --calendar-button-color-hover: #ffffff;
+  --calendar-button-border-hover: transparent;
+
+  /* Button */
+  --button-positive-color: #e5e5e5;
+  --button-positive-hover-color: #95e87a;
+  --button-positive-bg: #4a4a4a;
+  --button-positive-hover-bg: #4a4a4a;
+
+  --button-negative-color: #e5e5e5;
+  --button-negative-hover-color: #ff7267;
+  --button-negative-bg: #4a4a4a;
+  --button-negative-hover-bg: #4a4a4a;
+
+  /*--button-neutral-color: #e5e5e5;*/
+  --button-neutral-color: #e9e9e9;
+  --button-neutral-bg: #4a4a4a;
+  --button-neutral-hover-bg: #4a4a4a;
+  --button-neutral-hover-color: #ffffff;
+
+
+  --button-disabled-color: #ffffff;
+  --button-disabled-bg: #aaaaaa;
+
+
+  /* Tooltip */
+  --tooltip-color: #ffffff;
+  --tooltip-bg: #4a4a4a;
+  --tooltip-border: #C6C9C6;
+  --tooltip-positive: #e8f8f1;
+  --tooltip-positive-text: #161616;
+  --tooltip-positive-border: #689579;
+  --tooltip-negative: #f0d4d4;
+  --tooltip-negative-text: #161616;
+  --tooltip-negative-border: #B56B6B;
+  --tooltip-warn: #ffdcc6;
+  --tooltip-warn-text: #161616;
+  --tooltip-warn-border: #E7A387;
+  --tooltip-important: #C6C9C6;
+  --tooltip-important-text: #161616;
+  --tooltip-important-border: #C6C9C6;
+  --tooltip-exception: #736D9B;
+  --tooltip-exception-text: #161616;
+  --tooltip-exception-border: #736D9B;
+  --tooltip-neutral: #C6C9C6;
+  --tooltip-neutral-text: #161616;
+  --tooltip-neutral-border: #C6C9C6;
+
+
+  /* Notifications */
+  --notification-positive: #3b6a57;
+  --notification-negative: #7c3333;
+  --notification-warn: #943e25;
+  --notification-neutral: #000000;
+
+  /* Fields */
+  --placeholder-normal: #838383;
+  --field-label: #757575;
+  --field-text: #bfbfbf;
+  --field-border: #464646;
+  --field-border-hover: #689579;
+  --field-border-active: #959595;
+  --field-bg: transparent;
+  --field-bg-hover: #1e1e1e;
+  --field-bg-active: #1e1e1e;
+  --dropdown-bg: #1e1e1e;
+  --dropdown-border: #959595;
+  --input-normal-click: input-normal-click-dark;
+  --box-button-normal-click: box-button-normal-click-dark;
+
+  /* Tag */
+  --tag-color-normal: #484848;
+  --tag-bg-normal: #d6d6d6;
+  --tag-border-normal: #d6d6d6;
+  --tag-border-normal-hover: #484848;
+  --tag--remove-hover: #B56B6B;
+
+  --tag-color-positive: #0d3300;
+  --tag-bg-positive: #a5e78f;
+  --tag-border-positive: #7bc065;
+  --tag-border-positive-hover: #0d3300;
+  --tag-positive-remove-hover: #000;
+
+  --tag-bg-negative: #eb8b84;
+  --tag-border-negative: #eb8b84;
+  --tag-color-negative: #7a0000;
+  --tag-border-negative-hover: #7a0000;
+  --tag-negative-remove-hover: #000;
+
+  /* Table */
+  --table-bg: #e2f1fc;
+  --table-text: #484848;
+  --table-border: #8daeca;
+  --table-hover-bg: #d0e9fb;
+  --table-hover-border: #69b5f3;
+
+  --scroll-shadow-top: radial-gradient(ellipse 100% 30% at center, rgba(172, 172, 172, 0.2), rgba(0, 0, 0, 0), transparent);
+  --scroll-shadow-bottom: radial-gradient(ellipse 100% 20% at center, rgba(172, 172, 172, 0.3), rgba(0, 0, 0, 0), transparent);
+  --scroll-shadow-modal-bottom: radial-gradient(ellipse 100% 40% at center, rgba(172, 172, 172, 0.3), rgba(0, 0, 0, 0), transparent);
 }
 
 
@@ -241,14 +381,14 @@ textarea::placeholder {
 
 
 html[data-theme="dark"] body {
-  color: #797979;
-  background-color: #101010;
+  color: #dddddd;
+  background-color: #262626;
 }
 
 
 html[data-theme="dark"] input::placeholder,
 textarea::placeholder {
-  color: #787b78;
+  color: #838383;
 }
 
 body {
@@ -444,7 +584,7 @@ h4 {
   }
 
   100% {
-    border-color: #232323;
+    border-color: #959595;
   }
 }
 
@@ -474,7 +614,7 @@ h4 {
   }
 
   100% {
-    color: #797979;
+    color: #C6C9C6;
   }
 }
 
@@ -659,10 +799,7 @@ body {
   top: -40px;
   height: 80px;
   /* Adjust height for a larger glow area */
-  background: radial-gradient(ellipse 100% 30% at center,
-      rgba(0, 0, 0, 0.1),
-      rgba(0, 0, 0, 0),
-      transparent);
+  background: var(--scroll-shadow-top);
   clip-path: inset(50% 0 0 0);
   pointer-events: none;
   transition: opacity 0.3s ease;
@@ -677,7 +814,7 @@ body {
   right: 0;
   bottom: -30px;
   height: 60px;
-  background: radial-gradient(ellipse 100% 20% at center, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0), transparent);
+  background: var(--scroll-shadow-bottom);
   clip-path: inset(0 0 50% 0);
   pointer-events: none;
   transition: opacity 0.3s ease;
@@ -687,7 +824,7 @@ body {
 .modal-dialog [data-simplebar="init"]::after {
   bottom: -30px;
   height: 60px;
-  background: radial-gradient(ellipse 100% 20% at center, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0), transparent);
+  background: var(--scroll-shadow-modal-bottom);
 }
 
 

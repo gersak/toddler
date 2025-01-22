@@ -50,12 +50,12 @@
                           (or (not-empty message) "You should type something in :)")
                           3000)
                          (set-message! "")))]
-    #_(hooks/use-effect
-        :once
-        (notifications/positive "Message" 0)
-        (notifications/negative "Message" 0)
-        (notifications/warning "Message" 0)
-        (notifications/neutral "Message" 0))
+    (hooks/use-effect
+      :once
+      (notifications/positive "Message" 0)
+      (notifications/negative "Message" 0)
+      (notifications/warning "Message" 0)
+      (notifications/neutral "Message" 0))
     ($ ui/row
        {:align :center}
        ($ ui/row

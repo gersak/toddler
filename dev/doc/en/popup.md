@@ -17,12 +17,12 @@ current screen.
 ### POPUP ELEMENT
 Uses popup area reference to compute where to position. Computing where to position
 works in following logic. Popup element expects **preference** property or uses
-default **preference** to decide what positions are preferable.
+**default-preference** to decide what positions are preferable.
 
 This preference is than used to try and fit popup element on screen and first
 position that can be fully visible is valid. ```popup/Element``` doesn't have
 width or height by default. This div is adjusted to size of its children, so
-whatever you put in, that is responsible for size of popup.
+whatever you put in, **that** is responsible for size of popup.
 
 ```clojure
 (def default-preference

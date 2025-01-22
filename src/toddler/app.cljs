@@ -6,6 +6,7 @@
 
 (def url (create-context))
 (def locale (create-context))
+(def theme (create-context))
 (def user (create-context))
 (def token (create-context))
 (def currency (create-context))
@@ -18,6 +19,7 @@
 
 (defhook use-window [] (hooks/use-context window))
 (defhook use-currency-options [] (hooks/use-context currency))
+(defhook use-theme [] (hooks/use-context theme))
 
 (defonce signal-channel (async/chan 100))
 (defonce signal-publisher (async/pub signal-channel :topic))

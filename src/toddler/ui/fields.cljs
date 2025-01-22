@@ -86,7 +86,8 @@
    ["& .icon.right" :flex :items-center :justify-center :cursor-pointer :mr-1]
    ["&:focus-within"
     :animate-border-click
-    {:background-color "var(--field-bg-active)"}]
+    {:background-color "var(--field-bg-active)"
+     :border-color "var(--field-border-active)"}]
    ["&:focus-within .decorator" :text-click]
    ["&:hover:not(.disabled):not(:focus-within)"
     {:background-color "var(--field-bg-hover)"
@@ -453,7 +454,8 @@
     :border-color "var(--field-border)"}
    ["&:focus-within"
     :animate-border-click
-    {:background-color "var(--field-bg-active)"}]
+    {:background-color "var(--field-bg-active)"
+     :border-color "var(--field-border-active)"}]
    ["& .decorator"
     {:width "24px" :height "24px"
      :margin-right "0.25rem"
@@ -646,8 +648,9 @@
   (css
    :flex :flex-col
    ["& .row"
-    :flex :text-normal :text-sm
-    {:gap "0.25rem"}]
+    :flex :text-sm
+    {:gap "0.25rem"
+     :color "var(--field-text)"}]
    ["& .row .date, & .row .time"
     :border
     {:background-color "var(--field-bg)"
@@ -758,7 +761,7 @@
 (def $period-field
   (css
    :flex :flex-col
-   ["& .inputs" :text-normal :text-sm]
+   ["& .inputs" :text-sm {:color "var(--field-text)"}]
    ["& .inputs .from-row, & .inputs .to-row"
     :flex
     {:gap "0.25rem"}]
@@ -775,7 +778,7 @@
      :min-height "40px"
      :color "var(--field-text)"
      :border-color "var(--field-border)"}]
-   ["& .inputs .date:focus-within, & .inputs .time:focus-within"
+   ["& .inputs .date:focus-within, & .inputs .time:focus-within, &.opened .inputs .date"
     {:background-color "var(--field-bg-active)"
      :border-color "var(--field-border-active)"
      :animation-name "var(--input-normal-click)"
@@ -784,9 +787,9 @@
     :absolute
     :h-4 :w-4
     :right-2]
-   ["& .inputs .date:hover:not(:focus-within), & .inputs .time:hover:not(:focus-within)"
+   ["&:not(.opened) .inputs .date:hover:not(:focus-within), &:not(.opened) .inputs .time:hover:not(:focus-within)"
     {:border-color "var(--field-border-hover)"}]
-   ["& .inputs .date:hover:not(:focus-within) svg, & .inputs .time:hover:not(:focus-within) svg" :text-hover]
+   ["& .inputs .date:hover:not(:focus-within) svg, & .inputs .time:hover:not(:focus-within) svg" :color-hover]
    ["& .inputs input" {:max-width "6rem"} :cursor-pointer :ml-3]
    ["& .calendar" :mt-1]
    #_["& .inputs .date"]))
@@ -816,7 +819,7 @@
       ($ popup/Area
          {:ref _area}
          (d/div
-          {:class [$period-field]}
+          {:class [$period-field (when show-dropdown? "opened")]}
           (d/div
            {:className "inputs"}
            (d/div
@@ -945,7 +948,7 @@
     (d/div
      {:class [(css
                :cursor-pointer
-               :text-normal
+               {:color "var(--field-text)"}
                ["& .toddler-checkbox-wrapper" :flex :items-center]
                ["& .toddler-checkbox-wrapper:hover" :text-hover]
                ["& .toddler-checkbox-wrapper > .figurative > svg" :h-5 :w-5]

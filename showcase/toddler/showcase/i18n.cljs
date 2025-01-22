@@ -136,22 +136,24 @@
                         :es "EUR"
                         :ja "JPY"
                         :en_IN "INR"
-                        :zh_CN "CNY"}]
+                        :zh_CN "CNY"}
+        $field (css :font-bold)]
     ($ ui/row
-       {:className css/$default}
+       {:className css/$default
+        :align :center}
        (d/div
         {:class ["table-container" (css ["& td" :px-2])]}
         (d/table
          (d/tbody
           (d/tr
-           (d/td (translate :date))
+           (d/td {:className $field} (translate :date))
            (d/td (translate (js/Date.) :full-datetime)))
              ;;
           (d/tr
-           (d/td (translate :account.balance))
+           (d/td {:className $field} (translate :account.balance))
            (d/td (translate (rand 10000) (get local-currency locale))))
           (d/tr
-           (d/td (translate :weather))
+           (d/td {:className $field} (translate :weather))
            (d/td (translatef :weather.report
                              (translate (rand-nth [:weather.sunny :weather.cloudy]))
                              (rand 100))))))))))

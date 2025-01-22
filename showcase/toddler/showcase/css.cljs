@@ -16,7 +16,7 @@
        ["& ul li" :text-xs]
        ["& pre > code" :rounded-lg :my-2 {:line-height "1.5"}]
        ["& p > code" :py-1 :px-2 :rounded-md :text-xxs :bg-normal- :font-semibold]
-       ["& .table-container" :border :my-6 :p-2 :rounded-lg :bg-normal+ :border]
+       ["& .table-container" :border :my-6 :p-2 :rounded-lg :bg-normal+ :border-normal+]
        ["& table tr" :h-6 :text-xxs]
        ["& .hljs" :bg-normal+]
         ; ["& table thead tr"]

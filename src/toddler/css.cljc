@@ -2,38 +2,25 @@
 
 (def components
   {:transition-normal {:transition "color .3s ease-in-out, border-color .3s ease-in-out, background-color .3s ease-in-out"}
-   :border-normal- {:border-color "var(--border-normal-)"} ;; not used
-   :border-normal+ {:border-color "var(--border-normal+)"}
+   :border-normal- {:border-color "var(--border-normal-m1)"} ;; not used
+   :border-normal+ {:border-color "var(--border-normal-p1)"}
    :border-normal {:border-color "var(--border-normal)"}
    :border-positive {:border-color "var(--border-positive)"}
    :border-negative {:border-color "var(--border-negative)"}
    :border-warning {:border-color "var(--border-warning)"}
-
-   ;; Deprecate border-normal prefix and replace with border-
-   :border-highlighted {:border-color "var(--border-highlighted)"}
-   :border-focused {:animation "input-normal-click .3s ease-in-out"}
+   :border-neutral {:border-color "var(--color-neutral)"}
+   :border-warn {:border-color "var(--color-warning)"}
+   :border-important {:border-color "var(--color-important)"}
+   :border-exception {:border-color "var(--color-exception)"}
    :border-hover {:border-color "var(--border-hover)"}
-   :border-click {:border-color "var(--border-click)"}
 
-   :bg-normal {:background-color "var(--background-normal)"}
-   :bg-opaque {:background-color "var(--bg-opaque)"}
-   :bg-focused {:background "var(--background-focused)"}
-   :bg-normal+ {:background "var(--background-normal-plus)"}
-   :bg-normal- {:background "var(--background-normal-minus)"}
-   ; :bg-highlighted {:background "var(--bg-highlighted)"}
-   ; :bg-hover {:background primary-green}
-
-   ;; REACHER
-   ; :reacher-download {:cursor "pointer" :color medium-green}
-   ; :reacher-download-hover {:cursor "pointer" :color primary-green}
-
-   ;; Modal
-   ; :button {:color dark-green
-   ;          :background-color "transparent"
-   ;          :border-radius "1px"
-   ;          :border (str "1px solid " dark-green)}
-   ; :button-hover {:background-color dark-green
-   ;                :color light-green}
+   :bg-positive {:background-color "var(--background-positive)"}
+   :bg-negative {:background-color "var(--background-negative)"}
+   :bg-neutral {:background-color "var(--background-neutral)"}
+   :bg-warn {:background-color "var(--background-warn)"}
+   :bg-normal {:background-color "var(--background)"}
+   :bg-normal+ {:background "var(--background-p1)"}
+   :bg-normal- {:background "var(--background-m1)"}
 
    ;; Buttons
    :button-positive {:color "var(--button-positive-color)"
@@ -67,34 +54,21 @@
    :modal-warn {:background-color "var(--background-warn)"}
 
    ;; Colors
-   :color-highlight {:color "var(--color-highlight)"}
+   :color-- {:color "var(--color-m1)"}
+   :color- {:color "var(--color-m1)"}
+   :color {:color "var(--color)"}
+   :color+ {:color "var(--color-p1)"}
+   :color++ {:color "var(--color-p2)"}
    :color-hover {:color "var(--color-hover)"}
    :color-click {:color "var(--color-click)"}
    :color-positive {:color "var(--color-positive)"}
    :color-negative {:color "var(--color-negative)"}
    :color-neutral {:color "var(--color-neutral) "}
+   :color-normal {:color "var(--color-normal) "}
    :color-important {:color "var(--color-important)"}
    :color-exception {:color "var(--color-exception)"}
    :color-warning {:color "var (--color-warning)"}
-
-   ;; Backgrounds
-   :bg-positive {:background-color "var(--background-positive)"}
-   :bg-negative {:background-color "var(--background-negative)"}
-   :bg-neutral {:background-color "var(--background-neutral)"}
-   :bg-warn {:background-color "var(--background-warn)"}
-   :bg-important {:background-color "var(--color-important)"}
-   :bg-exception {:background-color "var(--color-exception)"}
-   :bg-exception- {:background-color "var(--color-exception-light)"}
-   :bg-exception+ {:background-color "var(--color-exception-heavy)"}
-
-   ;; Borders
-   ; :border-modal {:border-color bg-modal}
-   :border-positive {:border-color "var(--color-positive)"}
-   :border-negative {:border-color "var(--color-negative)"}
-   :border-neutral {:border-color "var(--color-neutral)"}
-   :border-warn {:border-color "var(--color-warning)"}
-   :border-important {:border-color "var(--color-important)"}
-   :border-exception {:border-color "var(--color-exception)"}
+   :color-inactive {:color "var(--color-inactive)"}
 
    ;; Micro Actions
    :box-action {:background-color "var(--box-action-bg)"
@@ -102,6 +76,7 @@
                 :transition "color .3s ease-in-out"}
    :box-action-hover {:color "var(--box-action-color-hover)"}
    :box-action-selected {:color "var(--box-action-color-selected)"}
+
    ;;
    :tag {:background-color "var(--tag-bg)"
          :color "var(--tag-c)"
@@ -137,12 +112,12 @@
    :box-content {:box-sizing "content-box"}
    :select-none {:user-select "none"}
    :box-border {:box-sizing "border-box"}
-   :text-hover {:color "var(--text-hover)"}
-   :text-click {:color "var(--text-click)"}
-   :text-selected {:color "var(--text-selected)" :text-decoration "none"}
-   :text-normal {:text-decoration "none" :color "var(--text-normal)"}
+   ; :text-hover {:color "var(--text-hover)"}
+   ; :text-click {:color "var(--text-click)"}
+   ; :text-selected {:color "var(--text-selected)" :text-decoration "none"}
+   ; :text-normal {:text-decoration "none" :color "var(--text-normal)"}
    :text-inactive {:color "var(--text-inactive)" :text-decoration "none"}
-   :text-highlight {:text-decoration "none" :color "var(--text-highlight)"}
+   ; :text-highlight {:text-decoration "none" :color "var(--text-highlight)"}
    ;; TEXT SPACING
    :body-text {:font-size "14px" :font-weight "400" :line-height "24px"}
    :body-text-md {:font-size "14px" :font-weight "500" :line-height "24px"}

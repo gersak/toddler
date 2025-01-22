@@ -59,11 +59,11 @@
    :relative
    :border
    :border-normal
-   :color-normal
+   :color
    :text-xs
    {:background "var(--modal-bg)"}
    ["& > .content" :px-8]
-   ["& > .title" :px-8 :pt-6 :text-highlight :text-sm :font-semibold :pb-2]
+   ["& > .title" :px-8 :pt-6 :color+ :text-sm :font-semibold :pb-2]
    ["&.positive" :modal-positive]
    ["&.negative" :modal-negative]
    ["&.warn" :modal-warn]
@@ -106,7 +106,7 @@
               {:className
                (css :w-6 :h-6
                     :absolute :select-none :pointer-events-none
-                    {:color "var(--button-neutral-bg)"
+                    {:color "var(--color-p2)"
                      :top "-24px"
                      :right "-24px"})}))
          (c/children props))))))
@@ -114,7 +114,7 @@
 (def $strip
   (css
    :flex
-   :text-normal
+   :color
    :bg-normal
    :border
    :border-normal
@@ -164,11 +164,11 @@
    :box-content
    {:align-self "stretch"}
    ["& .close"
-    :text-inactive
+    :color-
     {:width "2em" :height "2em"
      :transition "all .3s ease-in-out"}]
    ["& .close:hover" :text]
-   ["& .title" :text-normal :font-bold :flex :items-end {:opacity "0.8"}]))
+   ["& .title" :color+ :font-bold :flex :items-end {:opacity "0.8"}]))
 
 (defnc modal-pavement
   [{:keys [title on-close max-width]

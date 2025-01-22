@@ -11,6 +11,7 @@
    [toddler.showcase]
    [toddler.util :as util]
    [toddler.router :as router]
+   [toddler.head :as head]
    ["markdown-it" :as markdownit]
    ["markdown-it-emoji"
     :refer [full]
@@ -61,7 +62,35 @@
                (when content
                  (.render md content)))
         {:keys [hash]} (router/use-location)
-        scroll (hooks/use-ref nil)]
+        scroll (hooks/use-ref nil)
+        theme (app/use-theme)
+        ; dark-url "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/tokyo-night-dark.min.css"
+        dark-url "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/base16/tomorrow-night.min.css"
+        light-url "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/base16/atelier-lakeside-light.min.css"]
+    (hooks/use-effect
+      [theme]
+      (letfn [(fetch-dark []
+                (head/remove
+                 :link
+                 {:href light-url
+                  :rel "stylesheet"})
+                (head/add
+                 :link
+                 {:href dark-url
+                  :rel "stylesheet"}))
+              (fetch-light []
+                (head/remove
+                 :link
+                 {:href dark-url
+                  :rel "stylesheet"})
+                (head/add
+                 :link
+                 {:href light-url
+                  :rel "stylesheet"}))]
+        (case theme
+          "light" (fetch-light)
+          "dark" (fetch-dark)
+          nil)))
     (hooks/use-effect
       :once
       (when-let [scroll-element (util/find-parent

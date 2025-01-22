@@ -38,8 +38,6 @@
    _ref]
   (let [$default (css
                   {:transition "box-shadow 0.3s ease-in-out"}
-                  ; ["&.shadow-top:before" {:top "0px" :box-shadow "inset 0 10px 8px -12px rgb(0 0 0 / 29%)"}]
-                  ; ["&.shadow-bottom:after" {:bottom "0px" :box-shadow "inset 0 -10px 8px -12px rgb(0 0 0 / 29%)"}]
                   ["&.shadow-top:before" {:z-index "100" :opacity "1 !important"}]
                   ["&.shadow-bottom:after" {:z-index "100" :opacity "1 !important"}])
         [shadow set-shadow!] (hooks/use-state #{})
@@ -141,7 +139,7 @@
                   :border-normal
                   {:min-height "2em"}
                   ["& button" :px-2 {:min-width "6em"}]
-                  ["& button:hover" :text-highlight]
+                  ["& button:hover" :color++]
                   ["& button:not(:last-child)" :border-r :border-normal]
                   :button:first-of-type {:border-top-left-radius "4px"
                                          :border-bottom-left-radius "4px"}
@@ -328,7 +326,6 @@
   [{:keys [className label position style align] :as props} _ref]
   (let [position (or position align)
         $layout (css
-                 :text-gray-800
                  {:display "flex"
                   :flex-direction "row"
                   :align-items "center"
@@ -491,10 +488,10 @@
     :mr-2]
     ;;
    ["& .toddler-dropdown-option:hover"
-    :text-hover]
+    :color++]
     ;;
    ["& .toddler-dropdown-option.selected"
-    :text-highlight]
+    :color+]
     ;;
    ["& .toddler-dropdown-option:first-child"
     {:border-top "none"}]))
@@ -595,7 +592,7 @@
     :border-radius "0.25rem"}
    ; ["& svg" :ml-2 :pr-1]
    :text-xs
-   :text-normal
+   :color
    :border
    :border-normal
    :cursor-pointer
@@ -614,7 +611,7 @@
                   :border-color "var(--tag-border-positive)"}]
    ["&.positive:hover" {:border-color "var(--tag-border-positive-hover)"}]
    ["&.fun" {:color "var(--tag-color-negative)" :background-color "var(--tag-bg-negative)"}]
-   ["&.selected" :border-highlighted]
+   ["&.selected" :border-normal+]
    ["& .remove:hover" {:color "var(--tag-normal-remove-hover)"}]
    ["&.negative .remove:hover" {:color "var(--tag-negative-remove-hover)"}]
    ["&.positive .remove:hover" {:color "var(--tag-positive-remove-hover)"}]))
@@ -1092,8 +1089,8 @@
    ["& .icon" :h-3 :w-3 {:margin-left "6px"}]
    ["& .name" {:margin-left "6px"}]
    ["&:first-child" :mr-4]
-   ["&[disabled]" :pointer-events-none :text-inactive]
-   ["&:hover" :bg-normal-focused :text-hover {:text-decoration "none"}]))
+   ["&[disabled]" :pointer-events-none :color-]
+   ["&:hover" :bg-normal-focused :color++ {:text-decoration "none"}]))
 
 (defnc action
   [{:keys [icon name className class disabled]

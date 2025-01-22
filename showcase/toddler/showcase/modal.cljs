@@ -118,9 +118,9 @@
           :width 300}
          (d/span
           {:className "title"}
-          (translate :showcase.modal.dialog.title))
+          "Complex Dialog")
          ($ layout/Container
-            {:class "content"
+            {:class ["content" (css :mt-4)]
              :style {:width 400
                      :height 400}}
             ($ ui/tabs

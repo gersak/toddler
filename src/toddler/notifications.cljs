@@ -297,6 +297,8 @@
      :justify-self "flex-end"
      :transition "color .3s ease-in-out"}
     :text-sm]
+   ["& .notification" {:background-color "var(--notification-neutral)"}]
+
    ["& .notification .close svg" :w-4 :h-4]
     ;;
    ["& .notification .close:hover" :cursor-pointer {:opacity "1"}]

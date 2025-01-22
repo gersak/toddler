@@ -94,7 +94,7 @@ by adding class to content that is added to ui/modal-dialog component
 ```
 
 
-## Complex Modal
+## Complex Dialog
 This is more complex example that combines two tabs. First tab is
 some message that demonstrates how scrollbar will behave. Second
 tab represents example form for user information.

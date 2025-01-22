@@ -20,6 +20,7 @@
    [toddler.window :as window]
    [toddler.popup :as popup]
    [toddler.dropdown :as dropdown]
+   [toddler.material.outlined :as outlined]
    ["react" :as react]
    [toddler.i18n :as i18n]
    [shadow.css :refer [css]]))
@@ -38,7 +39,6 @@
         (let [close-channel (app/listen-to-signal
                              :toddler.md/intersection
                              (fn [{ids :ids}]
-                               (println "CHECKING " ids)
                                (set-visible!
                                 (fn [current]
                                   (let [targeting? (contains? ids hash)]
@@ -108,6 +108,7 @@
                  :flex
                  :flex-col
                  :toddler/menu-link-selected
+                 ["& .components-wrapper" :mt-24]
                  ["& .title"
                   :flex
                   :h-20
@@ -118,7 +119,8 @@
                   {:font-family "Caveat Brush, serif"
                    :font-size "3rem"}]
                  ["& .component-list"
-                  :ml-3])]
+                  :ml-3])
+        theme (app/use-theme)]
 
     ($ ui/simplebar
        {:ref _ref
@@ -184,18 +186,28 @@
 
 (defnc header
   {:wrap [(react/forwardRef)]}
-  [{:keys [style]} _ref]
+  [{:keys [style theme on-theme-change]} _ref]
   (d/div
    {:className (css
                 :flex
                 :h-15
                 :flex-row-reverse
                 :pr-3
-                :box-border
-                {:color "#2c2c2c"})
+                :box-border)
     :ref _ref
     :style style}
-   ($ LocaleDropdown)))
+   (d/div
+    {:on-click (fn []
+                 (on-theme-change
+                  (case theme
+                    ("dark" 'dark) "light"
+                    ("light" 'light) "dark")))
+     :className (css :items-center :flex :items-center {:font-size "24px"}
+                     :cursor-pointer :color-inactive
+                     ["&:hover" :color-normal])}
+    (if (= "dark" theme)
+      ($ outlined/light-mode)
+      ($ outlined/dark-mode)))))
 
 (defnc empty-content
   []
@@ -210,26 +222,6 @@
           {:position :center
            :style #js {:height (:height window)}}
           "Select a component from the list"))))
-
-#_(defnc content
-    {:wrap [(react/forwardRef)]}
-    [{:keys [style]}]
-    (let [rendered-components (router/use-url->components)
-          render (hooks/use-memo
-                   [rendered-components]
-                   (last (filter some? (map :render rendered-components))))
-          $content (css
-                    :background-normal
-                    :rounded-md)]
-      (if render
-        (provider
-         {:context layout/*container-dimensions*
-          :value style}
-         (d/div
-          {:style style
-           :class [$content "render-zone"]}
-          ($ render)))
-        ($ empty-content))))
 
 (defnc content
   {:wrap [(react/forwardRef)]}
@@ -251,58 +243,60 @@
         [_navbar {navigation-width :width}] (use-dimensions)
         [_header] (use-dimensions)
         [_content {content-height :height}] (use-dimensions)
-        $playground (css
-                     :flex
-                     ["& .content" :flex :flex-col])
         header-height 50
         header-width (- (or max-width (:width window)) navigation-width)
         content-height (- (:height window) header-height)
-        content-width (- (or max-width (:width window)) navigation-width)]
+        content-width (- (or max-width (:width window)) navigation-width)
+        [theme set-theme!] (toddler/use-local-storage ::theme str)]
+    (hooks/use-effect
+      [theme]
+      (if-not theme
+        (set-theme! "light")
+        (async/go
+          (loop []
+            (if-some [html (.querySelector js/document "html")]
+              (when-not (= (.getAttribute html "data-theme") theme)
+                (.setAttribute html "data-theme" theme))
+              (do
+                (async/<! (async/timeout 100))
+                (recur)))))))
     ($ popup/Container
-       ($ ui/row
-          {:key ::center
-           & (cond->
-              {:position :center
-               :style {:flex-grow "1"}})}
-          ($ ui/row
-             {:key ::wrapper
-              :style {:max-width (+ content-width navigation-width)}}
-             ($ navbar {:ref _navbar})
-             ($ ui/column
-                {:className "content"}
-                ($ header
-                   {:ref _header
-                    :style {:width header-width
-                            :height header-height}})
-                ($ content
-                   {:ref _content
-                    :style {:height content-height
-                            :width content-width}}
-                   (map
-                    (fn [{:keys [id render]}]
-                      (when render
-                        ($ render {:key id})))
-                    components))))))))
+       (provider
+        {:context app/theme
+         :value theme}
+        ($ ui/row
+           {:key ::center
+            & (cond->
+               {:position :center
+                :style {:flex-grow "1"}})}
+           ($ ui/row
+              {:key ::wrapper
+               :style {:max-width (+ content-width navigation-width)}}
+              ($ navbar {:ref _navbar})
+              ($ ui/column
+                 {:className "content"}
+                 ($ header
+                    {:ref _header
+                     :theme theme
+                     :on-theme-change set-theme!
+                     :style {:width header-width
+                             :height header-height}})
+                 ($ content
+                    {:ref _content
+                     :style {:height content-height
+                             :width content-width}}
+                    (map
+                     (fn [{:keys [id render]}]
+                       (when render
+                         ($ render {:key id})))
+                     components)))))))))
 
 (defnc playground
   {:wrap [(window/wrap-window-provider)]}
   [{:keys [components max-width]}]
   (let [[{{locale :locale
            :or {locale :en}} :settings :as user} set-user!]
-        (hooks/use-state {:settings {:locale i18n/*locale*}})
-        [theme set-theme!] (hooks/use-state nil)]
-    (hooks/use-effect
-      :once
-      (async/go
-        (loop []
-          (if-some [html (.querySelector js/document "html")]
-            (when-not (= (.getAttribute html "data-theme") "light")
-              (.setAttribute html "data-theme" "light"))
-            #_(when-not (= (.getAttribute html "data-theme") "dark")
-                (.setAttribute html "data-theme" "dark"))
-            (do
-              (async/<! (async/timeout 100))
-              (recur))))))
+        (hooks/use-state {:settings {:locale i18n/*locale*}})]
     (router/use-link ::router/ROOT components)
     (provider
      {:context app/user
