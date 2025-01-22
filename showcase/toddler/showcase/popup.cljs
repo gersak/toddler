@@ -90,8 +90,7 @@
     (<>
      ($ ui/row
         ($ ui/dropdown-field
-           {:name "Position"
-            :value state
+           {:value state
             :on-change set-state!
             :placeholder "Choose context..."
             :options ["neutral"
