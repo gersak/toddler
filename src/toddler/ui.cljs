@@ -71,9 +71,7 @@
 ; (defcomponent calendar-year-dropdown :calendar/year-dropdown)
 
 (defcomponent calendar-day :calendar/day)
-(defcomponent calendar-week :calendar/week)
 (defcomponent calendar-month :calendar/month)
-(defcomponent calendar-time :calendar/time)
 (defcomponent calendar :calendar)
 (defcomponent calendar-period :calendar/period)
 

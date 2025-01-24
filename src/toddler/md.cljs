@@ -8,7 +8,6 @@
    [helix.hooks :as hooks]
    [toddler.core :refer [fetch]]
    [toddler.showcase.css :refer [$default]]
-   [toddler.showcase]
    [toddler.util :as util]
    [toddler.router :as router]
    [toddler.head :as head]

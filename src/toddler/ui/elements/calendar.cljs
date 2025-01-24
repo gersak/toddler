@@ -309,3 +309,9 @@
         :on-select #(when (ifn? on-change)
                       (on-change (period-change %)))})))
 
+(def components
+  (merge
+   {:calendar/day calendar-day
+    :calendar/month calendar-month
+    :calendar calendar
+    :calendar/period period-calendar}))

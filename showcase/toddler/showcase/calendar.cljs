@@ -3,63 +3,65 @@
    [helix.core :refer [$ defnc]]
    [helix.hooks :as hooks]
    [vura.core :as vura]
+   [shadow.css :refer [css]]
    ; [helix.dom :as d]
    [toddler.ui :as ui]
+   [toddler.core :as toddler]
+   [toddler.date :as date]
    [toddler.ui.components :as default]
-   [toddler.ui.elements :as e]
-   [toddler.layout :as layout]
-   [toddler.dev :as dev]))
+   [toddler.router :as router]
+   [toddler.md.lazy :as md]
+   [toddler.layout :as layout]))
 
+(defnc month
+  []
+  (let [[{:keys [days]}] (date/use-calendar-month {:date (js/Date.)})]
+    ($ ui/row
+       {:align :center
+        :className "component"}
+       ($ ui/calendar-month
+          {:days days}))))
+
+(defnc calendar
+  []
+  (let [[value set-value!] (hooks/use-state (js/Date.))]
+    ($ ui/row
+       {:align :center
+        :className "component"}
+       ($ ui/calendar
+          {:value value
+           :on-change set-value!}))))
+
+(defnc calendar-period
+  []
+  (let [[value set-value!] (hooks/use-state nil)]
+    ($ ui/row
+       {:align :center
+        :className "component"}
+       ($ ui/calendar-period
+          {:value value
+           :on-change set-value!}))))
 
 (defnc Calendar
-   []
-   (let [today (vura/date)
-         value (vura/date->value today)
-         context (vura/day-time-context value) 
-         [{:keys [week]} :as week-context] (vura/calendar-frame value :week)
-         month-context (vura/calendar-frame value :month)
-         [{:keys [month year]} set-dropdown!] (hooks/use-state nil)
-         [timestamp set-timestamp!] (hooks/use-state (vura/date 2023 6 1))
-         [period set-period!] (hooks/use-state [(vura/date 2022 1 1) (vura/date 2022 7 9)])
-         {:keys [height width]} (layout/use-container-dimensions)]
-      ($ default/Provider
-         ($ ui/simplebar
-            {:style {:height height
-                     :width width
-                     :boxSizing "border-box"}}
-            ; ($ ui/row
-            ;    {:label "Day"}
-            ;    ($ ui/calendar-day {& context}))
-            ($ ui/row
-               {:label "Week"}
-               ($ ui/calendar-week {:week week :days week-context}))
-            ($ ui/row
-               {:label "Month"}
-               ($ ui/calendar-month {:days month-context}))
-            ($ ui/row
-               {:label "Month dropdown"}
-               ($ ui/calendar-month-dropdown
-                  {:value month
-                   :onChange #(set-dropdown! assoc :month %)}))
-            ($ ui/row
-               {:label "Year dropdown"}
-               ($ ui/calendar-year-dropdown
-                  {:value year
-                   :onChange #(set-dropdown! assoc :year %)}))
-            ($ ui/row
-               {:label "Timestamp calendar"}
-               ($ e/timestamp-calendar
-                  {:value timestamp
-                   :onChange set-timestamp!}))
-            ($ ui/row
-               {:label "Period calendar"}
-               ($ e/period-calendar
-                  {:value period
-                   :onChange set-period!}))))))
-
-
-
-(dev/add-component
-   {:key ::calendar
-    :name "Calendar"
-    :render Calendar})
+  {:wrap [(router/wrap-rendered :toddler.calendar)]}
+  []
+  (let [{:keys [height width]} (layout/use-container-dimensions)]
+    ($ ui/simplebar
+       {:style {:height height
+                :width width}}
+       ($ ui/row {:align :center}
+          ($ ui/column
+             {:align :center
+              :style {:max-width "30rem"}
+              :className (css
+                          ["& .component" :my-6])}
+             ($ md/watch-url {:url "/doc/en/calendar.md"})
+             ($ toddler/portal
+                {:locator #(.getElementById js/document "calendar-month-example")}
+                ($ month))
+             ($ toddler/portal
+                {:locator #(.getElementById js/document "calendar-example")}
+                ($ calendar))
+             ($ toddler/portal
+                {:locator #(.getElementById js/document "calendar-period-example")}
+                ($ calendar-period)))))))

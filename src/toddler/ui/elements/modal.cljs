@@ -64,10 +64,9 @@
    {:background "var(--modal-bg)"}
    ["& > .content" :px-8]
    ["& > .title" :px-8 :pt-6 :color+ :text-sm :font-semibold :pb-2]
-   ["&.positive" :modal-positive]
-   ["&.negative" :modal-negative]
-   ["&.warn" :modal-warn]
-   ["&.warn" :modal-warn]
+   ["&.positive" :modal-positive :border-positive]
+   ["&.negative" :modal-negative :border-negative]
+   ["&.warn" :modal-warn :border-warning]
    ["& > .buttons, & > .footer"
     :pt-4 :px-8 :flex :justify-end :pb-4 {:gap "0.5rem"}]
    ["& > .buttons button, & > .footer button" :mx-0 :my-0]))

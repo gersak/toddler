@@ -86,7 +86,7 @@ html[data-theme="light"] {
   --cd-hover-border: #C6C9C6;
   --cd-selected-color: #484848;
   --cd-selected-border: #C6C9C6;
-  --cd-period-marker-bg: #e8e8e8;
+  --cd-period-marker-bg: #d1d1d1;
   --cd-period-marker-color: #484848;
   --calendar-button-color: #828282;
   --calendar-button-color-hover: #000000;
@@ -154,28 +154,28 @@ html[data-theme="light"] {
   --field-bg: transparent;
   --field-bg-hover: #E7EAE8;
   --field-bg-active: #E7EAE8;
-  --dropdown-bg: #F0F0F0;
+  --dropdown-bg: #E7EAE8;
   --dropdown-border: #C6C9C6;
   --input-normal-click: input-normal-click-light;
   --box-button-normal-click: box-button-normal-click-light;
 
   /* Tag */
-  --tag-color-normal: #484848;
-  --tag-bg-normal: #d6d6d6;
-  --tag-border-normal: #d6d6d6;
-  --tag-border-normal-hover: #484848;
-  --tag--remove-hover: #B56B6B;
+  --tag-color-normal: #020202;
+  --tag-bg-normal: #cacaca;
+  --tag-border-normal: #cacaca;
+  --tag-border-normal-hover: #cacaca;
+  --tag-remove-hover: #B56B6B;
 
-  --tag-color-positive: #0d3300;
-  --tag-bg-positive: #a5e78f;
-  --tag-border-positive: #7bc065;
-  --tag-border-positive-hover: #0d3300;
+  --tag-color-positive: #161616;
+  --tag-bg-positive: #b4e3ce;
+  --tag-border-positive: #b4e3ce;
+  --tag-border-positive-hover: #b4e3ce;
   --tag-positive-remove-hover: #000;
 
-  --tag-bg-negative: #eb8b84;
-  --tag-border-negative: #eb8b84;
-  --tag-color-negative: #7a0000;
-  --tag-border-negative-hover: #7a0000;
+  --tag-bg-negative: #ebc4c4;
+  --tag-border-negative: #ebc4c4;
+  --tag-color-negative: #161616;
+  --tag-border-negative-hover: #ebc4c4;
   --tag-negative-remove-hover: #000;
 
   /* Table */
@@ -201,8 +201,7 @@ html[data-theme="dark"] {
   --background-neutral: #262626;
   --background-positive: #253d33;
   --background-negative: #4c2222;
-  /*--background-warn: #91561a;*/
-  --background-warn: #814f41;
+  --background-warn: #6f3221;
 
   /* Tabs */
   --tab-color: #575757;
@@ -229,7 +228,7 @@ html[data-theme="dark"] {
 
 
   /* Modal */
-  --modal-bg: #000000;
+  --modal-bg: #1f1f1f;
   --modal-layer-bg: #232323c4;
   --modal-layer-bg-filter: blur(2px);
   --modal-close: #f3f3f3;
@@ -240,9 +239,9 @@ html[data-theme="dark"] {
   --border-normal-m1: #C6C9C6;
   --border-normal-p1: #838383;
   --border-normal: #404040;
-  --border-positive: #253d33;
-  --border-negative: #4c2222;
-  --border-warning: #814f41;
+  --border-positive: #416657;
+  --border-negative: #854040;
+  --border-warning: #a6462c;
   --border-highlighted: #575757;
   --border-hover: #689579;
   --border-click: #477759;
@@ -264,18 +263,18 @@ html[data-theme="dark"] {
   /* Button */
   --button-positive-color: #e5e5e5;
   --button-positive-hover-color: #95e87a;
-  --button-positive-bg: #4a4a4a;
-  --button-positive-hover-bg: #4a4a4a;
+  --button-positive-bg: #000000;
+  --button-positive-hover-bg: #000000;
 
   --button-negative-color: #e5e5e5;
   --button-negative-hover-color: #ff7267;
-  --button-negative-bg: #4a4a4a;
-  --button-negative-hover-bg: #4a4a4a;
+  --button-negative-bg: #000000;
+  --button-negative-hover-bg: #000000;
 
   /*--button-neutral-color: #e5e5e5;*/
   --button-neutral-color: #e9e9e9;
-  --button-neutral-bg: #4a4a4a;
-  --button-neutral-hover-bg: #4a4a4a;
+  --button-neutral-bg: #000000;
+  --button-neutral-hover-bg: #000000;
   --button-neutral-hover-color: #ffffff;
 
 
@@ -401,11 +400,6 @@ pre {
   font-family: var(--font-family);
 }
 
-
-
-#login-background {
-  background-repeat: no-repeat;
-}
 
 
 #app {
@@ -654,28 +648,6 @@ h4 {
   animation: modal-show 0.3s ease-in-out;
 }
 
-.login-processing {
-  animation: login-processing 1.4s infinite;
-}
-
-
-.eywa-action-menu {
-  background: var(--background);
-  position: relative;
-  z-index: 20;
-}
-
-
-.eywa-drawer {
-  position: absolute;
-  transition: transform .4s ease-in-out;
-  z-index: 20;
-}
-
-.eywa-drawer .closed {
-  pointer-events: none;
-}
-
 
 h1 {
   font-size: 20px;
@@ -706,51 +678,6 @@ body {
   background-color: white;
 }
 
-
-
-
-/* Default styles for .login_button_wrapper (for desktops or larger screens) */
-.login_button_wrapper {
-  min-width: 200px;
-  padding: 20px;
-  border-radius: 5px;
-  padding: 0.75rem 1rem 0.75rem 0.5rem;
-  border-radius: 4px;
-
-}
-
-
-@media screen and (max-width: 500px) {
-  .login_button_wrapper img {
-    width: 80px;
-    height: 80px;
-    border-radius: 8px;
-  }
-
-  .login_button_wrapper h4 {
-    font-size: 20;
-  }
-
-  .login_button_wrapper {
-    min-width: 400px;
-  }
-}
-
-
-@media screen and (max-width: 420px) {
-  .login_button_wrapper {
-    min-width: 300px;
-  }
-
-}
-
-
-@media screen and (max-width: 320px) {
-  .login_button_wrapper {
-    min-width: 200px;
-  }
-
-}
 
 
 /* Simplebar */

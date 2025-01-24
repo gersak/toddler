@@ -104,8 +104,8 @@
            ($ ui/tooltip
               {:message (case state
                           "positive" "I'm happy"
-                          "negative" "Don't feel so good"
-                          "warning"  (d/pre "I'm affraid that\nsomething might happen")
+                          "negative" "I don't feel so good"
+                          "warning"  (d/pre "I'm affraid that something\nbad might happen")
                           "Just business as usual")
                :className state}
               (d/div

@@ -50,12 +50,12 @@
                           (or (not-empty message) "You should type something in :)")
                           3000)
                          (set-message! "")))]
-    (hooks/use-effect
-      :once
-      (notifications/positive "Message" 0)
-      (notifications/negative "Message" 0)
-      (notifications/warning "Message" 0)
-      (notifications/neutral "Message" 0))
+    #_(hooks/use-effect
+        :once
+        (notifications/positive "Message" 0)
+        (notifications/negative "Message" 0)
+        (notifications/warning "Message" 0)
+        (notifications/neutral "Message" 0))
     ($ ui/row
        {:align :center}
        ($ ui/row
@@ -67,7 +67,7 @@
               :on-change set-message!})
           ($ ui/column
              {:className (css :px-4 :pt-5)}
-             ($ ui/button {:className "positive" :on-click #(send-message nil)} "Neutral")
+             ($ ui/button {:on-click #(send-message nil)} "Neutral")
              ($ ui/button {:className "positive" :on-click #(send-message :positive)} "Positive")
              ($ ui/button {:className "negative" :on-click #(send-message :negative)} "Negative")
              ($ ui/button {:className "warn" :on-click #(send-message :warn)} "Warning"))))))

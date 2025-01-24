@@ -721,7 +721,8 @@
                          (translate value :medium-date)
                          (translate :not-available))
                        (catch js/Error e
-                         (.log js/console e)))})
+                         (.log js/console e)
+                         ""))})
             (if (nil? value)
               ($ outlined/calendar-month)
               ($ outlined/close
@@ -732,7 +733,7 @@
                  :style {:width width}
                  :class ["dropdown-popup" $dropdown-popup]}
                 ($ e/dropdown-wrapper
-                   {:max-height "30rem"
+                   {:max-height "400px"
                     :width width}
                    ($ ui/calendar
                       {:value value
@@ -770,6 +771,7 @@
     {:background-color "var(--field-bg)"
      :border-color "var(--field-border)"}]
    ["& .inputs .to-row" :mt-1]
+   ["& .inputs.no-time" {:max-width "100px"}]
    ["& .inputs .date, & .inputs .time"
     :flex :items-center :rounded-md
     :relative :transition :grow :h-10
@@ -796,9 +798,10 @@
 
 (defnc timestamp-period-field
   [{[start end :as value] :value
-    :keys [onChange on-change dropdown?]
+    :keys [onChange on-change dropdown? time?]
     :as props
-    :or {dropdown? true}}]
+    :or {dropdown? true
+         time? true}}]
   (let [translate (toddler/use-translate)
         on-change  (or onChange on-change)
         _area (hooks/use-ref nil)
@@ -821,7 +824,7 @@
          (d/div
           {:class [$period-field (when show-dropdown? "opened")]}
           (d/div
-           {:className "inputs"}
+           {:className (str "inputs" (when-not time? " no-time"))}
            (d/div
             {:className "from-row"}
             (d/div
@@ -836,12 +839,13 @@
                ($ outlined/close
                   {:onClick (fn [] (on-change [nil end]))})
                ($ outlined/calendar-month)))
-            (d/div
-             {:className "time"}
-             ($ timestamp-time
-                {:value start
-                 :on-change (fn [start] (on-change [start end]))})
-             ($ outlined/schedule)))
+            (when time?
+              (d/div
+               {:className "time"}
+               ($ timestamp-time
+                  {:value start
+                   :on-change (fn [start] (on-change [start end]))})
+               ($ outlined/schedule))))
            (d/div
             {:className "to-row"}
             (d/div
@@ -856,12 +860,13 @@
                ($ outlined/close
                   {:onClick (fn [] (on-change [start nil]))})
                ($ outlined/calendar-month)))
-            (d/div
-             {:className "time"}
-             ($ timestamp-time
-                {:value end
-                 :on-change (fn [end] (on-change [start end]))})
-             ($ outlined/schedule))))
+            (when time?
+              (d/div
+               {:className "time"}
+               ($ timestamp-time
+                  {:value end
+                   :on-change (fn [end] (on-change [start end]))})
+               ($ outlined/schedule)))))
           (when-not dropdown?
             ($ ui/calendar-period
                {& (select-keys props [:value :onChange :on-change])}))
@@ -898,8 +903,10 @@
    :justify-between
    {:transition "background-color .4s ease-in-out"
     :min-height "40px"
+    ; :background-color "var(--field-bg)"
     :background-color "var(--field-bg)"
-    :color "var(--field-text)"
+    ; :color "var(--field-text)"
+    :color "var(--field-label)"
     :border-color "var(--field-border)"}
    ["&:hover" :border-hover {:background-color "var(--field-bg-hover)"}]
    ["& .verbal" :cursor-pointer :grow :text-field-normal
@@ -948,7 +955,8 @@
     (d/div
      {:class [(css
                :cursor-pointer
-               {:color "var(--field-text)"}
+               :pl-2
+               {:color "var(--field-label)"}
                ["& .toddler-checkbox-wrapper" :flex :items-center]
                ["& .toddler-checkbox-wrapper:hover" :text-hover]
                ["& .toddler-checkbox-wrapper > .figurative > svg" :h-5 :w-5]

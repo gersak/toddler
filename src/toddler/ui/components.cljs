@@ -6,6 +6,7 @@
    [toddler.ui.elements :as elements]
    [toddler.ui.tables :as tables]
    [toddler.ui.elements.modal :as modal]
+   [toddler.ui.elements.calendar :as calendar]
    [toddler.provider :as provider]))
 
 (def components
@@ -13,7 +14,8 @@
    elements/components
    modal/components
    fields/components
-   tables/components))
+   tables/components
+   calendar/components))
 
 (defnc Provider [props]
   ($ provider/UI

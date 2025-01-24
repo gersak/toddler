@@ -4,6 +4,7 @@
 
 (add-translations
  (merge
+  #:not-available {:default "N/A" :hr "-" :es "-" :de "-" :fr "-"}
   #:open {:default "Open" :hr "Otvori" :es "Abrir" :de "Öffnen" :fr "Ouvrir"}
   #:neutral {:default "Neutral" :hr "Neutralan" :es "Neutral" :de "Neutral" :fr "Neutre"}
   #:positive {:default "Positive" :hr "Pozitivan" :es "Positivo" :de "Positiv" :fr "Positif"}

@@ -108,7 +108,7 @@
                  :flex
                  :flex-col
                  :toddler/menu-link-selected
-                 ["& .components-wrapper" :mt-24]
+                 ["& .components-wrapper" :mt-12]
                  ["& .title"
                   :flex
                   :h-20
@@ -131,6 +131,11 @@
        (d/div
         {:className "title"}
         "toddler")
+       #_(d/img
+          {:className (css :fixed :top-2 :left-2 :h-6)
+           :src (case theme
+                  "dark" "/svg.old/blipkit_dark.svg"
+                  "light" "/svg.old/blipkit.svg")})
        (d/div
         {:className "components-wrapper"}
         (d/div

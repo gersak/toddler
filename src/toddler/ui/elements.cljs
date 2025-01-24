@@ -34,6 +34,7 @@
   {:wrap [(ui/forward-ref)]}
   [{:keys [className hidden]
     show-shadow? :shadow
+    :or {show-shadow? true}
     :as props}
    _ref]
   (let [$default (css
@@ -60,7 +61,7 @@
                     (let [client-height (.-clientHeight el)
                           scroll-height (.-scrollHeight el)]
                       (when (and
-                             (>= scroll-height client-height)
+                             (> scroll-height client-height)
                              (not (contains? shadow :bottom)))
                         (set-shadow! conj :bottom))))
                   (track-shadow []
@@ -158,7 +159,6 @@
    :text-xs
    ; :border
    ; :border-normal
-   :rounded-md
    :justify-center
    :items-center
    :px-2
@@ -170,7 +170,8 @@
    :animate-border-click
    :font-semibold
    ["&:hover" :button-neutral-hover]
-   {:transition "all .2s ease-in"}
+   {:transition "all .2s ease-in"
+    :border-radius "0.25rem"}
    {:justify-content "center"
     :min-height "2rem"
     :min-width "80px"
@@ -323,7 +324,7 @@
 
 (defnc row
   {:wrap [(ui/forward-ref)]}
-  [{:keys [className label position style align] :as props} _ref]
+  [{:keys [label position style align] :as props} _ref]
   (let [position (or position align)
         $layout (css
                  {:display "flex"
@@ -355,18 +356,16 @@
        (d/div
         {:ref _ref
          :style style
-         :class [$layout
-                 $position
-                 "toddler-row"
-                 className]}
+         :class (toddler/conj-prop-classes
+                 [$layout $position "toddler-row"]
+                 props)}
         (c/children props)))
       (d/div
        {:ref _ref
         :style style
-        :class [$layout
-                $position
-                "toddler-row"
-                className]}
+        :class (toddler/conj-prop-classes
+                [$layout $position "toddler-row"]
+                props)}
        (c/children props)))))
 
 (def $column
@@ -416,7 +415,7 @@
 
 (defnc column
   {:wrap [(ui/forward-ref)]}
-  [{:keys [label position align class className] :as props
+  [{:keys [label position align] :as props
     {:keys [width] :as style} :style} _ref]
   (let [$layout (css
                  {:display "flex"
@@ -442,13 +441,9 @@
     (d/div
      {:ref _ref
       :style style
-      :class (cond->
-              [$layout
-               $position
-               "toddler-column"]
-               (string? className) (conj className)
-               (string? class) (conj class)
-               (not-empty class) (into class))}
+      :class (toddler/conj-prop-classes
+              [$layout $position "toddler-column"]
+              props)}
      (when label
        (d/div
         {:className "toddler-column-label"}
@@ -476,9 +471,9 @@
     :cursor-pointer
     :rounded-sm
     :text-sm
-    :text-normal
     :border-t
     :border-normal
+    :color-
     {:background "transparent"
      :font-size "0.875rem"
      :transition "color .2s ease-in,background-color .2s ease-in"}]
@@ -599,6 +594,7 @@
    {:color "var(--tag-color-normal)"
     :background-color "var(--tag-bg-normal)"
     :border-color "var(--tag-border-normal)"}
+   ["& img" :my-2 :bg-white]
    ["& .remove" :w-4 :h-4]
    ["&:hover" {:border-color "var(--tag-border-normal-hover)"}]
    ["& .avatar" :mr-2 :rounded-sm :bg-normal-highlighted]
@@ -1252,9 +1248,7 @@
     :button button
     :dropdown dropdown
     :buttons buttons
-    :simplebar simplebar
-    :calendar calendar
-    :calendar/period period-calendar}
+    :simplebar simplebar}
    #:input {:autosize autosize-input
             :idle idle-input}))
 

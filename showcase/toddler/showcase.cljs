@@ -9,10 +9,10 @@
    [toddler.provider :refer [wrap-ui]]
    [toddler.ui.components :as default]
    [helix.core :refer [$ defnc]]
-   [helix.hooks :as hooks]
-   [toddler.showcase.fields :refer [Fields]]
-   [toddler.showcase.table :refer [Table TableGrid]]
    [toddler.showcase.layout :refer [Layout]]
+   [toddler.showcase.inputs :refer [Inputs]]
+   [toddler.showcase.table :refer [Table TableGrid]]
+   [toddler.showcase.calendar :refer [Calendar]]
    [toddler.showcase.popup :refer [Popup]]
    [toddler.showcase.i18n :refer [i18n]]
    [toddler.showcase.routing :refer [Routing]]
@@ -20,7 +20,6 @@
    [toddler.showcase.modal :refer [Modal]]
    [toddler.showcase.notifications :refer [Notifications]]
    [toddler.notifications :as notifications]
-   [toddler.showcase.prosemirror :refer [ProseMirror]]
    [toddler.router :as router]
    toddler.i18n.common))
 
@@ -30,13 +29,13 @@
 
 (def components
   [{:id :toddler.layout
-    :name :showcase.layout
+    :name "Layout"
     :render Layout
     :segment "layout"}
-   {:id :toddler.fields
-    :name :showcase.fields
-    :render Fields
-    :segment "fields"}
+   {:id :toddler.inputs
+    :name "Inputs"
+    :render Inputs
+    :segment "inputs"}
    {:id :toddler.table
     :name :showcase.tables
     :render Table
@@ -45,6 +44,10 @@
       :name :showcase.multi-tables
       :render TableGrid
       :segment "multi-tables"}
+   {:id :toddler.calendar
+    :name "Calendar"
+    :render Calendar
+    :segment "calendar"}
    {:id :toddler.popup
     :name "Popup"
     :render Popup

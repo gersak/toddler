@@ -2,16 +2,9 @@
   (:require
    [goog.string.format]
    [vura.core :as vura]
-   [helix.core :refer [defnc defhook create-context]]
+   [helix.core :refer [defhook]]
    [helix.hooks :as hooks]
-   [toddler.core :as th]))
-
-;; CALENDAR
-; (def ^:dynamic ^js *calendar-selected* (create-context))
-; (def ^:dynamic ^js *calendar-disabled* (create-context))
-; (def ^:dynamic ^js *calendar-state* (create-context))
-
-; (defhook use-calendar-state [] (hooks/use-context *calendar-state*))
+   [toddler.core :as toddler]))
 
 (defn same [day1 day2]
   (and
@@ -19,18 +12,16 @@
    (= (select-keys day1 [:year :month :day-in-month])
       (select-keys day2 [:year :month :day-in-month]))))
 
-(defhook use-week-days [] (th/use-calendar :weekdays/short))
+(defhook use-week-days [] (toddler/use-calendar :weekdays/short))
 
 (defhook use-calendar-months
+  "Hook will return map with numeric months bound
+  to month names. Month names will depend on app/locale
+  context value."
   []
   (let [months (range 1 13)
-        month-names (th/use-calendar :months)]
+        month-names (toddler/use-calendar :months)]
     (zipmap months month-names)))
-
-(defhook use-calendar-years
-  []
-  (let [year (vura/year? (vura/date))]
-    (range (- year 5) (+ year 5))))
 
 (defn calendar-month
   [value]
@@ -168,6 +159,9 @@
               :days (calendar-month position-value)))))
 
 (defhook use-calendar-month
+  "Hook that will return state of calendar month and dispatch function.
+  Based on either value or date it will create react state with
+  toddler.date/reducer."
   ([{:keys [date value]}]
    (hooks/use-reducer
     reducer
@@ -179,6 +173,12 @@
        :days (calendar-month value)}))))
 
 (defhook use-calendar-days
+  "Hook that is usefull when working with date selection. For given
+  value and sequence of days it will return input days extended with
+  keys: 
+   
+   * :picked - true if value is in this day
+   * :today  - true if value is today"
   [value days]
   (if (nil? value) days
       (let [selected-context (vura/day-context (vura/time->value value))
@@ -256,6 +256,14 @@
               [start (-> day-value vura/before-midnight vura/value->time)])))))))
 
 (defhook use-period-days
+  "Hook will process input days by comparing if 
+  each of input days is in [start end] period.
+  
+  Result will extended days with following keys:
+   * :today        - boolean
+   * :selected     - true if in period
+   * :period-start - true if day is same as start value day
+   * :period-end   - true if day is same as end value day"
   [[start end] days]
   (if (or start end)
     (let [start-value (when start (vura/time->value start))
