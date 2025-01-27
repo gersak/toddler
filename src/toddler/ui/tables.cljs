@@ -518,8 +518,8 @@
                  :justify-center
                  :items-center
                  {:transition "color .3s ease-in-out"})
-        $active (css :text-neutral-900)
-        $inactive (css  :text-neutral-400)
+        $active (css :color++)
+        $inactive (css  :color--)
         $alignment (use-cell-alignment-css (update column :align #(or % :center)))]
     (d/div
      {:class [(css

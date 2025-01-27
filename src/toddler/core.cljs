@@ -1,5 +1,5 @@
 (ns toddler.core
-  (:require-macros [toddler.util :refer [mlf]])
+  (:require-macros [toddler.core :refer [mlf]])
   (:require
    ["react" :as react]
    ["react-dom" :as rdom]
@@ -26,7 +26,7 @@
 ; (.log js/console "Loading toddler.core")
 
 (defn ml
-  "Multiline function"
+  "Multiline function. Joins input lines"
   [& lines]
   (clojure.string/join "\n" lines))
 

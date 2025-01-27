@@ -2,7 +2,6 @@
   (:require
    goog.object
    clojure.string
-   [goog.string :refer [format]]
    [clojure.core.async :as async]))
 
 (set! *warn-on-infer* true)

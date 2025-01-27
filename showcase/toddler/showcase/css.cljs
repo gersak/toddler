@@ -18,6 +18,7 @@
        ["& p > code" :py-1 :px-2 :rounded-md :text-xxs :bg-normal- :font-semibold]
        ["& .table-container" :border :my-6 :p-2 :rounded-lg :bg-normal+ :border-normal+]
        ["& table tr" :h-6 :text-xxs]
+       ["& a" {:color "#2c569d" :font-weight "600"}]
        ["& .hljs" :bg-normal+]
         ; ["& table thead tr"]
        ["& table tbody" :mt-2 :p-1]))

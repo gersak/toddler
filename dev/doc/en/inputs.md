@@ -1,5 +1,3 @@
-
-
 ## Buttons
 What is there to say about buttons. Not much, except that you can
 give them flavor by adding class.
@@ -80,8 +78,60 @@ elements or moving parts.
 ```
 
 ## Select fields
+Select fields use popup to show user what options
+are available to select. User can select single option with dropdown
+field or multiple options with multiselect field.
+
 
 <div id="select-fields-example"></div>
 
 ## Date fields
+Date fields use [calendar](../calendar) so that user can pick date
+from calendar that is displayed in popup.
+
+In this showcase there are two types of date fields. First one is
+date or timestamp field that will hold single value. That is what
+date and time user selects.
+
+Second is date or timestamp period field. User can select interval
+between start of period and end of period or just select end or start
+of period. In case where value of field doesn't contain start or end
+calendar will display all dates before end or after start as selected.
+
+
+Sometimes working with period field might seem awkward, so remember
+that you can clear start and and input fields, as well as double click
+on some date to focus start and end of that day.
+
 <div id="date-fields-example"></div>
+
+```clojure
+(defnc date-fields
+  []
+  (let [[state set-state!] (hooks/use-state nil)]
+    (<>
+     ($ ui/row
+        {:className "example-field"}
+        ($ ui/date-field
+           {:name "Date Field"
+            :value (:date-field state)
+            :onChange #(set-state! assoc :date-field %)}))
+     ($ ui/row
+        {:className "example-field"}
+        ($ ui/timestamp-field
+           {:name "Timestamp Field"
+            :value (:timestamp-field state)
+            :onChange #(set-state! assoc :timestamp-field %)}))
+     ($ ui/row
+        {:className "example-field"}
+        ($ ui/date-period-field
+           {:name "Date Period Field"
+            :value (:date-period-field state)
+            :onChange (fn [v] (set-state! assoc :date-period-field v))}))
+     ($ ui/row
+        {:className "example-field"}
+        ($ ui/timestamp-period-field
+           {:name "Timestamp Period Field"
+            :value (:timestamp-period-field state)
+            :onChange (fn [v] (set-state! assoc :timestamp-period-field v))})))))
+```

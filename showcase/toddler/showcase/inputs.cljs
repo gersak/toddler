@@ -80,6 +80,15 @@
     (<>
      ($ ui/row
         {:className "example-field"}
+        ($ ui/dropdown-field
+           {:name "dropdown"
+            :value (:dropdown-field state)
+            :search-fn :name
+            :context-fn :context
+            :options test-options
+            :onChange (fn [v] (set-state! assoc :dropdown-field v))}))
+     ($ ui/row
+        {:className "example-field"}
         ($ ui/multiselect-field
            {:name "Multiselect Field"
             :value (:multiselect-field state)
@@ -89,15 +98,6 @@
             :options test-options
             :onRemove (fn [v] (set-state! assoc :multiselect-field v))
             :onChange (fn [v] (set-state! assoc :multiselect-field v))}))
-     ($ ui/row
-        {:className "example-field"}
-        ($ ui/dropdown-field
-           {:name "dropdown"
-            :value (:dropdown-field state)
-            :search-fn :name
-            :context-fn :context
-            :options test-options
-            :onChange (fn [v] (set-state! assoc :dropdown-field v))}))
      ($ ui/row
         {:className "example-field"}
         ($ ui/identity-field
@@ -125,7 +125,7 @@
 
 (defnc date-fields
   []
-  (let [[state set-state!] (hooks/use-state {:multiselect-field []})]
+  (let [[state set-state!] (hooks/use-state nil)]
     (<>
      ($ ui/row
         {:className "example-field"}

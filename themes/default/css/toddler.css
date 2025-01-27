@@ -47,7 +47,9 @@ html[data-theme="light"] {
   --color-neutral: #C6C9C6;
   --color-inactive: #828282;
   --color-normal: #484848;
-  --color-m1: #828282;
+  /*--color-m2: #828282;*/
+  --color-m2: #c6c6c6;
+  --color-m1: #656565;
   --color: #484848;
   --color-p1: #1a1a1a;
   --color-p2: #000000;
@@ -178,12 +180,14 @@ html[data-theme="light"] {
   --tag-border-negative-hover: #ebc4c4;
   --tag-negative-remove-hover: #000;
 
+  --avatar-bg: #ffffffa1;
+
   /* Table */
-  --table-bg: #e2f1fc;
+  --table-bg: #f4f4f4;
   --table-text: #484848;
-  --table-border: #8daeca;
-  --table-hover-bg: #d0e9fb;
-  --table-hover-border: #69b5f3;
+  --table-border: #C6C9C6;
+  --table-hover-bg: #eaeaea;
+  --table-hover-border: transparent;
 
   --scroll-shadow-top: radial-gradient(ellipse 100% 30% at center, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0), transparent);
   --scroll-shadow-bottom: radial-gradient(ellipse 100% 20% at center, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0), transparent);
@@ -221,6 +225,7 @@ html[data-theme="dark"] {
   --color-neutral: #eaeaea;
   --color-inactive: #828282;
   --color-normal: #eaeaea;
+  --color-m2: #686868;
   --color-m1: #828282;
   --color: #eaeaea;
   --color-p1: #ffffff;
@@ -236,9 +241,10 @@ html[data-theme="dark"] {
 
 
   /* Borders */
-  --border-normal-m1: #C6C9C6;
-  --border-normal-p1: #838383;
-  --border-normal: #404040;
+  --border-normal-m2: #656565;
+  --border-normal-m1: #7a7a7a;
+  --border-normal: #838383;
+  --border-normal-p1: #898989;
   --border-positive: #416657;
   --border-negative: #854040;
   --border-warning: #a6462c;
@@ -341,11 +347,15 @@ html[data-theme="dark"] {
   --tag-negative-remove-hover: #000;
 
   /* Table */
-  --table-bg: #e2f1fc;
-  --table-text: #484848;
-  --table-border: #8daeca;
-  --table-hover-bg: #d0e9fb;
-  --table-hover-border: #69b5f3;
+  /*--table-bg: #1e1e1e;*/
+  /*--table-text: #bfbfbf;*/
+  /*--table-border: #959595;*/
+  /*--table-hover-bg: #262626;*/
+  --table-bg: #3b3b3b;
+  --table-text: #eaeaea;
+  --table-border: #656565;
+  --table-hover-bg: #262626;
+  --table-hover-border: transparent;
 
   --scroll-shadow-top: radial-gradient(ellipse 100% 30% at center, rgba(172, 172, 172, 0.2), rgba(0, 0, 0, 0), transparent);
   --scroll-shadow-bottom: radial-gradient(ellipse 100% 20% at center, rgba(172, 172, 172, 0.3), rgba(0, 0, 0, 0), transparent);
@@ -375,6 +385,14 @@ html[data-theme="dark"] body {
 
 
 html[data-theme="dark"] input::placeholder,
+textarea::placeholder {
+  color: #838383;
+}
+
+html[data-theme="dark"] .tbody .simplebar-scrollbar:before {
+  background: #222222;
+}
+
 textarea::placeholder {
   color: #838383;
 }

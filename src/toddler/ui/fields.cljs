@@ -62,7 +62,7 @@
    :font-semibold
    :text-normal
    :block
-   :h-5 :px-3
+   :h-5 :pl-1
    {:color "var(--field-label)"
     :font-size "10px"}))
 
@@ -436,7 +436,7 @@
    :grow
    :flex-wrap
    :user-no-select
-   {;:gap "0.5rem"
+   {:gap "0.375rem 0.375rem"
     :padding "0.5rem 1rem 1rem 1rem"}))
 
 (def $multiselect-field
@@ -447,8 +447,13 @@
    :relative
    :border
    :text-sm
+   :pl-3
+   :pr-8
+   :flex-wrap
+   :py-2
    {:transition "background-color .4s ease-in-out"
     :min-height "40px"
+    :gap "0.375rem 0.375rem"
     :background-color "var(--field-bg)"
     :color "var(--field-text)"
     :border-color "var(--field-border)"}
@@ -457,8 +462,8 @@
     {:background-color "var(--field-bg-active)"
      :border-color "var(--field-border-active)"}]
    ["& .decorator"
+    :top-2 :right-2 :absolute
     {:width "24px" :height "24px"
-     :margin-right "0.25rem"
      :transition "color .3s ease-in-out, transform .3s ease-in-out"}]
    ["&:focus-within .decorator" :text-click {:transform "rotate(180deg)"}]
    ["&:hover:not(.disabled):not(:focus-within)"
@@ -467,12 +472,10 @@
     ;;
    :rounded-md
    :border-normal
-   ["& .avatar" :mx-2 {:background-color "var(--avatar-bg)"}]
+   ["& .avatar" :mr-2 {:background-color "var(--avatar-bg)"}]
    ["& .avatar img" :rounded-sm]
-   ["& input" :grow :text-field-normal :px-3]
-   ["& input:focus" :text-highlight]
+   ["& input" {:flex "1 1 auto" :min-height "26px"}]
    ["& input::placeholder"
-    :text-normal
     {:user-select "none"
      :font-style "normal"}]))
 
@@ -487,9 +490,9 @@
       :class (toddler/conj-prop-classes
               ["toddler-multiselect-option"
                e/$tag
-               (css :my-2 :mx-1
-                    ["& .remove" :ml-3]
-                    ["& .remove:hover" :color-negative])
+               (css
+                ["& .remove" :ml-3]
+                ["& .remove:hover" :color-negative])
                (when (ifn? context-fn)
                  (when-some [context (context-fn value)]
                    (name context)))
@@ -506,32 +509,29 @@
                       (when (ifn? on-remove) (on-remove value)))})))))
 
 (defnc multiselect-field
-  [{:keys [search-fn context-fn on-change onChange placeholder
-           options-not-available-message]
+  [{:keys [search-fn context-fn on-change onChange placeholder]
     render-option :render/option
     :or {search-fn str
-         render-option multiselect-option
-         options-not-available-message "Options not available"}
+         render-option multiselect-option}
     :as props}]
   (let [{:keys [open!
                 options
                 new-fn
                 area
                 search value]
-         :as multiselect} (use-multiselect
-                           (assoc props
-                             :search-fn search-fn
-                             :context-fn context-fn))
+         :as multiselect}
+        (use-multiselect
+         (assoc props
+           :search-fn search-fn
+           :context-fn context-fn))
+        ;;
         on-change (or onChange on-change)
         width (get-width area)
-        [group-selected? set-group-selected!] (hooks/use-state false)
-        $grouped (css
-                  ["& .toddler-multiselect-option" {:order 10}]
-                  ["& .toddler-multiselect-option.selected" {:order 1}])
-        not-selected-options (hooks/use-memo
-                               [value]
-                               (let [is-selected? (set value)]
-                                 (remove is-selected? options)))]
+        available-options (hooks/use-memo
+                            [value]
+                            (clojure.set/difference
+                             (set options)
+                             (set value)))]
     (provider
      {:context dropdown/*dropdown*
       :value multiselect}
@@ -552,64 +552,32 @@
                      "empty")
                    $multiselect-field]
            :onClick open!}
-          (if (or (fn? new-fn) (not-empty not-selected-options))
-            (<>
+          (<>
+           (when (not-empty available-options)
              ($ dropdown/Popup
                 {:class ["dropdown-popup" $dropdown-popup]}
                 ($ e/dropdown-wrapper
                    {:style {:width width}}
                    (d/div
-                    {:class [(css
-                              :flex
-                              :justify-between
-                              :items-center
-                              :text-normal
-                              :pl-2 :pt-2 :pr-4 :pb-2
-                              ["& .info" :text-xs :select-none]
-                              ["& .actions" :flex]
-                              ["& .actions svg" :ml-1 :color-normal :w-4 :h-4 :cursor-pointer]
-                              ["& .actions .clear,& .actions .selected" :cursor-pointer])]}
-                    (d/span
-                     {:className "info"} nil)
-                    (d/span
-                     {:className "actions"}
-                     ($ outlined/done-all
-                        {:onClick (fn []
-                                    (on-change options))})
-                     ($ outlined/delete-forever
-                        {:className "clear"
-                         :onClick (fn []
-                                    (on-change nil))})
-                     ($ (if group-selected?
-                          outlined/check-box
-                          outlined/check-box-outline-blank)
-                        {:className "selected"
-                         :onClick #(set-group-selected! not)})))
-                   (d/div
-                    {:class [$multiselect-options (when group-selected? $grouped)]}
+                    {:class [$multiselect-options]}
                     ($ toddler.multiselect/Options
-                       {:render render-option}))))
+                       {:render render-option})))))
+           (map
+            (fn [option]
+              ($ render-option
+                 {:key (search-fn option)
+                  :value option
+                  :onRemove #(on-change
+                              (vec
+                               (remove
+                                (fn [_option] (= _option option))
+                                value)))}))
+            (:value props))
+           (when (or new-fn (not-empty available-options))
              ($ dropdown/Input
                 {& multiselect
-                 :placeholder placeholder})
-             ($ outlined/keyboard-arrow-down {:className "decorator"}))
-            (d/input
-             {:value ""
-              :placeholder options-not-available-message
-              :disabled true})))
-       (d/div
-        {:className (css :flex :flex-wrap)}
-        (map
-         (fn [option]
-           ($ render-option
-              {:key (search-fn option)
-               :value option
-               :onRemove #(on-change
-                           (vec
-                            (remove
-                             (fn [_option] (= _option option))
-                             value)))}))
-         (:value props))))))))
+                 :placeholder placeholder}))
+           ($ outlined/keyboard-arrow-down {:className "decorator"}))))))))
 
 (defnc timestamp-time
   [{:keys [value onChange on-change]}]
@@ -792,12 +760,14 @@
    ["&:not(.opened) .inputs .date:hover:not(:focus-within), &:not(.opened) .inputs .time:hover:not(:focus-within)"
     {:border-color "var(--field-border-hover)"}]
    ["& .inputs .date:hover:not(:focus-within) svg, & .inputs .time:hover:not(:focus-within) svg" :color-hover]
-   ["& .inputs input" {:max-width "6rem"} :cursor-pointer :ml-3]
+   ["& .inputs input"  :cursor-pointer :ml-3]
+   ["& .inputs.no-time input" {:max-width "134px"}]
+   ["& .inputs:not(.no-time) input" {:max-width "6rem"}]
    ["& .calendar" :mt-1]
    #_["& .inputs .date"]))
 
 (defnc timestamp-period-field
-  [{[start end :as value] :value
+  [{[start end] :value
     :keys [onChange on-change dropdown? time?]
     :as props
     :or {dropdown? true
@@ -885,11 +855,76 @@
                                      (on-change v)))}))))))))))
 
 (defnc date-period-field
-  [props]
-  ($ timestamp-period-field
-     {:format :full-date
-      :time? false
-      & props}))
+  [{[start end] :value
+    :keys [onChange on-change dropdown?]
+    :as props
+    :or {dropdown? true}}]
+  (let [translate (toddler/use-translate)
+        on-change  (or onChange on-change)
+        _area (hooks/use-ref nil)
+        _popup (hooks/use-ref nil)
+        [show-dropdown? toggle!] (hooks/use-state nil)
+        width 300]
+    (popup/use-outside-action
+     show-dropdown? _area _popup
+     #(toggle! false))
+    (d/div
+     {:className "toddler-field"}
+     (d/div
+      {:className "content"}
+      (when (:name props)
+        (d/label
+         {:class ["toddler-field-label" $label]}
+         (:name props)))
+      ($ popup/Area
+         {:ref _area}
+         (d/div
+          {:class [$period-field (when show-dropdown? "opened")]}
+          (d/div
+           {:class [(css :flex :gap-1
+                         ["& input" {:max-width "120px"}])
+                    "inputs"
+                    "no-time"]}
+           (d/div
+            {:className "date"
+             :onClick (fn [] (toggle! true))}
+            (d/input
+             {:read-only true
+              :value (if start
+                       (translate start :medium-date)
+                       (translate :not-available))})
+            (if start
+              ($ outlined/close
+                 {:onClick (fn [] (on-change [nil end]))})
+              ($ outlined/calendar-month)))
+           (d/div
+            {:className "date"
+             :onClick (fn [] (toggle! true))}
+            (d/input
+             {:read-only true
+              :value (if end
+                       (translate end :medium-date)
+                       (translate :not-available))})
+            (if end
+              ($ outlined/close
+                 {:onClick (fn [] (on-change [start nil]))})
+              ($ outlined/calendar-month))))
+          (when-not dropdown?
+            ($ ui/calendar-period
+               {& (select-keys props [:value :onChange :on-change])}))
+          (when show-dropdown?
+            ($ popup/Element
+               {:ref _popup
+                :style {:width width}
+                :class ["dropdown-popup" $dropdown-popup]}
+               ($ e/dropdown-wrapper
+                  {:max-height "30rem"
+                   :width width}
+                  ($ ui/calendar-period
+                     {& (select-keys props [:value])
+                      :on-change (fn [v]
+                                   (when (ifn? on-change)
+                                     (on-change v)))}))))))))))
 
 (def $boolean-field
   (css
@@ -913,37 +948,6 @@
     :select-none :px-2 {:min-width "5rem"}]
    ["& .figurative" :pr-2]
    ["& .figurative svg" :w-5 :h-5]))
-
-; (defnc boolean-field
-;   [{:keys [value
-;            append-context
-;            onChange
-;            on-change] :as props}]
-;   (let [on-change (or on-change onChange)
-;         translate (toddler/use-translate)]
-;     (d/div
-;      {:class ["toddler-field"
-;               $field]}
-;      (d/div
-;       {:className "content"}
-;       (when (:name props)
-;         (d/label
-;          {:class ["toddler-field-label" $label]}
-;          (:name props)))
-;       (d/div
-;        {:class ["toddler-input-field"
-;                 $boolean-field]
-;         :onClick (fn [] (on-change (not value)))}
-;        (d/span
-;         {:className "verbal"}
-;         (str
-;          (translate (if value :yes :no))
-;          (get append-context value "")))
-;        (d/div
-;         {:className "figurative"}
-;         ($ (case value
-;              true outlined/check-box
-;              outlined/check-box-outline-blank))))))))
 
 (defnc boolean-field
   [{:keys [value
@@ -1071,7 +1075,7 @@
   (let [{:keys [open!
                 options
                 new-fn
-                area input select! remove!
+                area input
                 search value]
          :as multiselect} (use-multiselect
                            (assoc props :search-fn search-fn))
@@ -1087,14 +1091,11 @@
                                        (case v
                                          true (focused! true)
                                          (focused! false))))
-        [group-selected? set-group-selected!] (hooks/use-state false)
-        $grouped (css
-                  ["& .toddler-multiselect-option" {:order 10}]
-                  ["& .toddler-multiselect-option.selected" {:order 1}])
-        not-selected-options (hooks/use-memo
-                               [value]
-                               (let [is-selected? (set value)]
-                                 (remove is-selected? options)))]
+        available-options (hooks/use-memo
+                            [value]
+                            (clojure.set/difference
+                             (set options)
+                             (set value)))]
     (letfn [(focus! [_] (toggle-focused! true))
             (blur! [_] (toggle-focused! false))]
       (hooks/use-effect
@@ -1125,67 +1126,32 @@
                    $multiselect-field]
            :onClick (fn []
                       (open!))}
-          (if (or (fn? new-fn) (not-empty not-selected-options))
-            (<>
+          (<>
+           (when (not-empty available-options)
              ($ dropdown/Popup
                 {:class ["dropdown-popup" $dropdown-popup]}
                 ($ e/dropdown-wrapper
                    {:style {:width width}}
                    (d/div
-                    {:class [(css
-                              :flex
-                              :justify-between
-                              :items-center
-                              :text-normal
-                              :pl-2 :pt-2 :pr-4 :pb-2
-                              ["& .info" :text-xs :select-none]
-                              ["& .actions" :flex]
-                              ["& .actions svg" :ml-1 :color-normal :w-4 :h-4 :cursor-pointer]
-                              ["& .actions .clear,& .actions .selected" :cursor-pointer])]}
-                    (d/span
-                     {:className "info"}
-                     (str (translate :selected) " " (count value) " " (translate :items)))
-                    (d/span
-                     {:className "actions"}
-                     ($ outlined/done-all
-                        {:onClick (fn []
-                                    (on-change options))})
-                     ($ outlined/delete-forever
-                        {:className "clear"
-                         :onClick (fn []
-                                    (on-change nil))})
-                     ($ (if group-selected?
-                          outlined/check-box
-                          outlined/check-box-outline-blank)
-                        {:className "selected"
-                         :onClick #(set-group-selected! not)})))
-                   ($ ui/simplebar
-                      {:style {:max-height 240}}
-                      (d/div
-                       {:class [$multiselect-options (when group-selected? $grouped)]}
-                       ($ toddler.multiselect/Options
-                          {:render IdentityMultiselectOption})))))
+                    {:class [$multiselect-options]}
+                    ($ toddler.multiselect/Options
+                       {:render IdentityMultiselectOption})))))
+           (map
+            (fn [option]
+              ($ render-option
+                 {:key (search-fn option)
+                  :value option
+                  :onRemove #(on-change
+                              (vec
+                               (remove
+                                (fn [_option] (= _option option))
+                                value)))}))
+            (:value props))
+           (when (or new-fn (not-empty available-options))
              ($ dropdown/Input
                 {& multiselect
-                 :placeholder placeholder})
-             ($ outlined/keyboard-arrow-down {:className "decorator"}))
-            (d/input
-             {:value ""
-              :placeholder options-not-available-message
-              :disabled true})))
-       (d/div
-        {:className (css :flex :flex-wrap)}
-        (map
-         (fn [option]
-           ($ render-option
-              {:key (search-fn option)
-               :value option
-               :onRemove #(on-change
-                           (vec
-                            (remove
-                             (fn [_option] (= _option option))
-                             value)))}))
-         (:value props))))))))
+                 :placeholder placeholder}))
+           ($ outlined/keyboard-arrow-down {:className "decorator"}))))))))
 
 (defnc currency-field
   [{:keys [disabled onChange value name

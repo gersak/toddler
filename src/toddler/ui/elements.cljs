@@ -470,12 +470,12 @@
     :items-center
     :cursor-pointer
     :rounded-sm
-    :text-sm
+    :text-xs
     :border-t
     :border-normal
     :color-
+    :font-semibold
     {:background "transparent"
-     :font-size "0.875rem"
      :transition "color .2s ease-in,background-color .2s ease-in"}]
     ;;
    ["& .toddler-dropdown-option .avatar"
@@ -586,7 +586,6 @@
     :min-height "26px"
     :border-radius "0.25rem"}
    ; ["& svg" :ml-2 :pr-1]
-   :text-xs
    :color
    :border
    :border-normal
@@ -594,10 +593,10 @@
    {:color "var(--tag-color-normal)"
     :background-color "var(--tag-bg-normal)"
     :border-color "var(--tag-border-normal)"}
-   ["& img" :my-2 :bg-white]
    ["& .remove" :w-4 :h-4]
    ["&:hover" {:border-color "var(--tag-border-normal-hover)"}]
-   ["& .avatar" :mr-2 :rounded-sm :bg-normal-highlighted]
+   ["& .avatar" :mr-2 :rounded-sm {:background-color "var(--avatar-bg)"
+                                   :margin-left "-0.5rem"}]
    ["&.negative" {:color "var(--tag-color-negative)"
                   :background-color "var(--tag-bg-negative)"
                   :border-color "var(--tag-border-negative)"}]
@@ -611,36 +610,6 @@
    ["& .remove:hover" {:color "var(--tag-normal-remove-hover)"}]
    ["&.negative .remove:hover" {:color "var(--tag-negative-remove-hover)"}]
    ["&.positive .remove:hover" {:color "var(--tag-positive-remove-hover)"}]))
-
-(def $multiselect-wrapper
-  (css
-   {:display "flex"
-    :justify-content "row"
-    :align-items "center"
-    :min-height "2.3em"}))
-
-(defnc multiselect-wrapper
-  [props]
-  (d/div
-   {:class $multiselect-wrapper}
-   (c/children props)))
-
-(defnc MultiselectInput
-  [props]
-  ($ UI
-     {:components {:input autosize-input
-                   :wrapper multiselect-wrapper}}
-     ($ dropdown/Input
-        {& props}
-        (c/children props))))
-
-;; TODO - this isn't full implemented
-(defnc multiselect
-  [props]
-  (d/div
-   {:class (css :flex :items-center)}
-   ($ multiselect/Element
-      {& props})))
 
 (def $tooltip
   (css

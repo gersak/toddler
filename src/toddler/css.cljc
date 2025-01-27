@@ -54,7 +54,7 @@
    :modal-warn {:background-color "var(--background-warn)"}
 
    ;; Colors
-   :color-- {:color "var(--color-m1)"}
+   :color-- {:color "var(--color-m2)"}
    :color- {:color "var(--color-m1)"}
    :color {:color "var(--color)"}
    :color+ {:color "var(--color-p1)"}
@@ -103,6 +103,7 @@
 
 (def text
   {:pointer-events-none {:pointer-events "none"}
+   :text-xxxs {:font-size "0.625rem" :line-height "1.125rem"}
    :text-xxs {:font-size "0.6875rem" :line-height "1.125rem"}
    :text-xs {:font-size "0.76rem" :line-height "1.25rem"}
    :text-sm {:font-size "0.875rem" :line-height "1.5rem"}
