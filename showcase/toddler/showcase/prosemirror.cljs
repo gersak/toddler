@@ -28,6 +28,6 @@
              {:align :center
               :style {:max-width "30rem"}}
              ($ md/watch-url
-                {:url "/doc/en/modal.md"})
+                {:url "/modal.md"})
              (when-some [el (.getElementById js/document "modal-background-example")]
                (rdom/createPortal ($ i18n-example) el)))))))

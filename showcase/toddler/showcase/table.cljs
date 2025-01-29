@@ -170,12 +170,14 @@
                                             :data data
                                             :columns columns})]
     ($ layout/Container
-       {:style {:width width
+       {:style {:width (- width 80)
                 :height "500px"}}
-       ($ ui/table
-          {:rows data
-           :columns columns
-           :dispatch dispatch}))))
+       ($ ui/row
+          {:align :center}
+          ($ ui/table
+             {:rows data
+              :columns columns
+              :dispatch dispatch})))))
 
 (def expand-data
   [{:first-name "Donnie" :last-name "Darko" :gender :male
@@ -197,6 +199,20 @@
     :movie "Mad Max: Fury Road (2015)"
     :description "Played by Charlize Theron, Furiosa is a fearless, battle-hardened warrior fighting for freedom in a dystopian wasteland."}])
 
+(defnc expand-cell
+  []
+  (let [[value set-value!] (table/use-cell-state)]
+    (d/div
+     {:className (css :flex :flex-grow :items-center :justify-center :cursor-pointer)
+      :on-click #(set-value! (not value))}
+     ($ (if value outlined/keyboard-arrow-up outlined/keyboard-arrow-down)
+        {:className (css {:font-size "24px"})}))))
+
+(defnc custom-cell
+  []
+  (let [{:keys [first-name last-name]} (table/use-row)]
+    (d/div (str first-name " " last-name))))
+
 (defnc extended-row
   []
   (let [{{:keys [expanded]} :ui
@@ -217,21 +233,6 @@
       ($ ui/row
          (d/label "Description")
          (d/div description))))))
-
-(defn expand-cell
-  []
-  (let [[value set-value!] (table/use-cell-state)]
-    (d/div
-     {:className (css :flex :flex-grow :items-center :justify-center :cursor-pointer)
-      :on-click #(set-value! (not value))}
-     ($ (if value outlined/keyboard-arrow-up outlined/keyboard-arrow-down)
-        {:className (css {:font-size "24px"})}))))
-
-(defnc custom-cell
-  []
-  (let [{:keys [first-name last-name]} (table/use-row)
-        dispatch (table/use-dispatch)]
-    (d/div (str first-name " " last-name))))
 
 (defnc custom-row
   {:wrap [(ui/forward-ref)]}
@@ -277,7 +278,6 @@
               :rows state})))))
 
 ;; TODO - include this examples as well
-
 (defnc Table
   {:wrap [(router/wrap-rendered :toddler.table)
           (router/wrap-link
@@ -285,6 +285,9 @@
            [{:id ::intro
              :name "Intro"
              :hash "in-general"}
+            {:id ::demo
+             :name "Demo"
+             :hash "demo"}
             {:id ::extend
              :name "Expand Example"
              :hash "expand-example"}
@@ -299,11 +302,11 @@
        ($ ui/row {:align :center}
           ($ ui/column
              {:align :center
-              :style {:max-width "45rem"}
+              :style {:max-width "40rem"}
               :className (css
                           ["& .example-field" :my-5]
                           ["& #toddler-table-example" :my-10])}
-             ($ md/watch-url {:url "/doc/en/tables.md"})
+             ($ md/watch-url {:url "/tables.md"})
              ($ toddler/portal
                 {:locator #(.getElementById js/document "row-example")}
                 ($ row-example))

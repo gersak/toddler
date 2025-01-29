@@ -148,7 +148,7 @@
              ($ ui/column
                 {:align :center
                  :style {:max-width "40rem"}}
-                ($ md/watch-url {:url "/doc/en/routing.md"})
+                ($ md/watch-url {:url "/routing.md"})
                 ($ toddler/portal
                    {:locator #(.getElementById js/document "router-basics")}
                    ($ Root))

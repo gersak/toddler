@@ -171,7 +171,7 @@
              {:align :center
               :style {:max-width "30rem"
                       :min-height 1500}}
-             ($ md/watch-url {:url "/doc/en/modal.md"})
+             ($ md/watch-url {:url "/modal.md"})
              ($ dialog-example
                 {:opened? dialog-opened?
                  :context context})

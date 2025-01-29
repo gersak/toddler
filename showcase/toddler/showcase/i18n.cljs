@@ -218,7 +218,7 @@
               {:align :center
                :style {:max-width "40rem"
                        :min-height 6000}}
-              ($ md/watch-url {:url "/doc/en/i18n.md"})
+              ($ md/watch-url {:url "/i18n.md"})
               ($ toddler/portal
                  {:locator #(.getElementById js/document "component-translation-example")}
                  ($ i18n-example))

@@ -44,12 +44,23 @@ wan't to render "table" than "row" than single changed cell in "row". Nothing el
 Lets start with table definition or what table should render. Columns should
 be sequence of column definitions that define:
 
- * **:cursor** - cell cursor, like if i get row data in cell how can i access value that should be displayed in this column. Valid values are evenrything that can be used in *clojure.core/get* **or** *clojure.core/get-in*
- * **:cell**   - component that should be used to display cell. This component **will not receive any props**. It will use ```toddler.table/use-cell-state``` hook to get and change data. This makes it easy to customize cells!
- * **:header** - same as *:cell*. It should render column header. Also receives 0 props but same as cell will have access to column context through ```toddler.table/use-column``` hook. So everyting that you put into column definition will be available to that header component
+ * **:cursor** - cell cursor, like if i get row data in cell how can i access 
+ value that should be displayed in this column. 
+ Valid values are evenrything that can be used in *clojure.core/get* **or** *clojure.core/get-in*
+ * **:cell**   - component that should be used to display cell. This component 
+ **will not receive any props**. It will use ```toddler.table/use-cell-state```
+ hook to get and change data. This makes it easy to customize cells!
+ * **:header** - same as *:cell*. It should render column header.
+ Also receives 0 props but same as cell will have access to column context 
+ through ```toddler.table/use-column``` hook. So everyting that you put into 
+ column definition will be available to that header component
  * **:style**  - style to override cell wrapper
- * **:width**  - column width. For implementation **[flex](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)** is used. This *width* property will determine minimal size of column in pixels. As width changes (like on resize), column will grow but it will never shrink on lower value than *width*. Also column size ratio is persistent.
- * **:align**  - how to align column and header. Allowed values include keywords **:left, :right, :center** or combination of same with **:top, :bottom** in form of set. I.E. ```#{:left :center}``` or ``` #{:bottom :right}```
+ * **:width**  - column width. For implementation **[flex](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)**
+ is used. This *width* property will determine minimal size of column in pixels. As width changes (like on resize),
+ column will grow but it will never shrink on lower value than *width*. Also column size ratio is persistent.
+ * **:align**  - how to align column and header. Allowed values include keywords 
+ **:left, :right, :center** or combination of same with **:top, :bottom** 
+ in form of set. I.E. ```#{:left :center}``` or ``` #{:bottom :right}```
 
 This is enough to describe what should be displayed and in a sense even how
 by specifying **:cell** and **:header** components.
@@ -58,6 +69,8 @@ Example below shows how to define columns and use default implementation
 of cells and table to render table that can be interacted with for every
 cell and header (order by).
 
+
+## DEMO
 <div id="toddler-table-example"></div>
 
 
@@ -265,9 +278,148 @@ That is it mostly, except it uses ```use-table-defaults``` hook to triage input 
 and set default styles if needed.
 
 ## Expand Example
-TBD
+Here is demonstration of how to customize row so that it can be expanded
+and how to use custom cell to display expansion action. Demo will show
+table of movie characters where each row has additional details that 
+can be view when toggling expand cell.
+
+This is data:
+```clojure
+(def expand-data
+  [{:first-name "Donnie" :last-name "Darko" :gender :male
+    :movie "Donnie Darko, 2001"
+    :description "Played by Jake Gyllenhaal, Donnie is a troubled teenager experiencing time loops, apocalyptic visions, and cryptic messages from a man in a rabbit suit."}
+   {:first-name "Ellen" :last-name "Rippley" :gender :female
+    :movie "Alien (1979) & Aliens (1986)"
+    :description "Played by Guy Pearce, Leonard suffers from short-term memory loss and relies on tattoos and notes to track his search for his wife’s killer"}
+   {:first-name "Sarah" :last-name "Connor" :gender :female
+    :movie "The Terminator (1984) & Terminator 2: Judgment Day (1991)"
+    :description "Played by Linda Hamilton, Sarah evolves from a terrified waitress to a hardened warrior, fighting to protect her son and prevent Judgment Day."}
+   {:first-name "Leonard" :last-name "Shelby" :gender :male
+    :movie "Memento, 2000"
+    :description "Played by Guy Pearce, Leonard suffers from short-term memory loss and relies on tattoos and notes to track his search for his wife’s killer."}
+   {:first-name "Roy" :last-name "Batty" :gender :male
+    :movie "Blade Runner, 1982"
+    :description "Played by Rutger Hauer, Roy is a rogue replicant searching for more life, delivering one of sci-fi’s most poetic monologues before his tragic end."}
+   {:first-name "Furiosa" :gender :female
+    :movie "Mad Max: Fury Road (2015)"
+    :description "Played by Charlize Theron, Furiosa is a fearless, battle-hardened warrior fighting for freedom in a dystopian wasteland."}])
+```
+
+#### Expand cell
+Lets start with expand cell. This is simple component that will show
+icon down if it is not expanded and on click it will change its value
+with *not* function effectively toggling on every click.
+
+```clojure
+(defnc expand-cell
+  []
+  (let [[value set-value!] (table/use-cell-state)]
+    (d/div
+     {:className (css :flex :flex-grow :items-center :justify-center :cursor-pointer)
+      :on-click #(set-value! (not value))}
+     ($ (if value outlined/keyboard-arrow-up outlined/keyboard-arrow-down)
+        {:className (css {:font-size "24px"})}))))
+```
+
+#### Character cell
+This cell will just concatenate first-name and last-name to display 
+movie character.
+
+```clojure
+(defnc custom-cell
+  []
+  (let [{:keys [first-name last-name]} (table/use-row)]
+    (d/div (str first-name " " last-name))))
+```
 
 <div id="expand-row-example"></div>
+
+#### Custom row
+Reusable ```toddler.table/Row``` component is used and passed ```extended-row```
+component as child. ```extended-row``` component will use row context, that is will
+get all information from row and from there pull values for **:movie, :description**
+keys.
+
+Also value of cursor ```[:ui :expanded]``` is monitored and if row isn't expanded than
+height of extended-row is 0px and if it is it will match full size of that content.
+
+*height* is transitioned so that extending row is smooth.
+
+```clojure
+(defnc extended-row
+  []
+  (let [{{:keys [expanded]} :ui
+         :keys [movie description]} (table/use-row)
+        [el {:keys [height]}] (toddler/use-dimensions)]
+    (d/div
+     {:className (css
+                  :overflow-hidden
+                  :text-xs
+                  {:transition "height .2s ease-in-out"}
+                  ["& label" :font-semibold :color+ :ml-4 {:min-width "100px"}])
+      :style {:height (if expanded height 0)}}
+     (d/div
+      {:ref #(reset! el %)}
+      ($ ui/row
+         (d/label "Movie")
+         (d/div movie))
+      ($ ui/row
+         (d/label "Description")
+         (d/div description))))))
+
+(defnc custom-row
+  {:wrap [(ui/forward-ref)]}
+  [props _ref]
+  ($ table/Row
+     {:ref _ref
+      :className "trow"
+      & (dissoc props :className :class)}
+     ($ extended-row)))
+```
+#### Overriding default table row
+Here you can see how columns are defined for this example. In addition
+there is ```extend-ui``` wrapper used in ```row-example``` component.
+
+This wrapper can be used to override component from inherited toddler
+component context. Hence we are replacing default implementation of ```:table/row```
+component and using ```custom-row``` from code above.
+
+```clojure
+(def row-example-columns
+  [{:cursor [:ui :expanded]
+    :cell expand-cell
+    :width 32
+    :align #{:center}
+    :style {:max-width 48}}
+   {:cell custom-cell
+    :width 140
+    :align #{:center :left}
+    :label "Character"
+    :header ui/plain-header}])
+
+(defnc row-example
+  {:wrap [(ui/forward-ref)
+          (provider/extend-ui
+           #:table {:row custom-row})]}
+  []
+  (let [[state set-state!] (hooks/use-state expand-data)]
+    ($ ui/row
+       {:align :center}
+       ($ layout/Container
+          {:style
+           {:width 500
+            :height 400}}
+          ($ ui/table
+             {:columns row-example-columns
+              :dispatch (fn [{:keys [type value idx] :as evt
+                              {:keys [cursor]} :column}]
+                          (println "WHRER: " evt)
+                          (case type
+                            :table.element/change (set-state! assoc-in (concat [idx] cursor) value)
+                            (.error js/console "Unkown event: " (pr-str evt))))
+              :rows state})))))
+```
 
 ## DND Example
 TBD

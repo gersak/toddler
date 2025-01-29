@@ -117,7 +117,7 @@
              {:align :center
               :style {:max-width "30rem"
                       :min-height 1500}}
-             ($ md/watch-url {:url "/doc/en/notifications.md"})
+             ($ md/watch-url {:url "/notifications.md"})
              ($ toddler/portal
                 {:locator #(.getElementById js/document "notifications-example")}
                 ($ notifications-example))

@@ -55,7 +55,7 @@
               :style {:max-width "30rem"}
               :className (css
                           ["& .component" :my-6])}
-             ($ md/watch-url {:url "/doc/en/calendar.md"})
+             ($ md/watch-url {:url "/calendar.md"})
              ($ toddler/portal
                 {:locator #(.getElementById js/document "calendar-month-example")}
                 ($ month))

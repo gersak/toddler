@@ -138,7 +138,7 @@
              {:align :center
               :style {:max-width "30rem"
                       :min-height 1500}}
-             ($ md/watch-url {:url "/doc/en/popup.md"})
+             ($ md/watch-url {:url "/popup.md"})
              ($ toddler/portal
                 {:locator #(.getElementById js/document "popup-example")}
                 ($ popup-example))

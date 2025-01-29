@@ -165,7 +165,7 @@
               :style {:max-width "30rem"}
               :className (css
                           ["& .example-field" :my-5])}
-             ($ md/watch-url {:url "/doc/en/inputs.md"})
+             ($ md/watch-url {:url "/inputs.md"})
              ($ toddler/portal
                 {:locator #(.getElementById js/document "buttons-example")}
                 ($ buttons))

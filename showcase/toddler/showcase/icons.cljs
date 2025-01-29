@@ -87,7 +87,7 @@
            ($ ui/simplebar
               {:style {:max-height (- height 100)
                        :min-width 600}}
-              ($ md/watch-url {:url "/doc/en/icons.md"})))
+              ($ md/watch-url {:url "/icons.md"})))
           (d/div
            {:className "footer"})))
      ($ ui/tabs

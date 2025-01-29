@@ -37,7 +37,7 @@
     :render Inputs
     :segment "inputs"}
    {:id :toddler.table
-    :name :showcase.tables
+    :name "Table"
     :render Table
     :segment "tables"}
    #_{:id :toddler.multi-table
