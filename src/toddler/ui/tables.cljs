@@ -45,42 +45,6 @@
       :className "tcell"
       & (dissoc props :className :class)}))
 
-(let [$default (css :flex :grow :justify-start :items-start)
-      $top-center (css :flex :grow :justify-center :items-start)
-      $top-right (css :flex :grow :justify-end :items-start)
-      $center-left (css :flex :grow :justify-start :items-center)
-      $center (css :flex :grow :justify-center :items-center)
-      $center-right (css :flex :grow :justify-end :items-center)
-      $bottom-left (css :flex :grow :justify-start :items-end)
-      $bottom-center (css :flex :grow :justify-center :items-end)
-      $bottom-right (css :flex :grow :justify-end :items-end)]
-
-  (defhook use-cell-alignment-css
-    "Pass in column and function will return css class for aligment"
-    [{:keys [align]}]
-    (case align
-      (:center #{:top :center}) $top-center
-      (:right #{:top :right}) $top-right
-      #{:center :left} $center-left
-      #{:center :right} $center-right
-      #{:center} $center
-      (:bottom  #{:bottom-left}) $bottom-left
-      #{:bottom :center} $bottom-center
-      #{:bottom :right} $bottom-right
-      $default))
-  (defhook use-header-alignment-css
-    "Pass in column and function will return css class for aligment"
-    [{:keys [align]}]
-    (if (set? align)
-      (condp some? align
-        :center $top-center
-        :right $top-right
-        $default)
-      (case align
-        :center $top-center
-        :right $top-right
-        $default))))
-
 (defnc uuid-cell
   []
   (let [[visible? set-visible!] (hooks/use-state nil)
@@ -111,15 +75,10 @@
                    :background-color "var(--tooltip-bg)"
                    :color "var(--tooltip-color)"})
         $copied (css
-                 {:color "var(--button-positive-hover-color)"})
-        $alignment (use-cell-alignment-css column)]
+                 {:color "var(--button-positive-hover-color)"})]
     ($ popup/Area
        {:ref area
-        :className (str/join " "
-                             [$alignment
-                              (css
-                               :grow
-                               {:padding-top "0.45em"})])
+        :className (css {:padding-top "0.45em"})
         :onMouseLeave (fn [] (set-visible! false))
         :onMouseEnter (fn []
                         (set-copied! nil)
@@ -165,8 +124,7 @@
            :ref-fn :value
            :searchable? true
            :onChange set-value!}
-          (assoc column :value value)))
-        $alignment (use-cell-alignment-css column)]
+          (assoc column :value value)))]
     (provider
      {:context dropdown/*dropdown*
       :value dropdown}
@@ -174,8 +132,7 @@
         {:ref area
          :onClick toggle!
          :className (str/join " "
-                              [$alignment
-                               (css :text-xs)])}
+                              [(css :text-xs)])}
         (d/div
          {:className (css
                       :flex
@@ -191,7 +148,7 @@
          (d/input
           {:ref input
            :className "input"
-           :value search
+           :value (or search "")
            :disabled disabled
            :spellCheck false
            :auto-complete "off"
@@ -216,11 +173,10 @@
                :outline-none
                :py-2
                :w-full
-               {:resize "none"})
-        $alignment (use-cell-alignment-css column)]
+               {:resize "none"})]
     ($ TextAreaElement
        {:value value
-        :class [$text $alignment]
+        :class [$text]
         :read-only read-only
         :spellCheck false
         :auto-complete "off"
@@ -237,8 +193,7 @@
         [opened set-opened!] (hooks/use-state false)
         translate (use-translate)
         area (hooks/use-ref nil)
-        popup (hooks/use-ref nil)
-        $alignment (use-cell-alignment-css column)]
+        popup (hooks/use-ref nil)]
     (popup/use-outside-action
      opened area popup
      #(set-opened! false))
@@ -248,8 +203,7 @@
                    (when (and (not disabled) (not read-only))
                      (set-opened! true)))
         :className (str/join " "
-                             [$alignment
-                              (css
+                             [(css
                                :py-2
                                :grow
                                :flex
@@ -309,8 +263,7 @@
                   :border-0
                   :text-xs
                   :w-full
-                  :py-2)
-          $alignment (use-cell-alignment-css column)]
+                  :py-2)]
       (hooks/use-effect
         [focused?]
         (set-input! (str value)))
@@ -319,7 +272,6 @@
         (when-not (= (text->number input) value)
           (set-input! (when value (translate value)))))
       (d/div
-       {:class $alignment}
        (d/input
         {:value (if value
                   (if focused?
@@ -358,8 +310,7 @@
                   :border-0
                   :outline-0
                   :text-xs
-                  :py-2)
-          $alignment (use-cell-alignment-css column)]
+                  :py-2)]
       (hooks/use-effect
         [focused?]
         (set-input! (str value)))
@@ -368,7 +319,6 @@
         (when-not (= (text->number input) value)
           (set-input! (when value (translate value)))))
       (d/div
-       {:className $alignment}
        (d/input
         {:className $float
          :value (if value
@@ -417,8 +367,7 @@
         on-blur (or onBlur on-blur identity)
         on-focus (or onFocus on-focus identity)
         [focused? set-focused!] (hooks/use-state nil)
-        [state set-state!] (hooks/use-state (when amount (i18n/translate amount currency)))
-        $alignment (use-cell-alignment-css column)]
+        [state set-state!] (hooks/use-state (when amount (i18n/translate amount currency)))]
     (hooks/use-effect
       [value]
       (if focused?
@@ -427,22 +376,20 @@
           (i18n/translate amount currency)
           (set-state! ""))))
     (d/div
-     {:class (str/join " "
-                       [$alignment
-                        (css
-                         :py-2
-                         :flex
-                         :grow
-                         :text-xs
-                         ["& .clear"
-                          :text-md
-                          :self-center
-                          :text-transparent
-                          {:transition "color .2s ease-in-out"
-                           :position "absolute"
-                           :right "0px"}]
-                         ["&:hover .clear " :text-gray-400]
-                         ["& .clear:hover" :text-gray-900 :cursor-pointer])])
+     {:class (css
+              :py-2
+              :flex
+              :grow
+              :text-xs
+              ["& .clear"
+               :text-md
+               :self-center
+               :text-transparent
+               {:transition "color .2s ease-in-out"
+                :position "absolute"
+                :right "0px"}]
+              ["&:hover .clear " :text-gray-400]
+              ["& .clear:hover" :text-gray-900 :cursor-pointer])
       :onClick (fn []
                  (when (and currency @input)
                    (set-state! (str amount))
@@ -520,12 +467,10 @@
                  :items-center
                  {:transition "color .3s ease-in-out"})
         $active (css :color++)
-        $inactive (css  :color--)
-        $alignment (use-cell-alignment-css (update column :align #(or % :center)))]
+        $inactive (css  :color--)]
     (d/div
      {:class [(css
-               :py-2)
-              $alignment]}
+               :py-2)]}
      (d/button
       {:disabled disabled
        :read-only read-only
@@ -560,8 +505,7 @@
         (dropdown/use-dropdown (assoc column
                                  :value value
                                  :on-change set-value!
-                                 :search-fn :name))
-        $alignment (use-cell-alignment-css column)]
+                                 :search-fn :name))]
     (provider
      {:context dropdown/*dropdown*
       :value dropdown}
@@ -570,8 +514,7 @@
          :onClick toggle!
          :className (str/join
                      " "
-                     [$alignment
-                      (css :text-xs :pl-10)])}
+                     [(css :text-xs :pl-10)])}
         (d/div
          {:className (css
                       :flex
@@ -666,13 +609,12 @@
 
 (defnc plain-header
   [{:keys [className column] :as props}]
-  (let [$alignment (use-header-alignment-css column)]
-    (d/div
-     {:class [$header className]}
-     (d/div
-      {:class [$alignment "header"]}
-      ($ SortElement {& props})
-      ($ table/ColumnNameElement {& props})))))
+  (d/div
+   {:class [$header className]}
+   (d/div
+    {:class ["header"]}
+    ($ SortElement {& props})
+    ($ table/ColumnNameElement {& props}))))
 
 (def popup-menu-preference
   [#{:bottom :center}

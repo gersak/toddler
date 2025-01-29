@@ -45,16 +45,17 @@
     (.error js/console "Cell renderer not specified for culumn " (pr-str column)))
   (let [w (or
            (get column :width)
-           (get style :width 100))]
+           (get style :width 100))
+        style (merge
+               style
+               {:display "flex"
+                :flex (str w  \space 0 \space "auto")
+                :position "relative"
+                :min-width w
+                :width w})]
     ;; Field dispatcher
     (d/div
-     {:style (merge
-              style
-              {:display "flex"
-               :flex (str w  \space 0 \space "auto")
-               :position "relative"
-               :min-width w
-               :width w})
+     {:style style
       :level level
       & (dissoc props :style :width :level :render :column)}
      (provider
@@ -135,36 +136,39 @@
   
   Use dispatch from your reducer to set *dispatch* context
   that this hook will use."
-  [column]
-  (let [{:keys [idx] :as row} (hooks/use-context *row-record*)
-        {k :cursor} column
-        k (hooks/use-memo
-            [k]
-            (if (sequential? k) k
-                [k]))
-        dispatch (use-dispatch)
-        value (hooks/use-memo
-                [row]
-                (get-in row k))
-        set-value! (hooks/use-memo
-                     [idx dispatch]
-                     (fn [value]
-                       (when dispatch
-                         (dispatch
-                          {:type :table.element/change
-                           :idx idx
-                           :column column
-                           :value value}))))
-        select-value! (hooks/use-memo
-                        [idx dispatch]
-                        (fn [value]
-                          (when dispatch
-                            (dispatch
-                             {:type :table.element/select
-                              :idx idx
-                              :column column
-                              :value value}))))]
-    [value set-value! select-value!]))
+  ([]
+   (let [column (use-column)]
+     (use-cell-state column)))
+  ([column]
+   (let [{:keys [idx] :as row} (hooks/use-context *row-record*)
+         {k :cursor} column
+         k (hooks/use-memo
+             [k]
+             (if (sequential? k) k
+                 [k]))
+         dispatch (use-dispatch)
+         value (hooks/use-memo
+                 [row]
+                 (get-in row k))
+         set-value! (hooks/use-memo
+                      [idx dispatch]
+                      (fn [value]
+                        (when dispatch
+                          (dispatch
+                           {:type :table.element/change
+                            :idx idx
+                            :column column
+                            :value value}))))
+         select-value! (hooks/use-memo
+                         [idx dispatch]
+                         (fn [value]
+                           (when dispatch
+                             (dispatch
+                              {:type :table.element/select
+                               :idx idx
+                               :column column
+                               :value value}))))]
+     [value set-value! select-value!])))
 
 ;;;;;;;;;;;;;;;;
 ;;   HEADERS  ;;
@@ -192,12 +196,30 @@
                        nil)})))}
      (translate column-name))))
 
-;; Styled headers
 (defn column-default-style
   [{style :style
     type :type :as column}]
   (let [width (get-in column [:style :width]
-                      (get column :width 100))]
+                      (get column :width 100))
+        alignment (case (:align column)
+                    (:center #{:top :center}) {:justifyContent "center"
+                                               :alignItems "flex-start"}
+                    (:right #{:top :right}) {:justifyContent "flex-end"
+                                             :alignItems "flex-start"}
+                    #{:center :left} {:justifyContent "flex-start"
+                                      :alignItems "center"}
+                    #{:center :right} {:justifyContent "flex-end"
+                                       :alignItems "center"}
+                    #{:center} {:justifyContent "center"
+                                :alignItems "center"}
+                    (:bottom  #{:bottom-left}) {:justifyContent "flex-start"
+                                                :alignItems "flex-end"}
+                    #{:bottom :center} {:justifyContent "center"
+                                        :alignItems "flex-end"}
+                    #{:bottom :right} {:justifyContent "flex-end"
+                                       :alignItems "flex-end"}
+                    {:justifyContent "flex-start"
+                     :alignItems "flex-start"})]
     (assoc column :style
            (merge
             style
@@ -205,12 +227,7 @@
              :flex (str width \space 0 \space "auto")
              :minWidth width
              :width width}
-            (when (every? empty? ((juxt :justifyContent :alignItems) style))
-              (case type
-                ("boolean" "uuid") {:justifyContent "center"
-                                    :alignItems "flex-start"}
-                {:justifyContent "flex-start"
-                 :alignItems "flex-start"}))))))
+            alignment))))
 
 (defhook use-table-defaults
   [{:keys [columns] :as props}]
