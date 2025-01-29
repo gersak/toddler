@@ -35,6 +35,11 @@
    {:flex "100 0 auto"
     :width "100px"}
    ["& > .content" :w-full]
+   ["& .avatar"
+    :border
+    :border-normal-
+    {:background-color "var(--avatar-bg)"
+     :border-radius "20px"}]
    ["&.error" :color-negative]
    ["&.error .toddler-field-label" :color-negative]
    ["&.error .toddler-input-field" :border-negative]))

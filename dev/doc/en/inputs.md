@@ -90,8 +90,8 @@ Date fields use [calendar](../calendar) so that user can pick date
 from calendar that is displayed in popup.
 
 In this showcase there are two types of date fields. First one is
-date or timestamp field that will hold single value. That is what
-date and time user selects.
+date or timestamp field that will hold single value. That is value of 
+date and time that user selects.
 
 Second is date or timestamp period field. User can select interval
 between start of period and end of period or just select end or start
@@ -100,7 +100,7 @@ calendar will display all dates before end or after start as selected.
 
 
 Sometimes working with period field might seem awkward, so remember
-that you can clear start and and input fields, as well as double click
+that you can clear start and end input fields, as well as double click
 on some date to focus start and end of that day.
 
 <div id="date-fields-example"></div>

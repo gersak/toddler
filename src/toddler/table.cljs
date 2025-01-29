@@ -42,8 +42,10 @@
      :as column} :column
     :or {render "div"} :as props}]
   (when (nil? render)
-    (.error "Cell renderer not specified for culumn " (pr-str column)))
-  (let [w (get style :width 100)]
+    (.error js/console "Cell renderer not specified for culumn " (pr-str column)))
+  (let [w (or
+           (get column :width)
+           (get style :width 100))]
     ;; Field dispatcher
     (d/div
      {:style (merge
@@ -54,7 +56,7 @@
                :min-width w
                :width w})
       :level level
-      & (dissoc props :style :level :render :column)}
+      & (dissoc props :style :width :level :render :column)}
      (provider
       {:context *column*
        :value column}
@@ -63,7 +65,7 @@
 (defhook use-table-width
   []
   (let [columns (use-columns)]
-    (reduce + 0 (map #(get-in % [:style :width] 100) columns))))
+    (reduce + 0 (map #(get-in % [:style :width] (get % :width 100)) columns))))
 
 (defnc FRow
   {:wrap [(ui/forward-ref)]}
@@ -78,7 +80,7 @@
               :minWidth min-width}
       :level (:level props)
       & (cond->
-         (dissoc props :style :level :data)
+         (dissoc props :style :level :data :width)
           _ref (assoc :ref _ref))}
      (c/children props))))
 
@@ -121,103 +123,29 @@
           (remove :hidden columns)))
       (c/children props)))))
 
-(defn init-pagination
-  "Given initial page size, page and total count
-  function returns initial props for pagination."
-  [{{:keys [page page-size total-count options]
-     :or {page 0
-          page-size 20
-          total-count 0
-          options [10 20 50 100]}
-     :as pagination} :pagination
-    :as props}]
-  (if (empty? pagination) props
-      (assoc props :pagination
-             {:page page
-              :page-size page-size
-              :total-count total-count
-              :options options
-              :page-count (.ceil js/Math (/ total-count page-size))
-              :next? (<= (inc page) (.ceil js/Math (/ total-count page-size)))
-              :previous? (>= (inc page) 1)})))
-
-; (defnc Pagination
-;   [{:keys [className]}]
-;   (let [{:keys [page page-size
-;                 next? previous? options
-;                 page-count total-count]
-;          :as pagination} (use-pagination)
-;         dispatch (use-dispatch)
-;         set-pagination! (hooks/use-memo
-;                           [dispatch]
-;                           (fn [v] 
-;                             (dispatch 
-;                               {:type :pagination/update
-;                                :pagination v})))
-;         rows (use-rows)]
-;     (d/div
-;       {:class className}
-;       (when (and pagination (pos? rows) (> total-count (count rows)))
-;         (d/button
-;           {:onClick #(set-pagination! {:page 0})
-;            :className "start"
-;            :disabled (not previous?)}
-;           ($ icon/paginationFarPrevious))
-;         (d/button
-;           {:onClick #(set-pagination! {:page (dec page)})
-;            :className "previous"
-;            :disabled (not previous?)}
-;           ($ icon/paginationPrevious))
-;         (d/button
-;           {:onClick #(set-pagination! {:page (inc page)})
-;            :className "next"
-;            :disabled (not next?)}
-;           ($ icon/paginationNext))
-;         (d/button
-;           {:onClick #(set-pagination! {:page (dec page-count)})
-;            :className "end"
-;            :disabled (not next?)}
-;           ($ icon/paginationFarNext))
-;         (d/span 
-;           (goog.string/format
-;             "Showing %d - %d of %d results" 
-;             (* page page-size)
-;             (+ (* page page-size) (count rows))
-;             total-count))
-;         (d/select
-;           {:value page-size
-;            :className "view-size"
-;            :onChange (fn [e] (set-pagination! {:page-size (js/Number (.. e -target -value))}))}
-;           (map
-;             (fn [option]
-;               (d/option
-;                 {:key option
-;                  :value option}
-;                 (str "Show " option)))
-;             (or options (range 10 60 10))))
-;         (d/span (str "| Page: "))
-;         ($ ui/idle-input
-;            {:placeholder "?"
-;             :className "pag"
-;             :spell-check false
-;             :auto-complete "off"
-;             :type "number"
-;             :value (inc page)
-;             :onChange (fn [page] 
-;                         (let [page (if page page 0)
-;                               np (min (max 0 (dec page)) page-count)]
-;                           (set-pagination! {:page np})))})))))
-
 (defhook use-cell-state
-  [el]
+  "Hook that will return vector of
+
+  [value set-value! select-value!
+  
+  Value is value pulled from row based on :cursor position
+  in column declaration. set-value! and select-value! will
+  use dispatch from *dispatch* context to send events when
+  value changes or value is selected.
+  
+  Use dispatch from your reducer to set *dispatch* context
+  that this hook will use."
+  [column]
   (let [{:keys [idx] :as row} (hooks/use-context *row-record*)
-        {k :cursor} el
+        {k :cursor} column
         k (hooks/use-memo
             [k]
             (if (sequential? k) k
                 [k]))
         dispatch (use-dispatch)
-        value (get-in row k)
+        value (hooks/use-memo
+                [row]
+                (get-in row k))
         set-value! (hooks/use-memo
                      [idx dispatch]
                      (fn [value]
@@ -225,7 +153,7 @@
                          (dispatch
                           {:type :table.element/change
                            :idx idx
-                           :column el
+                           :column column
                            :value value}))))
         select-value! (hooks/use-memo
                         [idx dispatch]
@@ -234,7 +162,7 @@
                             (dispatch
                              {:type :table.element/select
                               :idx idx
-                              :column el
+                              :column column
                               :value value}))))]
     [value set-value! select-value!]))
 
@@ -266,23 +194,23 @@
 
 ;; Styled headers
 (defn column-default-style
-  [{{:keys [width]
-     :or {width 100}
-     :as style} :style
+  [{style :style
     type :type :as column}]
-  (assoc column :style
-         (merge
-          style
-          {:display "flex"
-           :flex (str width \space 0 \space "auto")
-           :minWidth width
-           :width width}
-          (when (every? empty? ((juxt :justifyContent :alignItems) style))
-            (case type
-              ("boolean" "uuid") {:justifyContent "center"
-                                  :alignItems "flex-start"}
-              {:justifyContent "flex-start"
-               :alignItems "flex-start"})))))
+  (let [width (get-in column [:style :width]
+                      (get column :width 100))]
+    (assoc column :style
+           (merge
+            style
+            {:display "flex"
+             :flex (str width \space 0 \space "auto")
+             :minWidth width
+             :width width}
+            (when (every? empty? ((juxt :justifyContent :alignItems) style))
+              (case type
+                ("boolean" "uuid") {:justifyContent "center"
+                                    :alignItems "flex-start"}
+                {:justifyContent "flex-start"
+                 :alignItems "flex-start"}))))))
 
 (defhook use-table-defaults
   [{:keys [columns] :as props}]
@@ -338,7 +266,9 @@
                  style :style
                  p :cursor
                  :as column}]
-             (let [w (get style :width 100)]
+             (let [w (or
+                      (get column :width)
+                      (get style :width 100))]
                (d/div
                 {:key idx
                  :style (merge style
@@ -356,6 +286,7 @@
            (remove :hidden columns)))))))
 
 (defnc Body
+  "Abstract component that doesn't need table data"
   {:wrap [(ui/forward-ref)]}
   [{:keys [class className]} _ref]
   (let [{container-width :width
@@ -391,6 +322,9 @@
            rows))))))
 
 (defnc TableProvider
+  "Component that is used to distribute received
+  dispatch and rows props to proper context. Rest of
+  children will than be able to use those contexts."
   [{:keys [dispatch rows]
     :as props}]
   (let [{:keys [columns]} (use-table-defaults props)]

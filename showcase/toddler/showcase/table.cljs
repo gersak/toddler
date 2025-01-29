@@ -1,34 +1,19 @@
 (ns toddler.showcase.table
   (:require
-   [toddler.dev :as dev]
+   [shadow.css :refer [css]]
    [toddler.layout :as layout]
    [toddler.grid :as grid]
    [toddler.ui :as ui]
-   [toddler.ui.components :as components]
+   [toddler.table :as table]
+   [toddler.core :as toddler]
+   [toddler.provider :as provider]
    [toddler.router :as router]
+   [toddler.md.lazy :as md]
    [vura.core :as vura]
    [helix.core :refer [$ defnc]]
    [helix.dom :as d]
    [helix.hooks :as hooks]
-   [helix.children :as c]
-   [toddler.i18n.keyword :refer [add-translations]]))
-
-(add-translations
- (merge
-  #:showcase.table {:default "Table"
-                    :hr "Tablica"}
-  #:showcase.multi-tables {:default "Multi Table"
-                           :hr "Više tablica"}))
-
-(defn random-avatar []
-  (rand-nth
-   ["https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.FMXcWvy8DeSem2kV_8KH0gHaEK%26pid%3DApi&f=1"
-    "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.SuUOaB0bwigOLr3NLT2ZZgHaEK%26pid%3DApi&f=1"
-    "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.VCtUu6tnkPzLht6T46WD5wHaEx%26pid%3DApi&f=1"
-    "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.3JCqIfj_9yEyfPeWvNwdeQHaDt%26pid%3DApi&f=1"
-    "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.jUhREZmYLBkJCe7cmSdevwHaEX%26pid%3DApi&f=1"
-    "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.w2kZvvrVVyFG0JNVzdYhbwHaEK%26pid%3DApi&f=1"
-    "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.iBbhCR5cHpgkHsABbNeVtQHaEK%26pid%3DApi&f=1"]))
+   [helix.children :as c]))
 
 (defn random-user []
   {:euuid (random-uuid)
@@ -38,40 +23,39 @@
            "Harry"
            "Ivan"
            "Dugi"
-           "Ricky"])
-   :avatar (random-avatar)})
+           "Ricky"])})
 
 (def columns
   [{:cursor [:ui :expand]
     :cell ui/expand-cell
     :header nil
-    :style {:width 20}}
+    :width 20}
    {:cursor :euuid
     :label "UUID"
     :align :center
     :header nil
     :cell ui/uuid-cell
-    :style {:width 50}}
+    :width 50}
    {:cursor :user
     :label "User"
     :cell ui/identity-cell
     :options (repeatedly 3 random-user)
-    :style {:width 100}}
+    :width 100}
    {:cursor :float
     :cell ui/float-cell
     :label "Float"
-    :style {:width 100}}
+    :width 100}
    {:cursor :integer
     :cell ui/integer-cell
     :label "Integer"
-    :style {:width 100}}
+    :width 100}
    {:cursor :text
     :cell ui/text-cell
     :label "Text"
-    :style {:width 250}}
+    :width 250}
    {:cursor :currency
     :cell ui/currency-cell
-    :style {:width 150}
+    :width 150
     :label "Money"}
    {:cursor :enum
     :label "ENUM"
@@ -85,19 +69,20 @@
               {:name "Hippopotamus"
                :value :hypo}]
     :placeholder "Choose your fav"
-    :style {:width 100}}
+    :width 100}
    {:cursor :timestamp
     :cell ui/timestamp-cell
     :label "Timestamp"
     :show-time false
-    :style {:width 120}}
+    :width 120}
    {:cursor :boolean
     :cell ui/boolean-cell
     :label "Boolean"
     :type "boolean"
-    :style {:width 50}}])
+    :width 50}])
 
 (defn generate-column
+  "Function will generate data for input column"
   [{t :cell}]
   (let [now (-> (vura/date) vura/time->value)]
     (letfn [(rand-date
@@ -122,6 +107,8 @@
         nil))))
 
 (defn generate-row
+  "Will go through columns and for each collumn call generate-column
+  function."
   []
   (reduce
    (fn [r {c :cursor :as column}]
@@ -130,40 +117,21 @@
    columns))
 
 (defn generate-table
+  "Genearte \"cnt\" number of rows"
   [cnt]
   (loop [c cnt
          r []]
     (if (zero? c) r
         (recur (dec c) (conj r (assoc (generate-row) :idx (count r)))))))
 
-(comment
-  (generate-table 100))
-
 (def data (generate-table 50))
-
-(defnc TableContainer
-  [{:keys [style] :as props}]
-  ($ layout/Container
-     {:style
-      (merge
-       {:display "flex"
-        :flex-grow "1"
-        :width "100%"
-        :height "100%"
-        :padding 10
-        :box-sizing "border-box"
-        :justifyContent "center"
-        :align-content "center"}
-       style)}
-     (c/children props)))
 
 (defn reducer
   [{:keys [data] :as state}
     ;;
    {:keys [type idx value]
     {:keys [cursor]
-     cidx :idx} :column
-    :as evnt}]
+     cidx :idx} :column}]
   (letfn [(apply-filters
             [{:keys [rows columns] :as state}]
             (if-some [filters (not-empty
@@ -196,33 +164,110 @@
             ;;
        apply-filters))))
 
-(defnc Table
-  {:wrap [(router/wrap-rendered :toddler.table)]}
+(defnc extended-row
   []
-  ($ components/Provider
-     (d/div
-      {:style
-       {:width "100%" :height "100%"
-        :display "flex"
-        :padding 30
-        :box-sizing "border-box"
-        :justifyContent "center"
-        :alignItems "center"}}
-      (let [[{:keys [data columns]} dispatch] (hooks/use-reducer
-                                               reducer
-                                               {:rows data
-                                                :data data
-                                                :columns columns})]
-        ($ TableContainer
-           ($ ui/table
-              {:rows data
-               :columns columns
-               :dispatch dispatch}))))))
+  (d/div "hello from extended row"))
 
-; (dev/add-component
-;    {:key ::table
-;     :name "Table"
-;     :render Table})
+(defnc custom-cell
+  []
+  (let [{:keys [cursor]} (table/use-column)]
+    (d/div
+     {:style
+      {:display "flex"
+       :flex-grow "1"
+       :background-color (case cursor
+                           :b "red"
+                           :c "yellow"
+                           :d "green"
+                           "black")}}
+     \u00A0)))
+
+(defnc custom-row
+  {:wrap [(ui/forward-ref)]}
+  [props _ref]
+  ($ table/Row
+     {:ref _ref
+      :className "trow"
+      & (dissoc props :className :class)}
+     ($ extended-row)))
+
+(def row-example-columns
+  [{:cursor :a
+    :cell custom-cell
+    :width 10
+    :name "Column 1"}
+   {:cursor :b
+    :width 5
+    :cell custom-cell
+    :name "Column 2"}
+   {:cursor :c
+    :width 5
+    :cell custom-cell
+    :name "Column 3"}])
+
+(defnc
+  row-example
+  {:wrap [(ui/forward-ref)
+          (provider/extend-ui
+           #:table {:row custom-row})]}
+  []
+  (let []
+    ($ layout/Container
+       {:style
+        {:width 500
+         :height 42}}
+       ($ ui/table
+          {:columns row-example-columns
+           :rows [{:a 1 :b 2 :c 3 :d 4}]}))))
+
+(defnc table-example
+  []
+  (let [{:keys [width height]} (layout/use-container-dimensions)
+        [{:keys [data columns]} dispatch] (hooks/use-reducer
+                                           reducer
+                                           {:rows data
+                                            :data data
+                                            :columns columns})]
+    ($ layout/Container
+       {:style {:width width
+                :height "500px"}}
+       ($ ui/table
+          {:rows data
+           :columns columns
+           :dispatch dispatch}))))
+
+(defnc Table
+  {:wrap [(router/wrap-rendered :toddler.table)
+          (router/wrap-link
+           :toddler.table
+           [{:id ::intro
+             :name "Intro"
+             :hash "in-general"}
+            {:id ::extend
+             :name "Expand Example"
+             :hash "expand-example"}
+            {:id ::dnd
+             :name "Drag'n drop"
+             :hash "dnd-example"}])]}
+  []
+  (let [{:keys [height width]} (layout/use-container-dimensions)]
+    ($ ui/simplebar
+       {:style {:height height
+                :width width}}
+       ($ ui/row {:align :center}
+          ($ ui/column
+             {:align :center
+              :style {:max-width "45rem"}
+              :className (css
+                          ["& .example-field" :my-5]
+                          ["& #toddler-table-example" :my-10])}
+             ($ md/watch-url {:url "/doc/en/tables.md"})
+             ($ toddler/portal
+                {:locator #(.getElementById js/document "row-example")}
+                ($ row-example))
+             ($ toddler/portal
+                {:locator #(.getElementById js/document "toddler-table-example")}
+                ($ table-example)))))))
 
 (let [large [{:i "top" :x 0 :y 0 :w 10 :h 1}
              {:i "bottom-left" :x 0 :y 1 :w 5 :h 1}
@@ -262,8 +307,3 @@
                 :rows data
                 :columns columns
                 :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))}))))))
-
-; (dev/add-component
-;    {:key ::tables
-;     :name "Multiple Tables"
-;     :render TableGrid})

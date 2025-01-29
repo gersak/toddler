@@ -479,6 +479,7 @@
      :transition "color .2s ease-in,background-color .2s ease-in"}]
     ;;
    ["& .toddler-dropdown-option .avatar"
+    {:background "var(--avatar-bg)"}
     :rounded-sm
     :mr-2]
     ;;
@@ -785,7 +786,8 @@
                 {:position "absolute"
                  :left "-10px"
                  :top "-10px"
-                 :transition "all .1s ease-in-out"}]
+                 :transition "all .1s ease-in-out"
+                 :background "var(--avatar-bg)"}]
                ["&:hover" {:box-shadow "1px 4px 11px 1px #ababab"}])]
     (d/div
      {:ref _ref
@@ -1100,10 +1102,12 @@
    ["& .option.PERSON, & .option.ACCESS" {:border-radius "16px"}]
    ["& .option .avatar"
     :overflow-hidden
-    :bg-normal-highlighted
-    {:width "18px" :height "18px" :border-radius "1px" :margin-right "6px"}]
+    {:width "18px" :height "18px" :border-radius "1px" :margin-right "6px"
+     :background "var(--avatar-bg)"}]
    ["& .option.selected" {:border-color "var(--border-highlighted)"}]
-   ["& .option.PERSON .avatar, & .option.ACCESS .avatar" {:border-radius "50px"}]))
+   ["& .option.PERSON .avatar, & .option.ACCESS .avatar"
+    {:border-radius "50px"
+     :background "var(--avatar-bg)"}]))
 
 (defnc relation-picker
   [{:keys [options selected on-change search-fn]
