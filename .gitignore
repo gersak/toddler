@@ -9,14 +9,13 @@ node_modules/
 .nrepl-history
 .clj-kondo/.cache
 .lsp/.cache
-dev/js/
-release/js/
 .calva/
 .DS_Store
 icons/.repos
 
 
-dev/css/
+doc/css/
+doc/js/
 .icons/
 release/
 *.old

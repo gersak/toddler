@@ -3,6 +3,22 @@
  :builds
  {:dev
   {:target :browser
+   :entries [toddler.showcase.dev]
+   :module-loader true
+   :modules {:main
+             {:entries [toddler.showcase.dev]
+              :init-fn toddler.showcase.dev/start!}
+             :markdown
+             {:entries [toddler.md]
+              :depends-on #{:main}}}
+   :output-dir "doc/js"
+   :output-to "doc/js/main.js"
+   :devtools {:http-root "doc"
+              :http-port 8000
+              :preloads []
+              :watch-dirs ["doc"]}}
+  :github
+  {:target :browser
    :entries [toddler.showcase]
    :module-loader true
    :modules {:main
@@ -11,20 +27,5 @@
              :markdown
              {:entries [toddler.md]
               :depends-on #{:main}}}
-   :output-dir "dev/js"
-   :output-to "dev/js/main.js"
-   :devtools {:http-root "dev"
-              :http-port 8000
-              :preloads []
-              :watch-dirs ["dev/doc"]}}
-  :icons
-  {:target :browser
-   :entries [toddler.icons]
-   :modules {:main
-             {:entries [toddler.icons]
-              :init-fn toddler.icons/start!}}
-   :output-dir "dev/js"
-   :output-to "dev/js/main.js"
-   :devtools {:http-root "dev"
-              :http-port 8000
-              :preloads []}}}}
+   :output-dir "doc/js"
+   :output-to "doc/js/main.js"}}}
