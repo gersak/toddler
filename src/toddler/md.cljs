@@ -11,6 +11,7 @@
    [toddler.util :as util]
    [toddler.router :as router]
    [toddler.head :as head]
+   [toddler.md.context :as md.context]
    [shadow.css :refer [css]]
    ["markdown-it" :as markdownit]
    ["markdown-it-emoji"
@@ -171,24 +172,28 @@
 
 (defnc watch-url
   {:wrap [(memo #(= (:url %1) (:url %2)))]}
-  [{:keys [url interval]
-    :or {interval 4000}
+  [{:keys [url]
     :as props}]
-  (let [[content set-content!] (hooks/use-state nil)]
+  (let [[content set-content!] (hooks/use-state nil)
+        interval (hooks/use-context md.context/refresh-period)
+        base (hooks/use-context md.context/base)]
     (hooks/use-effect
-      [url interval]
-      (let [close (async/chan)]
-        (async/go-loop []
-          (let [_content (async/<! (fetch url))]
-            (when (and (string? _content)
-                       (not= _content content))
-              (set-content! _content)))
-          (async/alt!
-            close
-            ([_] (.log js/console (str "Removing watch for URL: " url)))
-            ;;
-            (async/timeout interval)
-            ([_] (when (pos? interval) (recur)))))
-        (fn []
-          (async/close! close))))
+      [url interval base]
+      (when (or (pos? interval)
+                (nil? content))
+        (let [close (async/chan)
+              url (str base url)]
+          (async/go-loop []
+            (let [_content (async/<! (fetch url))]
+              (when (and (string? _content)
+                         (not= _content content))
+                (set-content! _content)))
+            (async/alt!
+              close
+              ([_] (.log js/console (str "Removing watch for URL: " url)))
+                           ;;
+              (async/timeout interval)
+              ([_] (when (pos? interval) (recur)))))
+          (fn []
+            (async/close! close)))))
     ($ show {:content content & (dissoc props :url)})))

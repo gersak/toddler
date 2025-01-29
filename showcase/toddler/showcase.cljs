@@ -8,7 +8,7 @@
    [toddler.dev :as dev]
    [toddler.provider :refer [wrap-ui]]
    [toddler.ui.components :as default]
-   [helix.core :refer [$ defnc]]
+   [helix.core :refer [$ defnc provider]]
    [toddler.showcase.layout :refer [Layout]]
    [toddler.showcase.inputs :refer [Inputs]]
    [toddler.showcase.table :refer [Table TableGrid]]
@@ -21,6 +21,7 @@
    [toddler.showcase.notifications :refer [Notifications]]
    [toddler.notifications :as notifications]
    [toddler.router :as router]
+   [toddler.md.context :as md.context]
    toddler.i18n.common))
 
 (.log js/console "Loaded showcase!")
@@ -91,6 +92,16 @@
        ($ router/Provider
           ($ dev/playground {:components components}))))
 
+(defnc LoadShowcase
+  []
+  (provider
+   {:context md.context/refresh-period
+    :value 3000}
+   (provider
+    {:context md.context/base
+     :value ""}
+    ($ Showcase))))
+
 (defn ^:dev/after-load start! []
   (.log js/console "Starting Toddler showcase!")
   (t/set-min-level! :info)
@@ -100,4 +111,4 @@
     (when-not @root
       (reset! root ^js (createRoot target)))
     (.log js/console "Rendering playground")
-    (.render ^js @root ($ Showcase))))
+    (.render ^js @root ($ LoadShowcase))))
