@@ -14,8 +14,8 @@ node_modules/
 icons/.repos
 
 
-doc/css/
-doc/js/
+dev/css/
+dev/js/
 .icons/
 release/
 *.old
