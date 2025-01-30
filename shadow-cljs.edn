@@ -11,8 +11,8 @@
              :markdown
              {:entries [toddler.md]
               :depends-on #{:main}}}
-   :output-dir "docs/js"
-   :output-to "docs/js/main.js"
+   :output-dir "dev/js"
+   :output-to "dev/js/main.js"
    :devtools {:http-root "docs"
               :http-port 8000
               :preloads []

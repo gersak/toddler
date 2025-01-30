@@ -206,7 +206,8 @@
                  (on-theme-change
                   (case theme
                     ("dark" 'dark) "light"
-                    ("light" 'light) "dark")))
+                    ("light" 'light) "dark"
+                    "light")))
      :className (css :items-center :flex :items-center {:font-size "24px"}
                      :cursor-pointer :color-inactive
                      ["&:hover" :color-normal])}

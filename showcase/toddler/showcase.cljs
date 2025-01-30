@@ -100,7 +100,7 @@
     :value 0}
    (provider
     {:context md.context/base
-     :value "https://raw.githubusercontent.com/gersak/toddler/refs/heads/prep/github-page/docs"}
+     :value "https://raw.githubusercontent.com/gersak/toddler/refs/heads/prep/github-page/dev"}
     ($ Showcase))))
 
 (defn ^:dev/after-load start! []
