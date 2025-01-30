@@ -442,7 +442,7 @@
    :flex-wrap
    :user-no-select
    {:gap "0.375rem 0.375rem"
-    :padding "0.5rem 1rem 1rem 1rem"}))
+    :padding "1rem 1rem 1rem 1rem"}))
 
 (def $multiselect-field
   (css
@@ -496,8 +496,7 @@
               ["toddler-multiselect-option"
                e/$tag
                (css
-                ["& .remove" :ml-3]
-                ["& .remove:hover" :color-negative])
+                ["& .remove" :ml-3])
                (when (ifn? context-fn)
                  (when-some [context (context-fn value)]
                    (name context)))
@@ -614,6 +613,9 @@
     (d/input
      {:spellCheck false
       :auto-complete "off"
+      :on-click (fn [e]
+                  (let [target (.-target e)]
+                    (.setSelectionRange target 0 0)))
       :onChange (fn [])
       & (select-keys props' [:ref :value :on-key-down])})))
 
@@ -628,8 +630,9 @@
     :border
     {:background-color "var(--field-bg)"
      :border-color "var(--field-border)"}]
-   ["& .row .date" {:min-width "10rem"}]
-   ["& .row .time" {:max-width "5.5rem"}]
+   ["& .row .date" {:width "13.5rem"}]
+   ["& .row .date.no-time" {:width "18.75rem"}]
+   ["& .row .time" {:width "5rem"}]
    ["& .row .date, & .row .time"
     :flex :items-center
     :relative :transition :grow :h-10
@@ -685,7 +688,7 @@
         ($ popup/Area
            {:ref _area}
            (d/div
-            {:className "date"
+            {:className (str "date" (when-not time? " no-time"))
              :on-click (fn [] (toggle! true))}
             (d/input
              {:read-only true
@@ -758,10 +761,7 @@
      :border-color "var(--field-border-active)"
      :animation-name "var(--input-normal-click)"
      :animation-duration ".5s"}]
-   ["& .inputs .date svg, & .inputs .time svg"
-    :absolute
-    :h-4 :w-4
-    :right-2]
+   ["& .inputs .date svg, & .inputs .time svg" :absolute :h-4 :w-4 :right-2]
    ["&:not(.opened) .inputs .date:hover:not(:focus-within), &:not(.opened) .inputs .time:hover:not(:focus-within)"
     {:border-color "var(--field-border-hover)"}]
    ["& .inputs .date:hover:not(:focus-within) svg, & .inputs .time:hover:not(:focus-within) svg" :color-hover]

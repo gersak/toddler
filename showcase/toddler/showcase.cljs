@@ -4,6 +4,7 @@
   (:require
    ["react" :as react]
    ["react-dom/client" :refer [createRoot]]
+   [helix.dom :as d]
    [taoensso.telemere :as t]
    [toddler.dev :as dev]
    [toddler.provider :refer [wrap-ui]]
@@ -83,14 +84,22 @@
 (defnc Showcase
   {:wrap [(wrap-ui default/components)]}
   []
-  ($ router/LandingPage
-     {:url "/"
-      :enforce-access? false}
-     ($ notifications/Store
-        {:class notifications/$default}
-        ($ dev/playground
-           {:max-width 1000
-            :components components})))
+  ($ router/Provider
+     (provider
+      {:context md.context/refresh-period
+       :value 3000}
+      (provider
+       {:context md.context/base
+        :value ""}
+       ($ router/LandingPage
+          {:url "/"
+           :enforce-access? false}
+          ($ notifications/Store
+             {:class notifications/$default}
+             ($ dev/playground
+                {:max-width 1000
+                 :components components}))))))
+
   ;; TODO - Strict mode causes problems with popup window
   #_($ react/StrictMode
        ($ router/Provider
@@ -108,7 +117,7 @@
         :value "https://raw.githubusercontent.com/gersak/toddler/refs/heads/prep/github-page/dev"}
        ($ Showcase)))))
 
-(defn ^:dev/after-load start! []
+(defn start! []
   (.log js/console "Starting Toddler showcase!")
   (t/set-min-level! :info)
   ; (t/set-min-level! :log "toddler.md" :debug)

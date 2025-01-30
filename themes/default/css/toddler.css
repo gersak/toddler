@@ -163,7 +163,6 @@ html[data-theme="light"] {
   --tag-bg-normal: #cacaca;
   --tag-border-normal: #cacaca;
   --tag-border-normal-hover: #cacaca;
-  --tag-remove-hover: #B56B6B;
 
   --tag-color-positive: #161616;
   --tag-bg-positive: #b4e3ce;
@@ -207,12 +206,12 @@ html[data-theme="dark"] {
   --background-warn: #6f3221;
 
   /* Tabs */
-  --tab-color: #575757;
+  --tab-color: #eaeaea;
   --tab-bg: transparent;
-  --tab-hover-color: #000000;
+  --tab-hover-color: #eaeaea;
   --tab-hover-bg: transparent;
-  --tab-selected-color: #000000;
-  --tab-selected-bg: #C6C9C6;
+  --tab-selected-color: #ffffff;
+  --tab-selected-bg: #000000;
 
 
   /* Colors */
@@ -259,7 +258,7 @@ html[data-theme="dark"] {
   --cd-selected-color: #efefef;
   --cd-selected-border: #505050;
   --cd-period-marker-bg: #494949;
-  --cd-period-marker-color: #484848;
+  --cd-period-marker-color: #efefef;
   /*--calendar-button-bg-hover: #E7EAE8;*/
   --calendar-button-color: #828282;
   --calendar-button-color-hover: #ffffff;
@@ -327,23 +326,20 @@ html[data-theme="dark"] {
   --box-button-normal-click: box-button-normal-click-dark;
 
   /* Tag */
-  --tag-color-normal: #484848;
-  --tag-bg-normal: #d6d6d6;
-  --tag-border-normal: #d6d6d6;
-  --tag-border-normal-hover: #484848;
-  --tag--remove-hover: #B56B6B;
+  --tag-color-normal: #ffffff;
+  --tag-bg-normal: #686868;
+  --tag-border-normal: #686868;
+  --tag-border-normal-hover: #686868;
 
-  --tag-color-positive: #0d3300;
-  --tag-bg-positive: #a5e78f;
-  --tag-border-positive: #7bc065;
-  --tag-border-positive-hover: #0d3300;
-  --tag-positive-remove-hover: #000;
+  --tag-color-positive: #ffffff;
+  --tag-bg-positive: #3b6a57;
+  --tag-border-positive: #3b6a57;
+  --tag-border-positive-hover: #3b6a57;
 
-  --tag-bg-negative: #eb8b84;
-  --tag-border-negative: #eb8b84;
-  --tag-color-negative: #7a0000;
-  --tag-border-negative-hover: #7a0000;
-  --tag-negative-remove-hover: #000;
+  --tag-color-negative: #ffffff;
+  --tag-bg-negative: #7c3333;
+  --tag-border-negative: #7c3333;
+  --tag-border-negative-hover: #7c3333;
 
   /*--avatar-bg: #ffffffa1;*/
   --avatar-bg: #ffffff3d;

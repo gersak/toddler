@@ -594,7 +594,6 @@
    {:color "var(--tag-color-normal)"
     :background-color "var(--tag-bg-normal)"
     :border-color "var(--tag-border-normal)"}
-   ["& .remove" :w-4 :h-4]
    ["&:hover" {:border-color "var(--tag-border-normal-hover)"}]
    ["& .avatar" :mr-2 :rounded-sm {:background-color "var(--avatar-bg)"
                                    :margin-left "-0.5rem"}]
@@ -608,9 +607,10 @@
    ["&.positive:hover" {:border-color "var(--tag-border-positive-hover)"}]
    ["&.fun" {:color "var(--tag-color-negative)" :background-color "var(--tag-bg-negative)"}]
    ["&.selected" :border-normal+]
-   ["& .remove:hover" {:color "var(--tag-normal-remove-hover)"}]
-   ["&.negative .remove:hover" {:color "var(--tag-negative-remove-hover)"}]
-   ["&.positive .remove:hover" {:color "var(--tag-positive-remove-hover)"}]))
+   ["& .remove" :w-4 :h-4 {:opacity "0.6"}]
+   ["& .remove:hover" {:color "var(--tag-remove-hover)" :opacity "1"}]
+   ["&.positive .remove:hover" {:color "var(--tag-positive-remove-hover) !important"}]
+   ["&.negative .remove:hover" {:color "var(--tag-negative-remove-hover) !important"}]))
 
 (def $tooltip
   (css
@@ -974,11 +974,11 @@
         :style {:top marker-top :left marker-left
                 :width marker-width :height marker-height}
         :className (css
-                    :bg-normal-
                     :z-0
                     :absolute
                     :rounded-md
-                    {:transition "width .2s ease-in-out, height .2s ease-in-out, left .2s ease-in-out"})})
+                    {:transition "width .2s ease-in-out, height .2s ease-in-out, left .2s ease-in-out"
+                     :background-color "var(--tab-selected-bg)"})})
       (d/div
        {:ref #(reset! tabs-target %)
         :class ["tabs"]}
