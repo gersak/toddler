@@ -13,10 +13,10 @@
               :depends-on #{:main}}}
    :output-dir "dev/js"
    :output-to "dev/js/main.js"
-   :devtools {:http-root "docs"
+   :devtools {:http-root "dev"
               :http-port 8000
               :preloads []
-              :watch-dirs ["doc"]}}
+              :watch-dirs ["dev"]}}
   :github
   {:target :browser
    :entries [toddler.showcase]

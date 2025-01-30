@@ -59,7 +59,19 @@ This is how you use provider and how to utilize provided contexts:
   (with-out-str
     (pprint text)))
 
-(defnc Root []
+(defnc Root
+  {:wrap [(router/wrap-link
+           ::router/ROOT
+           [{:id ::basics
+             :hash "basics"}
+            {:id ::modal
+             :name :routing.modal
+             :segment "modal"}
+            {:id ::protection
+             :hash "route-protection"}
+            {:id ::landing
+             :hash "landing"}])]}
+  []
   (let [{:keys [go back]} (router/use-navigate)
         location (router/use-location)
         [query set-query!] (router/use-query)
@@ -67,17 +79,6 @@ This is how you use provider and how to utilize provided contexts:
         go-to-landing (router/use-go-to ::protection)
         reset (router/use-go-to ::router/ROOT)
         tree (router/use-component-tree)]
-    (router/use-link
-     ::router/ROOT
-     [{:id ::basics
-       :hash "basics"}
-      {:id ::modal
-       :name :routing.modal
-       :segment "modal"}
-      {:id ::protection
-       :hash "route-protection"}
-      {:id ::landing
-       :hash "landing"}])
     (<>
      ($ md/show
         {:content
@@ -229,14 +230,15 @@ permissions and using that information to control what user can access.
    {:className (css :p-4 :my-3 :rounded-xl :text-lg :font-semibold :bg-positive)}
    "This data is only available to route SUPERUSER!!!"))
 
-(defnc RouteProtection []
+(defnc RouteProtection
+  {:wrap [(router/wrap-link
+           ::protection
+           [{:id ::everyone}
+            {:id ::admin
+             :roles #{"admin"}}
+            {:id ::superuser}])]}
+  []
   (let [[{:keys [roles]} set-user!] (hooks/use-state nil)]
-    (router/use-link
-     ::protection
-     [{:id ::everyone}
-      {:id ::admin
-       :roles #{"admin"}}
-      {:id ::superuser}])
     ($ router/Protect
        {:roles (set roles)
         :super "superuser"}

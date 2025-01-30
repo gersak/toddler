@@ -256,7 +256,7 @@
         [theme set-theme!] (toddler/use-local-storage ::theme str)]
     (hooks/use-effect
       [theme]
-      (if-not theme
+      (if (empty? theme)
         (set-theme! "light")
         (async/go
           (loop []

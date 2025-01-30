@@ -36,7 +36,9 @@
    {:id :toddler.inputs
     :name "Inputs"
     :render Inputs
-    :segment "inputs"}
+    :segment "inputs"
+    :landing true
+    :priority 10}
    {:id :toddler.table
     :name "Table"
     :render Table
@@ -81,8 +83,9 @@
 (defnc Showcase
   {:wrap [(wrap-ui default/components)]}
   []
-  ($ router/Provider
-     {:base "toddler"}
+  ($ router/LandingPage
+     {:url "/"
+      :enforce-access? false}
      ($ notifications/Store
         {:class notifications/$default}
         ($ dev/playground
@@ -95,13 +98,15 @@
 
 (defnc LoadShowcase
   []
-  (provider
-   {:context md.context/refresh-period
-    :value 0}
-   (provider
-    {:context md.context/base
-     :value "https://raw.githubusercontent.com/gersak/toddler/refs/heads/prep/github-page/dev"}
-    ($ Showcase))))
+  ($ router/Provider
+     {:base "toddler"}
+     (provider
+      {:context md.context/refresh-period
+       :value 0}
+      (provider
+       {:context md.context/base
+        :value "https://raw.githubusercontent.com/gersak/toddler/refs/heads/prep/github-page/dev"}
+       ($ Showcase)))))
 
 (defn ^:dev/after-load start! []
   (.log js/console "Starting Toddler showcase!")

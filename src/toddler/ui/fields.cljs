@@ -767,7 +767,9 @@
    ["& .inputs .date:hover:not(:focus-within) svg, & .inputs .time:hover:not(:focus-within) svg" :color-hover]
    ["& .inputs input"  :cursor-pointer :ml-3]
    ["& .inputs.no-time input" {:max-width "134px"}]
-   ["& .inputs:not(.no-time) input" {:max-width "6rem"}]
+   ; ["& .inputs:not(.no-time) input" {:max-width "6rem"}]
+   ["& .inputs .date" {:width "13.5rem"}]
+   ["& .inputs .time" {:width "5rem"}]
    ["& .calendar" :mt-1]
    #_["& .inputs .date"]))
 
@@ -808,7 +810,7 @@
              (d/input
               {:read-only true
                :value (if start
-                        (translate start :date)
+                        (translate start :long-date)
                         (translate :not-available))})
              (if start
                ($ outlined/close
@@ -829,7 +831,7 @@
              (d/input
               {:read-only true
                :value (if end
-                        (translate end :date)
+                        (translate end :long-date)
                         (translate :not-available))})
              (if end
                ($ outlined/close

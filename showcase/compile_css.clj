@@ -9,22 +9,24 @@
 (defonce css-ref (atom nil))
 (defonce css-watch-ref (atom nil))
 
-(defn generate-css []
-  (let [result
-        (-> @css-ref
-            (cb/generate '{:ui {:include [toddler.ui*
-                                          toddler.md
-                                          toddler.notifications
-                                          toddler]}
-                           :dev {:include [toddler.dev
-                                           toddler.showcase
-                                           toddler.showcase*]}})
-            (cb/write-outputs-to (io/file "docs" "css")))]
-    (prn :CSS-GENERATED)
-    (doseq [mod (:outputs result)
-            {:keys [warning-type] :as warning} (:warnings mod)]
-      (prn [:CSS (name warning-type) (dissoc warning :warning-type)]))
-    (println)))
+(defn generate-css
+  ([] (generate-css "dev"))
+  ([dir]
+   (let [result
+         (-> @css-ref
+             (cb/generate '{:ui {:include [toddler.ui*
+                                           toddler.md
+                                           toddler.notifications
+                                           toddler]}
+                            :dev {:include [toddler.dev
+                                            toddler.showcase
+                                            toddler.showcase*]}})
+             (cb/write-outputs-to (io/file dir "css")))]
+     (prn :CSS-GENERATED)
+     (doseq [mod (:outputs result)
+             {:keys [warning-type] :as warning} (:warnings mod)]
+       (prn [:CSS (name warning-type) (dissoc warning :warning-type)]))
+     (println))))
 
 (comment
   (file-seq (io/file "src"))
@@ -92,7 +94,7 @@
   (reset! css-ref (init))
 
   ;; then build it once
-  (generate-css))
+  (generate-css "docs"))
 
 (comment
   (-> css-ref deref keys)

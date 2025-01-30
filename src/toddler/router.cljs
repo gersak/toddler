@@ -535,7 +535,9 @@
             :else (recur (zip/next position) result)))))))
 
 (defnc LandingPage
-  [{:keys [url] :as props}]
+  [{:keys [url enforce-access?]
+    :or {enforce-access? true}
+    :as props}]
   (let [user-permissions (hooks/use-context -permissions-)
         user-roles (hooks/use-context -roles-)
         super-role (hooks/use-context -super-)
@@ -544,41 +546,43 @@
         base (hooks/use-context -base-)]
     (letfn [(authorized?
               [{:keys [id roles permissions] :as component}]
-              (cond
-                ;;
-                (and (empty? user-roles) (empty? user-permissions))
-                (do
-                  (t/log! :warn (format "[%s] Trying to use-authorized? when neither -permissions- or -roles context is not set. Check out your Protected component." id))
-                  false)
-                ;;
-                (and (some? user-permissions) (not (set? user-permissions)))
-                (do
-                  (t/log! :error (format "Trying to use-authorized? with -permissions- context set to %s. Instead it should be clojure set. Check out your Protected component." user-permissions))
-                  false)
-                ;;
-                (and (some? user-roles) (not (set? user-roles)))
-                (do
-                  (t/log! :error (format "Trying to use-authorized? with -roles- context set to %s. Instead it should be clojure set. Check out your Protected component." user-roles))
-                  false)
-                ;;
-                (nil? component)
-                (do
-                  (t/log! :debug (format "[%s] Couldn't find component!" id))
-                  false)
-                ;;
-                (and (empty? roles) (empty? permissions))
-                (do
-                  (t/log! :warn (format "[%s] Component has no role or permission protection" id))
-                  true)
-                ;;
-                (contains? user-roles super-role) true
-                ;;
-                :else
-                (do
-                  (t/log! :debug (format "[%s] Checking component access for: %s" id user-roles))
-                  (or
-                   (not-empty (set/intersection roles user-roles))
-                   (not-empty (set/intersection permissions user-permissions))))))
+              (if-not enforce-access?
+                true
+                (cond
+                  ;;
+                  (and (empty? user-roles) (empty? user-permissions))
+                  (do
+                    (t/log! :warn (format "[%s] Trying to use-authorized? when neither -permissions- or -roles context is not set. Check out your Protected component." id))
+                    false)
+                  ;;
+                  (and (some? user-permissions) (not (set? user-permissions)))
+                  (do
+                    (t/log! :error (format "Trying to use-authorized? with -permissions- context set to %s. Instead it should be clojure set. Check out your Protected component." user-permissions))
+                    false)
+                  ;;
+                  (and (some? user-roles) (not (set? user-roles)))
+                  (do
+                    (t/log! :error (format "Trying to use-authorized? with -roles- context set to %s. Instead it should be clojure set. Check out your Protected component." user-roles))
+                    false)
+                  ;;
+                  (nil? component)
+                  (do
+                    (t/log! :debug (format "[%s] Couldn't find component!" id))
+                    false)
+                  ;;
+                  (and (empty? roles) (empty? permissions))
+                  (do
+                    (t/log! :warn (format "[%s] Component has no role or permission protection" id))
+                    true)
+                  ;;
+                  (contains? user-roles super-role) true
+                  ;;
+                  :else
+                  (do
+                    (t/log! :debug (format "[%s] Checking component access for: %s" id user-roles))
+                    (or
+                     (not-empty (set/intersection roles user-roles))
+                     (not-empty (set/intersection permissions user-permissions)))))))
             (get-landing-candidates
               []
               (loop [position (component-tree-zipper tree)

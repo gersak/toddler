@@ -36,7 +36,19 @@
   (with-out-str
     (pprint text)))
 
-(defnc Root []
+(defnc Root
+  {:wrap [(router/wrap-link
+           ::router/ROOT
+           [{:id ::basics
+             :hash "basics"}
+            {:id ::modal
+             :name :routing.modal
+             :segment "modal"}
+            {:id ::protection
+             :hash "route-protection"}
+            {:id ::landing
+             :hash "landing"}])]}
+  []
   (let [{:keys [go back]} (router/use-navigate)
         location (router/use-location)
         [query set-query!] (router/use-query)
@@ -44,17 +56,6 @@
         go-to-landing (router/use-go-to ::protection)
         reset (router/use-go-to ::router/ROOT)
         tree (router/use-component-tree)]
-    (router/use-link
-     ::router/ROOT
-     [{:id ::basics
-       :hash "basics"}
-      {:id ::modal
-       :name :routing.modal
-       :segment "modal"}
-      {:id ::protection
-       :hash "route-protection"}
-      {:id ::landing
-       :hash "landing"}])
     (<>
      ($ md/show
         {:content
@@ -99,14 +100,15 @@
    {:className (css :p-4 :my-3 :rounded-xl :text-lg :font-semibold :bg-positive)}
    "This data is only available to route SUPERUSER!!!"))
 
-(defnc RouteProtection []
+(defnc RouteProtection
+  {:wrap [(router/wrap-link
+           ::protection
+           [{:id ::everyone}
+            {:id ::admin
+             :roles #{"admin"}}
+            {:id ::superuser}])]}
+  []
   (let [[{:keys [roles]} set-user!] (hooks/use-state nil)]
-    (router/use-link
-     ::protection
-     [{:id ::everyone}
-      {:id ::admin
-       :roles #{"admin"}}
-      {:id ::superuser}])
     ($ router/Protect
        {:roles (set roles)
         :super "superuser"}
@@ -137,9 +139,10 @@
 (defnc doc
   {:wrap [(router/wrap-rendered :toddler.routing)]}
   []
-  (let [{:keys [height width]} (layout/use-container-dimensions)]
+  (let [{:keys [height width]} (layout/use-container-dimensions)
+        base (hooks/use-context router/-base-)]
     ($ router/Provider
-       {:base "routing"}
+       {:base (str (when base (str base "/")) "routing")}
        ($ ui/simplebar
           {:style {:height height
                    :width width}
