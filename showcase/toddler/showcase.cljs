@@ -82,6 +82,7 @@
   {:wrap [(wrap-ui default/components)]}
   []
   ($ router/Provider
+     {:base "toddler"}
      ($ notifications/Store
         {:class notifications/$default}
         ($ dev/playground
