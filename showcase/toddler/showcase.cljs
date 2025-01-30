@@ -96,10 +96,10 @@
   []
   (provider
    {:context md.context/refresh-period
-    :value 3000}
+    :value 0}
    (provider
     {:context md.context/base
-     :value ""}
+     :value "https://raw.githubusercontent.com/gersak/toddler/refs/heads/prep/github-page/docs"}
     ($ Showcase))))
 
 (defn ^:dev/after-load start! []

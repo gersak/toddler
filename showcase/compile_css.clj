@@ -19,7 +19,7 @@
                            :dev {:include [toddler.dev
                                            toddler.showcase
                                            toddler.showcase*]}})
-            (cb/write-outputs-to (io/file "doc" "css")))]
+            (cb/write-outputs-to (io/file "docs" "css")))]
     (prn :CSS-GENERATED)
     (doseq [mod (:outputs result)
             {:keys [warning-type] :as warning} (:warnings mod)]
