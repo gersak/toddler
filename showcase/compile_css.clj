@@ -87,6 +87,13 @@
   (stop)
   (start))
 
+(defn release [_]
+  ;; first initialize my css
+  (reset! css-ref (init))
+
+  ;; then build it once
+  (generate-css))
+
 (comment
   (-> css-ref deref keys)
   (-> css-ref deref :colors)

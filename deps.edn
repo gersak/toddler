@@ -9,8 +9,6 @@
   com.taoensso/telemere                      {:mvn/version "1.0.0-RC2"}
   camel-snake-kebab/camel-snake-kebab        {:mvn/version "0.4.3"}
   com.github.gersak/vura                     {:mvn/version "0.5.8"}
-  ; com.github.gersak/shadow-css               {:git/url "https://github.com/gersak/shadow-css.git"
-  ;                                             :git/sha "697f2937345be9d187b6bce73ff4f50613f7ece8"}
   com.github.gersak/shadow-css               {:mvn/version "0.5.0"}
   ; com.thheller/shadow-css                    {:mvn/version "0.4.2"} 
   lilactown/helix                            {:mvn/version "0.1.11"}}
@@ -23,6 +21,9 @@
   :icons
   {:extra-paths ["icons"]
    :extra-deps {babashka/fs {:mvn/version "0.2.16"}}}
+  :css
+  {:ns-default eywa.css.compile
+   :exec-fn compile-css/release}
   :cider
   {:extra-deps
    {cider/cider-nrepl {:mvn/version "0.30.0"}}}}}
