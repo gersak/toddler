@@ -1,7 +1,6 @@
 (ns toddler.router
   (:require
    [clojure.set :as set]
-   [clojure.core.async :as async]
    [goog.string :refer [format]]
    goog.object
    [clojure.edn :as edn]
@@ -30,7 +29,14 @@
 (def -super- (create-context))
 (def -base- (create-context))
 
-(defn location->map [^js location]
+(defn location->map
+  "For given js/Location object will return
+  hashmap that contains:
+    :pathname
+    :hash
+    :origin
+    :search"
+  [^js location]
   {:pathname (.-pathname location)
    :hash (subs (.-hash location) 1)
    :origin (.-origin location)
@@ -43,6 +49,7 @@
   (assoc state :location (location->map value)))
 
 (defhook use-component-tree
+  "Hook will return routing tree for -router- context"
   []
   (let [{:keys [tree]} (hooks/use-context -router-)]
     tree))
@@ -116,15 +123,19 @@
          :value dispatch}
         (children props)))))))
 
-(defhook use-location []
+(defhook use-location
+  "Hook will return location from -router- context"
+  []
   (let [{:keys [location]} (hooks/use-context -router-)]
     location))
 
 (defhook use-navigate
+  "Hook will return value in -navigation- context"
   []
   (hooks/use-context -navigation-))
 
 (defn clj->query
+  "Function will turn clojure map into URLSearchParams"
   [data]
   (let [qp (js/URLSearchParams.)]
     (str
@@ -136,23 +147,32 @@
       data))))
 
 (defn query->clj
+  "Function will URLSearchParams into clojure map"
   [qp]
   (zipmap
    (map keyword (.keys qp))
    (map read-string (.values qp))))
 
 (defn maybe-add-base
+  "For given base and url will add base prefix
+  if it exists to url. If base is nil than URL
+  is returned"
   [base url]
-  (if-not base url
-          (if (str/ends-with? base "/") (apply str base (rest url))
-              (str "/" base url))))
+  (if-not base
+    url
+    (if (str/ends-with? base "/") (apply str base (rest url))
+        (str "/" base url))))
 
 (defn maybe-remove-base
+  "For given base and url will return URL without
+  base. If base is nil function will return URL
+  immediately"
   [base url]
-  (if-not base url
-          (if (str/ends-with? base "/")
-            (subs url (count base))
-            (subs url (inc (count base))))))
+  (if-not base
+    url
+    (if (str/ends-with? base "/")
+      (subs url (count base))
+      (subs url (inc (count base))))))
 
 (defhook use-query
   "Hook returns [query-params query-setter]"
@@ -173,7 +193,9 @@
                         :push (push-url updated)))))]
      [(query->clj qp) setter])))
 
-(defn component-tree-zipper [root]
+(defn component-tree-zipper
+  "Function returns routing tree zipper"
+  [root]
   (zip/zipper
    :children
    :children
@@ -187,7 +209,11 @@
     :name nil
     :children []}))
 
-(defn component->location [tree id]
+(defn component->location
+  "For given component tree and component id
+  function will return zipper location if id is
+  found."
+  [tree id]
   (let [z (component-tree-zipper tree)]
     (loop [p z]
       (if (zip/end? p) nil
@@ -197,6 +223,9 @@
               (recur (zip/next p))))))))
 
 (defn set-component
+  "Function used to add component to component tree.
+  For given component tree add component by specifying
+  component id and component parent."
   [tree {:keys [id parent] :as component}]
   (if (component->location tree id)
     (do
@@ -217,6 +246,7 @@
                  :tree tree})))))
 
 (defn remove-component
+  "Function will remove component with id from component tree"
   [tree id]
   (if-let [location (component->location tree id)]
     (-> location
@@ -226,6 +256,9 @@
 
 (let [cache (atom nil)]
   (defn component-path
+    "Function will walk component tree to find component
+    with id and when found will return all URL for that
+    component."
     [tree id]
     (let [location (component->location tree id)
           parents (when location (zip/path location))]
@@ -237,14 +270,24 @@
           (swap! cache assoc :id path)
           path)))))
 
-(defn on-path? [tree path id]
+(defn on-path?
+  "For given path and component id function will get
+  component path and check if given path starts with
+  component path.
+  
+  If it does, than component is on path (true)"
+  [tree path id]
   (when (some? path)
     (when-some [cp (component-path tree id)]
       (str/starts-with? path (first (str/split cp #"\#"))))))
 
 (def last-rendered-key "toddler.router/last-rendered")
 
-(defhook use-rendered? [id]
+(defhook use-rendered?
+  "Hook will return true if component with id
+  is rendered, by checking if browser location
+  contains component path."
+  [id]
   (let [{original-pathname :pathname
          hash :hash} (use-location)
         {:keys [tree]} (hooks/use-context -router-)
@@ -254,19 +297,19 @@
                    (on-path? tree (maybe-remove-base base original-pathname) id))]
     (when on-path?
       (.setItem js/sessionStorage last-rendered-key [id original-pathname]))
-    #_(hooks/use-effect
-        [hash]
-        (when hash
-          (async/go
-            (async/<! (async/timeout 500))
-            (when-some [el (.getElementById js/document hash)]
-              (.scrollIntoView el #js {:block "nearest"
-                                       :inline "nearest"
-                                     ;:behavior "smooth"
-                                       })))))
     on-path?))
 
 (defhook use-component-name
+  "For given component id, hook will return
+  component name.
+  
+  If component :name was keyword it will try to translate
+  that keyword.
+  
+  If component :name is string it won't translate. Just return that name
+  
+  If component doesn't have :name, hook will try to translate
+  component id (only if component exists in component tree)"
   [id]
   (let [{:keys [tree]} (hooks/use-context -router-)
         translate (use-translate)
@@ -373,12 +416,20 @@
 (def use-component-children use-link)
 
 (defhook use-is-super?
+  "Hook that will return true if user is in super roles
+  or false if he isn't"
   []
   (let [super-role (hooks/use-context -super-)
         user-roles (hooks/use-context -roles-)]
     (contains? user-roles super-role)))
 
 (defhook use-authorized?
+  "Hook that will return true if user is authorized
+  to access component with \"id\". If not will return
+  false.
+  
+  If ID is ommited, than authorized will check if user
+  is superuser."
   ([] (use-authorized? nil))
   ([id]
    (let [user-permissions (hooks/use-context -permissions-)
@@ -436,6 +487,8 @@
       (children props))))
 
 (defn wrap-authorized
+  "Wrapper that will use Authorized component to
+  render children if user is authorized"
   ([component]
    (fnc Authorized [props]
      ($ Authorized ($ component {& props}))))
@@ -450,6 +503,9 @@
       (children props))))
 
 (defn wrap-rendered
+  "Wrapper that will use Rendered component to
+  render children if navigation is at component
+  with id"
   ([component]
    (fnc Rendered [props]
      ($ Rendered ($ component {& props}))))
@@ -463,12 +519,16 @@
   (children props))
 
 (defn wrap-link
+  "Utility function to link component with children.
+  Will use Link."
   ([component parent children]
    (fnc Linked [props]
      ($ Link {:parent parent :links children}
         ($ component {& props})))))
 
 (defhook use-url->components
+  "Hook will return sequence of rendered components for
+  current browser location"
   []
   (let [{{url :pathname} :location
          :keys [tree]} (hooks/use-context -router-)
@@ -485,6 +545,7 @@
                 :else (recur (zip/next position) result))))))))
 
 (defhook use-component-path
+  "Hook will return url for component[id]"
   [component]
   (let [{:keys [tree]} (hooks/use-context -router-)
         base (hooks/use-context -base-)
@@ -492,6 +553,10 @@
     (maybe-add-base base path)))
 
 (defhook use-go-to
+  "Hook will return function that will redirect browser
+  to component[id]. Returned function can be called with
+  parameters, and those parameters will be set in URL
+  query."
   [component]
   (let [{:keys [go]} (hooks/use-context -navigation-)
         {:keys [tree]} (hooks/use-context -router-)
@@ -510,6 +575,7 @@
         (pprint tree)))))
 
 (defhook use-last-rendered
+  "Hook will return id of last rendered component"
   []
   (hooks/use-callback
     :once
@@ -613,6 +679,10 @@
     (children props)))
 
 (defnc Protect
+  "Component will set protection contexts. Contexts like
+  -permissions-, -roles- and -super-.
+  
+  Use it as high as possible in your rendered app."
   [{:keys [super permissions roles] :as props}]
   (let [_super (hooks/use-context -super-)
         _permissions (hooks/use-context -permissions-)

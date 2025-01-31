@@ -20,6 +20,7 @@
    [toddler.showcase.icons :refer [Icons]]
    [toddler.showcase.modal :refer [Modal]]
    [toddler.showcase.notifications :refer [Notifications]]
+   [toddler.showcase.rationale :refer [Rationale]]
    [toddler.notifications :as notifications]
    [toddler.router :as router]
    [toddler.md.context :as md.context]
@@ -30,16 +31,20 @@
 (defonce root (atom nil))
 
 (def components
-  [{:id :toddler.layout
-    :name "Layout"
-    :render Layout
-    :segment "layout"}
+  [#_{:id :toddler.layout
+      :name "Layout"
+      :render Layout
+      :segment "layout"}
+   {:id :toddler.rationale
+    :name "Rationale"
+    :render Rationale
+    :segment "rationale"
+    :landing true
+    :priority 10}
    {:id :toddler.inputs
     :name "Inputs"
     :render Inputs
-    :segment "inputs"
-    :landing true
-    :priority 10}
+    :segment "inputs"}
    {:id :toddler.table
     :name "Table"
     :render Table

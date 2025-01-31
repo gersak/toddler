@@ -414,7 +414,6 @@ component and using ```custom-row``` from code above.
              {:columns row-example-columns
               :dispatch (fn [{:keys [type value idx] :as evt
                               {:keys [cursor]} :column}]
-                          (println "WHRER: " evt)
                           (case type
                             :table.element/change (set-state! assoc-in (concat [idx] cursor) value)
                             (.error js/console "Unkown event: " (pr-str evt))))
