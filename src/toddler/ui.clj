@@ -2,7 +2,11 @@
 
 (declare __commponents__)
 
-(defmacro defcomponent [_name key]
+(defmacro defcomponent
+  "Wrapper macro around helix.core/defnc function that
+  will try to pull key from __components__ and render
+  found component."
+  [_name key]
   `(helix.core/defnc ~_name [props# ref#]
      {:wrap [(toddler.ui/forward-ref)]}
      (let [components# (helix.hooks/use-context __components__)
@@ -10,3 +14,19 @@
            children# (helix.children/children props#)]
        (when component#
          (helix.core/$ component# {:ref ref# :& props#} children#)))))
+
+(defmacro g
+  "Macro that will try to pull key component from __components__ context
+  and render it with helix.core/$ macro
+  
+  I.E.  (g :button {:className \"positive\"} \"Good day\") "
+  ^{:style/indent 0
+    :cljfmt/ident [:form]}
+  [key & stuff]
+  `(when-let [component# (get (helix.hooks/use-context __components__) ~key)]
+     (helix.core/$ component# ~@stuff)))
+
+(comment
+  (macroexpand-1
+   '($ :popup
+       {:a 100} "Here he" " goes")))

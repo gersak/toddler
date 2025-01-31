@@ -30,7 +30,7 @@
 
 (defonce root (atom nil))
 
-(def components
+(def routes
   [#_{:id :toddler.layout
       :name "Layout"
       :render Layout
@@ -103,12 +103,12 @@
              {:class notifications/$default}
              ($ dev/playground
                 {:max-width 1000
-                 :components components}))))))
+                 :components routes}))))))
 
   ;; TODO - Strict mode causes problems with popup window
   #_($ react/StrictMode
        ($ router/Provider
-          ($ dev/playground {:components components}))))
+          ($ dev/playground {:components routes}))))
 
 (defnc LoadShowcase
   []

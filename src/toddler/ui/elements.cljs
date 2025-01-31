@@ -382,7 +382,7 @@
 
 #_(defnc column
     {:wrap [(ui/forward-ref)]}
-    [{:keys [label position className] :as props} _ref]
+    [{:keys [label position className align] :as props} _ref]
     (let [$layout (css
                    {:display "flex"
                     :flex-direction "column"
@@ -396,7 +396,7 @@
           $center (css {:justify-content "center"})
           $end (css {:justify-content "flex-end"})
           $explode (css {:justify-content "space-between"})
-          $position (case position
+          $position (case (or position align)
                       :center $center
                       :end $end
                       :explode $explode
@@ -417,7 +417,8 @@
   {:wrap [(ui/forward-ref)]}
   [{:keys [label position align] :as props
     {:keys [width] :as style} :style} _ref]
-  (let [$layout (css
+  (let [position (or position align)
+        $layout (css
                  {:display "flex"
                   :flex-direction "column"
                   :flex-grow "1"}

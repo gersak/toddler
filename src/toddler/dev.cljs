@@ -21,6 +21,7 @@
    [toddler.popup :as popup]
    [toddler.dropdown :as dropdown]
    [toddler.material.outlined :as outlined]
+   [toddler.fav6.brands :as brands]
    ["react" :as react]
    [toddler.i18n :as i18n]
    [shadow.css :refer [css]]))
@@ -192,28 +193,33 @@
 (defnc header
   {:wrap [(react/forwardRef)]}
   [{:keys [style theme on-theme-change]} _ref]
-  (d/div
-   {:className (css
-                :flex
-                :h-15
-                :flex-row-reverse
-                :pr-3
-                :box-border)
-    :ref _ref
-    :style style}
-   (d/div
-    {:on-click (fn []
-                 (on-theme-change
-                  (case theme
-                    ("dark" 'dark) "light"
-                    ("light" 'light) "dark"
-                    "light")))
-     :className (css :items-center :flex :items-center {:font-size "24px"}
-                     :cursor-pointer :color-inactive
-                     ["&:hover" :color-normal])}
-    (if (= "dark" theme)
-      ($ outlined/light-mode)
-      ($ outlined/dark-mode)))))
+  (let [$icon (css :items-center :flex :items-center {:font-size "24px"}
+                   :cursor-pointer :color-inactive
+                   ["&:hover" :color-normal])]
+    (d/div
+     {:className (css
+                  :flex
+                  :h-15
+                  :flex-row-reverse
+                  :pr-3
+                  :box-border)
+      :ref _ref
+      :style style}
+     (d/div
+      {:on-click (fn []
+                   (on-theme-change
+                    (case theme
+                      ("dark" 'dark) "light"
+                      ("light" 'light) "dark"
+                      "light")))
+       :className $icon}
+      (if (= "dark" theme)
+        ($ outlined/light-mode)
+        ($ outlined/dark-mode)))
+     (d/a
+      {:class [$icon (css :mr-2)]
+       :href "https://github.com/gersak/toddler"}
+      ($ brands/github)))))
 
 (defnc empty-content
   []

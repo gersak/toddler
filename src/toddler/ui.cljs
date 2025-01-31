@@ -1,6 +1,6 @@
 (ns toddler.ui
   (:refer-clojure :exclude [identity])
-  (:require-macros [toddler.ui :refer [defcomponent]])
+  (:require-macros [toddler.ui :refer [defcomponent g]])
   (:require
    ["react" :as react]
    [helix.core :refer [create-context]]))

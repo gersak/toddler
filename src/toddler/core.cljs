@@ -1,7 +1,6 @@
 (ns toddler.core
   (:require-macros [toddler.core :refer [mlf]])
   (:require
-   ["react" :as react]
    ["react-dom" :as rdom]
    [shadow.loader]
    [clojure.set]
@@ -71,6 +70,10 @@
     result))
 
 (defn conj-prop-classes
+  "Utility function that will create vector
+  from class and className props
+  
+  Return vector of strings"
   ([props] (conj-prop-classes nil props))
   ([classes {:keys [class className]}]
    (cond-> (or classes [])
@@ -162,7 +165,9 @@
     "Hook that will store variable value in browser session storage when ever
     value changes. If init-fn is provided it will be called on last recorded
     value for given variable that is found under location key in browser session
-    storage."
+    storage.
+    
+    Returns atom"
     ([location value]
      (use-session-cache
       location
@@ -194,78 +199,76 @@
          (reset! initialized? true))
        _ref))))
 
-(defhook use-avatar
-  [{:keys [name avatar path cached?]
-    :or {cached? true}}]
-  (let [avatars (hooks/use-context app/avatars)
-        [_avatar set-avatar!] (hooks/use-state (get @avatars avatar))
-        [token] (hooks/use-context app/token)
-        refresh (hooks/use-callback
-                  [_avatar avatar path]
-                  (fn []
-                    (when avatar
-                      (if (str/starts-with? avatar "data:image")
-                        (set-avatar! (str/replace avatar #"data:.*base64," ""))
-                        (let [xhr (new js/XMLHttpRequest)]
-                          (.open xhr "GET" path true)
-                          (when token (.setRequestHeader xhr "Authorization" (str "Bearer " token)))
-                          (.setRequestHeader xhr "Accept" "application/octet-stream")
-                          (when-not cached? (.setRequestHeader xhr "Cache-Control" "no-cache"))
-                          (.addEventListener
-                           xhr "load"
-                           (fn [evt]
-                             (let [status (.. evt -target -status)
-                                   avatar' (.. evt -currentTarget -responseText)]
-                               (case status
-                                 200
-                                 (cond
-                                    ;; if avatar has changed than swap avatars
-                                    ;; this should trigger updates for all hooks
-                                    ;; with target avatar
-                                   (not= avatar' (get @avatars avatar))
-                                   (when (not-empty avatar')
-                                     (swap! avatars assoc avatar avatar'))
-                                    ;; Otherwise if avatar is cached properly, but
-                                    ;; current _avatar doesn't match current state
-                                    ;; update current _avatar
-                                   (not= _avatar avatar')
-                                   (set-avatar! (not-empty avatar')))
-                                  ;; otherwise
-                                 (async/put! app/signal-channel
-                                             {:type :toddler.notifications/error
-                                              :message (str "Couldn't fetch avatar for user " name)
-                                              :visible? true
-                                              :hideable? true
-                                              :adding? true
-                                              :autohide true})))))
-                          (.send xhr))))))]
-    (hooks/use-effect
-      [avatar]
-      (when (some? avatar)
-        (if-let [cached (get @avatars avatar)]
-          (set-avatar! cached)
-          (refresh))))
-    (hooks/use-effect
-      [avatar]
-      (let [uuid (random-uuid)]
-        (when (and avatars avatar)
-          (add-watch avatars uuid
-                     (fn [_ _ o n]
-                       (let [old (get o avatar)
-                             new (get n avatar)]
-                         (when (not= old new)
-                           (set-avatar! new))))))
-        (fn []
-          (when avatars (remove-watch avatars uuid)))))
-    [_avatar refresh]))
+;; DEPRECATED
+; (defhook use-avatar
+;   [{:keys [name avatar path cached?]
+;     :or {cached? true}}]
+;   (let [avatars (hooks/use-context app/avatars)
+;         [_avatar set-avatar!] (hooks/use-state (get @avatars avatar))
+;         [token] (hooks/use-context app/token)
+;         refresh (hooks/use-callback
+;                   [_avatar avatar path]
+;                   (fn []
+;                     (when avatar
+;                       (if (str/starts-with? avatar "data:image")
+;                         (set-avatar! (str/replace avatar #"data:.*base64," ""))
+;                         (let [xhr (new js/XMLHttpRequest)]
+;                           (.open xhr "GET" path true)
+;                           (when token (.setRequestHeader xhr "Authorization" (str "Bearer " token)))
+;                           (.setRequestHeader xhr "Accept" "application/octet-stream")
+;                           (when-not cached? (.setRequestHeader xhr "Cache-Control" "no-cache"))
+;                           (.addEventListener
+;                            xhr "load"
+;                            (fn [evt]
+;                              (let [status (.. evt -target -status)
+;                                    avatar' (.. evt -currentTarget -responseText)]
+;                                (case status
+;                                  200
+;                                  (cond
+;                                     ;; if avatar has changed than swap avatars
+;                                     ;; this should trigger updates for all hooks
+;                                     ;; with target avatar
+;                                    (not= avatar' (get @avatars avatar))
+;                                    (when (not-empty avatar')
+;                                      (swap! avatars assoc avatar avatar'))
+;                                     ;; Otherwise if avatar is cached properly, but
+;                                     ;; current _avatar doesn't match current state
+;                                     ;; update current _avatar
+;                                    (not= _avatar avatar')
+;                                    (set-avatar! (not-empty avatar')))
+;                                   ;; otherwise
+;                                  (async/put! app/signal-channel
+;                                              {:type :toddler.notifications/error
+;                                               :message (str "Couldn't fetch avatar for user " name)
+;                                               :visible? true
+;                                               :hideable? true
+;                                               :adding? true
+;                                               :autohide true})))))
+;                           (.send xhr))))))]
+;     (hooks/use-effect
+;       [avatar]
+;       (when (some? avatar)
+;         (if-let [cached (get @avatars avatar)]
+;           (set-avatar! cached)
+;           (refresh))))
+;     (hooks/use-effect
+;       [avatar]
+;       (let [uuid (random-uuid)]
+;         (when (and avatars avatar)
+;           (add-watch avatars uuid
+;                      (fn [_ _ o n]
+;                        (let [old (get o avatar)
+;                              new (get n avatar)]
+;                          (when (not= old new)
+;                            (set-avatar! new))))))
+;         (fn []
+;           (when avatars (remove-watch avatars uuid)))))
+;     [_avatar refresh]))
 
 (defhook use-current-locale
   "Returns value for :locale in current user settings"
   []
-  (hooks/use-context app/locale)
-  #_(let [[{{locale :locale
-             :or {locale :default}} :settings}] (use-user)]
-      (keyword locale)))
+  (hooks/use-context app/locale))
 
 (defhook use-translate
   []
@@ -312,6 +315,26 @@
     translate))
 
 (defhook use-calendar
+  "Hook will return values of current locale
+  for key:
+      :months
+      :months/standalone
+      :months/short
+      :months.standalone/short
+      :eras
+      :era/names
+      :months/narrow
+      :weekdays
+      :weekdays/standalone
+      :weekdays/short
+      :weekdays.standalone/short
+      :weekdays/narrow
+      :weekdays.standalone/narrow
+      :quarters
+      :quarters/short
+      :ampms
+      :weekends
+      :weekdays/first"
   [key]
   (let [locale (use-current-locale)]
     (hooks/use-memo
@@ -513,6 +536,18 @@
      [node dimensions])))
 
 (defhook use-scroll-offset
+  "This hook is intended for infinite scroll. Threshold is
+  how many pixels from bottom do you wan't to change state.
+
+  Returns: [offset reset]
+  
+  It will have internal cache that will track users maximal
+  scroll and if in threshold area it will simply inc offset,
+  thus enabling you to use-effect and track that offset to
+  handle what should happen. 
+  
+  Reset is function that is called without arguments to reset
+  offset counter."
   ([body] (use-scroll-offset body 50))
   ([body threshold]
    (let [[offset set-offset!] (hooks/use-state 0)
@@ -582,10 +617,15 @@
            (.disconnect observer))))
      [refs dimensions])))
 
-(defhook use-parent [_ref]
+(defhook use-parent
+  "Hook will return parent of _ref"
+  [_ref]
   (util/dom-parent _ref))
 
-(defhook use-on-parent-resized [_ref handler]
+(defhook use-on-parent-resized
+  "Hook will track parent of _ref and when it is
+  resized it will call handler"
+  [_ref handler]
   (let [observer (hooks/use-ref nil)
         resize-idle-service (hooks/use-ref
                              (make-idle-service
@@ -693,6 +733,17 @@
     publisher))
 
 (defhook use-query
+  "Hook will return function that when called
+  will send GraphQL query to backend and return response
+  in form of async channel.
+  
+  selection should be in lacinia compatible selection form.
+  I.E.
+  
+  {:name nil
+   :address nil
+   :relatives [{:selections {:name nil :address nil}
+                :args {:city \"New York\"}}]}"
   ([{query-name :query
      selection :selection
      alias :alias
@@ -730,6 +781,12 @@
                  data)))))))))
 
 (defhook use-queries
+  "Hook will return function that when called
+  will send queries to backend and return response
+  in form of async channel.
+  
+  For more info about how to write queries look at
+  use-query"
   ([queries] (use-queries queries nil))
   ([queries {:keys [on-load on-error]}]
    (let [[token] (use-token)
@@ -757,6 +814,10 @@
                  data)))))))))
 
 (defhook use-mutation
+  "Hook will return function that will send GraphQL
+  mutation to backend based on input params.
+  
+  Returns async/chan"
   ([{:keys [mutation selection types alias args on-load on-error]}]
    (let [[token] (use-token)
           ;;
@@ -793,6 +854,9 @@
                data))))))))
 
 (defhook use-mutations
+  "Wraps multiple mutation into single GraphQL
+  query and returns function that will send mutation
+  to backend based on input parameters"
   ([{:keys [mutations on-load on-error]}]
    (let [[token] (use-token)
          url (use-graphql-url)]

@@ -8,7 +8,8 @@
    [toddler.ui :as ui]
    [toddler.layout :as layout]
    [toddler.md.lazy :as md]
-   [toddler.router :as router]))
+   [toddler.router :as router]
+   [toddler.showcase.components :refer [MyApp]]))
 
 (defnc Rationale
   {:wrap [(router/wrap-link
@@ -25,11 +26,11 @@
                 :width width}}
        ($ ui/row {:align :center}
           ($ ui/column
-             {:align :center
-              :style {:max-width "30rem"}
+             {:position :center
+              :style {:max-width "40rem"}
               :className (css
                           ["& .component" :my-6])}
              ($ md/watch-url {:url "/rationale.md"})
-             #_($ toddler/portal
-                  {:locator #(.getElementById js/document "calendar-period-example")}
-                  ($ calendar-period)))))))
+             ($ toddler/portal
+                {:locator #(.getElementById js/document "components-example")}
+                ($ MyApp)))))))
