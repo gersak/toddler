@@ -4,12 +4,13 @@
    [toddler.layout :as layout]
    [toddler.router :as router]
    [toddler.ui :as ui]
-   [helix.core :refer [$ defnc <> defhook]]
+   [helix.core :refer [$ defnc <> defhook provider]]
    [helix.dom :as d]
    [helix.hooks :as hooks]
    [toddler.md.lazy :as md]
    toddler.showcase.content
    [toddler.core :as toddler]
+   [toddler.showcase.table :as showcase.table]
    [toddler.i18n.keyword :refer [add-translations]]))
 
 (add-translations
@@ -108,6 +109,20 @@
                :value date-of-birth
                :on-change #(change-field :date-of-birth %)}))))))
 
+(defnc table-tab
+  []
+  (let [{:keys [height width]} (layout/use-container-dimensions)]
+    ($ ui/tab
+       {:id ::table
+        :name "Table"}
+       (provider
+        {:context layout/*container-dimensions*
+         :value {:height height
+                 :width (- width 64)}}
+        ($ ui/table
+           {:rows showcase.table/data
+            :columns showcase.table/columns})))))
+
 (defnc complex-dialog-example
   [{:keys [opened?]}]
   (let [close! (use-close)
@@ -126,7 +141,8 @@
             ($ ui/tabs
                {:style {:max-height 400}}
                ($ text-tab)
-               ($ form-tab)))
+               ($ form-tab)
+               ($ table-tab)))
          (d/div
           {:className "footer"}
           ($ ui/button {:on-click close!} (translate :ok))
