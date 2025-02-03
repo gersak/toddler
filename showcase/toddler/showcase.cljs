@@ -96,7 +96,7 @@
     {:context md.context/base
      :value "https://raw.githubusercontent.com/gersak/toddler/refs/heads/prep/github-page/dev"}
     ($ router/LandingPage
-       {:url "/toddler/"
+       {:url "/"
         :enforce-access? false}
        ($ notifications/Store
           {:class notifications/$default}
