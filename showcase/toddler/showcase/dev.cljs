@@ -14,7 +14,7 @@
 (defnc LoadShowcase
   []
   ($ router/Provider
-     {:base ""}
+     {:base "toddler"}
      (provider
       {:context md.context/refresh-period
        :value 3000}
