@@ -730,11 +730,13 @@
                      (get-landing-candidates))]
         (hooks/use-effect
           [tree (:id best)]
-          (when (= location url)
+          (println "COMPARING: " location url)
+          (when (= (maybe-remove-base base location) url)
             (let [[last-component last-url] (edn/read-string (.getItem js/sessionStorage last-rendered-key))
                   component (when-some [location (component->location tree last-component)]
                               (zip/node location))
                   authorized? (authorized? component)]
+              (println "AAA: " [authorized? last-url best url])
               (cond
                 (and authorized? last-url) (push last-url)
                 (some? best) (push (maybe-add-base base (component-path tree (:id best))))
