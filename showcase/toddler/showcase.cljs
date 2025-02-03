@@ -126,8 +126,10 @@
   (t/set-min-level! :info)
   ; (t/set-min-level! :log "toddler.md" :debug)
   ; (t/set-min-level! :log "toddler.routing" :debug)
-  #_(let [target ^js (.getElementById js/document "app")]
-      (when-not @root
-        (reset! root ^js (createRoot target)))
-      (.log js/console "Rendering playground")
-      (.render ^js @root ($ LoadShowcase))))
+  (let [target ^js (.getElementById js/document "app")]
+    (when-not @root
+      (reset! root ^js (createRoot target)))
+    (.log js/console "Rendering playground")
+    (.render ^js @root ($ LoadShowcase))))
+
+(start!)
