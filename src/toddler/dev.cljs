@@ -229,7 +229,7 @@
     {:className "wrapper"}
     (! :tooltip {:message "API Docs"}
        (d/a
-        {:href "https://github.com/gersak/toddler/codox"
+        {:href "https://gersak.github.io/toddler/codox/index.html"
          :className (css :text-base :font-bold :no-underline)}
         "API")))))
 

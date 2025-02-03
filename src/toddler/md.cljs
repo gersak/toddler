@@ -190,7 +190,7 @@
                 (set-content! _content)))
             (async/alt!
               close
-              ([_] (.log js/console (str "Removing watch for URL: " url)))
+              ([_] #_(.log js/console (str "Removing watch for URL: " url)))
                            ;;
               (async/timeout interval)
               ([_] (when (pos? interval) (recur)))))

@@ -89,21 +89,20 @@
 (defnc Showcase
   {:wrap [(wrap-ui default/components)]}
   []
-  ($ router/Provider
-     (provider
-      {:context md.context/refresh-period
-       :value 3000}
-      (provider
-       {:context md.context/base
-        :value "https://raw.githubusercontent.com/gersak/toddler/refs/heads/prep/github-page/dev"}
-       ($ router/LandingPage
-          {:url "/toddler/"
-           :enforce-access? false}
-          ($ notifications/Store
-             {:class notifications/$default}
-             ($ dev/playground
-                {:max-width 1000
-                 :components routes}))))))
+  (provider
+   {:context md.context/refresh-period
+    :value 3000}
+   (provider
+    {:context md.context/base
+     :value "https://raw.githubusercontent.com/gersak/toddler/refs/heads/prep/github-page/dev"}
+    ($ router/LandingPage
+       {:url "/toddler/"
+        :enforce-access? false}
+       ($ notifications/Store
+          {:class notifications/$default}
+          ($ dev/playground
+             {:max-width 1000
+              :components routes})))))
 
   ;; TODO - Strict mode causes problems with popup window
   #_($ react/StrictMode
@@ -127,8 +126,8 @@
   (t/set-min-level! :info)
   ; (t/set-min-level! :log "toddler.md" :debug)
   ; (t/set-min-level! :log "toddler.routing" :debug)
-  (let [target ^js (.getElementById js/document "app")]
-    (when-not @root
-      (reset! root ^js (createRoot target)))
-    (.log js/console "Rendering playground")
-    (.render ^js @root ($ LoadShowcase))))
+  #_(let [target ^js (.getElementById js/document "app")]
+      (when-not @root
+        (reset! root ^js (createRoot target)))
+      (.log js/console "Rendering playground")
+      (.render ^js @root ($ LoadShowcase))))

@@ -144,6 +144,7 @@
                       :forward (fn []
                                  (.forward (.-history js/window))
                                  (.dispatchEvent js/window (js/PopStateEvent. "popstate" {:state nil})))})]
+
     (hooks/use-effect
       :once
       (letfn [(handle-change [_]
