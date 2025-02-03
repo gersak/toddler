@@ -1,4 +1,41 @@
 (ns toddler.popup
+  "Popup namespace that offers components and functions that
+  focus on popup placement.
+  
+  Use Container component from this
+  namespace as close to mounted react element as possible.
+  
+  All popup elements will look for Container component
+  and render at that DOM element.
+  
+  There are few preference position sequences available
+  
+  ```clojure
+  (def default-preference
+    [#{:bottom :left}
+     #{:bottom :right}
+     #{:top :left}
+     #{:top :right}
+     #{:bottom :center}
+     #{:top :center}
+     #{:left :center}
+     #{:right :center}])
+
+
+  ```
+  In addition to default-preferences other available preferences are:
+  
+   * central-preference
+   * left-preference
+   * right-preference
+   * cross-preference
+  
+  Following components and hooks should be used in most cases:
+   
+   * [[Container]]
+   * [[Area]]
+   * [[Element]]
+   * [[use-outside-action]]"
   (:require
    clojure.string
    [clojure.core.async :as async]
@@ -15,12 +52,36 @@
    [toddler.layout :refer [*container-dimensions*]]
    [toddler.util :as util]))
 
-(def ^:dynamic ^js *area-element* (create-context))
-(def ^:dynamic ^js *position* (create-context))
-(def ^:dynamic ^js *container* (create-context))
-(def ^:dynamic ^js *outside-action-channel* (create-context))
+(def ^{:dynamic true
+       :doc "Area element context. Area element is DOM element that
+            will cause popup to appear on user event"}
+  ^js *area-element*
+  (create-context))
 
-(def default-preference
+(def ^{:dynamic true
+       :doc "Position of popup. Value should be set of max two keywords
+            
+             * :top
+             * :bottom
+             * :left
+             * :right
+             * :center"}
+  ^js *position*
+  (create-context))
+
+(def ^{:dynamic true
+       :doc "Is container context. Container is component where popups will
+            be mounted using reacts **createPortal** function."}
+  ^js *container* (create-context))
+(def ^{:dynamic true
+       :doc "Context for outside action channel. This channel will receive
+            events when scroll or click outside happened"}
+  ^js *outside-action-channel* (create-context))
+
+(def ^{:doc "Sequence of prefered positions. First :bottom
+           positions are tested, than :top positions and
+           finally central"}
+  default-preference
   [#{:bottom :left}
    #{:bottom :right}
    #{:top :left}
@@ -30,7 +91,7 @@
    #{:left :center}
    #{:right :center}])
 
-(def central-preference
+(def ^:no-doc central-preference
   [#{:bottom :center}
    #{:top :center}
    #{:bottom :left}
@@ -40,7 +101,7 @@
    #{:left :center}
    #{:right :center}])
 
-(def left-preference
+(def ^:no-doc left-preference
   [#{:bottom :left}
    #{:top :left}
    #{:bottom :center}
@@ -50,7 +111,7 @@
    #{:left :center}
    #{:right :center}])
 
-(def right-preference
+(def ^:no-doc right-preference
   [#{:bottom :right}
    #{:top :right}
    #{:bottom :center}
@@ -60,15 +121,32 @@
    #{:left :center}
    #{:right :center}])
 
-(def cross-preference
+(def ^:no-doc cross-preference
   [#{:bottom :center}
    #{:right :center}
    #{:left :center}
    #{:top :center}])
 
-(def ^:dynamic ^js *offset* 6)
+(def ^{:doc "Offset context. How much in px is offset
+            for popup from PopupArea element"
+       :dynamic true}
+  ^js *offset* 6)
 
-(defmulti compute-candidate (fn [{:keys [position]}] position))
+(defmulti compute-candidate
+  "Function will compute candidate for popup
+  element bounding rect by specifying prefered
+  position. I.E. for #{:bottom :left} position
+  function will enrich input data with keys
+  
+   * :position/left
+   * :position/right
+   * :position/top
+   * :position/bottom
+   * :overflow/top
+   * :overflow/bottom
+   * :overflow/left
+   * :overflow/right"
+  (fn [{:keys [position]}] position))
 
 (defmethod compute-candidate #{:bottom :left}
   [{:keys [popup-height
@@ -242,7 +320,17 @@
       :overflow/right (min 0 dr)
       :overflow/bottom (min 0 db))))
 
-(defn computation-props [target el]
+(defn computation-props
+  "For given target (popup area) element and popup element function
+  will return map with keys that are important for popup position
+  computation:
+  
+   * :top, :left, :right :bottom keys
+   * :popup-width, :popup-height
+   * :half-popup-width, :half-popup-height
+   * :vertical-center, horizontal-center
+   * :window-width :window-height"
+  [target el]
   (when-let [[top left right bottom] (util/window-element-position target)]
     (when-let [[_ _ _ _ popup-width popup-height] (util/get-element-rect el)]
       {:top top :left left :right right :bottom bottom
@@ -256,6 +344,8 @@
        :window-height (.-innerHeight js/window)})))
 
 (defn ok-candidate?
+  "Returns true if candidate didn't overflow. Than this
+  position is OK"
   [{:keys [overflow/top
            overflow/bottom
            overflow/left
@@ -265,6 +355,8 @@
     candidate))
 
 (defn adjust-scroll-width
+  "Keep in mind that scroll can appear. This function will
+  move computed candidate for scroll-width"
   ([data] (adjust-scroll-width data 15))
   ([{:keys [position] :as data} scroll-width]
    (letfn [(move-right [d] (+ d scroll-width))
@@ -291,14 +383,16 @@
        (update data :position/left move-left)
        :else data))))
 
-(defn update-dropdown-size
-  [data]
-  (assoc
-   data
-    :popup-width (- (:position/right data) (:position/left data))
-    :popup-height (- (:position/bottom data) (:position/top data))))
+; (defn update-dropdown-size
+;   [data]
+;   (assoc
+;    data
+;     :popup-width (- (:position/right data) (:position/left data))
+;     :popup-height (- (:position/bottom data) (:position/top data))))
 
 (defn best-candidate
+  "For given number of candidates, this function will find candidate
+  that has least overflow, that is candidate that has most visibility"
   [candidates]
   (let [[{:keys [overflow/left
                  overflow/right
@@ -325,7 +419,8 @@
      (adjust-scroll-width 15)
      #_update-dropdown-size)))
 
-(defn padding-data [el]
+(defn ^:no-doc padding-data
+  [el]
   (when el
     (letfn [(px->int [x]
               (when x (js/parseInt (re-find #"\d+" x))))]
@@ -340,6 +435,8 @@
          (keys padding))))))
 
 (defn compute-container-props
+  "For given popup area and popup element function will return
+  candidate that is most suitable for showing popup"
   ([target el] (compute-container-props target el default-preference))
   ([target el preference]
    (let [preference (or preference default-preference)]
@@ -363,6 +460,17 @@
           (padding-data el)))))))
 
 (defhook use-focusable-items
+  "Should be used with popups that can focus some option
+  or elmenent. Like dropdowns or multiselects
+  
+  Hook will return `ref-fn` and `focus-option` function.
+  
+  `ref-fn` accepts option and binds that option element
+  with ref to DOM element in internal state.
+  
+  When focus-option function is called for some option
+  it will use .scrollIntoView to focus that option, by
+  pulling out ref from internal memory using input option"
   ([] (use-focusable-items false))
   ([direction]
    (let [oels (hooks/use-ref {})]
@@ -374,6 +482,9 @@
        [ref-fn focus-option]))))
 
 (defhook use-outside-action
+  "Hook accepts area and optionally popup element
+  and handler that will be called when outside click
+  or scroll actions are made."
   ([area handler]
    (use-outside-action area area handler))
   ([area popup handler]
@@ -425,6 +536,12 @@
            (.removeEventListener js/document "wheel" handle-outside-scroll)))))))
 
 (defnc Container
+  "Component that in most cases is instantiated only once. Somewhere
+  near react mounted component.
+
+  This component is target for popups to mount. So Element function
+  will look for this component that will provide `*container*` context
+  and mount popup in Container."
   [props]
   (let [container (hooks/use-ref nil)]
     (provider
@@ -437,6 +554,11 @@
         :ref #(reset! container %)})))))
 
 (defnc Area
+  "Component that will generate div element around children
+  that will be provided as `*area-element*` context. 
+
+  It is element that will listen for user events and open
+  popup"
   {:wrap [forward-ref]}
   [props _ref]
   (let [area (hooks/use-ref nil)
@@ -451,7 +573,16 @@
 
 (defnc Element
   "Creates fixed positioned div element that is positioned
-  based on prefrence to *area* context element."
+  based on preference to *area* context element.
+  
+  Popup size will adjust to content that is inside of 
+  this element. Props:
+    
+   * :preference - position preference in form of sequence with
+                   set options. I.E. `[#{:bottom :left} #{:top :left}]`
+   * :style      - style that will override Element div
+   * :offset     - distance between Area and Element 
+   * :on-change  - when popup position changes this will be called"
   {:helix/features {:fast-refresh true}
    :wrap [forward-ref]}
   [{:keys [preference style offset onChange on-change]

@@ -17,8 +17,8 @@
   (->js (transform-keys csk/->camelCaseString data)))
 
 (defnc SimpleBar
-  [props _ref]
   {:wrap [(forward-ref)]}
+  [props _ref]
   ($ _SimpleBar
      {& (cond-> (update props :style transform-style)
           _ref (assoc :scrollableNodeProps #js {:ref _ref}))}))

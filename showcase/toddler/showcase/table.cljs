@@ -3,10 +3,9 @@
    [shadow.css :refer [css]]
    [toddler.layout :as layout]
    [toddler.grid :as grid]
-   [toddler.ui :as ui]
+   [toddler.ui :as ui :refer [!]]
    [toddler.table :as table]
    [toddler.core :as toddler]
-   [toddler.provider :as provider]
    [toddler.router :as router]
    [toddler.md.lazy :as md]
    [vura.core :as vura]
@@ -31,32 +30,32 @@
     :label "UUID"
     :align :center
     :header nil
-    :cell ui/uuid-cell
+    :cell :cell/uuid
     :width 50}
    {:cursor :user
     :label "User"
-    :cell ui/identity-cell
+    :cell :cell/identity
     :options (repeatedly 3 random-user)
     :width 100}
    {:cursor :float
-    :cell ui/float-cell
+    :cell :cell/float
     :label "Float"
     :width 100}
    {:cursor :integer
-    :cell ui/integer-cell
+    :cell :cell/integer
     :label "Integer"
     :width 100}
    {:cursor :text
-    :cell ui/text-cell
+    :cell :cell/text
     :label "Text"
     :width 250}
    {:cursor :currency
-    :cell ui/currency-cell
+    :cell :cell/currency
     :width 150
     :label "Money"}
    {:cursor :enum
     :label "ENUM"
-    :cell ui/enum-cell
+    :cell :cell/enum
     :options [{:name "Dog"
                :value :dog}
               {:name "Cat"
@@ -68,12 +67,12 @@
     :placeholder "Choose your fav"
     :width 100}
    {:cursor :timestamp
-    :cell ui/timestamp-cell
+    :cell :cell/timestamp
     :label "Timestamp"
     :show-time false
     :width 120}
    {:cursor :boolean
-    :cell ui/boolean-cell
+    :cell  :cell/boolean
     :align :center
     :label "Boolean"
     :width 50}])
@@ -91,16 +90,16 @@
                   (vura/minutes (rand-int 60)))
                vura/value->time))]
       (condp = t
-        ui/uuid-cell (random-uuid)
-        ui/integer-cell (rand-int 10000)
-        ui/float-cell (* (rand) 1000)
-        ui/identity-cell (random-user)
-        ui/currency-cell {:amount (vura/round-number (* 1000 (rand)) 0.25)
-                          :currency (rand-nth ["EUR" "USD" "HRK"])}
-        ui/enum-cell (rand-nth (get-in columns [6 :options]))
-        ui/timestamp-cell (rand-date)
-        ui/text-cell (apply str (repeatedly 20 #(rand-nth "abcdefghijklmnopqrstuvwxyz0123456789")))
-        ui/boolean-cell (rand-nth [true false])
+        :cell/uuid (random-uuid)
+        :cell/integer (rand-int 10000)
+        :cell/float (* (rand) 1000)
+        :cell/identity (random-user)
+        :cell/currency {:amount (vura/round-number (* 1000 (rand)) 0.25)
+                        :currency (rand-nth ["EUR" "USD" "HRK"])}
+        :cell/enum (rand-nth (get-in columns [6 :options]))
+        :cell/date (rand-date)
+        :cell/text (apply str (repeatedly 20 #(rand-nth "abcdefghijklmnopqrstuvwxyz0123456789")))
+        :cell/boolean (rand-nth [true false])
         nil))))
 
 (defn generate-row
@@ -172,9 +171,8 @@
     ($ layout/Container
        {:style {:width (- width 80)
                 :height "500px"}}
-       ($ ui/row
-          {:align :center}
-          ($ ui/table
+       (! :row {:align :center}
+          (! :table
              {:rows data
               :columns columns
               :dispatch dispatch})))))
@@ -227,10 +225,10 @@
       :style {:height (if expanded height 0)}}
      (d/div
       {:ref #(reset! el %)}
-      ($ ui/row
+      (! :row
          (d/label "Movie")
          (d/div movie))
-      ($ ui/row
+      (! :row
          (d/label "Description")
          (d/div description))))))
 
@@ -253,25 +251,23 @@
     :width 140
     :align #{:center :left}
     :label "Character"
-    :header ui/plain-header}])
+    :header :header/plain}])
 
 (defnc row-example
   {:wrap [(ui/forward-ref)
-          (provider/extend-ui
+          (ui/extend-ui
            #:table {:row custom-row})]}
   []
   (let [[state set-state!] (hooks/use-state expand-data)]
-    ($ ui/row
-       {:align :center}
+    (! :row {:align :center}
        ($ layout/Container
           {:style
            {:width 500
             :height 400}}
-          ($ ui/table
+          (! :table
              {:columns row-example-columns
               :dispatch (fn [{:keys [type value idx] :as evt
                               {:keys [cursor]} :column}]
-                          (println "WHRER: " evt)
                           (case type
                             :table.element/change (set-state! assoc-in (concat [idx] cursor) value)
                             (.error js/console "Unkown event: " (pr-str evt))))
@@ -296,15 +292,15 @@
              :hash "dnd-example"}])]}
   []
   (let [{:keys [height width]} (layout/use-container-dimensions)]
-    ($ ui/simplebar
+    (! :simplebar
        {:style {:height height
                 :width width}}
-       ($ ui/row {:align :center}
-          ($ ui/column
+       (! :row {:align :center}
+          (! :column
              {:align :center
-              :style {:max-width "40rem"}
               :className (css
                           ["& .example-field" :my-5]
+                          ["& .toddler-markdown" {:max-width "40rem"}]
                           ["& #toddler-table-example" :my-10])}
              ($ md/watch-url {:url "/tables.md"})
              ($ toddler/portal
@@ -332,7 +328,7 @@
     {:wrap [(router/wrap-rendered :toddler.multi-tables)]}
     []
     (let [{:keys [height width]} (layout/use-container-dimensions)]
-      ($ ui/simplebar
+      (! :simplebar
          {:style {:height height
                   :width width}}
          ($ grid/GridLayout
@@ -340,17 +336,17 @@
              :row-height (/ height 2)
              :columns grid-columns
              :layouts layouts}
-            ($ ui/table
+            (! :table
                {:key "top"
                 :rows data
                 :columns columns
                 :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))})
-            ($ ui/table
+            (! :table
                {:key "bottom-left"
                 :rows data
                 :columns columns
                 :dispatch (fn [evnt] (println "Dispatching:\n%s" evnt))})
-            ($ ui/table
+            (! :table
                {:key "bottom-right"
                 :rows data
                 :columns columns

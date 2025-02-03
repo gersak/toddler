@@ -6,13 +6,17 @@
    [helix.hooks :as hooks]
    [toddler.core :as toddler]))
 
-(defn same [day1 day2]
+(defn ^:no-doc same [day1 day2]
   (and
    (every? some? [day1 day2])
    (= (select-keys day1 [:year :month :day-in-month])
       (select-keys day2 [:year :month :day-in-month]))))
 
-(defhook use-week-days [] (toddler/use-calendar :weekdays/short))
+(defhook use-week-days
+  "Hook will return week days in short (three letter)
+  format for current app/locale context value"
+  []
+  (toddler/use-calendar :weekdays/short))
 
 (defhook use-calendar-months
   "Hook will return map with numeric months bound
@@ -24,6 +28,13 @@
     (zipmap months month-names)))
 
 (defn calendar-month
+  "For given value of timestamp function will
+  return days for month in form that at 6 weeks
+  are included. First week will hold first day
+  of month, than 4 weeks of that month and following
+  weeks from next month.
+  
+  Maximal possible weeks is 6 for this logic"
   [value]
   (let [[first-day :as month] (vura/calendar-frame value :month)
         m (:month first-day)
@@ -54,6 +65,20 @@
             :week))))))))
 
 (defmulti reducer
+  "Reducer used to work with calendar. You can exend current functionalities
+  by implementing defmethod for topic of :type
+  
+  By default following is implemented:
+  
+   * :clear
+   * :next-month
+   * :prev-month
+   * :next-year
+   * :prev-year
+   * :change-year
+   * :change-month
+   * :focus-value
+   * :focus-date"
   (fn [_ {:keys [type]}] type))
 
 (defmethod reducer :clear
@@ -194,7 +219,7 @@
 
 (defhook use-period-callback
   "This hook will return fn that accepts day-time-context and
-  computes next [start end] period value based on picked day-time-context
+  computes next `[start end]` period value based on picked day-time-context
   value. If date is higher than end return value will be expanded end period.
   
   Same goes if input day-time-context is lower than start period.
@@ -257,9 +282,10 @@
 
 (defhook use-period-days
   "Hook will process input days by comparing if 
-  each of input days is in [start end] period.
+  each of input days is in `[start end]` period.
   
   Result will extended days with following keys:
+
    * :today        - boolean
    * :selected     - true if in period
    * :period-start - true if day is same as start value day

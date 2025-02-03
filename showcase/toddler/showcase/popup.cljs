@@ -4,7 +4,7 @@
    [shadow.css :refer [css]]
    [toddler.layout :as layout]
    [toddler.router :as router]
-   [toddler.ui :as ui]
+   [toddler.ui :as ui :refer [!]]
    [helix.core :refer [$ defnc <> defhook]]
    [helix.dom :as d]
    [helix.hooks :as hooks]
@@ -43,9 +43,9 @@
         [offset set-offset!] (hooks/use-state 10)]
     (<>
      ;; Row that controls configuration of popup element
-     ($ ui/row
+     (! :row
         {:className (css {:gap "1em"})}
-        ($ ui/dropdown-field
+        (! :field/dropdown
            {:name "Position"
             :value preference
             :on-change set-preference!
@@ -53,22 +53,19 @@
             :options popup/default-preference})
         (d/div
          {:style {:max-width 100}}
-         ($ ui/integer-field
+         (! :field/integer
             {:name "Offset"
              :value offset
              :on-change set-offset!})))
      ;; Popup button layout
-     ($ ui/row
-        {:align :center}
-        ($ ui/column
-           {:position :center}
+     (! :row {:align :center}
+        (! :column {:position :center}
            ;; Popup Area defintion
            ($ popup/Area
               {:className (css :my-4)}
               ;; That holds one button to toggle
               ;; popup opened/closed
-              ($ ui/button
-                 {:on-click (fn [] (set-opened! not))}
+              (! :button {:on-click (fn [] (set-opened! not))}
                  (if opened? "Close" "Open"))
               ;; When it is opened, than show red popup
               (when opened?
@@ -88,8 +85,8 @@
   []
   (let [[state set-state!] (hooks/use-state "neutral")]
     (<>
-     ($ ui/row
-        ($ ui/dropdown-field
+     (! :row
+        (! :field/dropdown
            {:value state
             :on-change set-state!
             :placeholder "Choose context..."
@@ -97,11 +94,9 @@
                       "positive"
                       "negative"
                       "warning"]}))
-     ($ ui/row
-        {:align :center}
-        ($ ui/column
-           {:align :center}
-           ($ ui/tooltip
+     (! :row {:align :center}
+        (! :column {:align :center}
+           (! :tooltip
               {:message (case state
                           "positive" "I'm happy"
                           "negative" "I don't feel so good"
@@ -129,12 +124,12 @@
              :hash "tooltip"}])]}
   []
   (let [{:keys [height width]} (layout/use-container-dimensions)]
-    ($ ui/simplebar
+    (! :simplebar
        {:style {:height height
                 :width width}
         :shadow true}
-       ($ ui/row {:align :center}
-          ($ ui/column
+       (! :row {:align :center}
+          (! :column
              {:align :center
               :style {:max-width "30rem"
                       :min-height 1500}}

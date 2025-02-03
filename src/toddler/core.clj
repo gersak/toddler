@@ -7,7 +7,15 @@
   if it is followed by something other than string will assume
   that taken string is formated line and following are arguments.
   
-  Repeats until next string end of line-or-arg input"
+  Repeats until next string end of line-or-arg input
+  
+  ```clojure
+  (let [variable \"391092109\"]
+    (mlf
+     \"Hi from macro\"
+     \"with formated  %s  \" variable
+     \"text on number %d\" 10292))
+  ```"
   [& line-or-arg]
   (loop [[current & others] line-or-arg
          result []]

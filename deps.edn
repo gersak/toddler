@@ -18,12 +18,31 @@
    {thheller/shadow-cljs {:mvn/version "2.20.2"}}}
   :showcase
   {:extra-paths ["showcase"]}
-  :icons
-  {:extra-paths ["icons"]
-   :extra-deps {babashka/fs {:mvn/version "0.2.16"}}}
   :css
   {:ns-default eywa.css.compile
    :exec-fn compile-css/release}
+  :icons
+  {:extra-paths ["icons"]
+   :extra-deps {babashka/fs {:mvn/version "0.2.16"}}}
+  :codox {:extra-deps {codox/codox {:mvn/version "0.10.8"}}
+          :exec-fn codox.main/generate-docs
+          :exec-args {:source-paths ["src"]
+                      :output-path "docs/codox"
+                      :namespaces [toddler.core
+                                   toddler.graphql
+                                   toddler.ui
+                                   toddler.app
+                                   toddler.window
+                                   toddler.date
+                                   toddler.i18n
+                                   toddler.router
+                                   toddler.popup
+                                   toddler.notifications
+                                   toddler.table
+                                   toddler.dropdown
+                                   toddler.multiselect]
+                      :language :clojurescript
+                      :metadata {:doc/format :markdown}}}
   :cider
   {:extra-deps
    {cider/cider-nrepl {:mvn/version "0.30.0"}}}}}

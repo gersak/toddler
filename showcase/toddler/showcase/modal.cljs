@@ -3,7 +3,7 @@
    [shadow.css :refer [css]]
    [toddler.layout :as layout]
    [toddler.router :as router]
-   [toddler.ui :as ui]
+   [toddler.ui :as ui :refer [!]]
    [helix.core :refer [$ defnc <> defhook provider]]
    [helix.dom :as d]
    [helix.hooks :as hooks]
@@ -33,10 +33,9 @@
   (let [close! (use-close)
         translate (toddler/use-translate)]
     (when opened?
-      ($ ui/modal-dialog
-         {:on-close close!
-          :width 300
-          :className (when context (name context))}
+      ($ ui/modal-dialog {:on-close close!
+                          :width 300
+                          :className (when context (name context))}
          (d/span
           {:className "title"}
           (translate :showcase.modal.dialog.title))
@@ -55,12 +54,10 @@
   []
   (let [{:keys [height]} (layout/use-container-dimensions)
         translate (toddler/use-translate)]
-    ($ ui/tab
-       {:id ::text
-        :name "Message"}
-       ($ ui/simplebar
-          {:style {:height height}
-           :shadow true}
+    (! :tab {:id ::text
+             :name "Message"}
+       (! :simplebar {:style {:height height}
+                      :shadow true}
           (d/pre
            {:className (css :mt-4 :p-4 :word-break :whitespace-pre-wrap)}
            (translate :showcase.content.large))))))
@@ -73,55 +70,46 @@
                        :once
                        (fn [k v]
                          (set-state! assoc k v)))]
-    ($ ui/tab
-       {:id ::form
-        :name "Form"}
+    (! :tab {:id ::form
+             :name "Form"}
        (d/div
         {:className (css
                      ["& .toddler-row" :my-2 {:gap "0.75em"}])}
-        ($ ui/row
-           ($ ui/input-field
-              {:name "First Name"
-               :value first-name
-               :on-change #(change-field :first-name %)})
-           ($ ui/input-field
-              {:name "Last Name"
-               :value last-name
-               :on-change #(change-field :last-name %)}))
-        ($ ui/row
-           ($ ui/input-field
-              {:name "Address"
-               :value address
-               :on-change #(change-field :address %)}))
-        ($ ui/row
-           ($ ui/input-field
-              {:name "City"
-               :value city
-               :on-change #(change-field :city %)}))
-        ($ ui/row
-           ($ ui/input-field
-              {:name "Country"
-               :value country
-               :on-change #(change-field :country %)}))
-        ($ ui/row
-           ($ ui/date-field
-              {:name "Date of birth"
-               :value date-of-birth
-               :on-change #(change-field :date-of-birth %)}))))))
+        (! :row
+           (! :field/input {:name "First Name"
+                            :value first-name
+                            :on-change #(change-field :first-name %)})
+           (! :field/input {:name "Last Name"
+                            :value last-name
+                            :on-change #(change-field :last-name %)}))
+        (! :row
+           (! :field/input {:name "Address"
+                            :value address
+                            :on-change #(change-field :address %)}))
+        (! :row
+           (! :field/input {:name "City"
+                            :value city
+                            :on-change #(change-field :city %)}))
+        (! :row
+           (! :field/input {:name "Country"
+                            :value country
+                            :on-change #(change-field :country %)}))
+        (! :row
+           (! :field/date {:name "Date of birth"
+                           :value date-of-birth
+                           :on-change #(change-field :date-of-birth %)}))))))
 
 (defnc table-tab
   []
   (let [{:keys [height width]} (layout/use-container-dimensions)]
-    ($ ui/tab
-       {:id ::table
-        :name "Table"}
+    (! :tab {:id ::table
+             :name "Table"}
        (provider
         {:context layout/*container-dimensions*
          :value {:height height
                  :width (- width 64)}}
-        ($ ui/table
-           {:rows showcase.table/data
-            :columns showcase.table/columns})))))
+        (! :table {:rows showcase.table/data
+                   :columns showcase.table/columns})))))
 
 (defnc complex-dialog-example
   [{:keys [opened?]}]
@@ -178,15 +166,13 @@
         complex-dialog-opened? (router/use-rendered? :toddler.modal.complex-dialog)
         [context set-context!] (hooks/use-state nil)
         close! (use-close)]
-    ($ ui/simplebar
-       {:style {:height height
-                :width width}
-        :shadow true}
-       ($ ui/row {:align :center}
-          ($ ui/column
-             {:align :center
-              :style {:max-width "30rem"
-                      :min-height 1500}}
+    (! :simplebar {:style {:height height
+                           :width width}
+                   :shadow true}
+       (! :row {:align :center}
+          (! :column {:align :center
+                      :style {:max-width "30rem"
+                              :min-height 1500}}
              ($ md/watch-url {:url "/modal.md"})
              ($ dialog-example
                 {:opened? dialog-opened?
@@ -195,47 +181,37 @@
                 {:opened? complex-dialog-opened?})
              ($ toddler/portal
                 {:locator #(.getElementById js/document "modal-background-example")}
-                ($ ui/row
-                   {:align :center}
-                   ($ ui/button
-                      {:on-click #(show-background!)}
-                      (translate :open))
+                (! :row {:align :center}
+                   (! :button {:on-click #(show-background!)} (translate :open))
                    (when background-opened?
-                     ($ ui/modal-background
-                        {:on-close close!}))))
+                     (! :modal/background {:on-close close!}))))
              ;;
              ($ toddler/portal
                 {:locator #(.getElementById js/document "modal-dialog-example")}
                 (<>
-                 ($ ui/row
-                    {:position :center}
-                    ($ ui/button
-                       {:on-click #(do
-                                     (set-context! nil)
-                                     (show-dialog!))}
+                 (! :row {:position :center}
+                    (! :button {:on-click #(do
+                                             (set-context! nil)
+                                             (show-dialog!))}
                        (translate :neutral))
-                    ($ ui/button
-                       {:on-click #(do
-                                     (set-context! "positive")
-                                     (show-dialog!))
-                        :class ["positive"]}
+                    (! :button {:on-click #(do
+                                             (set-context! "positive")
+                                             (show-dialog!))
+                                :class ["positive"]}
                        (translate :positive))
-                    ($ ui/button
-                       {:on-click #(do
-                                     (set-context! "negative")
-                                     (show-dialog!))
-                        :class ["negative"]}
+                    (! :button {:on-click #(do
+                                             (set-context! "negative")
+                                             (show-dialog!))
+                                :class ["negative"]}
                        (translate :button.negative))
-                    ($ ui/button
-                       {:on-click #(do
-                                     (set-context! "warn")
-                                     (show-dialog!))
-                        :class ["warn"]}
+                    (! :button {:on-click #(do
+                                             (set-context! "warn")
+                                             (show-dialog!))
+                                :class ["warn"]}
                        (translate :warn)))))
              ($ toddler/portal
                 {:locator #(.getElementById js/document "complex-modal-dialog-example")}
-                ($ ui/row
-                   {:align :center}
-                   ($ ui/button
+                (! :row {:align :center}
+                   (! :button
                       {:on-click #(show-complex!)}
                       (translate :open)))))))))

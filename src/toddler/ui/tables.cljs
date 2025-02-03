@@ -20,7 +20,7 @@
    [toddler.dropdown :as dropdown]
    [toddler.input :refer [TextAreaElement AutosizeInput]]
    [toddler.ui.elements :as e]
-   [toddler.ui :as ui]
+   [toddler.ui :as ui :refer [!]]
    [toddler.i18n :as i18n]))
 
 (defnc NotImplemented
@@ -193,7 +193,8 @@
         [opened set-opened!] (hooks/use-state false)
         translate (use-translate)
         area (hooks/use-ref nil)
-        popup (hooks/use-ref nil)]
+        popup (hooks/use-ref nil)
+        calendar (ui/use-component :calendar)]
     (popup/use-outside-action
      opened area popup
      #(set-opened! false))
@@ -240,7 +241,7 @@
              :class ["dropdown-popup" $dropdown-popup]}
             ($ e/dropdown-wrapper
                {:max-height "30rem"}
-               ($ ui/calendar
+               ($ calendar
                   {:value value
                    :on-change set-value!})))))))
 
@@ -528,7 +529,7 @@
                         :position "absolute"
                         :right "0px"}]
                       ["&:hover .decorator" :text-gray-400])}
-         ($ ui/avatar
+         (! :avatar
             {:className (css
                          :border
                          :border-solid

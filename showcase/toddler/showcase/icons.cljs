@@ -5,7 +5,7 @@
    [shadow.css :refer [css]]
    [toddler.core :as toddler]
    [toddler.layout :as layout]
-   [toddler.ui :as ui]
+   [toddler.ui :as ui :refer [!]]
    [toddler.md.lazy :as md]
    [toddler.router :as router]
    [toddler.fav6.solid :as solid]
@@ -22,7 +22,7 @@
 
 (defnc display-icons
   [{:keys [height icons]}]
-  ($ ui/simplebar
+  (! :simplebar
      {:style {:height (- height 80)}
       :className (css :pt-4)
       :shadow true}
@@ -34,7 +34,7 @@
                    ["& .name" :font-semibold {:font-size "10px"}])}
       (map
        (fn [[name icon]]
-         ($ ui/tooltip
+         (! :tooltip
             {:key name
              :message (d/div {:className "name"} name)}
             (d/div
@@ -78,44 +78,44 @@
        ($ solid/circle-info
           {:on-click #(open-modal)})))
      (when opened
-       ($ ui/modal-dialog
+       (! :modal/dialog
           {:on-close #(close-modal)
            :className (css {:max-width "700px"})}
           (d/div {:className "title"} "How?")
           (d/div
            {:className "content"}
-           ($ ui/simplebar
+           (! :simplebar
               {:style {:max-height (- height 100)
                        :min-width 600}}
               ($ md/watch-url {:url "/icons.md"})))
           (d/div
            {:className "footer"})))
-     ($ ui/tabs
-        ($ ui/tab
+     (! :tabs
+        (! :tab
            {:id ::material-outlined
             :name "Material Outlined"}
            ($ display-icons {:height height :icons material/outlined}))
-        ($ ui/tab
+        (! :tab
            {:id ::material-round
             :name "Material Round"}
            ($ display-icons {:height height :icons material/round}))
-        ($ ui/tab
+        (! :tab
            {:id ::material-sharp
             :name "Material Sharp"}
            ($ display-icons {:height height :icons material/sharp}))
-        ($ ui/tab
+        (! :tab
            {:id ::fav6-regular
             :name "FA Regular"}
            ($ display-icons {:height height :icons fav6/regular}))
-        ($ ui/tab
+        (! :tab
            {:id ::fav6-solid
             :name "FA Solid"}
            ($ display-icons {:height height :icons fav6/solid}))
-        ($ ui/tab
+        (! :tab
            {:id ::fav6-brands
             :name "FA Brands"}
            ($ display-icons {:height height :icons fav6/brands}))
-        ($ ui/tab
+        (! :tab
            {:id ::ionic
             :name "Ionic"}
            ($ display-icons {:height height :icons ionic/icons}))))))

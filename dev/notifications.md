@@ -63,7 +63,7 @@ Now lets try it out
 ```clojure
 (ns toddler.showcase.notifications
   (:require
-   [toddler.provider :refer [UI]]
+   [toddler.ui :refer [UI]]
    [toddler.ui.components :as default]
    [helix.core :refer [$ defnc]]
    [helix.hooks :as hooks]

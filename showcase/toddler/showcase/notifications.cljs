@@ -1,17 +1,15 @@
 (ns toddler.showcase.notifications
   (:require
-   [clojure.core.async :as async]
    [shadow.css :refer [css]]
    [toddler.layout :as layout]
    [toddler.router :as router]
-   [toddler.ui :as ui]
-   [helix.core :refer [$ defnc <> defhook]]
+   [toddler.ui :as ui :refer [!]]
+   [helix.core :refer [$ defnc defhook]]
    [helix.dom :as d]
    [helix.hooks :as hooks]
    [toddler.md.lazy :as md]
    toddler.showcase.content
    [toddler.core :as toddler]
-   [toddler.popup :as popup]
    [toddler.notifications :as notifications]
    [toddler.fav6.solid :as solid]
    [toddler.i18n.keyword :refer [add-translations]]))
@@ -56,21 +54,18 @@
         (notifications/negative "Message" 0)
         (notifications/warning "Message" 0)
         (notifications/neutral "Message" 0))
-    ($ ui/row
-       {:align :center}
-       ($ ui/row
-          {:className (css :mt-4 :items-center)}
-          ($ ui/text-field
-             {:name "MESSAGE"
-              :className (css ["& textarea" {:min-height "176px"}])
-              :value message
-              :on-change set-message!})
-          ($ ui/column
+    (! :row {:align :center}
+       (! :row {:className (css :mt-4 :items-center)}
+          (! :field/text {:name "MESSAGE"
+                          :className (css ["& textarea" {:min-height "176px"}])
+                          :value message
+                          :on-change set-message!})
+          (! :column
              {:className (css :px-4 :pt-5)}
-             ($ ui/button {:on-click #(send-message nil)} "Neutral")
-             ($ ui/button {:className "positive" :on-click #(send-message :positive)} "Positive")
-             ($ ui/button {:className "negative" :on-click #(send-message :negative)} "Negative")
-             ($ ui/button {:className "warn" :on-click #(send-message :warn)} "Warning"))))))
+             (! :button {:on-click #(send-message nil)} "Neutral")
+             (! :button {:className "positive" :on-click #(send-message :positive)} "Positive")
+             (! :button {:className "negative" :on-click #(send-message :negative)} "Negative")
+             (! :button {:className "warn" :on-click #(send-message :warn)} "Warning"))))))
 
 (defmethod notifications/render :custom/normal
   [{:keys [message]}]
@@ -96,9 +91,8 @@
 
 (defnc custom-notification-example
   []
-  ($ ui/row
-     {:align :center}
-     ($ ui/button
+  (! :row {:align :center}
+     (! :button
         {:on-click (fn []
                      (notifications/add
                       :custom/normal
@@ -109,11 +103,11 @@
   {:wrap [(router/wrap-rendered :toddler.notifications)]}
   []
   (let [{:keys [height width]} (layout/use-container-dimensions)]
-    ($ ui/simplebar
+    (! :simplebar
        {:style {:height height
                 :width width}}
-       ($ ui/row {:align :center}
-          ($ ui/column
+       (! :row {:align :center}
+          (! :column
              {:align :center
               :style {:max-width "30rem"
                       :min-height 1500}}

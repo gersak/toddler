@@ -7,7 +7,7 @@
    [shadow.css :refer [css]]
    [toddler.i18n.keyword :refer [add-translations]]
    [toddler.md.lazy :as md]
-   [toddler.ui :as ui]
+   [toddler.ui :as ui :refer [!]]
    [toddler.core :as toddler]
    [toddler.router :as router]
    [toddler.layout :as layout]))
@@ -19,7 +19,7 @@
   {:wrap [(router/wrap-rendered ::modal)]}
   []
   (let [back (router/use-go-to ::router/ROOT)]
-    ($ ui/modal-dialog
+    (! :modal/dialog
        {:on-close #(back)
         :style {:max-width 300}}
        (d/div {:className "title"} "Testing modal")
@@ -28,9 +28,9 @@
         (toddler/mlf
          "Hello from testing modal window. You have successfully"
          "changed URL!"))
-       (d/div {:className "footer"}
-              ($ ui/button {:on-click #(back)}
-                 "CLOSE")))))
+       (d/div
+        {:className "footer"}
+        (! :button {:on-click #(back)} "CLOSE")))))
 
 (defn p [text]
   (with-out-str
@@ -66,17 +66,17 @@
             :query query
             :tree tree})
           "\n```")})
-     ($ ui/row
+     (! :row
         {:position :center}
-        ($ ui/button {:on-click #(open-modal)} "GO TO MODAL")
-        ($ ui/button {:on-click #(set-query!
-                                  {:test1 100
-                                   :test2 "John"
-                                   :test3 :test3
-                                   :test4 ["100" "200" :goo 400]})}
+        (! :button {:on-click #(open-modal)} "GO TO MODAL")
+        (! :button {:on-click #(set-query!
+                                {:test1 100
+                                 :test2 "John"
+                                 :test3 :test3
+                                 :test4 ["100" "200" :goo 400]})}
            "CHANGE QUERY")
-        ($ ui/button {:on-click #(reset)} "RESET")
-        ($ ui/button {:on-click #(go-to-landing)} "GO TO FRAGMENT"))
+        (! :button {:on-click #(reset)} "RESET")
+        (! :button {:on-click #(go-to-landing)} "GO TO FRAGMENT"))
      ($ ModalTest))))
 
 (defnc public-route
@@ -116,8 +116,8 @@
         ($ public-route)
         ($ admin-route)
         ($ super-route)
-        ($ ui/row
-           ($ ui/multiselect-field
+        (! :row
+           (! :field/multiselect
               {:name "USER ROLES"
                :options ["admin" "superuser"]
                :value roles
@@ -143,14 +143,13 @@
         base (hooks/use-context router/-base-)]
     ($ router/Provider
        {:base (str (when base (str base "/")) "routing")}
-       ($ ui/simplebar
+       (! :simplebar
           {:style {:height height
                    :width width}
            :shadow true}
-          ($ ui/row {:align :center}
-             ($ ui/column
-                {:align :center
-                 :style {:max-width "40rem"}}
+          (! :row {:align :center}
+             (! :column {:align :center
+                         :className (css ["& .toddler-markdown" {:max-width "40rem"}])}
                 ($ md/watch-url {:url "/routing.md"})
                 ($ toddler/portal
                    {:locator #(.getElementById js/document "router-basics")}

@@ -10,7 +10,7 @@
    [helix.hooks :as hooks]
    [helix.children :as c]
    [toddler.i18n]
-   [toddler.ui :as ui]
+   [toddler.ui :as ui :refer [!]]
    [toddler.core :as toddler]
    [toddler.layout :as layout]))
 
@@ -46,6 +46,12 @@
   (let [w (or
            (get column :width)
            (get style :width 100))
+        components (hooks/use-context ui/__components__)
+        render (hooks/use-memo
+                 [render]
+                 (if (keyword? render)
+                   (get components render)
+                   render))
         style (merge
                style
                {:display "flex"
@@ -96,7 +102,8 @@
     :keys [className idx render class]
     :as props
     :or {render FRow}} _ref]
-  (let [columns (use-columns)]
+  (let [columns (use-columns)
+        cell (ui/use-component :table/cell)]
     (provider
      {:context *row-record*
       :value (assoc data :idx idx)}
@@ -118,9 +125,7 @@
                             (when (not-empty cursor)
                               (str/join "->" (map name cursor))))
                         attribute)]
-              ($ ui/table-cell
-                 {:key _key
-                  :column column})))
+              ($ cell {:key _key :column column})))
           (remove :hidden columns)))
       (c/children props)))))
 
@@ -256,9 +261,11 @@
                  (fn [{:keys [header] :as column}]
                    (if (contains? column :header) column
                        (assoc column :header ui/plain-header)))
-                 columns)]
+                 columns)
+        components (hooks/use-context ui/__components__)
+        simplebar (ui/use-component :simplebar)]
     (when (some :header columns)
-      ($ ui/simplebar
+      ($ simplebar
          {:key :thead/simplebar
           :ref _ref
           :className (str/join
@@ -283,7 +290,10 @@
                  style :style
                  p :cursor
                  :as column}]
-             (let [w (or
+             (let [render (if (keyword? render)
+                            (get components render)
+                            render)
+                   w (or
                       (get column :width)
                       (get style :width 100))]
                (d/div
@@ -316,9 +326,11 @@
                             (cond-> ["tbody"]
                               className (conj className)
                               (string? class) (conj class)
-                              (sequential? class) (into class)))]
+                              (sequential? class) (into class)))
+        table-row (ui/use-component :table/row)
+        simplebar (ui/use-component :simplebar)]
     (when (and container-width container-height)
-      ($ ui/simplebar
+      ($ simplebar
          {:key :tbody/simplebar
           :ref _ref
           :className className
@@ -329,7 +341,7 @@
            :style style}
           (map-indexed
            (fn [idx row]
-             ($ ui/table-row
+             ($ table-row
                 {:key (or
                        (:euuid row)
                        idx)

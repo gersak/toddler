@@ -8,7 +8,7 @@
    #_[toddler.avatar
       :refer [avatar]
       :as avatar]
-   [toddler.ui :as ui]
+   [toddler.ui :as ui :refer [!]]
    [toddler.util :as util]
    [helix.core
     :refer [$ defnc <> provider create-context]]
@@ -27,8 +27,7 @@
    [toddler.ionic :as ionic]
    [toddler.popup :as popup]
    [toddler.layout :as layout]
-   [toddler.ui.elements.calendar :refer [calendar period-calendar]]
-   [toddler.provider :refer [UI]]))
+   [toddler.ui.elements.calendar :refer [calendar period-calendar]]))
 
 (defnc simplebar
   {:wrap [(ui/forward-ref)]}
@@ -1174,7 +1173,7 @@
        {:placeholder (translate :search)
         :onChange #(set-search! (.. % -target -value))
         :value (or search "")}))
-     ($ ui/simplebar
+     (! :simplebar
         {:style {:max-height options-height
                  :min-height "10rem"}}
         (d/div

@@ -1,40 +1,39 @@
+;; DEPRECATED NAMESPACE
 (ns toddler.themes.default
   (:require
-    [helix.styled-components :as sc
-     :refer [--themed]]
-    [helix.placenta.util :refer [deep-merge]]
-    [toddler.theme :as theme]
-    [toddler.head :as head]))
-
-
+   [helix.styled-components :as sc
+    :refer [--themed]]
+   [helix.placenta.util :refer [deep-merge]]
+   [toddler.theme :as theme]
+   [toddler.head :as head]))
 
 (def color
   (merge
-    {:gray "#616161"
-     :teal "#80d6d6"
-     :blue "#85b7f1"
-     :red "#fd6286"
-     :orange "#ff872d"
-     :yellow "#ffec72"
-     :green "#0dda87"
-     :asphalt "#9cb4d8"
-     :white "white"
-     :disabled "#bbbbbb"
-     :link "rgba(44,29,191,0.78)"
-     
-     :color "#275f82"
-     :background "white"}
-    #:gray {:light "#f2eff2"
-            :dark "#2c2c2c"}
-    #:teal {:dark "#598ea7"
-            :deep "#44666d"
-            :saturated "#00cccc"}
-    #:asphalt {:dark "#3562a2"
-               :bleached "#598ea71a"}
-    #:orange {:dark "#ff4007"}
-    #:yellow {:dark "#FFDC00"
-              :deep "#c7ac00"}
-    #:white {:transparent "#ffffffee"}))
+   {:gray "#616161"
+    :teal "#80d6d6"
+    :blue "#85b7f1"
+    :red "#fd6286"
+    :orange "#ff872d"
+    :yellow "#ffec72"
+    :green "#0dda87"
+    :asphalt "#9cb4d8"
+    :white "white"
+    :disabled "#bbbbbb"
+    :link "rgba(44,29,191,0.78)"
+
+    :color "#275f82"
+    :background "white"}
+   #:gray {:light "#f2eff2"
+           :dark "#2c2c2c"}
+   #:teal {:dark "#598ea7"
+           :deep "#44666d"
+           :saturated "#00cccc"}
+   #:asphalt {:dark "#3562a2"
+              :bleached "#598ea71a"}
+   #:orange {:dark "#ff4007"}
+   #:yellow {:dark "#FFDC00"
+             :deep "#c7ac00"}
+   #:white {:transparent "#ffffffee"}))
 
 (def level
   ["#FFFFFF"
@@ -70,8 +69,6 @@
    "#16432C"
    "#133926"])
 
-
-
 ;;; toddler.elements
 (defmethod --themed [{} 'toddler.elements/simplebar]
   [{:keys [$shadow-top $shadow-bottom $hidden]}]
@@ -83,7 +80,6 @@
       (assoc :box-shadow (clojure.string/join ", " box-shadow))
       $hidden
       (assoc ".simplebar-track" {:display "none"}))))
-
 
 (def $element-block
   {".label"
@@ -123,7 +119,6 @@
                :pointer-events (if _disabled "none" "inherit")})))]
   (defmethod --themed [{} 'toddler.elements/action] [props] (themed-action props))
   (defmethod --themed [{} 'toddler.elements/named-action] [props] (themed-action props)))
-
 
 (defn button-colors
   [{:keys [context disabled]}]
@@ -168,7 +163,6 @@
        :background-color "#5e82b8"
        :hover {:background-color (color :asphalt/dark)}})))
 
-
 (defn interactions-drop-on-active
   [_]
   {":active" {:transform "translate(0px,2px)" :box-shadow "none"}})
@@ -178,14 +172,13 @@
   (let [{:keys [background-color color hover]}
         (button-colors props)]
     (cond->
-     {:color color 
-      :background-color background-color 
+     {:color color
+      :background-color background-color
       ":hover" (assoc hover :box-shadow "0px 2px 4px 0px #aeaeae")}
       disabled (assoc :pointer-events "none"))))
 
 (defmethod --themed [{} 'toddler.elements/button] [props]
   (merge (interactions-button props) (interactions-drop-on-active props)))
-
 
 (defmethod --themed [{} 'toddler.elements/checkbox-button]
   [{:keys [theme $active disabled]}]
@@ -199,11 +192,9 @@
       :background-color bc}
       disabled (assoc :pointer-events "none"))))
 
-
 (defmethod --themed [{} 'toddler.elements/checkbox-field]
   [_]
   {:color (color :gray)})
-
 
 (defmethod --themed [{} 'toddler.elements/slider]
   [{:keys [width height orient]
@@ -236,12 +227,11 @@
     (as-> css
           (let [hw (/ width 2)]
             (assoc css
-                   :transform (str "translate(" (* -1 hw) "px,0) rotate(270deg)")
-                   :margin-top hw)))
+              :transform (str "translate(" (* -1 hw) "px,0) rotate(270deg)")
+              :margin-top hw)))
     #_(assoc
        :writing-mode "bt-lr"
        :-webkit-appearance "slider-vertical")))
-
 
 (defmethod --themed [{} 'toddler.elements/dropdown-option]
   [{:keys [theme selected]}]
@@ -267,8 +257,6 @@
    " .simplebar-scrollbar:before"
    {:background (color :gray)
     :pointer-events "none"}})
-
-
 
 (def $with-delete-marker
   {".tbody .trow"
@@ -306,7 +294,6 @@
     "&:last-child" {:border-radius "0px 0px 13px 13px"}
     "&:first-child:last-child" {:border-radius 4}}})
 
-
 (def $dropdown
   {:max-height 400})
 
@@ -315,7 +302,6 @@
   (deep-merge
    $dropdown-shadow
    $dropdown))
-
 
 (defmethod --themed [{} 'toddler.elements/dropdown-element-decorator]
   [_]
@@ -349,7 +335,6 @@
     {:border "1px solid (color :teal)"}
     "&.weekend"
     {:color (color :red)}}})
-
 
 (defmethod --themed [{} 'toddler.elements/calendar-month-header]
   [_]
@@ -404,7 +389,6 @@
      "input,textarea"
      {:color (color :gray)}}))
 
-
 (defmethod --themed [{} 'toddler.elements/search]
   [_]
   {:border-color "#b3b3b3 !important"
@@ -429,7 +413,6 @@
   [{:keys [opened]}]
   {:cursor (if opened "default" "pointer")})
 
-
 (defmethod --themed [{} 'toddler.elements/timestamp-clear] [_]
   {:background-color (color :gray/light)
    :color "white"
@@ -438,10 +421,8 @@
    :cursor "pointer"
    ":hover" {:background-color (color :red)}})
 
-
 (defmethod --themed [{} 'toddler.elements/time-period-popup] [_]
   $dropdown-shadow)
-
 
 (defmethod --themed [{} 'toddler.elements/user]
   [{:keys [disabled read-only]}]
@@ -454,8 +435,6 @@
       :input {:cursor cursor}}
       (or disabled read-only) (assoc :pointer-events "none"))))
 
-
-
 (defmethod --themed [{} 'toddler.elements/group]
   [{:keys [disabled read-only]}]
   (let [cursor (if (or disabled read-only)
@@ -466,7 +445,6 @@
       :cursor cursor
       :input {:cursor cursor}}
       (or disabled read-only) (assoc :pointer-events "none"))))
-
 
 (defmethod --themed [{} 'toddler.elements/user-multiselect]
   [{:keys [disabled read-only]}]
@@ -479,7 +457,6 @@
       :input {:cursor cursor}}
       (or disabled read-only) (assoc :pointer-events "none"))))
 
-
 (defmethod --themed [{} 'toddler.elements/group-multiselect]
   [{:keys [disabled read-only]}]
   (let [cursor (if (or disabled read-only)
@@ -491,17 +468,13 @@
       :input {:cursor cursor}}
       (or disabled read-only) (assoc :pointer-events "none"))))
 
-
 (defmethod --themed [{} 'toddler.elements/user-cell]
   [_]
   {:input {:color color}})
 
-
-
 (defmethod --themed [{} 'toddler.elements/table-header]
   [_]
   {:border-color (color :teal/dark)})
-
 
 (defn interactive-cell? [{:keys [cell/disabled cell/read-only]}]
   (every? not [disabled read-only]))
@@ -515,14 +488,11 @@
      :cursor (if interactive? "pointer" "default")
      :input {:cursor (if interactive? "pointer" "default")}}))
 
-
-
 (defmethod --themed [{} 'toddler.elements/table-row] [_]
   {":hover" {:border-color (color :teal/dark)}})
 
 (defmethod --themed [{} 'toddler.elements/table-header-cell] [_]
   {:color (color :gray)})
-
 
 ;; toddler.elements.light
 (defmethod --themed [{} 'toddler.elements.light/field-input]
@@ -535,7 +505,6 @@
     "&:focus,&:hover"
     {:border-color (color :text)}}
     readOnly (assoc :cursor "pointer")))
-
 
 (defmethod --themed [{} 'toddler.elements.light/search]
   [{:keys [position]
@@ -552,7 +521,6 @@
                         :center "center"
                         "flex-end")}))
 
-
 (defmethod --themed [{} 'toddler.elements.light/dropdown-option]
   [{:keys [selected]}]
   {:color (if selected
@@ -564,7 +532,6 @@
    " :hover" {:color "white"
               :text-shadow "0 0 8px #ffffff99, 0 0 8px #ffffff99"}
    ":last-child" {:border-bottom "none"}})
-
 
 (letfn [(--themed-action
           [{:keys [context disabled]}]
@@ -587,7 +554,6 @@
   (defmethod --themed [{} 'toddler.elements.light/action] [props] (--themed-action props))
   (defmethod --themed [{} 'toddler.elements.light/named-action] [props] (--themed-action props)))
 
-
 (defmethod --themed [{} 'toddler.elements.light/tabs]
   [_]
   (let [[c ic bc bcl]
@@ -603,7 +569,6 @@
        :transition "color .3s ease-in"
        :cursor "default"}}}))
 
-
 (defmethod --themed [{} 'toddler.elements/textarea-field]
   [_]
   {:textarea {:font-family "Roboto"}})
@@ -612,7 +577,6 @@
   [_]
   {"input::placeholder" {:color "#8fa7c4"}
    :input {:color color}})
-
 
 (letfn [(--editable-tag [{:keys [editable?]}]
           (when-not editable?
@@ -663,12 +627,9 @@
      (--editable-tag props)
      (--colored-tag props))))
 
-
-
 (defmethod --themed [{} 'toddler.elements.modal/close-button] [_]
   {:color "#bfbfbf"
    "&:hover" {:color (color :red)}})
-
 
 (defmethod --themed [{} 'toddler.elements.modal/feedback-footer] [_]
   {".warning" {:color (color :orange)}
@@ -687,7 +648,6 @@
       {:color c
        :transition "color .3s ease-in"
        :cursor "default"}}}))
-
 
 (defmethod --themed [{} 'toddler.elements.tabs/tab-container]
   [{:keys [selected]}]
@@ -712,22 +672,18 @@
    {:cursor "default"
     :opacity "0.2 !important"}})
 
-
 (defmethod --themed [{} 'toddler.elements.tabs/tab-container]
   [_]
   $dropdown-shadow)
-
 
 (defmethod --themed [{} 'toddler.elements.avatar/avatar-dropzone]
   []
   {:color (color :gray)
    :label {":hover" {:color (color :gray/dark)}}})
 
-
 (defmethod --themed [{} 'toddler.elements.popup/element]
   []
   $dropdown-shadow)
-
 
 (defmethod --themed [{} 'toddler.elements.drawers/drawer-action]
   [{:keys [selected]}]
@@ -752,7 +708,6 @@
    {:cursor "default"
     :opacity "0.2 !important"}})
 
-
 (defmethod --themed [{} 'toddler.elements/card-action]
   [{:keys [context]}]
   {:background-color (color :white)
@@ -767,12 +722,10 @@
    {:background-color "#929292"
     :color (color :gray/light)}})
 
-
 (def global (sc/import-resource "css/toddler.css"))
 (def simplebar (sc/import-resource "css/simplebar.css"))
 
-
 (head/add
-  :link
-  {:href "https://fonts.googleapis.com/css2?family=Roboto&display=swap"
-   :rel "stylesheet"})
+ :link
+ {:href "https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+  :rel "stylesheet"})

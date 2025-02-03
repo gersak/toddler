@@ -12,11 +12,7 @@
                 :medium "4em"
                 :large "10em"
                 size)
-        ; src (str "https://api.dicebear.com/9.x/pixel-art/svg?seed=" name)
-        ; src (str "https://api.dicebear.com/9.x/avataaars/svg?seed=" name)
-        src (str "https://api.dicebear.com/9.x/lorelei/svg?seed=" name)
-        ; src (str "https://api.dicebear.com/9.x/croodles/svg?seed=" name)
-        ]
+        src (str "https://api.dicebear.com/9.x/lorelei/svg?seed=" name)]
     (d/img
      {:src src
       :style (merge

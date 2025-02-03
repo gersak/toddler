@@ -22,6 +22,8 @@
      :height h}))
 
 (defnc DimensionsProvider
+  "Component will track windows dimensions and provide current
+  window width and height through app/window context"
   [props]
   (let [[state set-state!] (hooks/use-state (get-window-dimensions))
         resize-idle-service (hooks/use-ref
@@ -48,9 +50,10 @@
        (c/children props)))))
 
 (defn wrap-window-provider
+  "Wraps DimensionsProvider around target component"
   ([component]
    (fnc dimensions-provider [props]
-        ($ DimensionsProvider ($ component {& props}))))
+     ($ DimensionsProvider ($ component {& props}))))
   ([component cprops]
    (fnc dimensions-provider [props]
-        ($ DimensionsProvider {& cprops} ($ component {& props})))))
+     ($ DimensionsProvider {& cprops} ($ component {& props})))))

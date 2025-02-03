@@ -26,7 +26,7 @@
     :refer [use-dropdown]]
    [toddler.multiselect
     :refer [use-multiselect]]
-   [toddler.ui :as ui]
+   [toddler.ui :as ui :refer [!]]
    [toddler.popup :as popup]))
 
 (def $field
@@ -950,7 +950,7 @@
     ; :color "var(--field-text)"
     :color "var(--field-label)"
     :border-color "var(--field-border)"}
-   ["&:hover" :border-hover {:background-color "var(--field-bg-hover)"}]
+   ["&:hover" {:color "var(--color-neutral-p2)"}]
    ["& .verbal" :cursor-pointer :grow :text-field-normal
     :select-none :px-2 {:min-width "5rem"}]
    ["& .figurative" :pr-2]
@@ -968,12 +968,14 @@
                :cursor-pointer
                :pl-2
                {:color "var(--field-label)"}
+               ["&:hover, &.selected" {:color "var(--field-text)"}]
                ["& .toddler-checkbox-wrapper" :flex :items-center]
                ["& .toddler-checkbox-wrapper:hover" :text-hover]
                ["& .toddler-checkbox-wrapper > .figurative > svg" :h-5 :w-5]
                ["& .toddler-checkbox-wrapper > .verbal"
                 :text-xxs :font-semibold :uppercase :ml-1
-                :select-none])]}
+                :select-none])
+              (when value "selected")]}
      (d/div
       {:className "toddler-checkbox-wrapper"
        :onClick (fn [] (on-change not))}
@@ -1049,7 +1051,7 @@
                    {:render e/identity-dropdown-option})))
           (d/div
            {:className "avatar"}
-           ($ ui/avatar {:size 18 & value}))
+           (! :avatar {:size 18 :& value}))
           ($ dropdown/Input
              {:className (css :flex :grow)
               :autoComplete "off"
@@ -1065,10 +1067,9 @@
   ($ multiselect-option
      {:ref _ref
       & props}
-     ($ ui/avatar
-        {:size 18
-         :className "avatar"
-         & option})
+     (! :avatar {:size 18
+                 :className "avatar"
+                 :& option})
      (d/div {:className "name"} name)))
 
 (defnc identity-multiselect-field

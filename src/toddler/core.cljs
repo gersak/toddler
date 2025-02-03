@@ -82,7 +82,7 @@
      (sequential? class) (into class))))
 
 (defhook use-url
-  "Returns root application root URL"
+  "Returns application root URL"
   []
   (hooks/use-context app/url))
 
@@ -266,16 +266,16 @@
 ;     [_avatar refresh]))
 
 (defhook use-current-locale
-  "Returns value for :locale in current user settings"
   []
+  "Returns value for app/locale context"
   (hooks/use-context app/locale))
 
 (defhook use-translate
-  []
   "Hook will return function that when called will based
   on toddler.app/locale context translate input value.
   
   Supported translation values are number,Date,keyword and UUID"
+  []
   (let [locale (use-current-locale)
         translate (hooks/use-memo
                     [locale]
@@ -288,11 +288,11 @@
     translate))
 
 (defhook use-translatef
-  []
   "Hook will return function that when called will based
   on toddler.app/locale context translate input value.
 
   Supported translation values are number,Date,keyword and UUID"
+  []
   (let [locale (use-current-locale)
         translate (hooks/use-memo
                     [locale]
@@ -317,24 +317,25 @@
 (defhook use-calendar
   "Hook will return values of current locale
   for key:
-      :months
-      :months/standalone
-      :months/short
-      :months.standalone/short
-      :eras
-      :era/names
-      :months/narrow
-      :weekdays
-      :weekdays/standalone
-      :weekdays/short
-      :weekdays.standalone/short
-      :weekdays/narrow
-      :weekdays.standalone/narrow
-      :quarters
-      :quarters/short
-      :ampms
-      :weekends
-      :weekdays/first"
+
+     * :months
+     * :months/standalone
+     * :months/short
+     * :months.standalone/short
+     * :eras
+     * :era/names
+     * :months/narrow
+     * :weekdays
+     * :weekdays/standalone
+     * :weekdays/short
+     * :weekdays.standalone/short
+     * :weekdays/narrow
+     * :weekdays.standalone/narrow
+     * :quarters
+     * :quarters/short
+     * :ampms
+     * :weekends
+     * :weekdays/first"
   [key]
   (let [locale (use-current-locale)]
     (hooks/use-memo
@@ -466,7 +467,8 @@
 
 (defhook use-resize-observer
   "Hook returns ref that should be attached to component and
-  second result dimensions of bounding client rect"
+  second argument is handler that will be called when
+  resize is observed with bounding client rect arguments"
   ([node f]
    (let [observer (hooks/use-ref nil)
          current-size (hooks/use-ref nil)]
@@ -539,7 +541,7 @@
   "This hook is intended for infinite scroll. Threshold is
   how many pixels from bottom do you wan't to change state.
 
-  Returns: [offset reset]
+  Returns: `[offset reset]`
   
   It will have internal cache that will track users maximal
   scroll and if in threshold area it will simply inc offset,
@@ -572,8 +574,8 @@
 
 (defhook use-multi-dimensions
   "Similar to use dimensions, only for tracking multiple elements.
-  Input are sequence of references, i.e keywords, and output is vector
-  of two elements. First element is map of reference to React ref, and
+  Input should be sequence of keys, i.e keywords, and output is vector
+  of two elements. First element is map of key to React ref, and
   second is map of reference to element dimensions."
   ([ks]
    (let [nodes (hooks/use-ref nil)
@@ -668,7 +670,7 @@
 
   This data is published over publisher.
   
-  `publisher` should be used with `use-listener`"
+  `publisher` should be used with [[use-listener]]"
   ([topic-fn] (use-publisher topic-fn 5000))
   ([topic-fn buffer-size]
    (let [[pc set-pc] (hooks/use-state nil)
@@ -739,11 +741,13 @@
   
   selection should be in lacinia compatible selection form.
   I.E.
-  
+
+  ```clojure
   {:name nil
    :address nil
    :relatives [{:selections {:name nil :address nil}
-                :args {:city \"New York\"}}]}"
+                :args {:city \"New York\"}}]}
+  ```"
   ([{query-name :query
      selection :selection
      alias :alias
@@ -786,7 +790,7 @@
   in form of async channel.
   
   For more info about how to write queries look at
-  use-query"
+  [[use-query]]"
   ([queries] (use-queries queries nil))
   ([queries {:keys [on-load on-error]}]
    (let [[token] (use-token)

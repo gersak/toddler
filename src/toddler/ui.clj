@@ -15,11 +15,11 @@
        (when component#
          (helix.core/$ component# {:ref ref# :& props#} children#)))))
 
-(defmacro g
+(defmacro !
   "Macro that will try to pull key component from __components__ context
   and render it with helix.core/$ macro
   
-  I.E.  (g :button {:className \"positive\"} \"Good day\") "
+  I.E.  (! :button {:className \"positive\"} \"Good day\") "
   ^{:style/indent 0
     :cljfmt/ident [:form]}
   [key & stuff]

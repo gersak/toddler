@@ -1,45 +1,38 @@
-## Confession
 
-I've been coding UI for many years. Through this many years it has
-been very a emotional expirience. **I hate UI programming** and I love
-it. There are few things in programming that rewards you with satisfaction
-as much as seeing the thing you imagioned exactly the way you wanted.
+## Love-Hate Relationship with UI Development
 
-Why is this **so hard** most of the time. Styling, routing, positioning,
-responsivness, etc. There is just so much details to take into account
-and implement to have that good feeling.
+I've been coding UI for many years. Over time, it has been an emotional experience.
+**I hate UI programming**, and I love it. Few things in programming feel as satisfying
+as seeing what you imagined come to life exactly the way you wanted.
 
-On the way you look for help and turn to existing implementations, frameworks
-and this takes you one step closer to you goal. Than after few days, weeks,
-months that decission blows up and everything turns to shit for a moment taking
-you two steps back. Reset! Again... Repeat
+But why is this **so hard** most of the time? Styling, routing, positioning, responsiveness—
+there are just so many details to handle to achieve that **perfect UI**.
 
-I've been using so many good libraries like [styled-components](https://styled-components.com/),
-[react-table](https://tanstack.com/table/latest), [react router](https://reactrouter.com/),
-[react-spring](https://www.react-spring.dev/), [framer-motion](https://motion.dev/) etc.
-This are all great libraris but along the way every single one of those library fell off.
+You look for help, turn to existing frameworks, and feel like you're making progress.
+Then, after days, weeks, or months, everything **breaks**. Your decisions backfire,
+your UI turns to chaos, and you feel like you're back to square one. **Reset. Repeat.**
 
-Either it was bloating my application, or it was exhausting integrating it with
-Clojurescript, or it became super featured and sometimes those libraries wen't to
-much in JSX direction. 
+I've used so many great libraries—[styled-components](https://styled-components.com/),
+[react-table](https://tanstack.com/table/latest), [react-router](https://reactrouter.com/),
+[react-spring](https://www.react-spring.dev/), [framer-motion](https://motion.dev/), and more.
+Each helped in some way, but over time, every single one of them fell short.
 
-Toddler is codebase that helps me get through this sometimes painfull expirience
-and I hope that it will benefit you as well.
+Some bloated my application, others were exhausting to integrate with ClojureScript,
+and many became overloaded with features—sometimes leaning too heavily on JSX.
+
+That's why I built **Toddler**. A lightweight, flexible UI system that helps me cut through  
+this frustration. If you’ve ever felt the same, maybe it can help you too.
 
 
-## Component system
+## A Smarter Approach to Components
 
-Once upon a time during that wonderfull development cycle briliantly stupid idea was
-born. Components are functions. What if I provided those functions through react
-context and in my code I use placeholders that will extract components from
-context and render it. 
-
+During one of these UI struggles, a **brilliantly stupid** idea was born:
+What if components were just **placeholders** in the code, and I could swap them out
+using a shared context?
 
 ```clojure
 (defmacro defcomponent
-  "Wrapper macro around helix.core/defnc function that
-  will try to pull key from __components__ and render
-  found component."
+  "Defines a component that retrieves its implementation from the UI context."
   [_name key]
   `(helix.core/defnc ~_name [props# ref#]
      {:wrap [(toddler.ui/forward-ref)]}
@@ -50,33 +43,23 @@ context and render it.
          (helix.core/$ component# {:ref ref# :& props#} children#)))))
 
 (defmacro g
-  "Macro that will try to pull key component from __components__ context
-  and render it with helix.core/$ macro
+  "Retrieves and renders a component from the UI context.
   
-  I.E.  (g :button {:className \"positive\"} \"Good day\") "
-  ^{:style/indent 0
-    :cljfmt/ident [:form]}
+  Example: (g :button {:className "positive"} "Good day")"
   [key & stuff]
   `(when-let [component# (get (helix.hooks/use-context __components__) ~key)]
      (helix.core/$ component# ~@stuff)))
 ```
 
-Then I could swap components by swaping context. Result would be easier management.
-Just replace your old dropdown with new one and it should propagate through out
-whole application where dropdown placeholder was used. Or even override current
-context by replacing component.
+This means I can **swap components dynamically** by changing the UI context.
+Need to replace a dropdown? Just change the context—it will propagate automatically
+throughout the app.
 
 
-#### How does it work
-Lets say that I wan't to create dropdown element that will receive some props
-and show me options and stuff. Following components system from above we
-declare ```dropdown``` component that will look for dropdown implementation under
-```:my/dropdown``` key of provided components context.
+## How It Works (With an Example)
 
-Following example will show two "implementations" of dropdown that are swaped
-on "Change" button click. This should demonstrate that dropdown symbol will
-be rendered properly by Helix create element macro.
-
+Let's say we want to create a dropdown that can **swap implementations** at runtime.
+We define a generic `dropdown` component that looks for its implementation in the context.
 
 ```clojure
 (ns toddler.showcase.components
@@ -85,74 +68,66 @@ be rendered properly by Helix create element macro.
    [helix.dom :as d]
    [helix.hooks :as hooks]
    [toddler.ui :as ui :refer [defcomponent]]
-   [toddler.provider :as provider]))
+   [toddler.ui :refer [UI]))
 
-;; Declare dropdown component in general
+;; Declare a general dropdown component
 (defcomponent dropdown :my/dropdown)
 
-(defnc dropdown-impl-1
-  []
-  (d/div "This is first implementation"))
+(defnc dropdown-impl-1 [] (d/div "This is the first implementation"))
 
-(defnc dropdown-impl-2
-  []
-  (d/div "This is second implementation"))
+(defnc dropdown-impl-2 [] (d/div "This is the second implementation"))
 
-;; In this app current components are still
-;; components from toddler.ui so we need to
-;; provide context for :my/dropdown component
-(defnc MyApp
-  []
+;; Swap dropdown implementations dynamically
+(defnc MyApp []
   (let [[state set-state!] (hooks/use-state nil)]
     ($ ui/row
        {:align :center}
        ($ ui/column
           {:align :center}
           ($ ui/row
-             ;; This is 
-             ($ provider/UI
+             ($ UI
                 {:components {:my/dropdown (if state dropdown-impl-2 dropdown-impl-1)}}
                 ($ dropdown)))
           ($ ui/row
-             ($ ui/button
-                {:on-click (fn []
-                             (set-state! not))}
-                "Change"))))))
+             ($ ui/button {:on-click #(set-state! not)} "Change"))))))
 ```
 
-#### Try it out
+Clicking the **"Change"** button swaps the dropdown component between two implementations.
+With **Toddler**, components become placeholders, and **UI customization becomes effortless**.
+
+
+## Try It Out
+
 <div id="components-example"></div>
 
-Idea is to have as much of reusable components declared in single namespace. Than use that declarations
-through [Helix](https://github.com/lilactown/helix) element creation macro([$](https://github.com/lilactown/helix/blob/master/docs/creating-elements.md)).
-
-Components used in this showcase and many others can be found in ```toddler.ui.components```
-namespace. Implementations are in ```toddler.ui.*``` namespaces respectevily.
+All reusable components are declared in a single namespace, then used via
+[Helix](https://github.com/lilactown/helix)'s element creation macro ([`$`](https://github.com/lilactown/helix/blob/master/docs/creating-elements.md)).
 
 ```clojure
 (defnc MyAppBasedOnToddlerComponents
-  {:wrap [(provider/wrap-ui toddler.ui.components/default)]}
+  {:wrap [(ui/wrap-ui toddler.ui.components/default)]}
   []
-  ;; Here goes your code where you can use components from
-  ;; toddler.ui namespace because they are mapped to 
-  ;; toddler.ui.components/default implementation
+  ;; You can use components from toddler.ui namespace because
+  ;; they are mapped to toddler.ui.components/default
   ($ Stuff))
 
 (defnc MyAppWithSpecialPopup
-   {:wrap [(provider/extend-ui {:popup my-special-implementation})]}
+   {:wrap [(ui/extend-ui {:popup my-special-implementation})]}
    []
-   ;; It is possible to extend current components context
-   ;; or override and replace current component by changing
-   ;; context
+   ;; Override or extend the current UI context dynamically
    )
 ```
 
-## Toddler is NOT component library
-In this showcase you will find many components that are ready to use and you
-are free to use them. Even more than using existing components
-**you are encuraged to make your own components**
-using Toddler codebase. ```toddler.core``` namespace is really core of this
-framework and in it you will find hooks that address many of challenges above.
 
-That is focus of this library, **hooks** and utility **functions**. Components
-are byproduct of showcasing that code is working. And there is alot of code :sweat_smile:
+## Toddler Is Not a Component Library
+
+Yes, Toddler includes ready-to-use components, but that’s **not** its primary purpose.  
+You are encouraged to create **your own** components, tailored to your needs.  
+
+The real power of Toddler lies in **hooks** and **utility functions** found in the  
+`toddler.core`, `toddler.routing`, `toddler.popup` namespaces.
+Components exist mainly to **showcase that the system works**.  
+
+If you’re tired of fighting with UI frameworks and want more flexibility,  
+give Toddler a try. Maybe it will make your UI journey a little less painful. 🚀  
+

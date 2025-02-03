@@ -1,4 +1,5 @@
-(ns toddler.css)
+(ns toddler.css
+  "Namespace where toddler aliases are defined")
 
 (def components
   {:transition-normal {:transition "color .3s ease-in-out, border-color .3s ease-in-out, background-color .3s ease-in-out"}
@@ -130,7 +131,4 @@
    :label-sm {:font-size "10px" :font-weight "500" :line-height "18px"}
    :stretch {:align-self "stretch"}})
 
-(def aliases
-  (merge
-   components
-   text))
+(def aliases (merge components text))

@@ -7,7 +7,7 @@
    [helix.dom :as d]
    [taoensso.telemere :as t]
    [toddler.dev :as dev]
-   [toddler.provider :refer [wrap-ui]]
+   [toddler.ui :refer [wrap-ui]]
    [toddler.ui.components :as default]
    [helix.core :refer [$ defnc provider]]
    [toddler.showcase.layout :refer [Layout]]

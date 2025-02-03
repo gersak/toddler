@@ -85,6 +85,29 @@ field or multiple options with multiselect field.
 
 <div id="select-fields-example"></div>
 
+
+Dropdown and multiselect are implemented using hooks and elements from
+`toddler.dropdown` and `toddler.multiselect` namespaces. For example in
+toddler.dropdown namespace there is hook `use-dropdown` that abstracts
+dropdown mechanincs and returns map of state and dropdown handlers.
+
+In short, dropdown is split into 3 parts. First are options,
+second is input (how to display option or create new value)
+and third is actual value.
+
+Input(search) is transforming option value based on `:search-fn` from props.
+Like if you have options in form of map or some other object,
+than search-fn will be applied to that option.
+Search fn should return string representation.
+
+If `new-fn` is passed through props, than dropdown/multiselect can create new
+value(s). `new-fn` will be applied to value of input on every input change and
+`:on-change` handler received in props will be called with result value.
+
+Options are displayed in dropdown popup same way as input value. Using `search-fn`.
+`:on-change` handler received in props will be called on every option select.
+
+
 ## Date fields
 Date fields use [calendar](../calendar) so that user can pick date
 from calendar that is displayed in popup.

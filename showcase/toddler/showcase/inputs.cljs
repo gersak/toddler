@@ -3,25 +3,21 @@
    [helix.core :refer [$ defnc <>]]
    [helix.hooks :as hooks]
    [shadow.css :refer [css]]
-   [toddler.ui :as ui]
+   [toddler.ui :as ui :refer [!]]
    [toddler.core :as toddler]
    [toddler.md.lazy :as md]
    [toddler.layout :as layout]
-   [toddler.core :refer [use-translate]]
    [toddler.router :as router]))
 
 (defnc buttons
   []
-  ($ ui/row
+  (! :row
      {:align :center
       :class [(css :flex-wrap) "example-field"]}
-     ($ ui/button "Default")
-     ($ ui/button {:class "positive"} "Positive")
-     ($ ui/button {:class "negative"} "Negative")
-      ; ($ ui/button {:class "fun"} (translate :button.fun))
-      ; ($ ui/button {:class "fresh"} (translate :button.fresh))
-      ; ($ ui/button {:class "stale"} (translate :button.stale))
-     ($ ui/button {:disabled true} "Disabled")))
+     (! :button "Default")
+     (! :button {:class "positive"} "Positive")
+     (! :button {:class "negative"} "Negative")
+     (! :button {:disabled true} "Disabled")))
 
 (defnc value-fields
   []
@@ -32,35 +28,41 @@
           :check-box false
           :integer-field 25000000
           :float-field 2.123543123123
-          :textarea-field "I am text"})]
+          :textarea-field "I am text. Try ENTER"})]
     (<>
-     ($ ui/row
+     (! :row
         {:className "example-field"}
-        ($ ui/input-field
+        (! :field/input
            {:name "Input Field"
             :value (:free-input state)
             :onChange (fn [v] (set-state! assoc :free-input v))}))
-     ($ ui/row
+     (! :row
         {:className "example-field"}
-        ($ ui/password-field
+        (! :field/text
+           {:name "Text Field"
+            :value (:textarea-field state)
+            :onChange (fn [v] (set-state! assoc :textarea-field v))}))
+     (! :row
+        {:className "example-field"}
+        (! :field/password
            {:name "Password Field"
             :value (:password state)
             :onChange (fn [v] (set-state! assoc :password v))}))
-     ($ ui/row
+     (! :row
         {:className "example-field"}
-        ($ ui/boolean-field
+        (! :field/boolean
            {:name "Boolean Field"
             :value (:boolean-field state)
             :onChange (fn [] (set-state! update :boolean-field not))}))
-     ($ ui/row
+     (! :row
         {:className "example-field"}
-        ($ ui/integer-field
+        (! :field/integer
            {:name "Integer Field"
             :value (:integer-field state)
             :onChange (fn [v] (set-state! assoc :integer-field v))}))
-     ($ ui/row
+     (! :row
         {:className "example-field"}
-        ($ ui/float-field
+        (! :field/float
            {:name "Float Field"
             :value (:float-field state)
             :onChange (fn [v] (set-state! assoc :float-field v))})))))
@@ -78,18 +80,18 @@
   []
   (let [[state set-state!] (hooks/use-state {:multiselect-field []})]
     (<>
-     ($ ui/row
+     (! :row
         {:className "example-field"}
-        ($ ui/dropdown-field
+        (! :field/dropdown
            {:name "dropdown"
             :value (:dropdown-field state)
             :search-fn :name
             :context-fn :context
             :options test-options
             :onChange (fn [v] (set-state! assoc :dropdown-field v))}))
-     ($ ui/row
+     (! :row
         {:className "example-field"}
-        ($ ui/multiselect-field
+        (! :field/multiselect
            {:name "Multiselect Field"
             :value (:multiselect-field state)
             :placeholder "Choose.."
@@ -98,9 +100,9 @@
             :options test-options
             :onRemove (fn [v] (set-state! assoc :multiselect-field v))
             :onChange (fn [v] (set-state! assoc :multiselect-field v))}))
-     ($ ui/row
+     (! :row
         {:className "example-field"}
-        ($ ui/identity-field
+        (! :field/identity
            {:name "Identity Field"
             :value (:identity-field state)
             :placeholder "Choose..."
@@ -108,9 +110,9 @@
                       {:name "Harry"}
                       {:name "Ivan"}]
             :onChange (fn [v] (set-state! assoc :identity-field v))}))
-     ($ ui/row
+     (! :row
         {:className "example-field"}
-        ($ ui/identity-multiselect-field
+        (! :field/identity-multiselect
            {:name "Identity Multiselect"
             :value (:identity-multiselect-field state)
             :placeholder "Select..."
@@ -127,27 +129,27 @@
   []
   (let [[state set-state!] (hooks/use-state nil)]
     (<>
-     ($ ui/row
+     (! :row
         {:className "example-field"}
-        ($ ui/date-field
+        (! :field/date
            {:name "Date Field"
             :value (:date-field state)
             :onChange #(set-state! assoc :date-field %)}))
-     ($ ui/row
+     (! :row
         {:className "example-field"}
-        ($ ui/timestamp-field
+        (! :field/timestamp
            {:name "Timestamp Field"
             :value (:timestamp-field state)
             :onChange #(set-state! assoc :timestamp-field %)}))
-     ($ ui/row
+     (! :row
         {:className "example-field"}
-        ($ ui/date-period-field
+        (! :field/date-period
            {:name "Date Period Field"
             :value (:date-period-field state)
             :onChange (fn [v] (set-state! assoc :date-period-field v))}))
-     ($ ui/row
+     (! :row
         {:className "example-field"}
-        ($ ui/timestamp-period-field
+        (! :field/timestamp-period
            {:name "Timestamp Period Field"
             :value (:timestamp-period-field state)
             :onChange (fn [v] (set-state! assoc :timestamp-period-field v))})))))
@@ -156,11 +158,11 @@
   {:wrap [(router/wrap-rendered :toddler.inputs)]}
   []
   (let [{:keys [height width]} (layout/use-container-dimensions)]
-    ($ ui/simplebar
+    (! :simplebar
        {:style {:height height
                 :width width}}
-       ($ ui/row {:align :center}
-          ($ ui/column
+       (! :row {:align :center}
+          (! :column
              {:align :center
               :style {:max-width "30rem"}
               :className (css

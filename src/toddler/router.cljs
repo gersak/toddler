@@ -1,4 +1,36 @@
 (ns toddler.router
+  "Routing in toddler is focused on
+  linking components in component tree. This component
+  tree is built by [[use-link]] hook or even better
+  with [[wrap-link]] function. 
+  
+  I.E.
+
+  ```clojure
+  (defnc HelloWorld
+   {:wrap [(wrap-link
+            :toddler.router/ROOT
+            [{:id ::component-1
+              :name \"testing1\"}
+             {:id ::component-2
+              :name \"testing2\"}])]}
+   []
+   ($ World {:message \"Hey there!\"}))
+  ```
+  Other hooks and functions in this namespace are
+  here to help you:
+  
+   * Navigate component tree by sending user to component URL
+  or adding parameters in browser URL that will have effect
+  on your application state
+   * Check if component is rendered by comparing path in routing
+  tree to current browser location.
+   * Check if user has rights to access some route by
+  protecting routes with :roles and :permissions
+
+  Ensure that user is redirected to landing page that
+  is ment for him by using [[LandingPage]] component
+  "
   (:require
    [clojure.set :as set]
    [goog.string :refer [format]]
@@ -20,14 +52,14 @@
    [clojure.zip :as zip]
    [toddler.core :refer [use-translate use-delayed]]))
 
-(def -dispatch- (create-context))
-(def -router- (create-context))
-(def -navigation- (create-context))
-(def -history- (create-context))
-(def -roles- (create-context))
-(def -permissions- (create-context))
-(def -super- (create-context))
-(def -base- (create-context))
+(def ^:no-doc -dispatch- (create-context))
+(def ^:no-doc -router- (create-context))
+(def ^:no-doc -navigation- (create-context))
+(def ^:no-doc -history- (create-context))
+(def ^:no-doc -roles- (create-context))
+(def ^:no-doc -permissions- (create-context))
+(def ^:no-doc -super- (create-context))
+(def ^:no-doc -base- (create-context))
 
 (defn location->map
   "For given js/Location object will return
@@ -42,7 +74,14 @@
    :origin (.-origin location)
    :search (.-search location)})
 
-(defmulti reducer (fn [_ {:keys [type]}] type))
+(defmulti reducer
+  "Multifunction where you can extend router functionality.
+  
+  Default implementations exist for routing events of type:
+  
+   * :location/change
+   * ::add-components"
+  (fn [_ {:keys [type]}] type))
 
 (defmethod reducer :location/change
   [state {:keys [value]}]
@@ -70,7 +109,12 @@
   
   base - is base that this Provider should include in its context. I.E.
   if your application is served under /some/url than you should specify
-  that as base URL"
+  that as base URL
+  
+  ```
+  ($ Provider
+    {:base \"my-app\"}
+    (d/div \"Hello world\"))"
   [{:keys [base] :as props}]
   (let [[router dispatch] (hooks/use-reducer
                            reducer
@@ -124,7 +168,15 @@
         (children props)))))))
 
 (defhook use-location
-  "Hook will return location from -router- context"
+  "Hook will return location from -router- context. Location
+  will contain following keys:
+  
+  ```clojure
+  {:pathname (.-pathname location)
+   :hash (subs (.-hash location) 1)
+   :origin (.-origin location)
+   :search (.-search location)}
+  ```"
   []
   (let [{:keys [location]} (hooks/use-context -router-)]
     location))
@@ -175,7 +227,9 @@
       (subs url (inc (count base))))))
 
 (defhook use-query
-  "Hook returns [query-params query-setter]"
+  "Hook returns `[query-params query-setter]`. Query params are
+  values that are pulled from URLSearchParams and query-setter
+  is function that when called will set URLSearchParams"
   ([] (use-query :replace))
   ([action]
    (let [{:keys [search] :as location} (use-location)
@@ -202,7 +256,10 @@
    (fn [node children] (assoc node :children (vec children)))
    root))
 
-(defonce ^:dynamic *component-tree*
+(defonce ^{:dynamic true
+           :doc "Component tree cache. This is where toddler router adds
+                components and looks for routing information."}
+ *component-tree*
   (atom
    {:id ::ROOT
     :segment ""
@@ -281,7 +338,7 @@
     (when-some [cp (component-path tree id)]
       (str/starts-with? path (first (str/split cp #"\#"))))))
 
-(def last-rendered-key "toddler.router/last-rendered")
+(def ^:no-doc last-rendered-key "toddler.router/last-rendered")
 
 (defhook use-rendered?
   "Hook will return true if component with id
@@ -376,28 +433,21 @@
   component tree for current -router- context. Children is expected
   to be map of:
 
-  :id          Component ID. Should uniquely identify component
-
-  :name        Name of component. Can be used to resolve what to display.
-               If :name is of type string than use-component-name hook
-               will return that name.
-           
-               When keyword is used as name value use-component-name will
-               try to resolve that keyword as translation in respect to
-               locale in current app/locale context.
-
-  :hash        Optional hash that is appended to component URL
-
-  :segment     Segment of path that is conjoined to all parent segments. Used
-               to resolve if component is rendered or not and in use-go-to
-               hook to resolve what is target path if I wan't to \"go\" to
-               component with id
-  
-  :roles       #{} with roles that are allowed to access this component
-
-  :permissions #{} with permissions that are allowed to access this component
-  
-  :landing     [number] to mark this component as possible landing site with number priority
+   * :id - Component ID. Should uniquely identify component
+   * :name - Name of component. Can be used to resolve what to display.
+             If :name is of type string than use-component-name hook
+             will return that name.  
+             When keyword is used as name value use-component-name will
+             try to resolve that keyword as translation in respect to
+             locale in current app/locale context.
+   * :hash - Optional hash that is appended to component URL
+   * :segment - Segment of path that is conjoined to all parent segments. Used
+                to resolve if component is rendered or not and in use-go-to
+                hook to resolve what is target path if I wan't to \"go\" to
+                component with id
+   * :roles - #{} with roles that are allowed to access this component
+   * :permissions - #{} with permissions that are allowed to access this component
+   * :landing - `[number]` to mark this component as possible landing site with number priority
   
   Linking should start with parent :toddler.router/ROOT component, as this
   component is parent to all other components"
@@ -411,9 +461,6 @@
        {:type ::add-components
         :components children
         :parent parent}))))
-
-;; DEPRECATED - use-link instead
-(def use-component-children use-link)
 
 (defhook use-is-super?
   "Hook that will return true if user is in super roles
@@ -481,6 +528,8 @@
             (not-empty (set/intersection permissions user-permissions)))))))))
 
 (defnc Authorized
+  "Wrapper component that will render children if user is authorized to
+  access component with :id in props"
   [{:keys [id] :as props}]
   (let [authorized? (use-authorized? id)]
     (when authorized?
@@ -497,6 +546,8 @@
      ($ Authorized {:id id} ($ component {& props})))))
 
 (defnc Rendered
+  "Component will render children if compnoent with :id
+  from props is active (is contained in current URL)"
   [{:keys [id] :as props}]
   (let [rendered? (use-rendered? id)]
     (when rendered?
@@ -514,13 +565,16 @@
      ($ Rendered {:id id} ($ component {& props})))))
 
 (defnc Link
+  "Component will link parrent with id and children
+  with routing info. Check out [[use-link]] hook
+  to see how to structure children routing info."
   [{:keys [parent links] :as props}]
   (use-link parent links)
   (children props))
 
 (defn wrap-link
   "Utility function to link component with children.
-  Will use Link."
+  Will use [[Link]]."
   ([component parent children]
    (fnc Linked [props]
      ($ Link {:parent parent :links children}
@@ -545,7 +599,7 @@
                 :else (recur (zip/next position) result))))))))
 
 (defhook use-component-path
-  "Hook will return url for component[id]"
+  "Hook will return url for `component[id]`"
   [component]
   (let [{:keys [tree]} (hooks/use-context -router-)
         base (hooks/use-context -base-)
@@ -554,7 +608,7 @@
 
 (defhook use-go-to
   "Hook will return function that will redirect browser
-  to component[id]. Returned function can be called with
+  to `component[id]`. Returned function can be called with
   parameters, and those parameters will be set in URL
   query."
   [component]
@@ -583,24 +637,32 @@
       (let [[_ url] (edn/read-string (.getItem js/sessionStorage last-rendered-key))]
         url))))
 
-(defhook use-landing
-  []
-  (let [{:keys [tree]} (hooks/use-context -router-)
-        tree (use-delayed tree)
-        base (hooks/use-context -base-)]
-    (loop [position (component-tree-zipper tree)
-           result []]
-      (if (zip/end? position)
-        (let [sorted (sort-by :landing result)
-              {best :id} (last sorted)]
-          (maybe-add-base base (component-path tree best)))
-        (let [{:keys [landing] :as node} (zip/node position)]
-          (cond
-            (nil? node) (recur (zip/next position) result)
-            landing (recur (zip/next position) (conj result (dissoc node :children)))
-            :else (recur (zip/next position) result)))))))
+#_(defhook use-landing
+    "Hook will "
+    []
+    (let [{:keys [tree]} (hooks/use-context -router-)
+          tree (use-delayed tree)
+          base (hooks/use-context -base-)]
+      (loop [position (component-tree-zipper tree)
+             result []]
+        (if (zip/end? position)
+          (let [sorted (sort-by :landing result)
+                {best :id} (last sorted)]
+            (maybe-add-base base (component-path tree best)))
+          (let [{:keys [landing] :as node} (zip/node position)]
+            (cond
+              (nil? node) (recur (zip/next position) result)
+              landing (recur (zip/next position) (conj result (dissoc node :children)))
+              :else (recur (zip/next position) result)))))))
 
 (defnc LandingPage
+  "Component that is active when routing location is
+  at :url from props. If so, then this component will
+  look for :landing `priority` in `*component-tree*` and sort
+  all found components by priority.
+  
+  Component with highest priority is chosen and its URL
+  is computed and user agent is redirected to that URL."
   [{:keys [url enforce-access?]
     :or {enforce-access? true}
     :as props}]

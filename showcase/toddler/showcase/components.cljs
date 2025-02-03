@@ -3,8 +3,8 @@
    [helix.core :refer [defnc $]]
    [helix.dom :as d]
    [helix.hooks :as hooks]
-   [toddler.ui :as ui :refer [defcomponent g]]
-   [toddler.provider :as provider]))
+   [toddler.ui :as ui :refer [defcomponent !]]
+   [toddler.ui :refer [UI]]))
 
 (defcomponent dropdown :my/dropdown)
 
@@ -19,18 +19,17 @@
 (defnc MyApp
   []
   (let [[state set-state!] (hooks/use-state nil)]
-    (g :row {:align :center}
-       (g :column {:align :center}
-          (g :row
-             ($ provider/UI
+    (! :row {:align :center}
+       (! :column {:align :center}
+          (! :row
+             ($ UI
                 {:components {:my/dropdown (if state dropdown-impl-2 dropdown-impl-1)}}
                 ($ dropdown)))
-          (g :row
-             (g
-              :button
-              {:on-click (fn []
-                           (set-state! not))}
-              "Change"))))))
+          (! :row
+             (! :button
+                {:on-click (fn []
+                             (set-state! not))}
+                "Change"))))))
 
 ; (defnc BasedOnToddler
 ;   {:wrap [(provider/wrap-ui toddler.ui.components/default)]}

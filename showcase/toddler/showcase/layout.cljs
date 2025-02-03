@@ -4,7 +4,7 @@
    [helix.hooks :as hooks]
    [helix.dom :as d]
    [shadow.css :refer [css]]
-   [toddler.ui :as ui]
+   [toddler.ui :as ui :refer [!]]
    [toddler.layout :as layout]
    [toddler.i18n.keyword :refer [add-translations]]
    [toddler.router :as router]))
@@ -51,34 +51,28 @@
   {:wrap [(router/wrap-rendered :toddler.layout)]}
   []
   (let [{:keys [height width]} (layout/use-container-dimensions)]
-    ($ ui/simplebar
+    (! :simplebar
        {:className "fields"
         :style {:height height
                 :width width
                 :boxSizing "border-box"}}
        (d/div
         {:className (css :flex)}
-        ($ ui/row
-           {:position :center
-            :className (css :bg-red-100)}
-           ($ ui/column
-              {:className (css :bg-blue-500)
-               :style {:max-width 500}}
+        (! :row {:position :center :className (css :bg-red-100)}
+           (! :column {:className (css :bg-blue-500) :style {:max-width 500}}
               (map
                (fn [idx]
-                 ($ ui/row
-                    {:key idx
-                     :style {:height 100}
-                     :position :explode
-                     :className (css :bg-green-400 :items-center)}
+                 (! :row {:key idx
+                          :style {:height 100}
+                          :position :explode
+                          :className (css :bg-green-400 :items-center)}
                     (d/div "green")
-                    ($ ui/column
-                       {:position :end
-                        :style {:width 50
-                                :max-width 50}}
+                    (! :column {:position :end
+                                :style {:width 50
+                                        :max-width 50}}
                        (map
                         (fn [idx]
-                          ($ ui/row
+                          (! :row
                              {:key idx
                               :style {:height 20
                                       :width 40}

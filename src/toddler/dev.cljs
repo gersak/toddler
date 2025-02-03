@@ -14,7 +14,7 @@
             use-dimensions]]
    [toddler.i18n.default]
    [toddler.app :as app]
-   [toddler.ui :as ui]
+   [toddler.ui :as ui :refer [!]]
    [toddler.ui.elements :as e]
    [toddler.layout :as layout]
    [toddler.window :as window]
@@ -123,7 +123,7 @@
                   :ml-3])
         theme (app/use-theme)]
 
-    ($ ui/simplebar
+    (! :simplebar
        {:ref _ref
         :className $navbar
         :style {:height height
@@ -193,33 +193,45 @@
 (defnc header
   {:wrap [(react/forwardRef)]}
   [{:keys [style theme on-theme-change]} _ref]
-  (let [$icon (css :items-center :flex :items-center {:font-size "24px"}
-                   :cursor-pointer :color-inactive
-                   ["&:hover" :color-normal])]
-    (d/div
-     {:className (css
-                  :flex
-                  :h-15
-                  :flex-row-reverse
-                  :pr-3
-                  :box-border)
-      :ref _ref
-      :style style}
-     (d/div
-      {:on-click (fn []
-                   (on-theme-change
-                    (case theme
-                      ("dark" 'dark) "light"
-                      ("light" 'light) "dark"
-                      "light")))
-       :className $icon}
-      (if (= "dark" theme)
-        ($ outlined/light-mode)
-        ($ outlined/dark-mode)))
-     (d/a
-      {:class [$icon (css :mr-2)]
-       :href "https://github.com/gersak/toddler"}
-      ($ brands/github)))))
+  (d/div
+   {:className (css
+                :flex
+                :h-15
+                :flex-row-reverse
+                :pr-3
+                :box-border
+                ["& .wrapper"
+                 :items-center :flex :items-center {:font-size "24px"} :mr-4
+                 :cursor-pointer :color-inactive]
+                ["& .tooltip-popup-area:hover" :color-normal])
+    :ref _ref
+    :style style}
+   (d/div
+    {:className "wrapper"}
+    (! :tooltip {:message "Change theme"}
+       (d/div
+        {:on-click (fn []
+                     (on-theme-change
+                      (case theme
+                        ("dark" 'dark) "light"
+                        ("light" 'light) "dark"
+                        "light")))}
+        (if (= "dark" theme)
+          ($ outlined/light-mode)
+          ($ outlined/dark-mode)))))
+   (d/div
+    {:className "wrapper"}
+    (! :tooltip {:message "Open Github project"}
+       (d/a
+        {:href "https://github.com/gersak/toddler"}
+        ($ brands/github))))
+   (d/div
+    {:className "wrapper"}
+    (! :tooltip {:message "API Docs"}
+       (d/a
+        {:href "https://github.com/gersak/toddler/codox"
+         :className (css :text-base :font-bold :no-underline)}
+        "API")))))
 
 (defnc empty-content
   []
@@ -227,10 +239,10 @@
         $empty (css :flex
                     :justify-center
                     :items-center)]
-    ($ ui/row
+    (! :row
        {:className $empty
         :position :center}
-       ($ ui/row
+       (! :row
           {:position :center
            :style #js {:height (:height window)}}
           "Select a component from the list"))))
@@ -276,17 +288,15 @@
        (provider
         {:context app/theme
          :value theme}
-        ($ ui/row
-           {:key ::center
-            & (cond->
-               {:position :center
-                :style {:flex-grow "1"}})}
-           ($ ui/row
+        (! :row {:key ::center
+                 :& (cond->
+                     {:position :center
+                      :style {:flex-grow "1"}})}
+           (! :row
               {:key ::wrapper
                :style {:max-width (+ content-width navigation-width)}}
               ($ navbar {:ref _navbar})
-              ($ ui/column
-                 {:className "content"}
+              (! :column {:className "content"}
                  ($ header
                     {:ref _header
                      :theme theme

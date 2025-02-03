@@ -4,7 +4,7 @@
    [helix.dom :as d]
    [helix.hooks :as hooks]
    [shadow.css :refer [css]]
-   [toddler.ui :as ui]
+   [toddler.ui :as ui :refer [!]]
    [toddler.app :as app]
    [toddler.router :as router]
    [toddler.layout :as layout]
@@ -138,7 +138,7 @@
                         :en_IN "INR"
                         :zh_CN "CNY"}
         $field (css :font-bold)]
-    ($ ui/row
+    (! :row
        {:className css/$default
         :align :center}
        (d/div
@@ -164,8 +164,8 @@
      {:context app/locale
       :value locale}
      (<>
-      ($ ui/row
-         ($ ui/dropdown-field
+      (! :row
+         (! :field/dropdown
             {:name "Locale"
              :value locale
              :on-change set-locale!
@@ -209,15 +209,14 @@
     (provider
      {:context app/locale
       :value locale}
-     ($ ui/simplebar
+     (! :simplebar
         {:style {:height height
                  :width width}
          :shadow true}
-        ($ ui/row {:align :center}
-           ($ ui/column
+        (! :row {:align :center}
+           (! :column
               {:align :center
-               :style {:max-width "40rem"
-                       :min-height 6000}}
+               :className (css ["& .toddler-markdown" {:max-width "40rem"}])}
               ($ md/watch-url {:url "/i18n.md"})
               ($ toddler/portal
                  {:locator #(.getElementById js/document "component-translation-example")}
@@ -225,8 +224,8 @@
               ($ toddler/portal
                  {:locator #(.getElementById js/document "common-translation-example")}
                  (<>
-                  ($ ui/row
-                     ($ ui/dropdown-field
+                  (! :row
+                     (! :field/dropdown
                         {:name "choose locale"
                          :value locale
                          :on-change set-locale!

@@ -1,4 +1,21 @@
 (ns toddler.notifications
+  "Main component in this namespace is [[Store]] component.
+  It should be mounted as close to your mounted component as
+  possible.
+  
+  It will create div element that will be fixed positioned
+  on screen and that will control lifecycle of notifications
+  that you wan't to show.
+  
+  Notifications are read from [[notification-channel]] and
+  displayed by [[render]] multimethod.
+  
+  Default implementation exists for notifications of type: 
+    
+    * ::positive
+    * ::negative
+    * ::neutral
+    * ::warning"
   (:require
    clojure.string
    goog.string.format
@@ -13,9 +30,17 @@
    [helix.dom :as d]
    [toddler.material.outlined :as outlined]))
 
-(defonce notification-channel (async/chan 1000))
+(defonce
+ ^{:doc "Channel that notifications are sent to. Store component will
+        read from this channel and render notifications."}
+ notification-channel
+  (async/chan 1000))
 
 (defn add
+  "Function that will put message of type onto notification channel.
+  Utility function that allows you to specify type of message, :message
+  content, options as additional data that will be merged to notification
+  and autohide period."
   ([type message] (add type message nil))
   ([type message options] (add type message options 3000))
   ([type message options autohide]
@@ -31,32 +56,43 @@
      options))))
 
 (defn neutral
+  "Show neutral message"
   ([message] (neutral message 3000))
   ([message autohide]
    (add ::neutral message nil autohide)))
 
 (defn positive
+  "Show positive message"
   ([message] (positive message 3000))
   ([message autohide]
    (add ::positive message {:class "positive"} autohide)))
 
 (defn warning
+  "Show warning message"
   ([message] (warning message 3000))
   ([message autohide]
    (add ::warning message {:class "warning"} autohide)))
 
 (defn negative
+  "Show negative message"
   ([message] (negative message 3000))
   ([message autohide]
    (add ::negative message {:class "negative"} autohide)))
 
-(defmulti render (fn [{:keys [type]}] type))
+(defmulti render
+  "Multimethod that will dispatch on message :type. It
+  is used by Store to render notifications of :type.
+  
+  If you are in need to display custom messages in notification
+  store, than use this function and render custom notifications
+  using standard helix functional components"
+  (fn [{:keys [type]}] type))
 
 (defmethod render :default
   [{:keys [type] :as message}]
   (.error js/console "Unknown notifcation renderer for: " type message))
 
-(defn render-default
+(defn- ^:no-doc render-default
   [{:keys [id visible? hideable? message dispatch hidding? adding? class className]
     :as notification}]
   (d/div
@@ -96,6 +132,8 @@
 (defmethod render ::warning [data] (render-default (assoc data :class "warning")))
 
 (defn notification-reducer
+  "Reducer that notification store uses to control rendering
+  lifecycle."
   [{:keys [notifications] :as state}
    {event-type   :type
     {:keys [id]} :notification
@@ -112,16 +150,28 @@
                           (update-in [:notifications idx] dissoc :hidding? :adding?))
       state)))
 
-(defn same-notification
+(defn ^:no-doc same-notification
   [ap bp]
   (=
    (select-keys ap [:idx :visible? :hidding? :hideable? :adding?])
    (select-keys bp [:idx :visible? :hidding? :hideable? :adding?])))
 
-(def -hide-timeout- (create-context))
-(def -new-timeout- (create-context))
+(def ^{:doc "Hide context that is used to control
+            if component will autohide or not"}
+  -hide-timeout- (create-context))
+(def ^{:doc "New notification context that specifies how long will
+            notification have class `new` after it is added in
+            notification store"}
+  -new-timeout- (create-context))
 
 (defnc Notification
+  "Component that is used by notification store to control
+  notification lifecycle. This component is wrapper around
+  [[render]] function that is responsible for rendering notifications.
+  
+  It will use dispatch for [[reducer]] and send events
+  that will change notification Store state for notifications
+  that have appeared or are going to hide"
   {:wrap [(memo same-notification)]}
   [{:keys [adding? autohide dispatch id hideable?] :as props}]
   (let [el (hooks/use-ref nil)
@@ -252,7 +302,7 @@
            notifications))))
        (children props))))))
 
-(def $default
+(def ^:no-doc $default
   (css
    {:color "var(--notification-text)"}
    ["& .notification-wrapper" :py-1]
