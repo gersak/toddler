@@ -95,7 +95,7 @@
        :value 3000}
       (provider
        {:context md.context/base
-        :value ""}
+        :value "https://raw.githubusercontent.com/gersak/toddler/refs/heads/prep/github-page/dev"}
        ($ router/LandingPage
           {:url "/"
            :enforce-access? false}
