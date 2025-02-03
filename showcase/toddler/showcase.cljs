@@ -39,8 +39,7 @@
     :name "Rationale"
     :render Rationale
     :segment "rationale"
-    :landing true
-    :priority 10}
+    :landing 10}
    {:id :toddler.inputs
     :name "Inputs"
     :render Inputs
@@ -132,4 +131,4 @@
     (.log js/console "Rendering playground")
     (.render ^js @root ($ LoadShowcase))))
 
-(start!)
+(set! (.-start js/window) start!)

@@ -736,7 +736,7 @@
                               (zip/node location))
                   authorized? (authorized? component)]
               (cond
-                authorized? (push last-url)
+                (and authorized? last-url) (push last-url)
                 (some? best) (push (maybe-add-base base (component-path tree (:id best))))
                 :else nil))))))
     (children props)))
