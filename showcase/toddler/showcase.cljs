@@ -89,19 +89,16 @@
   {:wrap [(wrap-ui default/components)]}
   []
   (provider
-   {:context md.context/refresh-period
-    :value 3000}
-   (provider
-    {:context md.context/base
-     :value "https://raw.githubusercontent.com/gersak/toddler/refs/heads/prep/github-page/dev"}
-    ($ router/LandingPage
-       {:url "/"
-        :enforce-access? false}
-       ($ notifications/Store
-          {:class notifications/$default}
-          ($ dev/playground
-             {:max-width 1000
-              :components routes})))))
+   {:context md.context/base
+    :value "https://raw.githubusercontent.com/gersak/toddler/refs/heads/prep/github-page/dev"}
+   ($ router/LandingPage
+      {:url "/"
+       :enforce-access? false}
+      ($ notifications/Store
+         {:class notifications/$default}
+         ($ dev/playground
+            {:max-width 1000
+             :components routes}))))
 
   ;; TODO - Strict mode causes problems with popup window
   #_($ react/StrictMode

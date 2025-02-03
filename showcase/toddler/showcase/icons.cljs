@@ -78,13 +78,13 @@
        ($ solid/circle-info
           {:on-click #(open-modal)})))
      (when opened
-       (! :modal/dialog
+       ($ ui/modal-dialog
           {:on-close #(close-modal)
            :className (css {:max-width "700px"})}
           (d/div {:className "title"} "How?")
           (d/div
            {:className "content"}
-           (! :simplebar
+           ($ ui/simplebar
               {:style {:max-height (- height 100)
                        :min-width 600}}
               ($ md/watch-url {:url "/icons.md"})))
