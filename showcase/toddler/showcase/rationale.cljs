@@ -22,7 +22,7 @@
     (! :simplebar {:style {:height height
                            :width width}}
        (! :row {:align :center}
-          (! :column {:position :center
+          (! :column {:align :center
                       :style {:max-width "40rem"}
                       :className (css
                                   ["& .component" :my-6])}

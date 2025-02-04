@@ -429,8 +429,7 @@
                    :text-transform "uppercase"
                    :font-size "0.75em"}])
         $start (css {:justify-content "flex-start"})
-        $center (css {:justify-content "center"
-                      :align-items "center"})
+        $center (css {:justify-content "center"})
         $end (css {:justify-content "flex-end"})
         $explode (css {:justify-content "space-between"})
         $position (case position

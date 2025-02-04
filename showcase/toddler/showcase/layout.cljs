@@ -1,82 +1,90 @@
 (ns toddler.showcase.layout
   (:require
-   [helix.core :refer [$ defnc]]
+   [helix.core :refer [$ defnc <>]]
    [helix.hooks :as hooks]
    [helix.dom :as d]
    [shadow.css :refer [css]]
+   [toddler.md.lazy :as md]
    [toddler.ui :as ui :refer [!]]
+   [toddler.core :as toddler]
    [toddler.layout :as layout]
-   [toddler.i18n.keyword :refer [add-translations]]
    [toddler.router :as router]))
 
-(add-translations
- (merge
-  #:showcase.layout {:default "Layout"
-                     :hr "Raspored"}
-      ;;
-  #:showcase.tables {:default "Tables"
-                     :hr "Tablice"}
-      ;;
-  #:button.default {:default "Default"
-                    :hr "Normalan"}
-      ;;
-  #:button.positive {:hr "Pozitivan"
-                     :default "Positive"}
-      ;;
-  #:button.negative {:hr "Negativan"
-                     :default "Negative"}
-      ;;
-  #:button.fun {:hr "Fora"
-                :default "Fun"}
-      ;;
-  #:button.fresh {:hr "Svježe"
-                  :default "Fresh"}
-      ;;
-  #:button.stale {:hr "Ustajalo"
-                  :default "Stale"}
-      ;;
-  #:button.disabled {:hr "Onemogućeno"
-                     :default "Disabled"}
-
-  #:checklist.horse {:default "Horse"
-                     :hr "Konj"}
-  #:checklist.sheep {:default "Sheep"
-                     :hr "Ovca"}
-  #:checklist.cow {:default "Cow"
-                   :hr "Krava"}
-  #:checklist.boar {:default "Boar"
-                    :hr "Vepar"}))
+(defnc rows-columns-example
+  []
+  (let [[row set-row!] (hooks/use-state :explode)
+        [column set-column!] (hooks/use-state :explode)]
+    (<>
+     ($ ui/row
+        {:align row
+         :className (css
+                     :bg-normal+ :border :border-normal
+                     :mt-4
+                     {:border-radius "50px"}
+                     ["& .element"
+                      :bg-normal- :border :border-normal+
+                      {:min-height "50px"
+                       :max-width "50px"
+                       :border-radius "50px"}])}
+        ($ ui/column {:className "element"})
+        ($ ui/column {:className "element"})
+        ($ ui/column {:className "element"}))
+     ($ ui/row {:align :center
+                :className (css :mt-4)}
+        ($ ui/dropdown-field
+           {:name "Row Alignment"
+            :options [:start :center :end :explode]
+            :search-fn name
+            :on-change set-row!
+            :value row}))
+     ($ ui/row {:align :center
+                :className (css :mt-4)}
+        ($ ui/column
+           {:align column
+            :className (css
+                        :bg-normal+ :border :border-normal
+                        {:min-height "400px"
+                         :border-radius "25px"}
+                        ["& .element"
+                         :bg-normal- :border :border-normal+
+                         {:max-height "50px"
+                          :border-radius "50px"}])}
+           ($ ui/row {:className "element"})
+           ($ ui/row {:className "element"})
+           ($ ui/row {:className "element"})))
+     ($ ui/row
+        {:className (css :mt-5)}
+        ($ ui/dropdown-field
+           {:name "Column Alignment"
+            :options [:start :center :end :explode]
+            :search-fn name
+            :on-change set-column!
+            :value column})))))
 
 (defnc Layout
-  {:wrap [(router/wrap-rendered :toddler.layout)]}
+  {:wrap [(router/wrap-rendered :toddler.layout)
+          (router/wrap-link
+           :toddler.layout
+           [{:id ::rows_columns
+             :name "Rows & Columns"
+             :hash "rows&columns"}
+            {:id ::tabs
+             :name "Tabs"
+             :hash "tabs"}
+            {:id ::grid
+             :name "Grid"
+             :hash "grid"}])]}
   []
   (let [{:keys [height width]} (layout/use-container-dimensions)]
-    (! :simplebar
-       {:className "fields"
-        :style {:height height
-                :width width
-                :boxSizing "border-box"}}
-       (d/div
-        {:className (css :flex)}
-        (! :row {:position :center :className (css :bg-red-100)}
-           (! :column {:className (css :bg-blue-500) :style {:max-width 500}}
-              (map
-               (fn [idx]
-                 (! :row {:key idx
-                          :style {:height 100}
-                          :position :explode
-                          :className (css :bg-green-400 :items-center)}
-                    (d/div "green")
-                    (! :column {:position :end
-                                :style {:width 50
-                                        :max-width 50}}
-                       (map
-                        (fn [idx]
-                          (! :row
-                             {:key idx
-                              :style {:height 20
-                                      :width 40}
-                              :className (css :bg-green-100)}
-                             #_($ ui/input-field)))
-                        (range 3)))))
-               (range 10))))))))
+    ($ ui/simplebar
+       {:style {:height height
+                :width width}}
+       ($ ui/row {:align :center}
+          ($ ui/column
+             {:style {:width "40rem"}
+              :className (css
+                          ["& .component" :my-6])}
+             ($ md/watch-url {:url "/layout.md"})
+             ($ toddler/portal
+                {:locator #(.getElementById js/document "rows-columns-example")}
+                ($ rows-columns-example)))))))

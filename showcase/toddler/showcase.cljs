@@ -31,15 +31,15 @@
 (defonce root (atom nil))
 
 (def routes
-  [#_{:id :toddler.layout
-      :name "Layout"
-      :render Layout
-      :segment "layout"}
-   {:id :toddler.rationale
+  [{:id :toddler.rationale
     :name "Rationale"
     :render Rationale
     :segment "rationale"
     :landing 10}
+   {:id :toddler.layout
+    :name "Layout"
+    :render Layout
+    :segment "layout"}
    {:id :toddler.inputs
     :name "Inputs"
     :render Inputs
@@ -88,17 +88,14 @@
 (defnc Showcase
   {:wrap [(wrap-ui default/components)]}
   []
-  (provider
-   {:context md.context/base
-    :value "https://raw.githubusercontent.com/gersak/toddler/refs/heads/prep/github-page/dev"}
-   ($ router/LandingPage
-      {:url "/"
-       :enforce-access? false}
-      ($ notifications/Store
-         {:class notifications/$default}
-         ($ dev/playground
-            {:max-width 1000
-             :components routes}))))
+  ($ router/LandingPage
+     {:url "/"
+      :enforce-access? false}
+     ($ notifications/Store
+        {:class notifications/$default}
+        ($ dev/playground
+           {:max-width 1000
+            :components routes})))
 
   ;; TODO - Strict mode causes problems with popup window
   #_($ react/StrictMode

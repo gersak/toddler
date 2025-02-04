@@ -154,6 +154,7 @@
         (.addEventListener js/window "popstate" handle-change)
         (fn []
           (.removeEventListener js/window "popstate" handle-change))))
+    ; (cljs.pprint/pprint router)
     (provider
      {:context -base-
       :value base}
