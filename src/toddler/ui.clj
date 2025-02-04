@@ -19,7 +19,16 @@
   "Macro that will try to pull key component from __components__ context
   and render it with helix.core/$ macro
   
-  I.E.  (! :button {:className \"positive\"} \"Good day\") "
+  I.E.  (! :button {:className \"positive\"} \"Good day\") 
+  
+  **IMPORTANT** - don't use this macro in conditionals like `when`,
+  `if`,`cond` etc.
+  
+  This macro will use `helix.hooks/use-context` hook to
+  get component from toddler UI. React won't like if it after conditional
+  because hook will sometimes be there and other time not.
+  
+  You will see what the problem is in browser console"
   ^{:style/indent 0
     :cljfmt/ident [:form]}
   [key & stuff]

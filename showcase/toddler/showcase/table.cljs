@@ -97,7 +97,7 @@
         :cell/currency {:amount (vura/round-number (* 1000 (rand)) 0.25)
                         :currency (rand-nth ["EUR" "USD" "HRK"])}
         :cell/enum (rand-nth (get-in columns [6 :options]))
-        :cell/date (rand-date)
+        :cell/timestamp (rand-date)
         :cell/text (apply str (repeatedly 20 #(rand-nth "abcdefghijklmnopqrstuvwxyz0123456789")))
         :cell/boolean (rand-nth [true false])
         nil))))
@@ -250,8 +250,7 @@
    {:cell custom-cell
     :width 140
     :align #{:center :left}
-    :label "Character"
-    :header :header/plain}])
+    :label "Character"}])
 
 (defnc row-example
   {:wrap [(ui/forward-ref)

@@ -476,7 +476,6 @@
      :border-color "var(--field-border-hover)"}]
     ;;
    :rounded-md
-   :border-normal
    ["& .avatar" :mr-2 {:background-color "var(--avatar-bg)"}]
    ["& .avatar img" :rounded-sm]
    ["& input" {:flex "1 1 auto" :min-height "26px"}]

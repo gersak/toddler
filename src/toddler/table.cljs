@@ -1,4 +1,17 @@
 (ns toddler.table
+  "Namespace contains context definitions, hooks and component
+  that will aid you to build tables faster and with prepared logic.
+  
+  In rough this namespace contains [[Cell]], [[Row]], [[Header]], [[Body]]
+  components that use flex parameters to render table data in table
+  layout.
+  
+  Above components are reusable and aren't ment for direct usage. Instead
+  they are here to be extended with more specific implementation. Your
+  implementation.
+  
+  For example look at `toddler.ui.table` where default **:table/row**
+  **:table/cell** and **:table** UI components are implemented."
   (:require
    [clojure.string :as str]
    goog.string
@@ -10,32 +23,44 @@
    [helix.hooks :as hooks]
    [helix.children :as c]
    [toddler.i18n]
-   [toddler.ui :as ui :refer [!]]
+   [toddler.ui :as ui]
    [toddler.core :as toddler]
    [toddler.layout :as layout]))
 
-(def ^:dynamic ^js *column* (create-context))
-(def ^:dynamic ^js *entity* (create-context))
-(def ^:dynamic ^js *columns* (create-context))
-(def ^:dynamic ^js *actions* (create-context))
-(def ^:dynamic ^js *row-record* (create-context))
-(def ^:dynamic ^js *rows* (create-context))
-(def ^:dynamic ^js *dispatch* (create-context))
+(def ^{:dynamic true :no-doc true} ^js *column* (create-context))
+(def ^{:dynamic true :no-doc true} ^js *entity* (create-context))
+(def ^{:dynamic true :no-doc true} ^js *columns* (create-context))
+(def ^{:dynamic true :no-doc true} ^js *actions* (create-context))
+(def ^{:dynamic true :no-doc true} ^js *row-record* (create-context))
+(def ^{:dynamic true :no-doc true} ^js *rows* (create-context))
+(def ^{:dynamic true :no-doc true} ^js *dispatch* (create-context))
 
-(defhook use-columns [] (hooks/use-context *columns*))
-(defhook use-column [] (hooks/use-context *column*))
-(defhook use-rows [] (hooks/use-context *rows*))
-(defhook use-row [] (hooks/use-context *row-record*))
+(defhook use-columns "Hook will return *columns* context" [] (hooks/use-context *columns*))
+(defhook use-column "Hook will return *column* context" [] (hooks/use-context *column*))
+(defhook use-rows "Hook will return *rows* context" [] (hooks/use-context *rows*))
+(defhook use-row [] "Hook will return *row-record* context" (hooks/use-context *row-record*))
 
-(defhook use-dispatch [] (hooks/use-context *dispatch*))
+(defhook use-dispatch [] "Hook will return dispatch function for table" (hooks/use-context *dispatch*))
 
-(defnc NotImplemented
+(defnc ^:no-doc NotImplemented
+  "Component that will not render anything. It will report
+  in js console that this type of field isn't implemented"
   []
   (let [field (use-column)]
     (.error js/console (str "Field not implemented\n%s" (pr-str field))))
   nil)
 
 (defnc Cell
+  "Component that abstaracts cell. Component will render div that
+  is has preconfigured flex layout that matches column definition.
+  
+  If class or className is passed to Cell it will be added to that div
+  component. Actually every prop will be passed through except:
+  
+  :width, :level, :cell, :column props
+  
+  Cell will look for render function under :cell key of column
+  definition."
   {:wrap [(memo #(= (:column %1) (:column %2)))]}
   [{{:keys [style level]
      render :cell
@@ -63,18 +88,25 @@
     (d/div
      {:style style
       :level level
-      & (dissoc props :style :width :level :render :column)}
+      & (dissoc props :style :width :level :cell :column)}
      (provider
       {:context *column*
        :value column}
       ($ render)))))
 
 (defhook use-table-width
+  "Hook will return table width by summing all columns widths."
   []
   (let [columns (use-columns)]
     (reduce + 0 (map #(get-in % [:style :width] (get % :width 100)) columns))))
 
 (defnc FRow
+  "Flex implementation for table row. It will render
+  div and all passed children. 
+  
+  div will be styled with flex parameters and computed table
+  width so that row has min width and when possible to scale
+  to fit larger container."
   {:wrap [(ui/forward-ref)]}
   [props _ref]
   (let [min-width (use-table-width)]
@@ -92,6 +124,18 @@
      (c/children props))))
 
 (defnc Row
+  "Reusable component that will propagate column definition and provide
+  *row-record* context. This component will render FRow component and in
+  it it will render columns by rendering UI :table/cell component and passing
+  :column definition in props.
+  
+  Usually this component is some derivate of [[Cell]] component.
+  
+  Row can contain children, so this is nice place to put additional content
+  like when expanding row and such.
+  
+  This component, same as Cell can be customized by adding class, className or
+  in props, so you can style it to your desires, but logic is reausable."
   {:wrap [(ui/forward-ref)
           (memo
            (fn [{idx1 :idx data1 :data} {idx2 :idx data2 :data}]
@@ -178,7 +222,7 @@
 ;;;;;;;;;;;;;;;;
 ;;   HEADERS  ;;
 ;;;;;;;;;;;;;;;;
-(defnc ColumnNameElement
+(defnc ^:no-doc ColumnNameElement
   [{{column-name :label
      :keys [order]
      :as column}
@@ -202,6 +246,16 @@
      (translate column-name))))
 
 (defn column-default-style
+  "Function that will apply default styles to column if style
+  params aren't provided. Following props are important for column
+  to be well styled:
+  
+   * width - prop that will be read from :width key of column definition
+  or [:style :width] position of column definition
+   * align - :align key of column definition, can be keyword or set of
+  keywords, combination of :left, :top, :right, :bottom, :center
+  
+  Alignement will adjust cell flex params for justify-content and align-items"
   [{style :style
     type :type :as column}]
   (let [width (get-in column [:style :width]
@@ -235,6 +289,8 @@
             alignment))))
 
 (defhook use-table-defaults
+  "Hook that will update :columns in recevied props. It will
+  map [[column-default-style]] to columns and add :idx prop as well"
   [{:keys [columns] :as props}]
   (hooks/use-memo
     [columns]
@@ -250,6 +306,19 @@
                  columns)))))))
 
 (defnc Header
+  "Reusable component that will render table header. It will use
+  :header component from column definition if it is available or
+  ui :header/plain component from UI context to render header row.
+  
+  If column has :name specified and header key isn't present it will
+  also use :header/plain to render that column. If you wan't to
+  ommit header, that you have to **explicitly set :header nil** in
+  column definition.
+  
+  Header row is wrapped in simplebar, so that it can be scrolled
+  horizontally. Scroll is hidden and it is assumed that parent component
+  will controll and synchronize scroll offset for both body and
+  header component."
   {:wrap [(ui/forward-ref)]}
   [{:keys [className class]} _ref]
   (let [{container-width :width} (layout/use-container-dimensions)
@@ -258,7 +327,7 @@
         style {:minWidth table-width}
         columns (use-columns)
         columns (map
-                 (fn [{:keys [header] :as column}]
+                 (fn [column]
                    (if (contains? column :header) column
                        (assoc column :header ui/plain-header)))
                  columns)
@@ -313,7 +382,15 @@
            (remove :hidden columns)))))))
 
 (defnc Body
-  "Abstract component that doesn't need table data"
+  "Reusable component that will render table rows by using component
+  under :table/row key in UI Context. It will wrap list of :table/row
+  components in div that will fit available container space.
+  
+  Simplebar is wrapped around that div, so scrolling vertically and
+  horizontally over table body comes out of the box.
+  
+  You can style or add classes using :class or :className props that
+  will be propagated to simplebar-content-wrapper div."
   {:wrap [(ui/forward-ref)]}
   [{:keys [class className]} _ref]
   (let [{container-width :width
