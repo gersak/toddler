@@ -290,7 +290,7 @@
          :value theme}
         (! :row {:key ::center
                  :& (cond->
-                     {:position :center
+                     {:align :center
                       :style {:flex-grow "1"}})}
            (! :row
               {:key ::wrapper
