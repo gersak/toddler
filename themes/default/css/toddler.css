@@ -222,10 +222,12 @@ html[data-theme="dark"] {
   --color-exception: #736D9B;
   --color-neutral: #eaeaea;
   --color-inactive: #828282;
-  --color-normal: #eaeaea;
+  /*--color-normal: #eaeaea;*/
+  --color-normal: #dddddd;
   --color-m2: #686868;
   --color-m1: #828282;
-  --color: #eaeaea;
+  /*--color: #eaeaea;*/
+  --color: #dddddd;
   --color-p1: #ffffff;
   --color-p2: #ffffff;
 

@@ -972,12 +972,13 @@
        {:ref #(swap! tab-elements assoc ::marker %)
         :style {:top marker-top :left marker-left
                 :width marker-width :height marker-height}
-        :className (css
-                    :z-0
-                    :absolute
-                    :rounded-md
-                    {:transition "width .2s ease-in-out, height .2s ease-in-out, left .2s ease-in-out"
-                     :background-color "var(--tab-selected-bg)"})})
+        :class ["marker"
+                (css
+                 :z-0
+                 :absolute
+                 :rounded-md
+                 {:transition "width .2s ease-in-out, height .2s ease-in-out, left .2s ease-in-out"
+                  :background-color "var(--tab-selected-bg)"})]})
       (d/div
        {:ref #(reset! tabs-target %)
         :class ["tabs"]}
