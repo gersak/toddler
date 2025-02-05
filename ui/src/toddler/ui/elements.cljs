@@ -876,90 +876,26 @@
    ; ["&:first-child" :ml-8]
    ["&:hover"
     {:text-decoration "none"
-     :color "var(--tab-hover-color)"
-     ; :background-color "var(--tab-hover-bg)"
-     }]
-   ["&.selected"
-    {:color "var(--tab-selected-color)"
-     ; :background-color "var(--tab-selected-bg)"
-     }]))
+     :color "var(--color-p2)"}]
+   ["&.selected" {:color "var(--color-p2)"}]))
 
 (defnc tabs
   {:wrap [(ui/forward-ref)]}
   [{:keys [class className]
     :as props} _ref]
-  (let [;on-change (or on-change onChange)
-        tabs-target (hooks/use-ref nil)
-        _tabs (hooks/use-ref nil)
-        _tabs (or _tabs _ref)
-        [selected on-select!] (hooks/use-state nil)
-        [available set-available!] (toddler/use-idle
-                                    nil (fn [tabs]
-                                          (on-select!
-                                           (fn [id]
-                                             (when-not (= tabs :NULL)
-                                               (if-not (nil? id) id
-                                                       (ffirst tabs))))))
-                                    {:initialized? true})
-        register (hooks/use-callback
-                   [selected]
-                   (fn register
-                     ([tab] (register tab tab nil))
-                     ([tab order] (register tab tab order))
-                     ([id tab order]
-                      (set-available!
-                       (fn [tabs]
-                         (vec (sort-by #(nth % 2) (conj tabs [id tab order]))))))))
-        unregister (hooks/use-callback
-                     [selected]
-                     (fn [tab]
-                       (set-available!
-                        (fn [tabs]
-                          (vec
-                           (sort-by
-                            #(nth % 2)
-                            (remove
-                             (fn [[_ _tab _]]
-                               (= tab _tab))
-                             tabs)))))))
-        update-tab (hooks/use-callback
-                     [selected]
-                     (fn [key tab order]
-                       (set-available!
-                        (fn [tabs]
-                          (let [next (mapv
-                                      (fn [[k t o]]
-                                        (if (= key k) [k tab order]
-                                            [k t o]))
-                                      tabs)]
-                            next)))))
-        tabs (map #(take 2 %) available)
-        container-dimensions (layout/use-container-dimensions)
-        [_ {tabs-height :height}] (toddler/use-dimensions _tabs)
-        tab-content-dimensions  (hooks/use-memo
-                                  [(:height container-dimensions) tabs-height]
-                                  (assoc container-dimensions :height
-                                         (- (:height container-dimensions)
-                                            tabs-height)))
-        translate (toddler/use-translate)
-        tab-elements (hooks/use-ref nil)
+  (let [{_tabs :tabs/ref
+         tabs :tabs
+         tab-elements :tab/refs
+         {marker-top :top
+          marker-left :left
+          marker-height :height
+          marker-width :width} :tab/marker
+         tab-content-dimensions :tab/dimensions
+         {:keys [selected select!] :as context} :tabs/context
+         :as from-tabs}
+        (layout/use-tabs _ref)
         ;;
-        {marker-top :top
-         marker-left :left
-         marker-height :height
-         marker-width :width}
-        (hooks/use-memo
-          [selected]
-          (if-not selected
-            {:top 0 :left 0}
-            (if-some [selected-el (get @tab-elements selected)]
-              (let [[left top width height] (util/dom-dimensions selected-el)
-                    [tabs-left tabs-top] (util/dom-dimensions @_tabs)
-                    top (- top tabs-top)
-                    left (- left tabs-left)]
-                {:top top :left left
-                 :width width :height height})
-              {:top 0 :left 0})))]
+        translate (toddler/use-translate)]
     (<>
      (d/div
       {:ref _tabs
@@ -978,10 +914,10 @@
                  :absolute
                  :rounded-md
                  {:transition "width .2s ease-in-out, height .2s ease-in-out, left .2s ease-in-out"
-                  :background-color "var(--tab-selected-bg)"})]})
+                  :background-color "var(--background-p1)"
+                  :border "1px solid var(--color-m2)"})]})
       (d/div
-       {:ref #(reset! tabs-target %)
-        :class ["tabs"]}
+       {:class ["tabs"]}
        (map
         (fn [[id tab]]
           (d/div
@@ -993,47 +929,19 @@
                      className (conj className)
                      (string? class) (conj class)
                      (sequential? class) (into class))
-            :on-click (fn [] (on-select! id))}
+            :on-click (fn [] (select! id))}
            (if (string? tab) tab
                (translate tab))))
         tabs)))
      (provider
-      {:context tabs-context
-       :value {:register register
-               :unregister unregister
-               :update update-tab
-               :select! on-select!
-               :selected selected}}
+      {:context layout/*tabs*
+       :value context}
       (provider
        {:context layout/*container-dimensions*
         :value tab-content-dimensions}
        (d/div
         {:className "tab-content"}
         (c/children props)))))))
-
-(defnc tab
-  [{:keys [name tab id focus? position] :as props
-    :or {id tab}}]
-  (let [tab (or name tab)
-        {:keys [select!
-                selected
-                register
-                unregister
-                update]} (hooks/use-context tabs-context)]
-    (hooks/use-effect
-      :once
-      (register id tab position)
-      (when focus?
-        (async/go
-          (async/<! (async/timeout 1000))
-          (select! id)))
-      (fn []
-        (unregister id)))
-    (hooks/use-effect
-      [tab]
-      (update id tab position))
-    (when (= id selected)
-      (c/children props))))
 
 (def $tab-action
   (css
@@ -1204,7 +1112,7 @@
    {:row row
     :close close
     :tabs tabs
-    :tab tab
+    :tab layout/tab
     :action action
     :card card
     :tooltip tooltip

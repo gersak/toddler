@@ -29,15 +29,6 @@ html[data-theme="light"] {
   --background-warn: #ffdcc6;
   --background-lighter: #f5f6f8;
 
-  /* Tabs */
-  --tab-color: #575757;
-  --tab-bg: transparent;
-  --tab-hover-color: #000000;
-  --tab-hover-bg: transparent;
-  --tab-selected-color: #000000;
-  --tab-selected-bg: #C6C9C6;
-
-
   /* Colors */
   --color-positive: #e8f8f1;
   --color-negative: #B56B6B;
@@ -204,14 +195,6 @@ html[data-theme="dark"] {
   --background-positive: #253d33;
   --background-negative: #4c2222;
   --background-warn: #6f3221;
-
-  /* Tabs */
-  --tab-color: #eaeaea;
-  --tab-bg: transparent;
-  --tab-hover-color: #eaeaea;
-  --tab-hover-bg: transparent;
-  --tab-selected-color: #ffffff;
-  --tab-selected-bg: #000000;
 
 
   /* Colors */

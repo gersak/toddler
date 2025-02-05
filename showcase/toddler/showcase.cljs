@@ -36,10 +36,6 @@
     :render Rationale
     :segment "rationale"
     :landing 10}
-   {:id :toddler.layout
-    :name "Layout"
-    :render Layout
-    :segment "layout"}
    {:id :toddler.inputs
     :name "Inputs"
     :render Inputs
@@ -48,14 +44,14 @@
     :name "Table"
     :render Table
     :segment "tables"}
-   #_{:id :toddler.multi-table
-      :name :showcase.multi-tables
-      :render TableGrid
-      :segment "multi-tables"}
    {:id :toddler.calendar
     :name "Calendar"
     :render Calendar
     :segment "calendar"}
+   {:id :toddler.layout
+    :name "Layout"
+    :render Layout
+    :segment "layout"}
    {:id :toddler.popup
     :name "Popup"
     :render Popup

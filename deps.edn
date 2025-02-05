@@ -31,6 +31,7 @@
                       :namespaces [toddler.core
                                    toddler.graphql
                                    toddler.ui
+                                   toddler.layout
                                    toddler.app
                                    toddler.window
                                    toddler.date

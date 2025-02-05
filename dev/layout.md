@@ -145,6 +145,8 @@ and it doesn't know how many tabs will be there. `tab` components are added as c
 `tabs` component will then know what to display and it draws tabs and provides `*tabs*` context
 to children. Children `tabs` can then check if its id is selected and if it is draw its content.
 
+More details about tab(s) implementation can be found at [API]()
+
 ```clojure
 (defnc user-list-tab
   []
@@ -186,3 +188,9 @@ to children. Children `tabs` can then check if its id is selected and if it is d
 
 #### TRY CHANGING TAB
 <div id="tabs-example"></div>
+
+
+
+## GRID
+
+<div id="grid-example"></div>

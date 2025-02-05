@@ -110,7 +110,7 @@
       :as props} _ref]
     (let [tabs-target (hooks/use-ref nil)
           _tabs (hooks/use-ref nil)
-          _tabs (or _tabs _ref)
+          _tabs (or _ref _tabs)
           [selected on-select!] (hooks/use-state nil)
           [available set-available!] (toddler/use-idle
                                       nil (fn [tabs]
@@ -230,137 +230,107 @@
           (c/children props)))))))
 
 (defhook use-tabs
-  [{_ref :ref :as props}]
-  (let [_tabs (hooks/use-ref nil)
-        _tabs (or _tabs _ref)
-        [selected on-select!] (hooks/use-state nil)
-        [available set-available!] (toddler/use-idle
-                                    nil (fn [tabs]
-                                          (on-select!
-                                           (fn [id]
-                                             (when-not (= tabs :NULL)
-                                               (if-not (nil? id) id
-                                                       (ffirst tabs))))))
-                                    {:initialized? true})
-        register (hooks/use-callback
-                   [selected]
-                   (fn register
-                     ([tab] (register tab tab nil))
-                     ([tab order] (register tab tab order))
-                     ([id tab order]
-                      (set-available!
-                       (fn [tabs]
-                         (vec (sort-by #(nth % 2) (conj tabs [id tab order]))))))))
-        unregister (hooks/use-callback
-                     [selected]
-                     (fn [tab]
+  "Hook that will create logic for tab registration. Its only valid argument is
+  ref that will be attached to tabs component and it is optioinal.
+  
+  Hook will return map with following keys:
+  
+   * :tab/refs       - mapping of tab :id to tab dom element
+   * :tab/marker     - dimensions of currently selected tab `[:top :left :width :height]`
+   * :tab/dimensions - dimensions for tab content. It is value of:
+                       `*container-dimensions* - tabs element height = content-height`
+   * :tabs/ref        - ref that should be attached to tabs element, so that this hook
+                       can track tabs dimensions
+   * :tabs           - sequence of tabs that are registered in form of `[id name]`
+   * :tabs/context   - context important for [[tab]] component to function well. It holds
+                       functions that will :register, :unregister, :update, :select! tab
+                       as well as value of :selected that holds :id of selected tab
+                      
+  **IMPORTANT** - use helix.core/provider to provide :tabs/context received from
+  this hook to children through `*tabs*` context. Just pass it as is..."
+  ([] (use-tabs nil))
+  ([_ref]
+   (let [_tabs (hooks/use-ref nil)
+         _tabs (or _ref _tabs)
+         [selected on-select!] (hooks/use-state nil)
+         [available set-available!] (toddler/use-idle
+                                     nil (fn [tabs]
+                                           (on-select!
+                                            (fn [id]
+                                              (when-not (= tabs :NULL)
+                                                (if-not (nil? id) id
+                                                        (ffirst tabs))))))
+                                     {:initialized? true})
+         register (hooks/use-callback
+                    [selected]
+                    (fn register
+                      ([tab] (register tab tab nil))
+                      ([tab order] (register tab tab order))
+                      ([id tab order]
                        (set-available!
                         (fn [tabs]
-                          (vec
-                           (sort-by
-                            #(nth % 2)
-                            (remove
-                             (fn [[_ _tab _]]
-                               (= tab _tab))
-                             tabs)))))))
-        update-tab (hooks/use-callback
-                     [selected]
-                     (fn [key tab order]
-                       (set-available!
-                        (fn [tabs]
-                          (let [next (mapv
-                                      (fn [[k t o]]
-                                        (if (= key k) [k tab order]
-                                            [k t o]))
-                                      tabs)]
-                            next)))))
-        tabs (map #(take 2 %) available)
-        container-dimensions (use-container-dimensions)
-        [_ {tabs-height :height}] (toddler/use-dimensions _tabs)
-        tab-content-dimensions  (hooks/use-memo
-                                  [(:height container-dimensions) tabs-height]
-                                  (assoc container-dimensions :height
-                                         (- (:height container-dimensions)
-                                            tabs-height)))
-        translate (toddler/use-translate)
-        tab-elements (hooks/use-ref nil)
-        ;;
-        {marker-top :top
-         marker-left :left
-         marker-height :height
-         marker-width :width
-         :as marker}
-        (hooks/use-memo
-          [selected]
-          (if-not selected
-            {:top 0 :left 0}
-            (if-some [selected-el (get @tab-elements selected)]
-              (let [[left top width height] (util/dom-dimensions selected-el)
-                    [tabs-left tabs-top] (util/dom-dimensions @_tabs)
-                    top (- top tabs-top)
-                    left (- left tabs-left)]
-                {:top top :left left
-                 :width width :height height})
-              {:top 0 :left 0})))]
-    {:tab/refs tab-elements
-     :marker marker
-     :tab/el _tabs
-     :tabs/context {:register register
-                    :unregister unregister
-                    :update update-tab
-                    :select! on-select!
-                    :selected selected}}
-    #_(<>
-       (provider
-        {:context *tabs*
-         :value {:register register
-                 :unregister unregister
-                 :update update-tab
-                 :select! on-select!
-                 :selected selected}}
-        (provider
-         {:context *container-dimensions*
-          :value tab-content-dimensions}
-         (d/div
-          {:className "tab-content"}
-          (c/children props)))))
-    #_(<>
-       (d/div
-        {:ref _tabs
-         :class (cond->
-                 (list "toddler-tabs" $tabs)
-                  className (conj className)
-                  (string? class) (conj class)
-                  (sequential? class) (into class))}
-        (d/div
-         {:ref #(swap! tab-elements assoc ::marker %)
-          :style {:top marker-top :left marker-left
-                  :width marker-width :height marker-height}
-          :className (css
-                      :z-0
-                      :absolute
-                      :rounded-md
-                      {:transition "width .2s ease-in-out, height .2s ease-in-out, left .2s ease-in-out"
-                       :background-color "var(--tab-selected-bg)"})})
-        (d/div
-         {:class ["tabs"]}
-         (map
-          (fn [[id tab]]
-            (d/div
-             {:key tab
-              :ref #(swap! tab-elements assoc id %)
-              :class (cond->
-                      (list "toddler-tab" $tab)
-                       (= id selected) (conj "selected")
-                       className (conj className)
-                       (string? class) (conj class)
-                       (sequential? class) (into class))
-              :on-click (fn [] (on-select! id))}
-             (if (string? tab) tab
-                 (translate tab))))
-          tabs))))))
+                          (vec (sort-by #(nth % 2) (conj tabs [id tab order]))))))))
+         unregister (hooks/use-callback
+                      [selected]
+                      (fn [tab]
+                        (set-available!
+                         (fn [tabs]
+                           (vec
+                            (sort-by
+                             #(nth % 2)
+                             (remove
+                              (fn [[_ _tab _]]
+                                (= tab _tab))
+                              tabs)))))))
+         update-tab (hooks/use-callback
+                      [selected]
+                      (fn [key tab order]
+                        (set-available!
+                         (fn [tabs]
+                           (let [next (mapv
+                                       (fn [[k t o]]
+                                         (if (= key k) [k tab order]
+                                             [k t o]))
+                                       tabs)]
+                             next)))))
+         tabs (map #(take 2 %) available)
+         container-dimensions (use-container-dimensions)
+         [_ {tabs-height :height}] (toddler/use-dimensions _tabs)
+         tab-content-dimensions  (hooks/use-memo
+                                   [(:height container-dimensions) tabs-height]
+                                   (assoc container-dimensions :height
+                                          (- (:height container-dimensions)
+                                             tabs-height)))
+         tab-elements (hooks/use-ref nil)
+         ;;
+         marker
+         (hooks/use-memo
+           [selected]
+           (if-not selected
+             {:top 0 :left 0}
+             (if-some [selected-el (get @tab-elements selected)]
+               (let [[left top width height] (util/dom-dimensions selected-el)
+                     [tabs-left tabs-top] (util/dom-dimensions @_tabs)
+                     top (- top tabs-top)
+                     left (- left tabs-left)]
+                 {:top top :left left
+                  :width width :height height})
+               {:top 0 :left 0})))]
+     {:tab/refs tab-elements
+      :tab/marker marker
+      :tab/dimensions tab-content-dimensions
+      :tabs/ref _tabs
+      :tabs tabs
+      :tabs/context {:register register
+                     :unregister unregister
+                     :update update-tab
+                     :select! on-select!
+                     :selected selected}})))
 
 (defnc tab
+  "Reusable component that will look for `*tabs*` context
+  and render children if :id received in props matches
+  :selected value in `*tabs*` context"
   [{:keys [name tab id focus? position] :as props
     :or {id tab}}]
   (let [tab (or name tab)
