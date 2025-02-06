@@ -104,131 +104,6 @@
 
 (defonce ^:no-doc ^:dynamic *tabs* (create-context))
 
-#_(defnc use-tabs
-    {:wrap [(ui/forward-ref)]}
-    [{:keys [class className]
-      :as props} _ref]
-    (let [tabs-target (hooks/use-ref nil)
-          _tabs (hooks/use-ref nil)
-          _tabs (or _ref _tabs)
-          [selected on-select!] (hooks/use-state nil)
-          [available set-available!] (toddler/use-idle
-                                      nil (fn [tabs]
-                                            (on-select!
-                                             (fn [id]
-                                               (when-not (= tabs :NULL)
-                                                 (if-not (nil? id) id
-                                                         (ffirst tabs))))))
-                                      {:initialized? true})
-          register (hooks/use-callback
-                     [selected]
-                     (fn register
-                       ([tab] (register tab tab nil))
-                       ([tab order] (register tab tab order))
-                       ([id tab order]
-                        (set-available!
-                         (fn [tabs]
-                           (vec (sort-by #(nth % 2) (conj tabs [id tab order]))))))))
-          unregister (hooks/use-callback
-                       [selected]
-                       (fn [tab]
-                         (set-available!
-                          (fn [tabs]
-                            (vec
-                             (sort-by
-                              #(nth % 2)
-                              (remove
-                               (fn [[_ _tab _]]
-                                 (= tab _tab))
-                               tabs)))))))
-          update-tab (hooks/use-callback
-                       [selected]
-                       (fn [key tab order]
-                         (set-available!
-                          (fn [tabs]
-                            (let [next (mapv
-                                        (fn [[k t o]]
-                                          (if (= key k) [k tab order]
-                                              [k t o]))
-                                        tabs)]
-                              next)))))
-          tabs (map #(take 2 %) available)
-          container-dimensions (use-container-dimensions)
-          [_ {tabs-height :height}] (toddler/use-dimensions _tabs)
-          tab-content-dimensions  (hooks/use-memo
-                                    [(:height container-dimensions) tabs-height]
-                                    (assoc container-dimensions :height
-                                           (- (:height container-dimensions)
-                                              tabs-height)))
-          translate (toddler/use-translate)
-          tab-elements (hooks/use-ref nil)
-        ;;
-          {marker-top :top
-           marker-left :left
-           marker-height :height
-           marker-width :width}
-          (hooks/use-memo
-            [selected]
-            (if-not selected
-              {:top 0 :left 0}
-              (if-some [selected-el (get @tab-elements selected)]
-                (let [[left top width height] (util/dom-dimensions selected-el)
-                      [tabs-left tabs-top] (util/dom-dimensions @_tabs)
-                      top (- top tabs-top)
-                      left (- left tabs-left)]
-                  {:top top :left left
-                   :width width :height height})
-                {:top 0 :left 0})))]
-      (<>
-       (d/div
-        {:ref _tabs
-         :class (cond->
-                 (list "toddler-tabs" $tabs)
-                  className (conj className)
-                  (string? class) (conj class)
-                  (sequential? class) (into class))}
-        (d/div
-         {:ref #(swap! tab-elements assoc ::marker %)
-          :style {:top marker-top :left marker-left
-                  :width marker-width :height marker-height}
-          :className (css
-                      :z-0
-                      :absolute
-                      :rounded-md
-                      {:transition "width .2s ease-in-out, height .2s ease-in-out, left .2s ease-in-out"
-                       :background-color "var(--tab-selected-bg)"})})
-        (d/div
-         {:ref #(reset! tabs-target %)
-          :class ["tabs"]}
-         (map
-          (fn [[id tab]]
-            (d/div
-             {:key tab
-              :ref #(swap! tab-elements assoc id %)
-              :class (cond->
-                      (list "toddler-tab" $tab)
-                       (= id selected) (conj "selected")
-                       className (conj className)
-                       (string? class) (conj class)
-                       (sequential? class) (into class))
-              :on-click (fn [] (on-select! id))}
-             (if (string? tab) tab
-                 (translate tab))))
-          tabs)))
-       (provider
-        {:context tabs-context
-         :value {:register register
-                 :unregister unregister
-                 :update update-tab
-                 :select! on-select!
-                 :selected selected}}
-        (provider
-         {:context layout/*container-dimensions*
-          :value tab-content-dimensions}
-         (d/div
-          {:className "tab-content"}
-          (c/children props)))))))
-
 (defhook use-tabs
   "Hook that will create logic for tab registration. Its only valid argument is
   ref that will be attached to tabs component and it is optioinal.
@@ -354,9 +229,83 @@
     (when (= id selected)
       (c/children props))))
 
-(defn get-breakpoint-from-width
+(defn ^:no-doc get-breakpoint-from-width
   [breakpoints width]
   (key (last (take-while #(< (val %) width) (sort-by val breakpoints)))))
+
+(defhook use-grid-data
+  "Hook will compute layout width, height and what layout is
+  currently active.
+  
+   * **layouts** - map that has layout id bound to sequence of grid 
+                   container definitions
+   * **breakpoints** - map that has layout ids bound to width thresholds
+                   so that hook can compute what layout is currently active
+   * **columns** - number that will split available space on `x` columns
+   * **row-height** - number that specifies single row height
+   * **width**   - how much space is available for layout. this hook
+                   will use that width to compute what layout from
+                   provided layouts is active"
+  [{:keys [width breakpoints row-height columns layouts]}]
+  (when (nil? width)
+    (.error js/console "You are using grid but haven't specified grid width!"))
+  (let [sorted-breakpoints (hooks/use-memo
+                             [breakpoints]
+                             (map key (sort-by val breakpoints)))
+        ;;
+        [breakpoint column-width]
+        (hooks/use-memo
+          [width]
+          (let [b (last
+                   (take-while
+                    #(< (get breakpoints %) width)
+                    sorted-breakpoints))
+                column-count (get columns b)]
+            [b (vura/round-number (/ width column-count) 1 :down)]))
+        ;;
+        layouts (hooks/use-ref layouts)
+        ;;
+        [_ layout]
+        (hooks/use-memo
+          [breakpoint]
+          (if-some [[breakpoint layout]
+                    (or
+                     [breakpoint (get @layouts breakpoint)]
+                     (some
+                      (fn [breakpoint]
+                        (when-some [layout (get @layouts breakpoint)]
+                          [breakpoint layout]))
+                      (reverse
+                       (take
+                        (inc (.indexOf sorted-breakpoints breakpoint))
+                        sorted-breakpoints))))]
+            [breakpoint
+             (reduce
+              (fn [r {:keys [i x y w h min-w max-w min-h max-h]}]
+                (assoc r i
+                       (cond->
+                        {:x (* x column-width)
+                         :y (* y row-height)
+                         :width (* w column-width)
+                         :height (* h row-height)}
+                         min-h (assoc :minHeight min-h)
+                         max-h (assoc :maxHeight max-h)
+                         min-w (assoc :minWidth min-w)
+                         max-w (assoc :maxWidth max-w))))
+              nil
+              layout)]
+            (.error js/console "There is something wrong with grid configuration and layout can't be computed!")))
+        ;;
+        height (hooks/use-memo
+                 [layout]
+                 (apply max
+                        (map
+                         (fn [{:keys [y height]}]
+                           (+ y height))
+                         (vals layout))))]
+    {:width width
+     :height height
+     :layout layout}))
 
 (defnc GridItem
   "Component that will absolutely position grid element to
@@ -386,66 +335,6 @@
                :transition "transform .2s ease-in"}}
       (c/children props)))))
 
-(defhook use-grid-data
-  ""
-  [{:keys [width breakpoints row-height columns layouts]}]
-  (let [sorted-breakpoints (hooks/use-memo
-                             [breakpoints]
-                             (map key (sort-by val breakpoints)))
-        ;;
-        [breakpoint column-width]
-        (hooks/use-memo
-          [width]
-          (let [b (last
-                   (take-while
-                    #(< (get breakpoints %) width)
-                    sorted-breakpoints))
-                column-count (get columns b)]
-            [b (vura/round-number (/ width column-count) 1 :down)]))
-        ;;
-        layouts (hooks/use-ref layouts)
-        ;;
-        [breakpoint layout]
-        (hooks/use-memo
-          [breakpoint]
-          (when-some [[breakpoint layout]
-                      (or
-                       [breakpoint (get @layouts breakpoint)]
-                       (some
-                        (fn [breakpoint]
-                          (when-some [layout (get @layouts breakpoint)]
-                            [breakpoint layout]))
-                        (reverse
-                         (take
-                          (inc (.indexOf sorted-breakpoints breakpoint))
-                          sorted-breakpoints))))]
-            [breakpoint
-             (reduce
-              (fn [r {:keys [i x y w h min-w max-w min-h max-h]}]
-                (assoc r i
-                       (cond->
-                        {:x (* x column-width)
-                         :y (* y row-height)
-                         :width (* w column-width)
-                         :height (* h row-height)}
-                         min-h (assoc :minHeight min-h)
-                         max-h (assoc :maxHeight max-h)
-                         min-w (assoc :minWidth min-w)
-                         max-w (assoc :maxWidth max-w))))
-              nil
-              layout)]))
-        ;;
-        height (hooks/use-memo
-                 [layout]
-                 (apply max
-                        (map
-                         (fn [{:keys [y height]}]
-                           (+ y height))
-                         (vals layout))))]
-    {:width width
-     :height height
-     :layout layout}))
-
 (letfn [(same? [a b]
           (let [ks [:width :breakpoints :row-height :margin :padding :columns :layouts]
                 before (select-keys a ks)
@@ -454,13 +343,13 @@
             result))]
   (defnc GridLayout
     "Component that will combine `use-grid-data` hook to
-    compute layout and height of of grid definition and
+    compute layout and height of grid definition and
     will put every child in GridItem component with
     props that define that grid position."
     {:wrap [(memo same?)]}
     [{:keys [width breakpoints
              row-height margin padding
-             columns layouts className]
+             columns layouts]
       :or {breakpoints {:lg 1200
                         :md 996
                         :sm 768
@@ -486,11 +375,10 @@
                                     :row-height row-height})]
       (when layout
         (d/div
-         {:className (str "toddler-grid")
-          :style
-          {:width width
-           :height height
-           :position "relative"}}
+         {:class (toddler/conj-prop-classes props)
+          :style {:width width
+                  :height height
+                  :position "relative"}}
          (map
           (fn [component]
             (let [k (.-key component)]

@@ -1,4 +1,5 @@
 
+
 ## Core
 
 Throughout my years in frontend development, I've often struggled 
@@ -147,6 +148,10 @@ to children. Children `tabs` can then check if its id is selected and if it is d
 
 More details about tab(s) implementation can be found at [API]()
 
+
+#### TRY CHANGING TAB
+<div id="tabs-example"></div>
+
 ```clojure
 (defnc user-list-tab
   []
@@ -186,11 +191,73 @@ More details about tab(s) implementation can be found at [API]()
         ($ showcase.modal/form-tab)))))
 ```
 
-#### TRY CHANGING TAB
-<div id="tabs-example"></div>
-
-
-
 ## GRID
+Toddler grid hooks and components are based on implementation
+of awesome [React-Grid-Layout](https://github.com/react-grid-layout/react-grid-layout) system.
+
+Only basic features are covered, so no drag and drop or container resizing. Just rendering
+grid based on grid props.
+
+```use-grid-data``` in ```toddler.layout``` provides props for rendering grid
+elements based on following props:
+
+   * **layouts** - map that has layout id bound to sequence of grid
+                   container definitions
+   * **breakpoints** - map that has layout ids bound to width thresholds
+                   so that hook can compute what layout is currently active
+   * **columns** - number that will split available space on *#* columns
+   * **row-height** - number that specifies single row height
+   * **width**   - how much space is available for layout. this hook
+                   will use that width to compute what layout from
+                   provided layouts is active
 
 <div id="grid-example"></div>
+
+```clojure
+(defnc grid-example
+  []
+  (let [[[width height] set-dimensions!] (hooks/use-state [400 400])
+        columns {:lg 4 :md 3 :sm 1}
+        breakpoints {:sm 100
+                     :md 399
+                     :lg 500}
+        layouts {:sm [{:i "one" :x 0 :y 0 :w 1 :h 1}
+                      {:i "two" :x 0 :y 1 :w 1 :h 1}
+                      {:i "three" :x 0 :y 2 :w 1 :h 1}
+                      {:i "four" :x 0 :y 3 :w 1 :h 1}]
+                 :md [{:i "one" :x 1 :y 0 :w 2 :h 1}
+                      {:i "two" :x 0 :y 1 :w 3 :h 1}
+                      {:i "three" :x 0 :y 0 :w 1 :h 1}
+                      {:i "four" :x 0 :y 2 :w 3 :h 2}]
+                 :lg [{:i "one" :x 0 :y 0 :w 3 :h 1}
+                      {:i "two" :x 3 :y 0 :w 1 :h 2}
+                      {:i "three" :x 0 :y 1 :w 3 :h 1}
+                      {:i "four" :x 0 :y 2 :w 4 :h 2}]}]
+    (<>
+     ($ ui/row
+        {:align :center}
+        ($ ui/row
+           {:className (css :my-4 {:max-width "200px"})}
+           ($ ui/dropdown-field
+              {:value width
+               :name "Choose width"
+               :on-change #(set-dimensions! assoc 0 %)
+               :options [300 400 600]})))
+     ($ ui/row
+        {:align :center}
+        (let [$box (css :flex :w-full :h-full
+                        :justify-center :items-center
+                        :font-bold :text-xl)]
+          ($ ui/grid
+             {:width width
+              :height height
+              :margin [5 5]
+              :columns columns
+              :layouts layouts
+              :breakpoints breakpoints
+              :row-height 100}
+             (d/div {:key "one" :class [(css :bg-red-500) $box]} "ONE")
+             (d/div {:key "two" :class [(css :bg-green-500) $box]} "TWO")
+             (d/div {:key "three" :class [(css :bg-yellow-500) $box]} "THREE")
+             (d/div {:key "four" :class [(css :bg-cyan-500) $box]} "FOUR")))))))
+```

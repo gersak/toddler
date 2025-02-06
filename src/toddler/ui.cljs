@@ -9,7 +9,7 @@
    [helix.children :as c]
    [helix.hooks :as hooks]))
 
-(declare avatar row column form checkbox drawer tab
+(declare avatar row column form checkbox drawer tab grid
          button buttons simplebar popup option input clear
          field wrapper discard dropdown img tag header identity tooltip
          textarea autosize-input idle-input action checklist card card-action
@@ -69,6 +69,7 @@
 
 (defcomponent tabs :tabs)
 (defcomponent tab :tab)
+(defcomponent grid :grid)
 
 ;; DEPRECATED
 ; (defcomponent calendar-month-dropdown :calendar/month-dropdown)

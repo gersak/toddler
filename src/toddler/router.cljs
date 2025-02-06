@@ -224,9 +224,12 @@
   [base url]
   (if (empty? base)
     url
-    (if (str/ends-with? base "/")
-      (subs url (count base))
-      (subs url (inc (count base))))))
+    (as-> url url
+      (if (str/ends-with? base "/")
+        (subs url (count base))
+        (subs url (inc (count base))))
+      (if-not (str/starts-with? base "/") url
+              (str "/" url)))))
 
 (defhook use-query
   "Hook returns `[query-params query-setter]`. Query params are
@@ -617,6 +620,11 @@
   (let [{:keys [go]} (hooks/use-context -navigation-)
         {:keys [tree]} (hooks/use-context -router-)
         base (hooks/use-context -base-)
+        base (if (str/starts-with? base "/")
+               (do
+                 (.warn js/console "Provided base to toddler.router/Provider shouldn't start with '/'")
+                 (subs base 1))
+               base)
         url (hooks/use-memo
               [tree go]
               (component-path tree component))]

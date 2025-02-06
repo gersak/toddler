@@ -49,8 +49,7 @@
             {:id ::landing
              :hash "landing"}])]}
   []
-  (let [{:keys [go back]} (router/use-navigate)
-        location (router/use-location)
+  (let [location (router/use-location)
         [query set-query!] (router/use-query)
         open-modal (router/use-go-to ::modal)
         go-to-landing (router/use-go-to ::protection)

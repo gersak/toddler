@@ -1113,6 +1113,7 @@
     :close close
     :tabs tabs
     :tab layout/tab
+    :grid layout/GridLayout
     :action action
     :card card
     :tooltip tooltip

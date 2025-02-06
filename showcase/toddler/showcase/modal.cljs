@@ -203,7 +203,7 @@
                                              (set-context! "negative")
                                              (show-dialog!))
                                 :class ["negative"]}
-                       (translate :button.negative))
+                       (translate :negative))
                     (! :button {:on-click #(do
                                              (set-context! "warn")
                                              (show-dialog!))

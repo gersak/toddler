@@ -267,24 +267,80 @@
 
 (defnc tabs-example
   []
-  (let [{:keys [width height]} (layout/use-container-dimensions)]
-    (provider
-     {:context layout/*container-dimensions*
-      :value {:width width
-              :height (min height 400)}}
-     ($ ui/tabs
-        {:className (css :mt-2)}
-        ($ user-list-tab)
-        ($ table-tab)
-        ($ showcase.modal/form-tab)))))
+  (let [{:keys [width height]} (layout/use-container-dimensions)
+        width (- width 40)]
+    ($ ui/row
+       {:align :center}
+       (d/div
+        {:style {:width width :height 400}
+         :className (css :mb-4)}
+        (provider
+         {:context layout/*container-dimensions*
+          :value {:width width
+                  :height (min height 400)}}
+         ($ ui/tabs
+            {:className (css :mt-2)}
+            ($ user-list-tab)
+            ($ table-tab)
+            ($ showcase.modal/form-tab)))))))
+
+(defnc grid-example
+  []
+  (let [[[width height] set-dimensions!] (hooks/use-state [400 400])
+        columns {:lg 4 :md 3 :sm 1}
+        breakpoints {:sm 100
+                     :md 399
+                     :lg 500}
+        layouts {:sm [{:i "one" :x 0 :y 0 :w 1 :h 1}
+                      {:i "two" :x 0 :y 1 :w 1 :h 1}
+                      {:i "three" :x 0 :y 2 :w 1 :h 1}
+                      {:i "four" :x 0 :y 3 :w 1 :h 1}]
+                 :md [{:i "one" :x 1 :y 0 :w 2 :h 1}
+                      {:i "two" :x 0 :y 1 :w 3 :h 1}
+                      {:i "three" :x 0 :y 0 :w 1 :h 1}
+                      {:i "four" :x 0 :y 2 :w 3 :h 2}]
+                 :lg [{:i "one" :x 0 :y 0 :w 3 :h 1}
+                      {:i "two" :x 3 :y 0 :w 1 :h 2}
+                      {:i "three" :x 0 :y 1 :w 3 :h 1}
+                      {:i "four" :x 0 :y 2 :w 4 :h 2}]}]
+    (<>
+     ($ ui/row
+        {:align :center}
+        ($ ui/row
+           {:className (css :my-4 {:max-width "200px"})}
+           ($ ui/dropdown-field
+              {:value width
+               :name "Choose width"
+               :on-change #(set-dimensions! assoc 0 %)
+               :options [300 400 600]})))
+     ($ ui/row
+        {:align :center}
+        (let [$box (css :flex :w-full :h-full
+                        :justify-center :items-center
+                        :font-bold :text-xl)]
+          ($ ui/grid
+             {:width width
+              :height height
+              :margin [5 5]
+              :columns columns
+              :layouts layouts
+              :breakpoints breakpoints
+              :row-height 100}
+             (d/div {:key "one" :class [(css :bg-red-500) $box]} "ONE")
+             (d/div {:key "two" :class [(css :bg-green-500) $box]} "TWO")
+             (d/div {:key "three" :class [(css :bg-yellow-500) $box]} "THREE")
+             (d/div {:key "four" :class [(css :bg-cyan-500) $box]} "FOUR")))))))
 
 (defnc Layout
   {:wrap [(router/wrap-rendered :toddler.layout)
           (router/wrap-link
            :toddler.layout
-           [{:id ::rows_columns
+           [{:id ::core
+             :name "In General"
+             :hash "core"}
+            {:id ::rows_columns
              :name "Rows & Columns"
-             :hash "rows&columns"}
+             :hash "rows-and-columns"}
             {:id ::tabs
              :name "Tabs"
              :hash "tabs"}
@@ -310,4 +366,7 @@
                 ($ user-list))
              ($ toddler/portal
                 {:locator #(.getElementById js/document "tabs-example")}
-                ($ tabs-example)))))))
+                ($ tabs-example))
+             ($ toddler/portal
+                {:locator #(.getElementById js/document "grid-example")}
+                ($ grid-example)))))))
