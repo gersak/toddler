@@ -33,9 +33,9 @@
   (let [close! (use-close)
         translate (toddler/use-translate)]
     (when opened?
-      ($ ui/modal-dialog {:on-close close!
-                          :width 300
-                          :className (when context (name context))}
+      ($ ui/modal-dialog
+         {:on-close close!
+          :className (when context (name context))}
          (d/span
           {:className "title"}
           (translate :showcase.modal.dialog.title))

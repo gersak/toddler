@@ -29,31 +29,29 @@
 (def -level- (create-context))
 
 (defnc subcomponent
-  [{:keys [id name children hash]}]
+  [{:keys [id name children hash rendered?]}]
   (let [level (hooks/use-context -level-)
-        rendered? (router/use-rendered? id)
         on-click (router/use-go-to id)
         [visible? set-visible!] (hooks/use-state false)]
     (hooks/use-effect
       [rendered?]
-      (when rendered?
-        (let [close-channel (app/listen-to-signal
-                             :toddler.md/intersection
-                             (fn [{ids :ids}]
-                               (set-visible!
-                                (fn [current]
-                                  (let [targeting? (contains? ids hash)]
-                                    (cond
-                                      (and (not current) targeting?)
-                                      (do
-                                        true)
-                                      (and current (not targeting?))
-                                      (do
-                                        false)
-                                      :else current))))))]
-          (fn []
-            (set-visible! false)
-            (async/close! close-channel)))))
+      (let [close-channel (app/listen-to-signal
+                           :toddler.md/intersection
+                           (fn [{ids :ids}]
+                             (set-visible!
+                              (fn [current]
+                                (let [targeting? (contains? ids hash)]
+                                  (cond
+                                    (and (not current) targeting?)
+                                    (do
+                                      true)
+                                    (and current (not targeting?))
+                                    (do
+                                      false)
+                                    :else current))))))]
+        (fn []
+          (set-visible! false)
+          (async/close! close-channel))))
     (when name
       (<>
        (d/div
@@ -85,7 +83,8 @@
                         ["& .name:hover" :text-xs {:color "var(--color-active)"}]
                         ["& .selected.name" {:color "var(--color-normal)"}]
                         ["& .name.selected" {:color "var(--color-normal)"}])
-        translate (toddler/use-translate)]
+        translate (toddler/use-translate)
+        [_subs {sub-height :height}] (toddler/use-dimensions)]
     (d/div
      {:class [$component]}
      (d/a
@@ -95,10 +94,16 @@
      (provider
       {:context -level-
        :value (inc level)}
-      (map
-       (fn [{:keys [id] :as props}]
-         ($ subcomponent {:key id & props}))
-       (:children component))))))
+      (d/div
+       {:style {:overflow "hidden"
+                :transition "height .3s ease-in-out"
+                :height (if rendered? sub-height 0)}}
+       (d/div
+        {:ref #(reset! _subs %)}
+        (map
+         (fn [{:keys [id] :as props}]
+           ($ subcomponent {:key id :rendered? rendered? & props}))
+         (:children component))))))))
 
 (defnc navbar
   {:wrap [(react/forwardRef)]}
@@ -109,47 +114,52 @@
                  :flex
                  :flex-col
                  :toddler/menu-link-selected
-                 ["& .components-wrapper" :mt-12]
                  ["& .title"
                   :flex
                   :h-20
                   :items-center
                   :text-2xl
+                  :mb-4
                   :justify-center
                   :select-none
                   {:font-family "Caveat Brush, serif"
                    :font-size "3rem"}]
                  ["& .component-list"
-                  :ml-3])
+                  :ml-3
+                  :mb-20])
         theme (app/use-theme)]
 
-    (! :simplebar
+    ($ ui/column
        {:ref _ref
-        :className $navbar
-        :style {:height height
-                :min-width 300
-                :max-width 400}}
+        :style {:height height}
+        :className $navbar}
        (d/div
         {:className "title"}
         "toddler")
-       #_(d/img
-          {:className (css :fixed :top-2 :left-2 :h-6)
-           :src (case theme
-                  "dark" "/svg.old/blipkit_dark.svg"
-                  "light" "/svg.old/blipkit.svg")})
-       (d/div
-        {:className "components-wrapper"}
-        (d/div
-         {:className "component-list"}
-         (provider
-          {:context -level-
-           :value 0}
-          (map
-           (fn [c]
-             ($ component
-                {:key (:id c)
-                 :component c}))
-           links)))))))
+       (! :simplebar
+          {:style {:height (- height 120)
+                   :min-width 300
+                   :max-width 400}
+           :shadow false}
+
+          #_(d/img
+             {:className (css :fixed :top-2 :left-2 :h-6)
+              :src (case theme
+                     "dark" "/svg.old/blipkit_dark.svg"
+                     "light" "/svg.old/blipkit.svg")})
+          (d/div
+           {:className "components-wrapper"}
+           (d/div
+            {:className "component-list"}
+            (provider
+             {:context -level-
+              :value 0}
+             (map
+              (fn [c]
+                ($ component
+                   {:key (:id c)
+                    :component c}))
+              links))))))))
 
 (let [popup-preference
       [#{:bottom :center}

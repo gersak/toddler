@@ -5,7 +5,7 @@
    [helix.dom :as d]
    [shadow.css :refer [css]]
    [toddler.md.lazy :as md]
-   [toddler.ui :as ui :refer [!]]
+   [toddler.ui :as ui]
    [toddler.core :as toddler]
    [toddler.layout :as layout]
    [toddler.router :as router]
@@ -259,16 +259,15 @@
 
 (defnc table-tab
   []
-  (let [{:keys [height width]} (layout/use-container-dimensions)]
-    ($ ui/tab {:id ::table
-               :name "Table"}
-       ($ ui/table {:rows showcase.table/data
-                    :columns showcase.table/columns}))))
+  ($ ui/tab {:id ::table
+             :name "Table"}
+     ($ ui/table {:rows showcase.table/data
+                  :columns showcase.table/columns})))
 
 (defnc tabs-example
   []
   (let [{:keys [width height]} (layout/use-container-dimensions)
-        width (- width 40)]
+        width (- width 200)]
     ($ ui/row
        {:align :center}
        (d/div

@@ -67,16 +67,17 @@ by adding class to content that is added to ui/modal-dialog component
 
 
 ```clojure
+(defhook use-close []
+  (let [close! (router/use-go-to :toddler.modal)]
+    #(close!)))
+
 (defnc dialog-example
   [{:keys [opened? context]}]
-  (use-register :toddler.modal.background "background")
-  (use-register :toddler.modal.dialog "dialog")
   (let [close! (use-close)
         translate (toddler/use-translate)]
     (when opened?
       ($ ui/modal-dialog
          {:on-close close!
-          :width 300
           :className (when context (name context))}
          (d/span
           {:className "title"}

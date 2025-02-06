@@ -59,7 +59,8 @@
              :on-change set-offset!})))
      ;; Popup button layout
      (! :row {:align :center}
-        (! :column {:position :center}
+        (! :column {:position :center
+                    :style {:align-items "center"}}
            ;; Popup Area defintion
            ($ popup/Area
               {:className (css :my-4)}
