@@ -148,7 +148,7 @@
            :shadow true}
           (! :row {:align :center}
              (! :column {:align :center
-                         :className (css ["& .toddler-markdown" {:max-width "40rem"}])}
+                         :className (css :items-center ["& .toddler-markdown" {:max-width "40rem"}])}
                 ($ md/watch-url {:url "/routing.md"})
                 ($ toddler/portal
                    {:locator #(.getElementById js/document "router-basics")}

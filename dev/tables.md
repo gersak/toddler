@@ -86,40 +86,32 @@ cell and header (order by).
 
 
 (def columns
-  [{:cursor [:ui :expand]
-    :cell ui/expand-cell
-    :header nil
-    :style {:width 20}}
-   {:cursor :euuid
+  [{:cursor :euuid
     :label "UUID"
     :align :center
     :header nil
-    :cell ui/uuid-cell
-    :style {:width 50}}
+    :cell :cell/uuid
+    :width 50}
    {:cursor :user
     :label "User"
-    :cell ui/identity-cell
+    :cell :cell/identity
     :options (repeatedly 3 random-user)
-    :style {:width 100}}
+    :width 100}
    {:cursor :float
-    :cell ui/float-cell
+    :cell :cell/float
     :label "Float"
-    :style {:width 100}}
+    :width 100}
    {:cursor :integer
-    :cell ui/integer-cell
+    :cell :cell/integer
     :label "Integer"
-    :style {:width 100}}
+    :width 100}
    {:cursor :text
-    :cell ui/text-cell
+    :cell :cell/text
     :label "Text"
-    :style {:width 250}}
-   {:cursor :currency
-    :cell ui/currency-cell
-    :style {:width 150}
-    :label "Money"}
+    :width 250}
    {:cursor :enum
     :label "ENUM"
-    :cell ui/enum-cell
+    :cell :cell/enum
     :options [{:name "Dog"
                :value :dog}
               {:name "Cat"
@@ -129,17 +121,17 @@ cell and header (order by).
               {:name "Hippopotamus"
                :value :hypo}]
     :placeholder "Choose your fav"
-    :style {:width 100}}
+    :width 100}
    {:cursor :timestamp
-    :cell ui/timestamp-cell
+    :cell :cell/timestamp
     :label "Timestamp"
     :show-time false
-    :style {:width 120}}
+    :width 120}
    {:cursor :boolean
-    :cell ui/boolean-cell
+    :cell  :cell/boolean
+    :align :center
     :label "Boolean"
-    :type "boolean"
-    :style {:width 50}}])
+    :width 50}])
 
 
 (defn generate-column
@@ -221,18 +213,22 @@ cell and header (order by).
 
 (defnc table-example
   []
-  (let [[{:keys [data columns]} dispatch] (hooks/use-reducer
+  (let [{:keys [width height]} (layout/use-container-dimensions)
+        [{:keys [data columns]} dispatch] (hooks/use-reducer
                                            reducer
                                            {:rows data
                                             :data data
                                             :columns columns})]
-    ($ layout/Container
-       {:style {:width "480px"
-                :height "500px"}}
-       ($ ui/table
-          {:rows data
-           :columns columns
-           :dispatch dispatch}))))
+    ($ ui/row
+       {:align :center}
+       (provider
+        {:context layout/*container-dimensions*
+         :value {:width 600
+                 :height 500}}
+        (! :table
+           {:rows data
+            :columns columns
+            :dispatch dispatch})))))
 ````
 In ```toddler.table``` namespace there are few components that are reusable and
 are focused to help you bridge customization. You are encuraged to use this components

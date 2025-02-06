@@ -216,7 +216,7 @@
         (! :row {:align :center}
            (! :column
               {:align :center
-               :className (css ["& .toddler-markdown" {:max-width "40rem"}])}
+               :className (css :items-center ["& .toddler-markdown" {:max-width "40rem"}])}
               ($ md/watch-url {:url "/i18n.md"})
               ($ toddler/portal
                  {:locator #(.getElementById js/document "component-translation-example")}

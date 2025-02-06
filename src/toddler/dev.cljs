@@ -138,7 +138,7 @@
         "toddler")
        (! :simplebar
           {:style {:height (- height 120)
-                   :min-width 300
+                   :min-width 200
                    :max-width 400}
            :shadow false}
 
@@ -213,6 +213,7 @@
                 ["& .wrapper"
                  :items-center :flex :items-center {:font-size "24px"} :mr-4
                  :cursor-pointer :color-inactive]
+                ["& .wrapper:first-child" :mr-0]
                 ["& .tooltip-popup-area:hover" :color-normal])
     :ref _ref
     :style style}

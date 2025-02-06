@@ -9,7 +9,7 @@
    [toddler.router :as router]
    [toddler.md.lazy :as md]
    [vura.core :as vura]
-   [helix.core :refer [$ defnc]]
+   [helix.core :refer [$ defnc provider]]
    [helix.dom :as d]
    [helix.hooks :as hooks]
    [helix.children :as c]
@@ -49,10 +49,6 @@
     :cell :cell/text
     :label "Text"
     :width 250}
-   {:cursor :currency
-    :cell :cell/currency
-    :width 150
-    :label "Money"}
    {:cursor :enum
     :label "ENUM"
     :cell :cell/enum
@@ -96,7 +92,7 @@
         :cell/identity (random-user)
         :cell/currency {:amount (vura/round-number (* 1000 (rand)) 0.25)
                         :currency (rand-nth ["EUR" "USD" "HRK"])}
-        :cell/enum (rand-nth (get-in columns [6 :options]))
+        :cell/enum (rand-nth (get-in columns [5 :options]))
         :cell/timestamp (rand-date)
         :cell/text (apply str (repeatedly 20 #(rand-nth "abcdefghijklmnopqrstuvwxyz0123456789")))
         :cell/boolean (rand-nth [true false])
@@ -168,14 +164,16 @@
                                            {:rows data
                                             :data data
                                             :columns columns})]
-    ($ layout/Container
-       {:style {:width (- width 80)
-                :height "500px"}}
-       (! :row {:align :center}
-          (! :table
-             {:rows data
-              :columns columns
-              :dispatch dispatch})))))
+    ($ ui/row
+       {:align :center}
+       (provider
+        {:context layout/*container-dimensions*
+         :value {:width 600
+                 :height 500}}
+        (! :table
+           {:rows data
+            :columns columns
+            :dispatch dispatch})))))
 
 (def expand-data
   [{:first-name "Donnie" :last-name "Darko" :gender :male
@@ -298,13 +296,11 @@
           (! :column
              {:align :center
               :className (css
+                          :items-center
                           ["& .example-field" :my-5]
                           ["& .toddler-markdown" {:max-width "40rem"}]
                           ["& #toddler-table-example" :my-10])}
              ($ md/watch-url {:url "/tables.md"})
-             ($ toddler/portal
-                {:locator #(.getElementById js/document "row-example")}
-                ($ row-example))
              ($ toddler/portal
                 {:locator #(.getElementById js/document "toddler-table-example")}
                 ($ table-example))
