@@ -4,12 +4,7 @@
   "description": "UI elements based on helix library",
   "main": "index.js",
   "scripts": {
-    "dev": "npx shadow-cljs -A:shadow:showcase watch dev",
-    "icons": "npx shadow-cljs -A:shadow:cider:icons watch icons",
-    "release": "clj -X:shadow:showcase:css && npx shadow-cljs -A:shadow:showcase release github",
-    "webpack": "npm run release && npx webpack --config webpack.config.js",
-    "check": "npx shadow-cljs -A:shadow check dev",
-    "init": "npx shadow-cljs -A:shadow:cider compile storybook"
+    "dev": "npx shadow-cljs -A:shadow watch dev"
   },
   "author": "Robert Gersak",
   "license": "ISC",

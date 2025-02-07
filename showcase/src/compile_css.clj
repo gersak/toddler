@@ -10,7 +10,7 @@
 (defonce css-watch-ref (atom nil))
 
 (defn generate-css
-  ([] (generate-css "dev"))
+  ([] (generate-css "web"))
   ([dir]
    (let [result
          (-> @css-ref
@@ -44,9 +44,7 @@
    (cb/init)
    (update :aliases merge css/aliases)
    (cb/start)
-   (cb/index-path (io/file "src") {})
-   (cb/index-path (io/file "ui") {})
-   (cb/index-path (io/file "showcase") {})))
+   (cb/index-path (io/file "src") {})))
 
 (defn start
   {:shadow/requires-server true}
@@ -62,8 +60,7 @@
   (reset! css-watch-ref
           (fs-watch/start
            {}
-           [(io/file "src")
-            (io/file "showcase")]
+           [(io/file "src")]
            ["cljs" "cljc" "clj" "css"]
            (fn [updates]
              (try
@@ -96,6 +93,21 @@
 
   ;; then build it once
   (generate-css "docs"))
+
+(defn generate-indexes
+  ([]
+   (let [result
+         (-> @css-ref
+             (cb/generate '{:ui {:include [toddler.ui*
+                                           toddler.md
+                                           toddler.notifications
+                                           toddler]}})
+             (cb/write-index-to (io/file "ui" "src" "shadow-css-index.edn")))]
+     (prn "Indexes generated")
+     (doseq [mod (:outputs result)
+             {:keys [warning-type] :as warning} (:warnings mod)]
+       (prn [:CSS (name warning-type) (dissoc warning :warning-type)]))
+     (println))))
 
 (comment
   (-> css-ref deref keys)
