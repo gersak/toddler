@@ -3,7 +3,7 @@
    [clojure.tools.build.api :as b]
    [deps-deploy.deps-deploy :as dd]))
 
-(def version "0.1.0")
+(def version "0.1.2")
 (def target "target/classes")
 
 (defn create-jar []
@@ -28,9 +28,16 @@
                 :artifact jar-file
                 :pom-file pom-file})))
 
+(defn generate-shadow-indexes
+  []
+  (b/process
+   {:command-args ["clj" "-X:release"]
+    :dir "."}))
+
 (defn release
   ([] (release nil))
   ([& _]
+   (generate-shadow-indexes)
    (create-jar)
    (deploy)))
 

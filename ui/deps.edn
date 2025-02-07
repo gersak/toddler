@@ -1,10 +1,11 @@
 {:paths ["src"]
  :deps
- {com.github.gersak/toddler {:mvn/version "0.1.0"}
+ {com.github.gersak/toddler {:mvn/version "0.1.2"}
   com.github.gersak/toddler-icons {:mvn/version "0.1.0"}}
  :aliases
  {:release
   {:extra-paths ["dev"]
-   :extra-deps {thheller/shadow-cljs {:mvn/version "2.20.2"}}
+   :extra-deps {thheller/shadow-cljs {:mvn/version "2.20.2"}
+                com.thheller/shadow-css {:mvn/version "0.5.0"}}
    :ns-default shadow-css-indexes
    :exec-fn shadow-css-indexes/release}}}

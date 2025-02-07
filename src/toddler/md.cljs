@@ -12,7 +12,6 @@
    [toddler.router :as router]
    [toddler.head :as head]
    [toddler.md.context :as md.context]
-   [shadow.css :refer [css]]
    ["markdown-it" :as markdownit]
    ["markdown-it-emoji"
     :refer [full]

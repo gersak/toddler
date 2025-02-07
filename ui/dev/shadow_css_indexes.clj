@@ -14,24 +14,20 @@
    (cb/init)
    (update :aliases merge css/aliases)
    (cb/start)
-   (cb/index-path (io/file "../src") {})
    (cb/index-path (io/file "src") {})))
 
 (defn generate-indexes
   ([]
-   (let [result
-         (-> @css-ref
-             (cb/generate '{:ui {:include [toddler.ui*
-                                           toddler.md
-                                           toddler.notifications
-                                           toddler]}})
-             (cb/write-index-to (io/file "src" "shadow-css-index.edn")))]
-     (prn "Indexes generated")
-     (doseq [mod (:outputs result)
-             {:keys [warning-type] :as warning} (:warnings mod)]
-       (prn [:CSS (name warning-type) (dissoc warning :warning-type)]))
-     (println))))
+   (->
+    (cb/init)
+    (update :aliases merge css/aliases)
+    (cb/start)
+    (cb/index-path (io/file "src") {})
+    (cb/generate '{:ui {:include [toddler.ui
+                                  toddler.ui*]}})
+    (cb/write-index-to (io/file "src" "shadow-css-index.edn")))))
 
 (defn release
   [& _]
+  (init)
   (generate-indexes))

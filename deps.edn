@@ -12,8 +12,12 @@
   lilactown/helix                            {:mvn/version "0.1.11"}}
  :aliases
  {:shadow
-  {:extra-deps {thheller/shadow-cljs {:mvn/version "2.20.2"}
-                com.github.gersak/shadow-css {:mvn/version "0.5.0"}}
+  {:extra-deps {thheller/shadow-cljs         {:mvn/version "2.20.2"}
+                ; dev.gersak/toddler 
+                ; com.gersak/toddler
+                ; biz.gersak/toddler
+                ; digital.gersak/toddler
+                com.thheller/shadow-css {:mvn/version "0.5.0"}}
    :extra-paths ["dev"]}
   :showcase
   {:extra-paths ["showcase/src" "ui/src" "themes/default"]}
@@ -21,6 +25,9 @@
   {:extra-paths ["dev"]
    :ns-default compile-css
    :exec-fn compile-css/release}
+  :release
+  {:ns-default compile-css
+   :exec-fn compile-css/generate-indexes}
   :icons
   {:extra-paths ["icons"]
    :extra-deps {babashka/fs {:mvn/version "0.2.16"}}}

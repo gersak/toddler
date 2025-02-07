@@ -13,6 +13,8 @@ node_modules/
 .DS_Store
 icons/.repos
 
+shadow-css-index.edn
+
 
 dev/css/
 dev/js/
