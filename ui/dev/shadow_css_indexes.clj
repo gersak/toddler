@@ -1,4 +1,4 @@
-(ns compile-css
+(ns shadow-css-indexes
   (:require
    [clojure.java.io :as io]
    [shadow.css.build :as cb]
@@ -15,7 +15,7 @@
    (update :aliases merge css/aliases)
    (cb/start)
    (cb/index-path (io/file "../src") {})
-   (cb/index-path (io/file "src" {}))))
+   (cb/index-path (io/file "src") {})))
 
 (defn generate-indexes
   ([]

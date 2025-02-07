@@ -33,9 +33,16 @@
                 :artifact jar-file
                 :pom-file pom-file})))
 
+(defn generate-shadow-indexes
+  []
+  (b/process
+   {:command-args ["clj" "-X:release"]
+    :dir "."}))
+
 (defn release
   ([] (release nil))
   ([& _]
+   (generate-shadow-indexes)
    (create-jar)
    (deploy)))
 
