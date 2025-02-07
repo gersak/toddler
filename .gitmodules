@@ -1,0 +1,3 @@
+[submodule "showcase"]
+	path = showcase
+	url = git@github.com:gersak/toddler-showcase.git
