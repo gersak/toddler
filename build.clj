@@ -3,7 +3,7 @@
    [clojure.tools.build.api :as b]
    [deps-deploy.deps-deploy :as dd]))
 
-(def version "0.1.2")
+(def version "0.1.3")
 (def target "target/classes")
 
 (defn create-jar []
@@ -12,7 +12,7 @@
     (b/copy-dir {:src-dirs ["src"]
                  :target-dir target})
     (b/write-pom {:target target
-                  :lib 'com.github.gersak/toddler
+                  :lib 'dev.gersak/toddler
                   :version version
                   :basis basis})
     (b/jar {:class-dir target

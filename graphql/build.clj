@@ -12,7 +12,7 @@
     (b/copy-dir {:src-dirs ["src"]
                  :target-dir target})
     (b/write-pom {:target target
-                  :lib 'com.github.gersak/toddler-graphql
+                  :lib 'dev.gersak/toddler-graphql
                   :version version
                   :basis basis})
     (b/jar {:class-dir target

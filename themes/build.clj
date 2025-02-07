@@ -12,7 +12,7 @@
     (b/copy-dir {:src-dirs ["default"]
                  :target-dir target})
     (b/write-pom {:target target
-                  :lib 'com.github.gersak/toddler-theme
+                  :lib 'dev.gersak/toddler-theme
                   :version version
                   :basis basis
                   :pom-data [[:licenses
