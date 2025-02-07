@@ -1,31 +1,27 @@
 {:deps true
  :nrepl {:port 7312}
- :builds
- {:dev
-  {:target :browser
-   :entries [toddler.showcase.dev]
-   :module-loader true
-   :modules {:main
-             {:entries [toddler.showcase.dev]
-              :init-fn toddler.showcase.dev/start!}
-             :markdown
-             {:entries [toddler.md]
-              :depends-on #{:main}}}
-   :output-dir "dev/js"
-   :output-to "dev/js/main.js"
-   :devtools {:http-root "dev"
-              :http-port 8000
-              :preloads []
-              :watch-dirs ["dev"]}}
-  :github
-  {:target :browser
-   :entries [toddler.showcase]
-   :module-loader true
-   :modules {:main
-             {:entries [toddler.showcase]
-              :init-fn toddler.showcase/start!}
-             :markdown
-             {:entries [toddler.md]
-              :depends-on #{:main}}}
-   :output-dir "docs/js"
-   :output-to "docs/js/main.js"}}}
+ :dev-http {8000 ["showcase/docs" "showcase/dev"]}
+ :builds {:dev
+          {:target :browser
+           :entries [toddler.showcase.dev]
+           :module-loader true
+           :modules {:main
+                     {:entries [toddler.showcase.dev]
+                      :init-fn toddler.showcase.dev/start!}
+                     :markdown
+                     {:entries [toddler.md]
+                      :depends-on #{:main}}}
+           :output-dir "showcase/dev/js"
+           :output-to "showcase/dev/js/main.js"}
+          :github
+          {:target :browser
+           :entries [toddler.showcase]
+           :module-loader true
+           :modules {:main
+                     {:entries [toddler.showcase]
+                      :init-fn toddler.showcase/start!}
+                     :markdown
+                     {:entries [toddler.md]
+                      :depends-on #{:main}}}
+           :output-dir "showcase/web/js"
+           :output-to "showcase/web/js/main.js"}}}

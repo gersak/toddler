@@ -1,19 +1,15 @@
 {:deps true
  :nrepl {:port 7312}
- :builds
- {:dev
-  {:target :browser
-   :entries [toddler.showcase.dev]
-   :module-loader true
-   :modules {:main
-             {:entries [toddler.showcase.dev]
-              :init-fn toddler.showcase.dev/start!}
-             :markdown
-             {:entries [toddler.md]
-              :depends-on #{:main}}}
-   :output-dir "../dev/js"
-   :output-to "../dev/js/main.js"
-   :devtools {:http-root "../dev"
-              :http-port 8000
-              :preloads []
-              :watch-dirs ["../dev"]}}}}
+ :dev-http {8000 ["docs" "dev"]}
+ :builds {:dev
+          {:target :browser
+           :entries [toddler.showcase.dev]
+           :module-loader true
+           :modules {:main
+                     {:entries [toddler.showcase.dev]
+                      :init-fn toddler.showcase.dev/start!}
+                     :markdown
+                     {:entries [toddler.md]
+                      :depends-on #{:main}}}
+           :output-dir "../dev/js"
+           :output-to "../dev/js/main.js"}}}
