@@ -55,7 +55,7 @@
     (when name
       (<>
        (d/div
-        {:class ["subcomponent" (str "level-" level)]}
+        {:class ["subcomponent" (str "level-" level) (when rendered? "fade-in")]}
         (d/a
          {:class ["name"
                   (when (and rendered? visible?) "selected")]
@@ -241,7 +241,7 @@
     (! :tooltip {:message "API Docs"}
        (d/a
         {:href "https://gersak.github.io/toddler/codox/index.html"
-         :className (css :text-base :font-bold :no-underline)}
+         :className (css :text-base :font-bold :no-underline :select-none)}
         "API")))))
 
 (defnc empty-content
@@ -279,9 +279,12 @@
         [_header] (use-dimensions)
         [_content {content-height :height}] (use-dimensions)
         header-height 50
-        header-width (- (or max-width (:width window)) navigation-width)
+        right-width (min
+                     (- (or max-width (:width window)) navigation-width)
+                     (- (:width window) navigation-width))
+        header-width right-width
         content-height (- (:height window) header-height)
-        content-width (- (or max-width (:width window)) navigation-width)
+        content-width right-width
         [theme set-theme!] (toddler/use-local-storage ::theme str)]
     (hooks/use-effect
       [theme]

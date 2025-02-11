@@ -267,8 +267,8 @@ html[data-theme="dark"] {
   --button-neutral-hover-color: #ffffff;
 
 
-  --button-disabled-color: #ffffff;
-  --button-disabled-bg: #aaaaaa;
+  --button-disabled-color: #a1a1a1;
+  --button-disabled-bg: #393939;
 
 
   /* Tooltip */
@@ -612,6 +612,10 @@ h4 {
   }
 }
 
+.fade-in {
+  animation: fade-in .7s ease-in-out forwards;
+}
+
 
 .tooltip.show,
 .dropdown-popup,
@@ -677,6 +681,14 @@ h4 {
 
 body {
   background-color: white;
+}
+
+html[data-theme="dark"] hr {
+  border-color: #838383;
+}
+
+html[data-theme="light"] hr {
+  border-color: #C6C9C6;
 }
 
 

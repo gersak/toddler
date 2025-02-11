@@ -1,0 +1,18 @@
+{:deps true
+ :dev-http {8000 ["dev"]}
+ :builds {:dev
+          {:target :browser
+           :entries [examples.minimal]
+           :modules {:main
+                     {:entries [examples.minimal]
+                      :init-fn examples.minimal/start!}}
+           :output-dir "dev/js"
+           :output-to "dev/js/main.js"}
+          :production
+          {:target :browser
+           :entries [toddler.showcase]
+           :modules {:main
+                     {:entries [examples.minimal]
+                      :init-fn examples.minimal/start!}}
+           :output-dir "build/js"
+           :output-to "build/js/main.js"}}}

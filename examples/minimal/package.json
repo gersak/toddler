@@ -1,0 +1,20 @@
+{
+  "name": "minimal",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx shadow-cljs -A:shadow watch dev",
+    "release": "clj -X:shadow:css && npx shadow-cljs -A:shadow release production"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "simplebar-react": "^3.3.0"
+  },
+  "devDependencies": {
+    "shadow-cljs": "^2.28.20"
+  }
+}

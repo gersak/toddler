@@ -1,4 +1,5 @@
 (ns toddler.i18n.number
+  (:require-macros [toddler.i18n.number :refer [add-symbols init-all-symbols]])
   (:require
    goog.object
    [clojure.string]
@@ -7,8 +8,8 @@
    [goog.i18n.NumberFormat]
    [goog.i18n.NumberFormatSymbols]))
 
-(defonce symbols
-  {:af            goog.i18n.NumberFormatSymbols_af
+;; DEPRECATED
+#_{:af            goog.i18n.NumberFormatSymbols_af
    :am            goog.i18n.NumberFormatSymbols_am
    :ar            goog.i18n.NumberFormatSymbols_ar
    :ar_DZ         goog.i18n.NumberFormatSymbols_ar_DZ
@@ -30,7 +31,7 @@
    :de_AT         goog.i18n.NumberFormatSymbols_de_AT
    :de_CH         goog.i18n.NumberFormatSymbols_de_CH
    :el            goog.i18n.NumberFormatSymbols_el
-   :en            goog.i18n.NumberFormatSymbols_en
+
    :en_AU         goog.i18n.NumberFormatSymbols_en_AU
    :en_CA         goog.i18n.NumberFormatSymbols_en_CA
    :en_GB         goog.i18n.NumberFormatSymbols_en_GB
@@ -125,7 +126,9 @@
    :zh_CN         goog.i18n.NumberFormatSymbols_zh_CN
    :zh_HK         goog.i18n.NumberFormatSymbols_zh_HK
    :zh_TW         goog.i18n.NumberFormatSymbols_zh_TW
-   :zu            goog.i18n.NumberFormatSymbols_zu})
+   :zu            goog.i18n.NumberFormatSymbols_zu}
+
+(defonce ^:dynamic *symbols* {:en goog.i18n.NumberFormatSymbols_en})
 
 (def currency-map
   (reduce
@@ -134,7 +137,7 @@
        (.-DEF_CURRENCY_CODE s)
        (.-CURRENCY_PATTERN s)))
    nil
-   (vals symbols)))
+   (vals *symbols*)))
 
 (def currency-formatters
   (reduce-kv
@@ -144,7 +147,7 @@
    currency-map))
 
 (defn number-formatter [locale]
-  (let [^js symbols (get symbols locale (:en symbols))
+  (let [^js symbols (get *symbols* locale (:en *symbols*))
         number-formatter-pattern
         (goog.i18n.NumberFormat.
          (.-DECIMAL_PATTERN symbols)

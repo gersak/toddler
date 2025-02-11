@@ -15,7 +15,8 @@
               (swap! module assoc
                      ::show toddler.md/show
                      ::from-url toddler.md/from-url
-                     ::watch-url toddler.md/watch-url))))))
+                     ::watch-url toddler.md/watch-url
+                     ::img toddler.md/img))))))
 
 (defnc not-found [])
 
@@ -47,3 +48,7 @@
 (defnc watch-url
   [props]
   ($ (use-function ::watch-url) {:& props}))
+
+(defnc img
+  [props _]
+  ($ (use-function ::img) {:& props}))

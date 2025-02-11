@@ -3,7 +3,7 @@
    [toddler.app :as app]
    [clojure.string :as str]
    [clojure.core.async :as async]
-   [helix.core :refer [defnc $ <> memo]]
+   [helix.core :refer [defnc $ memo]]
    [helix.dom :as d]
    [helix.hooks :as hooks]
    [toddler.core :refer [fetch]]
@@ -196,3 +196,12 @@
           (fn []
             (async/close! close)))))
     ($ show {:content content & (dissoc props :url)})))
+
+(defnc img
+  {:wrap [(memo #(= %1 %2))]}
+  [{:keys [src] :as props} _]
+  (let [base (hooks/use-context md.context/base)
+        src (str base src)]
+    ($ "img"
+       {:src src
+        & (dissoc props :src)})))

@@ -169,6 +169,16 @@
          :value dispatch}
         (children props)))))))
 
+(defn wrap-router
+  "Wrapper that will use Provider component to
+  encapsulate component"
+  ([component]
+   (fnc Router [props]
+     ($ Provider ($ component {& props}))))
+  ([component base]
+   (fnc Authorized [props]
+     ($ Provider {:base base} ($ component {& props})))))
+
 (defhook use-location
   "Hook will return location from -router- context. Location
   will contain following keys:
@@ -749,6 +759,16 @@
                 (some? best) (push (maybe-add-base base (component-path tree (:id best))))
                 :else nil))))))
     (children props)))
+
+(defn wrap-landing
+  "Wrapper that will use LandingPage component to
+  encapsulate component"
+  ([component url]
+   (wrap-landing component url true))
+  ([component url enforce-access?]
+   (fnc Authorized [props]
+     ($ Provider {:url url :enforce-access? enforce-access?}
+        ($ component {& props})))))
 
 (defnc Protect
   "Component will set protection contexts. Contexts like

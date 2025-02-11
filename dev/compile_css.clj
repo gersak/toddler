@@ -16,10 +16,10 @@
              (cb/generate '{:ui {:include [toddler.ui*
                                            toddler.md
                                            toddler.notifications
-                                           toddler]}
-                            :dev {:include [toddler.dev
-                                            toddler.showcase
-                                            toddler.showcase*]}})
+                                           toddler
+                                           toddler.dev
+                                           toddler.showcase
+                                           toddler.showcase*]}})
              (cb/write-outputs-to (io/file "showcase" "dev" "css")))]
      (prn :CSS-GENERATED)
      (doseq [mod (:outputs result)

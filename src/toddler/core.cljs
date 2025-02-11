@@ -22,7 +22,7 @@
    [toddler.graphql :as graphql]
    [toddler.graphql.transport :refer [send-query]]))
 
-; (.log js/console "Loading toddler.core")
+(.log js/console "Loading toddler.core")
 
 (defn ml
   "Multiline function. Joins input lines"
