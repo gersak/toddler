@@ -1,5 +1,4 @@
 (ns toddler.i18n.number
-  (:require-macros [toddler.i18n.number :refer [add-symbols init-all-symbols]])
   (:require
    goog.object
    [clojure.string]
@@ -8,8 +7,15 @@
    [goog.i18n.NumberFormat]
    [goog.i18n.NumberFormatSymbols]))
 
-;; DEPRECATED
-#_{:af            goog.i18n.NumberFormatSymbols_af
+; (def ^:dynamic *symbols* {:en goog.i18n.NumberFormatSymbols_en})
+(defonce ^{:dynamic true
+           :doc "Decision is to provide all formatters out of the box.
+                When advanced compilation is finished it take about 100kb
+                in generated JS file.
+
+                BUT! When gziped, difference is just 15kb, so..."}
+ *symbols*
+  {:af            goog.i18n.NumberFormatSymbols_af
    :am            goog.i18n.NumberFormatSymbols_am
    :ar            goog.i18n.NumberFormatSymbols_ar
    :ar_DZ         goog.i18n.NumberFormatSymbols_ar_DZ
@@ -31,7 +37,7 @@
    :de_AT         goog.i18n.NumberFormatSymbols_de_AT
    :de_CH         goog.i18n.NumberFormatSymbols_de_CH
    :el            goog.i18n.NumberFormatSymbols_el
-
+   :en goog.i18n.NumberFormatSymbols_en
    :en_AU         goog.i18n.NumberFormatSymbols_en_AU
    :en_CA         goog.i18n.NumberFormatSymbols_en_CA
    :en_GB         goog.i18n.NumberFormatSymbols_en_GB
@@ -126,25 +132,33 @@
    :zh_CN         goog.i18n.NumberFormatSymbols_zh_CN
    :zh_HK         goog.i18n.NumberFormatSymbols_zh_HK
    :zh_TW         goog.i18n.NumberFormatSymbols_zh_TW
-   :zu            goog.i18n.NumberFormatSymbols_zu}
+   :zu            goog.i18n.NumberFormatSymbols_zu})
 
-(defonce ^:dynamic *symbols* {:en goog.i18n.NumberFormatSymbols_en})
-
-(def currency-map
+(defn compute-currency-map
+  []
   (reduce
    (fn [cm ^js s]
-     (assoc cm
-       (.-DEF_CURRENCY_CODE s)
-       (.-CURRENCY_PATTERN s)))
+     (if s
+       (assoc cm
+         (.-DEF_CURRENCY_CODE s)
+         (.-CURRENCY_PATTERN s))
+       cm))
    nil
    (vals *symbols*)))
 
-(def currency-formatters
+(defn compute-currency-formatters
+  []
   (reduce-kv
    (fn [cf currency pattern]
      (assoc cf currency (goog.i18n.NumberFormat. pattern currency)))
    nil
-   currency-map))
+   (compute-currency-map)))
+
+(def currency-formatters (compute-currency-formatters))
+
+(defn refresh-currency-formatters
+  []
+  (set! currency-formatters (compute-currency-formatters)))
 
 (defn number-formatter [locale]
   (let [^js symbols (get *symbols* locale (:en *symbols*))

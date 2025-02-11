@@ -584,6 +584,7 @@
   with routing info. Check out [[use-link]] hook
   to see how to structure children routing info."
   [{:keys [parent links] :as props}]
+  (println "LINKING: " parent links)
   (use-link parent links)
   (children props))
 
@@ -749,6 +750,7 @@
                      (get-landing-candidates))]
         (hooks/use-effect
           [tree (:id best)]
+          (println "LOOKING FOR LANDING: " tree)
           (when (= (maybe-remove-base base location) url)
             (let [[last-component last-url] (edn/read-string (.getItem js/sessionStorage last-rendered-key))
                   component (when-some [location (component->location tree last-component)]
@@ -767,7 +769,7 @@
    (wrap-landing component url true))
   ([component url enforce-access?]
    (fnc Authorized [props]
-     ($ Provider {:url url :enforce-access? enforce-access?}
+     ($ LandingPage {:url url :enforce-access? enforce-access?}
         ($ component {& props})))))
 
 (defnc Protect

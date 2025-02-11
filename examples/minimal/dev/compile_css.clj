@@ -14,7 +14,8 @@
   ([dir]
    (let [result
          (-> @css-ref
-             (cb/generate '{:ui {:include [examples.minimal*
+             (cb/generate '{:ui {:include [examples.minimal
+                                           examples.minimal*
                                            toddler.ui*]}})
              (cb/write-outputs-to (io/file dir "css")))]
      (prn :CSS-GENERATED)

@@ -265,6 +265,27 @@
 ;           (when avatars (remove-watch avatars uuid)))))
 ;     [_avatar refresh]))
 
+(defhook use-theme-state
+  "Hook will provide state and state setter
+  similar to helix.hooks/use-state. Except this
+  state will be stored in localStorage"
+  ([] (use-theme-state "light"))
+  ([default]
+   (let [[theme set-theme!] (use-local-storage ::theme str)]
+     (hooks/use-effect
+       [theme]
+       (if (empty? theme)
+         (set-theme! default)
+         (async/go
+           (loop []
+             (if-some [html (.querySelector js/document "html")]
+               (when-not (= (.getAttribute html "data-theme") theme)
+                 (.setAttribute html "data-theme" theme))
+               (do
+                 (async/<! (async/timeout 100))
+                 (recur)))))))
+     [theme set-theme!])))
+
 (defhook use-current-locale
   []
   "Returns value for app/locale context"
