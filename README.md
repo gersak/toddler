@@ -55,3 +55,14 @@ Then, start the development server:
 npm run dev
 ```
 
+# Where is this going?
+
+I've been exploring possibilities for mobile and desktop applications.
+My next goal is to build applications using [Tauri](https://v2.tauri.app/),
+focusing on integration and a proof-of-concept (PoC) project.
+
+Drag-and-drop (DnD) is another area I want to cover, leveraging functions, hooks, and signal events.
+
+## Complete Documentation
+
+Not all functions, hooks, and components are currently showcased or documented. Expanding and refining the documentation is a key priority.

@@ -77,15 +77,6 @@
          :className (css :text-base :font-bold :no-underline :select-none)}
         "API")))))
 
-(def greeting
-  (toddler/ml
-   "This is not a component library. Yes, Toddler includes **ready-to-use components**,"
-   "but that’s not its primary purpose. You are encouraged to **create your own**"
-   "components, tailored to your needs.  "
-   ""
-   " The real power of Toddler lies in **hooks** and **utility functions** found in the"
-   "`toddler.core`, `toddler.routing`, `toddler.popup` and other [namespaces](https://gersak.github.io/toddler/codox/index.html)."
-   "Default components exist mainly to **showcase that the system works**."))
 
 (defnc Greeting
   []
