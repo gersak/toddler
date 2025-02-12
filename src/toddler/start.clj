@@ -1,7 +1,8 @@
 (ns toddler.start
   (:require
    [clojure.java.io :as io]
-   [clojure.string :as str]))
+   [clojure.string :as str]
+   [clojure.java.shell :refer [sh]]))
 
 (defn exists?
   [project]
@@ -10,7 +11,7 @@
 (defn build-shell
   [project]
   (assert (not (exists? project)) "Project is already active")
-  (io/make-parents (str project "/src/" project "/"))
+  (io/make-parents (str project "/src/" project "/main.cljs"))
   (io/make-parents (str project "/dev/")))
 
 (defn process
@@ -29,11 +30,16 @@
                                        (get variables (keyword variable))))
                         content
                         _variables)]
+       (io/make-parents target)
+       (when (.exists (io/file target))
+         (throw
+          (ex-info "File already exists"
+                   {:template file
+                    :target target})))
        (spit target new-content)))))
 
 (defn init-files
   [project]
-  (assert (exists? project) "Project folder isn't ready")
   (letfn [(->file
             [path]
             (str project "/" path))]
@@ -50,17 +56,30 @@
              {:project project})
     (process "template/dev/index.html" (->file "dev/index.html"))
     (process "template/dev/user.clj.tmp" (->file "dev/user.clj"))
-    (process "template/src/main.cljs.tmp"
-             (->file "src/main.cljs")
-             {:project project})
-    (process "template/src/main.css" (->file "src/main.css"))))
+    (let [dir (->
+               project
+               str/lower-case
+               (str/replace #"-+" "_")
+               (str/replace #"\." "/"))]
+      (process "template/src/main.cljs.tmp"
+               (->file (str "src/" dir "/main.cljs"))
+               {:project project
+                :project-folder dir})
+      (process "template/src/main.css" (->file (str "src/" dir "/main.css"))))))
+
+(defn install-js
+  [project]
+  (sh "npm" "install" :dir project))
 
 (defn -main
-  [[project & others]]
-  (assert (some? project) "Specify project name")
-  (build-shell project)
-  (init-files project))
+  [& args]
+  (let [[project] args]
+    (assert (some? project) "Specify project name")
+    (init-files project)
+    (install-js project)
+    (System/exit 0)))
 
 (comment
   (def project "test-project")
-  (process "template/package.json" (str project "/package.json") {:project project}))
+  (process "template/package.json" (str project "/package.json") {:project project})
+  (-main [project]))
