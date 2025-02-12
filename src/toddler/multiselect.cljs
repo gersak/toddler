@@ -1,12 +1,6 @@
-;; Copyright (C) Neyho, Inc - All Rights Reserved
-;; Unauthorized copying of this file, via any medium is strictly prohibited
-;; Proprietary and confidential
-;; Writtenby Robert Gersak <robi@neyho.com>, June 2019
-
-
 (ns toddler.multiselect
   (:require
-   [helix.core :refer [$ defhook defnc provider <>]]
+   [helix.core :refer [$ defhook defnc]]
    [helix.hooks :as hooks]
    [helix.dom :as d]
    [helix.children :as c]
@@ -14,8 +8,7 @@
    [toddler.dropdown
     :refer [*dropdown*]]
    [toddler.popup
-    :as popup]
-   [toddler.ui :as ui :refer [!]]))
+    :as popup]))
 
 (defn ^:no-doc get-available-options
   ([search options search-fn]
