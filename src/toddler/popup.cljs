@@ -43,8 +43,8 @@
    ["react" :as react]
    ["react-dom" :as rdom]
    [helix.core
-    :refer [defnc provider <>
-            defhook create-context]]
+    :refer [defnc fnc provider <>
+            defhook create-context $]]
    [helix.hooks :as hooks]
    [helix.dom :as d]
    [helix.children :as c]
@@ -552,6 +552,13 @@
       (d/div
        {:id "toddler-popups"
         :ref #(reset! container %)})))))
+
+(defn wrap-container
+  "Wrapper that will use Container component to
+  render children if user is authorized"
+  ([component]
+   (fnc Container [props]
+     ($ Container ($ component {& props})))))
 
 (defnc Area
   "Component that will generate div element around children

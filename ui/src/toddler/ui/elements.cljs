@@ -437,7 +437,6 @@
                     :end $end
                     :explode $explode
                     $start)]
-    (println "STYLE: " style)
     (d/div
      {:ref _ref
       :style style

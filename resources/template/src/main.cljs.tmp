@@ -3,6 +3,7 @@
    ["{{project-folder}}/main.css"]}
   (:require
    ["react-dom/client" :refer [createRoot]]
+   [goog.string :refer [format]]
    [shadow.css :refer [css]]
    [helix.core :refer [$ defnc provider]]
    [helix.dom :as d]
@@ -11,9 +12,12 @@
    [toddler.ui :as ui]
    [toddler.i18n.time]
    [toddler.core :as toddler]
+   [toddler.popup :as popup]
    [toddler.layout :as layout]
    [toddler.ui.components :refer [components]]
    [toddler.fav6.solid :as solid]
+   [toddler.material.outlined :as outlined]
+   [toddler.fav6.brands :as brands]
    [toddler.window :refer [wrap-window-provider]]
    [toddler.router :as router]))
 
@@ -22,114 +26,106 @@
 ; (toddler.i18n.time/add-symbols [:hr :de])
 ; (toddler.i18n.time/add-symbols [:hr :de])
 
-(def animal-emoji
-  {:dog "🐶"
-   :cat "🐱"
-   :cow "🐮"
-   :horse "🐴"
-   :sheep "🐑"})
+(def goku "https://giphy.com/embed/fmMdxlVwsCmTtA4V6a")
 
-(def animal-description
-  {:dog "Loyal and affectionate, dogs are often called “man’s best friend.” They come in various breeds and sizes, serving as pets, guards, and working animals."
-   :cat "Independent and playful, cats are known for their agility and hunting skills. They make great companions and are famous for their love of napping."
-   :cow "A vital livestock animal, cows provide milk, meat, and leather. They are known for their gentle nature and are essential in agriculture."
-   :horse "Horses have been used for transportation, farming, and sports for centuries. They are strong, intelligent, and have a deep bond with humans."
-   :sheep "Domesticated for their wool, milk, and meat, sheep are docile animals that thrive in herds. Their wool is widely used in the textile industry."})
+(defnc GiphyEmbed [{:keys [src width height]}]
+  (d/div
+   {;:className (css :border :rounded-md :overflow-hidden)
+    ;:style {:width width :height height}
+    :dangerouslySetInnerHTML
+    #js {:__html (format
+                  "<iframe src=\"%s\" width=\"%s\" height=\"%s\" style=\" \" frameBorder=\"0\" class=\"giphy-embed\" allowFullScreen></iframe><p><a href=\"https://giphy.com/gifs/studiosoriginals-2yLNN4wTy7Zr8JSXHB\"></a></p>"
+                  src width height)}}))
 
-(defn Translate
-  []
-  (let [translate (toddler/use-translate)]
-    (d/div (translate (js/Date.)))))
+(defnc actions
+  [{:keys [theme on-theme-change]}]
+  (d/div
+   {:className (css :absolute :top-1 :right-1 :flex
+                    :h-10
+                    :flex-row-reverse
+                    :pr-1
+                    :box-border
+                    ["& .wrapper"
+                     :items-center :flex :items-center {:font-size "24px"} :mr-4
+                     :cursor-pointer :color-inactive]
+                    ["& .wrapper:first-child" :mr-0]
+                    ["& .tooltip-popup-area:hover" :color-normal])}
+   (d/div
+    {:className "wrapper"}
+    ($ ui/tooltip {:message "Change theme"}
+       (d/div
+        {:on-click (fn []
+                     (on-theme-change
+                      (case theme
+                        ("dark" 'dark) "light"
+                        ("light" 'light) "dark"
+                        "light")))}
+        (if (= "dark" theme)
+          ($ outlined/light-mode)
+          ($ outlined/dark-mode)))))
+   (d/div
+    {:className "wrapper"}
+    ($ ui/tooltip {:message "Open Github project"}
+       (d/a
+        {:href "https://github.com/gersak/toddler"}
+        ($ brands/github))))
+   (d/div
+    {:className "wrapper"}
+    ($ ui/tooltip {:message "API Docs"}
+       (d/a
+        {:href "https://gersak.github.io/toddler/codox/index.html"
+         :className (css :text-base :font-bold :no-underline :select-none)}
+        "API")))))
+
+(def greeting
+  (toddler/ml
+   "This is not a component library. Yes, Toddler includes **ready-to-use components**,"
+   "but that’s not its primary purpose. You are encouraged to **create your own**"
+   "components, tailored to your needs.  "
+   ""
+   " The real power of Toddler lies in **hooks** and **utility functions** found in the"
+   "`toddler.core`, `toddler.routing`, `toddler.popup` and other [namespaces](https://gersak.github.io/toddler/codox/index.html)."
+   "Default components exist mainly to **showcase that the system works**."))
 
 (defnc Greeting
   []
-  ($ ui/row
-     {:align :center
-      :style {:width "100%" :height "100%"}}
-     ($ ui/column
-        {:align :center
-         :style {:align-items "center"}}
-        ($ ui/row
-           ($ Translate)
-           (d/div {:style {:font-size "100px"}} "🖖")
-           (d/div "Hello from minimal example")))))
-
-(def animals [:dog :cat :cow :horse :sheep])
-
-(defnc AnimalCard
-  []
-  (let [{animal :pathname} (router/use-location)
-        {:keys [go]} (router/use-navigate)
-        animal (when animal (keyword (subs animal 1)))
-        position (.indexOf animals animal)
-        [previous-animal next-animal]
-        (hooks/use-memo
-          [position]
-          [(if (pos? position)
-             #(go (str "/" (name (get animals (dec position)))))
-             identity)
-           (if (< position (dec (count animals)))
-             #(go (str "/" (name (get animals (inc position)))))
-             identity)])]
-    ($ ui/column
-       {:className (css :border :rounded-lg :border-normal+ :p-4 :bg-normal+)}
-       ($ ui/row
-          {:className (css {:height "180px"})}
+  (let [[theme set-theme!] (toddler/use-theme-state)
+        scale 0.7]
+    ($ ui/row {:align :center
+               :className (css :w-full :h-full)}
+       ($ ui/column
+          {:style {:max-width 400 :height 400}
+           :className (css :p-8 :border :border-normal
+                           :rounded-lg :relative :bg-normal+)
+           :align :center}
+          ($ actions {:on-theme-change set-theme! :theme theme})
           ($ ui/row
-             {:style {:font-size "100px"
-                      :width "120px"}
-              :align :center}
-             (get animal-emoji animal))
-          (d/div
-           {:className (css :flex :flex-col
-                            :p-4 :m-2
-                            ["& h1" :uppercase])}
-           (d/h1 (name animal))
-           (d/pre
-            {:className (css :whitespace-pre-wrap :word-break
-                             {:width "200px"})}
-            (get animal-description animal))))
-       ($ ui/row
-          {:align :explode
-           :className (css :mt-10)}
-          ($ ui/button
-             {:disabled (= identity previous-animal)
-              :on-click previous-animal}
-             ($ solid/chevron-left))
-          ($ ui/button
-             {:disabled (= identity next-animal)
-              :on-click next-animal}
-             ($ solid/chevron-right))))))
+             {:align :center
+              :className (css
+                          ["& .message" {:max-width "300px"}]
+                          ["& h1" :mb-6 {:font-size "32px"}]
+                          ["& p" :mt-2 {:font-size "12px"}]
+                          ["& a" {:color "var(--link-color)" :font-weight "600"}])}
+             (d/div
+              {:className "message"}
+              (d/h1 "Toddler")
+              (d/p
+               (toddler/ml
+                "Template project setup complete! You're ready to code. ")
+               (d/p
+                "Check out the "
+                (d/a
+                 {:href "https://gersak.github.io/toddler/rationale"}
+                 "showcase")
+                " page to see what Toddler can do."))))
 
-(defnc Animals
-  {:wrap [(router/wrap-link
-           ::router/ROOT
-           [{:id :dog
-             :name "Dog"
-             :segment "dog"
-             :landing 10}
-            {:id :cat
-             :name "Cat"
-             :segment "cat"}
-            {:id :cow
-             :name "Cow"
-             :segment "cow"
-             :landing 30}
-            {:id :horse
-             :name "Horse"
-             :segment "horse"}
-            {:id :sheep
-             :name "Sheep"
-             :segment "sheep"}])]}
-  []
-  ($ ui/row
-     {:align :center
-      :style {:width "100%" :height "100%"}}
-     ($ ui/column
-        {:align :center
-         :style {:align-items "center"}}
-        ($ ui/row
-           ($ AnimalCard)))))
+          ($ ui/row
+             {:align :center}
+             (d/div
+              {:className (css :border :border-normal :rounded-lg :overflow-hidden)}
+              ($ GiphyEmbed {:src goku
+                             :width (* 265 scale)
+                             :height (* scale 200)})))))))
 
 (defnc Minimal
   {:wrap [(router/wrap-landing "/" false)
@@ -145,7 +141,8 @@
      (provider
       {:context app/theme
        :value theme}
-      ($ Animals)))))
+      ($ popup/Container
+         ($ Greeting))))))
 
 (defn ^:dev/after-load start! []
   (let [target ^js (.getElementById js/document "app")]
