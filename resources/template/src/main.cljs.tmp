@@ -1,6 +1,6 @@
-(ns examples.minimal
+(ns {{project}}.main
   {:shadow.css/include
-   ["examples/minimal.css"]}
+   ["{{project}}/main.css"]}
   (:require
    ["react-dom/client" :refer [createRoot]]
    [shadow.css :refer [css]]
