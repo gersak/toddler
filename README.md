@@ -7,5 +7,5 @@
 
 ## Quickstart
 ```
-clj -Sdeps '{:deps {dev.gersak/toddler {:mvn/version "0.1.5-SNAPSHOT"}}}' -m toddler.start new.project
+clj -Sdeps '{:deps {dev.gersak/toddler-ui {:mvn/version "0.1.0"}}}' -m toddler.start new.project
 ```

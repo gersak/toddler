@@ -9,7 +9,7 @@
 (defn create-jar []
   (let [basis (b/create-basis {})]
     (b/delete {:path "target"})
-    (b/copy-dir {:src-dirs ["src"]
+    (b/copy-dir {:src-dirs ["src" "resources"]
                  :target-dir target})
     (b/write-pom {:target target
                   :lib 'dev.gersak/toddler-ui

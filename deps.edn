@@ -13,14 +13,12 @@
  :aliases
  {:shadow
   {:extra-deps {thheller/shadow-cljs         {:mvn/version "2.20.2"}
-                ; dev.gersak/toddler 
-                ; com.gersak/toddler
-                ; biz.gersak/toddler
-                ; digital.gersak/toddler
                 com.thheller/shadow-css {:mvn/version "0.5.0"}}
    :extra-paths ["dev"]}
   :showcase
   {:extra-paths ["showcase/src" "ui/src" "themes/default"]}
+  :template
+  {:extra-paths ["ui/resources"]}
   :css
   {:extra-paths ["dev"]
    :ns-default compile-css
