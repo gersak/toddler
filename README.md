@@ -12,13 +12,14 @@ Toddler is a library containing a collection of [Helix](https://github.com/lilac
 components and functions that I found useful throughout my career.
 On top of this reusable code, I've built UI components that you can test in the **[SHOWCASE](https://gersak.github.io/toddler)**.
 
-The **Showcase** is a Git submodule within this repository, used for testing, development, and documentation of Toddler UI components.
+The **[showcase](https://github.com/gersak/toddler-showcase.git)** is a Git submodule within this repository,
+used for testing, development, and documentation of Toddler UI components.
 
 If you want to see the full API documentation, visit the [API Docs](https://gersak.github.io/toddler/codox/index.html).
 
 ## Quickstart
 Toddler includes a built-in template to create a new project. In the following commands,
-we refer to the project as `new-project`. Feel free to replace it with your preferred name.
+we refer to the project as `new.project`. Feel free to replace it with your preferred name.
 
 ```sh
 clj -Sdeps '{:deps {dev.gersak/toddler-ui {:mvn/version "0.1.0"}}}' -m toddler.start new.project
