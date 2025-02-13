@@ -12,6 +12,7 @@
           {:target :browser
            :entries [{{project}}.main]
            :modules {:main
-                     {:entries [{{project}}.main]}}
+                     {:entries [{{project}}.main]
+                      :init-fn {{project}}.main/start!}}
            :output-dir "build/js"
            :output-to "build/js/main.js"}}}
