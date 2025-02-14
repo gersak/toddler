@@ -4,3 +4,4 @@
 
 (def base (create-context))
 (def refresh-period (create-context 3000))
+(def show (create-context))

@@ -22,7 +22,7 @@
     (cb/init)
     (update :aliases merge css/aliases)
     (cb/start)
-    (cb/index-path (io/file "src") {})
+    (cb/index-path (io/file "src/resources") {})
     (cb/generate '{:ui {:include [toddler.ui
                                   toddler.ui*]}})
     (cb/write-index-to (io/file "src" "shadow-css-index.edn")))))

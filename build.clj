@@ -3,13 +3,13 @@
    [clojure.tools.build.api :as b]
    [deps-deploy.deps-deploy :as dd]))
 
-(def version "1.0.0")
+(def version "1.0.0-SNAPSHOT")
 (def target "target/classes")
 
 (defn create-jar []
   (let [basis (b/create-basis {})]
     (b/delete {:path "target"})
-    (b/copy-dir {:src-dirs ["src" "resources"]
+    (b/copy-dir {:src-dirs ["src" "resources" "ui/resources"]
                  :target-dir target})
     (b/write-pom {:target target
                   :lib 'dev.gersak/toddler
@@ -28,16 +28,9 @@
                 :artifact jar-file
                 :pom-file pom-file})))
 
-(defn generate-shadow-indexes
-  []
-  (b/process
-   {:command-args ["clj" "-X:release"]
-    :dir "."}))
-
 (defn release
   ([] (release nil))
   ([& _]
-   (generate-shadow-indexes)
    (create-jar)
    (deploy)))
 

@@ -19,10 +19,9 @@
   (:require
    clojure.string
    goog.string.format
-   [shadow.css :refer [css]]
    [clojure.core.async :as async]
    [helix.core
-    :refer [defnc $ <>
+    :refer [defnc $ <> fnc
             memo create-context
             provider]]
    [helix.children :refer [children]]
@@ -275,7 +274,8 @@
        :value new-timeout}
       (<>
        (d/div
-        {& (dissoc props :frame :notifications :opened?)
+        {& (dissoc props :frame :notifications :opened?
+                   :hide-timeout :new-timeout)
          :style frame}
         (d/div
          {:class (cond-> ["notifications-wrapper"]
@@ -302,66 +302,15 @@
            notifications))))
        (children props))))))
 
-(def ^:no-doc $default
-  (css
-   {:color "var(--notification-text)"}
-   ["& .notification-wrapper" :py-1]
-   ["& .notification"
-    :flex
-    :rounded-md
-    :grow
-    :py-3
-    :px-4
-    :relative
-    :border
-    :border-normal
-    :bg-normal+
-    :shadow-lg
-    :items-center
-    {:z-index "200"
-     :transition "color .3s ease-in-out"}]
-    ;;
-   ["& .notification .icon"
-    :flex
-    :items-center
-    {:order 2}]
-   ["& .notification pre" :word-break :whitespace-pre-wrap]
-    ;;
-   ["& .notification .content"
-    :flex :items-center
-    :mr-2
-    :grow
-    {:order 2}
-    :text-xxs
-    :font-medium]
-    ;;
-   ["& .notification .close"
-    :absolute
-    :top-3
-    :right-3
-    :flex
-    :items-center
-    :ml-3 :pl-3
-    {:order 3
-     :opacity "0.5"
-     :justify-self "flex-end"
-     :transition "color .3s ease-in-out"}
-    :text-sm]
-   ["& .notification" {:background-color "var(--notification-neutral)"}]
-
-   ["& .notification .close svg" :w-4 :h-4]
-    ;;
-   ["& .notification .close:hover" :cursor-pointer {:opacity "1"}]
-    ;;
-   ["& .notification.negative" {:background-color "var(--notification-negative)"
-                                :border-color  "var(--border-negative)"}]
-   ["& .notification.positive" {:background-color "var(--notification-positive)"
-                                :border-color "var(--border-positive)"}]
-   ["& .notification.warning" {:background-color "var(--notification-warn)"
-                               :border-color "var(--border-warning)"}]))
+(defn wrap-store
+  "Wrapper that will use Store component to
+  encapsulate component"
+  ([component store-props]
+   (fnc Store [props]
+     ($ Store {& store-props}
+        ($ component {& props})))))
 
 (comment
-
   (async/put!
    notification-channel
    {:type :common/warning

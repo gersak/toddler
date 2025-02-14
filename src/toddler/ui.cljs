@@ -127,6 +127,9 @@
 (defcomponent expand-cell :cell/expand)
 (defcomponent delete-cell :cell/delete)
 
+(defcomponent md :markdown)
+(defcomponent notification-store :notifications/store)
+
 (defhook use-component [id]
   (get (hooks/use-context __components__) id))
 

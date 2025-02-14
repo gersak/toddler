@@ -1,7 +1,8 @@
 (ns toddler.md.lazy
   (:require
-   [helix.core :refer [$ defnc defhook]]
+   [helix.core :refer [$ defnc defhook fnc provider]]
    [helix.hooks :as hooks]
+   [toddler.md.context :as md.context]
    [shadow.loader]))
 
 (defonce module (atom nil))
@@ -52,3 +53,24 @@
 (defnc img
   [props _]
   ($ (use-function ::img) {:& props}))
+
+(defn wrap-base [component base]
+  (fnc MD [props]
+    (provider
+     {:context md.context/base
+      :value base}
+     ($ component {& props}))))
+
+(defn wrap-refresh [component period]
+  (fnc MD [props]
+    (provider
+     {:context md.context/refresh-period
+      :value period}
+     ($ component {& props}))))
+
+(defn wrap-show [component md-props]
+  (fnc MD [props]
+    (provider
+     {:context md.context/show
+      :value md-props}
+     ($ component {& props}))))

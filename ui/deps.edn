@@ -1,7 +1,7 @@
 {:paths ["src" "resources"]
  :deps
- {dev.gersak/toddler {:mvn/version "0.2.0"}
-  dev.gersak/toddler-icons {:mvn/version "0.1.0"}}
+ {dev.gersak/toddler {:mvn/version "1.0.0"}
+  dev.gersak/toddler-icons {:mvn/version "1.0.0"}}
  :aliases
  {:release
   {:extra-paths ["dev"]

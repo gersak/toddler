@@ -3,10 +3,9 @@
    [toddler.app :as app]
    [clojure.string :as str]
    [clojure.core.async :as async]
-   [helix.core :refer [defnc $ memo]]
+   [helix.core :refer [defnc $ memo provider fnc]]
    [helix.dom :as d]
    [helix.hooks :as hooks]
-   [shadow.css :refer [css]]
    [toddler.core :refer [fetch]]
    [toddler.util :as util]
    [toddler.router :as router]
@@ -17,29 +16,6 @@
     :refer [full]
     :rename {full emoji}]
    ["highlight.js" :as hljs]))
-
-(def $default
-  (css :mt-4 :mb-24 :text-sm
-       ["& .code" :mt-2]
-       ["& h1,& h2,& h3,& h4" :uppercase]
-       ["& h3" :mt-4]
-       ["& h2" :mt-12]
-       ["& h4" :mt-4]
-       ["& p" :mt-2]
-       ["& b, & strong" :font-semibold]
-       ["& br" {:height "8px"}]
-       ["& ul" :mt-2 :ml-4 :border {:list-style-type "disc" :border "none"}]
-       ["& ul li" :text-xs]
-       ["& pre > code" :rounded-lg :my-4 {:line-height "1.5"}]
-       ["& li > code" :rounded-lg :my-4 {:line-height "1.5"}]
-       ["& p > code" :py-1 :px-2 :rounded-md :text-xxs :bg-normal- :font-semibold]
-       ["& li > code" :py-1 :px-2 :rounded-md :text-xxs :bg-normal- :font-semibold]
-       ["& .table-container" :border :my-6 :p-2 :rounded-lg :bg-normal+ :border-normal+]
-       ["& table tr" :h-6 :text-xxs]
-       ["& a" {:color "var(--link-color)" :font-weight "600"}]
-       ["& .hljs" :bg-normal+]
-        ; ["& table thead tr"]
-       ["& table tbody" :mt-2 :p-1]))
 
 (def md
   (let [md (->
@@ -72,14 +48,34 @@
               (str "</" level ">"))))
     md))
 
+(defn wrap-base [component base]
+  (fnc MD [props]
+    (provider
+     {:context md.context/base
+      :value base}
+     ($ component {& props}))))
+
+(defn wrap-refresh [component period]
+  (fnc MD [props]
+    (provider
+     {:context md.context/refresh-period
+      :value period}
+     ($ component {& props}))))
+
+(defn wrap-show [component md-props]
+  (fnc MD [props]
+    (provider
+     {:context md.context/show
+      :value md-props}
+     ($ component {& props}))))
+
 (defn check-diff
   [a b]
   (= (:content a) (:content b)))
 
 (defnc show
   {:wrap [(memo check-diff)]}
-  [{:keys [content class className]
-    :or {className $default}}]
+  [{:keys [content]}]
   (let [editor (hooks/use-ref nil)
         text (hooks/use-memo
                [content]
@@ -88,33 +84,10 @@
         {:keys [hash]} (router/use-location)
         scroll (hooks/use-ref nil)
         theme (app/use-theme)
-        ; dark-url "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/tokyo-night-dark.min.css"
-        dark-url "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/base16/tomorrow-night.min.css"
-        light-url "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/base16/atelier-lakeside-light.min.css"]
+        {:keys [on-theme-change class className]} (hooks/use-context md.context/show)]
     (hooks/use-effect
       [theme]
-      (letfn [(fetch-dark []
-                (head/remove
-                 :link
-                 {:href light-url
-                  :rel "stylesheet"})
-                (head/add
-                 :link
-                 {:href dark-url
-                  :rel "stylesheet"}))
-              (fetch-light []
-                (head/remove
-                 :link
-                 {:href dark-url
-                  :rel "stylesheet"})
-                (head/add
-                 :link
-                 {:href light-url
-                  :rel "stylesheet"}))]
-        (case theme
-          "light" (fetch-light)
-          "dark" (fetch-dark)
-          nil)))
+      (on-theme-change theme))
     (hooks/use-effect
       :once
       (when-let [scroll-element (util/find-parent

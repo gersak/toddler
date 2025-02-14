@@ -1,7 +1,7 @@
 {;; REPL
- :paths ["src" "gen/src" "graphql/src" "resources"]
+ :paths ["src" "gen/src" "resources"]
  :deps
- {dev.gersak/toddler-graphql                 {:mvn/version "0.2.0"}
+ {dev.gersak/toddler-graphql                 {:mvn/version "1.0.0"}
   org.clojure/clojurescript                  {:mvn/version "1.11.54"}
   org.clojure/core.async                     {:mvn/version "1.5.648"}
   cljs-bean/cljs-bean                        {:mvn/version "1.7.0"}
@@ -23,12 +23,6 @@
   {:extra-paths ["dev"]
    :ns-default compile-css
    :exec-fn compile-css/release}
-  :release
-  {:extra-paths ["dev" "ui/src" "themes/default"]
-   :extra-deps {thheller/shadow-cljs {:mvn/version "2.20.2"}
-                com.thheller/shadow-css {:mvn/version "0.5.0"}}
-   :ns-default compile-css
-   :exec-fn compile-css/generate-indexes}
   :icons
   {:extra-paths ["icons"]
    :extra-deps {babashka/fs {:mvn/version "0.2.16"}}}

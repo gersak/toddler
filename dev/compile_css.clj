@@ -79,23 +79,23 @@
   (stop)
   (start))
 
-(defn generate-indexes
-  ([& _]
-   (let [result
-         (->
-          (cb/init)
-          (update :aliases merge css/aliases)
-          (cb/start)
-          (cb/index-path (io/file "src") {})
-          (cb/generate '{:ui {:include [toddler.md
-                                        toddler.notifications
-                                        toddler.dev]}})
-          (cb/write-index-to (io/file "src" "shadow-css-index.edn")))]
-     (prn "Indexes generated")
-     (doseq [mod (:outputs result)
-             {:keys [warning-type] :as warning} (:warnings mod)]
-       (prn [:CSS (name warning-type) (dissoc warning :warning-type)]))
-     (println))))
+;; DEPRECATED - toddler should have 0 css, use css in toddler.ui
+; (defn generate-indexes
+;   ([& _]
+;    (let [result
+;          (->
+;           (cb/init)
+;           (update :aliases merge css/aliases)
+;           (cb/start)
+;           (cb/index-path (io/file "src") {})
+;           (cb/generate '{:ui {:include [toddler.md
+;                                         toddler.notifications]}})
+;           (cb/write-index-to (io/file "resources" "shadow-css-index.edn")))]
+;      (prn "Indexes generated")
+;      (doseq [mod (:outputs result)
+;              {:keys [warning-type] :as warning} (:warnings mod)]
+;        (prn [:CSS (name warning-type) (dissoc warning :warning-type)]))
+;      (println))))
 
 (comment
   (-> css-ref deref keys)
