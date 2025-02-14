@@ -298,34 +298,33 @@
               (do
                 (async/<! (async/timeout 100))
                 (recur)))))))
-    ($ popup/Container
-       (provider
-        {:context app/theme
-         :value theme}
-        (! :row {:key ::center
-                 :& (cond->
-                     {:align :center
-                      :style {:flex-grow "1"}})}
-           (! :row
-              {:key ::wrapper
-               :style {:max-width (+ content-width navigation-width)}}
-              ($ navbar {:ref _navbar})
-              (! :column {:className "content"}
-                 ($ header
-                    {:ref _header
-                     :theme theme
-                     :on-theme-change set-theme!
-                     :style {:width header-width
-                             :height header-height}})
-                 ($ content
-                    {:ref _content
-                     :style {:height content-height
-                             :width content-width}}
-                    (map
-                     (fn [{:keys [id render]}]
-                       (when render
-                         ($ render {:key id})))
-                     components)))))))))
+    (provider
+     {:context app/theme
+      :value theme}
+     (! :row {:key ::center
+              :& (cond->
+                  {:align :center
+                   :style {:flex-grow "1"}})}
+        (! :row
+           {:key ::wrapper
+            :style {:max-width (+ content-width navigation-width)}}
+           ($ navbar {:ref _navbar})
+           (! :column {:className "content"}
+              ($ header
+                 {:ref _header
+                  :theme theme
+                  :on-theme-change set-theme!
+                  :style {:width header-width
+                          :height header-height}})
+              ($ content
+                 {:ref _content
+                  :style {:height content-height
+                          :width content-width}}
+                 (map
+                  (fn [{:keys [id render]}]
+                    (when render
+                      ($ render {:key id})))
+                  components))))))))
 
 (defnc playground
   {:wrap [(window/wrap-window-provider)]}

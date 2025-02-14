@@ -16,7 +16,8 @@
          (-> @css-ref
              (cb/generate '{:toddler {:include [{{project}}.main
                                                 {{project}}*
-                                                toddler.ui*]}})
+                                                toddler.ui*
+                                                toddler.dev]}})
              (cb/write-outputs-to (io/file dir "css")))]
      (prn :CSS-GENERATED)
      (doseq [mod (:outputs result)

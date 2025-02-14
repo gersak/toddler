@@ -630,11 +630,16 @@
   (let [{:keys [go]} (hooks/use-context -navigation-)
         {:keys [tree]} (hooks/use-context -router-)
         base (hooks/use-context -base-)
-        base (if (str/starts-with? base "/")
+        base (cond
+               (nil? base) base
+               ;;
+               (not (string? base)) (.warn js/console "Base should be string: " (pr-str base))
+               ;;
+               (str/starts-with? base "/")
                (do
                  (.warn js/console "Provided base to toddler.router/Provider shouldn't start with '/'")
                  (subs base 1))
-               base)
+               :else base)
         url (hooks/use-memo
               [tree go]
               (component-path tree component))]
@@ -750,7 +755,7 @@
         (hooks/use-effect
           [tree (:id best)]
           (when (= (maybe-remove-base base location) url)
-            (let [[last-component last-url] (edn/read-string (.getItem js/sessionStorage last-rendered-key))
+            (let [; [last-component last-url] (edn/read-string (.getItem js/sessionStorage last-rendered-key))
                   component (when-some [location (component->location tree last-component)]
                               (zip/node location))
                   authorized? (authorized? component)]

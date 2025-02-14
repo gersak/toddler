@@ -25,6 +25,7 @@
            _variables (re-seq #"(?<=\{\{).*(?=\}\})" content)
            new-content (reduce
                         (fn [result variable]
+                          ; (println "Replacing {{" variable "}} in " file)
                           (str/replace result
                                        (re-pattern (str "\\{\\{" variable "\\}\\}"))
                                        (get variables (keyword variable))))
@@ -56,6 +57,10 @@
              {:project project})
     (process "template/dev/index.html" (->file "dev/index.html"))
     (process "template/dev/user.clj.tmp" (->file "dev/user.clj"))
+    (process "template/dev/docs/greeting.md" (->file "dev/docs/greeting.md"))
+    (process "template/dev/docs/intro.md"
+             (->file "dev/docs/intro.md")
+             {:project project})
     (let [dir (->
                project
                str/lower-case
@@ -65,6 +70,9 @@
                (->file (str "src/" dir "/main.cljs"))
                {:project project
                 :project-folder dir})
+      (process "template/src/docs.cljs.tmp"
+               (->file (str "src/" dir "/docs.cljs"))
+               {:project project})
       (process "template/src/main.css" (->file (str "src/" dir "/main.css"))))))
 
 (defn install-js

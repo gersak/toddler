@@ -87,7 +87,8 @@
         {:keys [on-theme-change class className]} (hooks/use-context md.context/show)]
     (hooks/use-effect
       [theme]
-      (on-theme-change theme))
+      (when (ifn? on-theme-change)
+        (on-theme-change theme)))
     (hooks/use-effect
       :once
       (when-let [scroll-element (util/find-parent

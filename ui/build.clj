@@ -3,7 +3,7 @@
    [clojure.tools.build.api :as b]
    [deps-deploy.deps-deploy :as dd]))
 
-(def version "1.0.0")
+(def version "0.9.0")
 (def target "target/classes")
 
 (defn create-jar []

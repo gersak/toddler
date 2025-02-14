@@ -1,0 +1,75 @@
+(ns {{project}}.docs
+  (:require
+   [helix.core :refer [$ defnc]]
+   [helix.hooks :as hooks]
+   [toddler.ui :as ui]
+   [toddler.layout :as layout]
+   [toddler.i18n.time]
+   [toddler.md :as md]
+   [toddler.dev :as dev]
+   [toddler.head :as head]
+   [toddler.ui.css :as ui.css]
+   [toddler.router :as router]))
+
+(defn change-highligh-js
+  [theme]
+  (let [dark-url "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/base16/tomorrow-night.min.css"
+        light-url "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/base16/atelier-lakeside-light.min.css"]
+    (letfn [(fetch-dark []
+              (head/remove
+               :link
+               {:href light-url
+                :rel "stylesheet"})
+              (head/add
+               :link
+               {:href dark-url
+                :rel "stylesheet"}))
+            (fetch-light []
+              (head/remove
+               :link
+               {:href dark-url
+                :rel "stylesheet"})
+              (head/add
+               :link
+               {:href light-url
+                :rel "stylesheet"}))]
+      (case theme
+        "light" (fetch-light)
+        "dark" (fetch-dark)
+        nil))))
+
+(defnc Intro
+  {:wrap [(router/wrap-rendered ::intro)]}
+  []
+  (let [{:keys [width height]} (layout/use-container-dimensions)]
+    ($ ui/row {:align :center}
+       ($ ui/simplebar
+          {:style {:width (min width 500) :height height}}
+          ($ md/watch-url {:url "intro.md"})))))
+
+(def components
+  [{:id ::intro
+    :segment "intro"
+    :name "Intro"
+    :render Intro}])
+
+(defnc Docs
+  {:wrap [(md/wrap-show {:className ui.css/$md
+                         :on-theme-change change-highligh-js})
+          (router/wrap-rendered ::docs)
+          (router/wrap-link
+           ::router/ROOT
+           [{:id ::docs
+             :segment "docs"
+             :landing 5}])]}
+  []
+  (let [{:keys [pathname]} (router/use-location)
+        {go-to :go} (router/use-navigate)]
+    (hooks/use-effect
+      [pathname]
+      (when (#{"/docs" "/docs/"} pathname)
+        (go-to "/docs/intro")))
+    ($ router/Provider {:base "docs"}
+       ($ dev/playground
+          {:max-width 1000
+           :components components}))))

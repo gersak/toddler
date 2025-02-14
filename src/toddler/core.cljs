@@ -66,7 +66,7 @@
              (.error js/console (js/Error (str "Failed to fetch: " url))))))
         (.catch
          (fn [err]
-           (.error js/console (str "Failed fetching file: " url) err))))
+           (.error js/console (str "Failed fetching file: " (pr-str url)) err))))
     result))
 
 (defn conj-prop-classes
