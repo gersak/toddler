@@ -4,7 +4,7 @@
 
 (defmacro defcomponent
   "Wrapper macro around helix.core/defnc function that
-  will try to pull key from __components__ and render
+  will try to pull key from `__components__` context and render
   found component."
   [_name key]
   `(helix.core/defnc ~_name [props# ref#]
@@ -16,7 +16,7 @@
          (helix.core/$ component# {:ref ref# :& props#} children#)))))
 
 (defmacro !
-  "Macro that will try to pull key component from __components__ context
+  "Macro that will try to pull key component from `__components__` context
   and render it with helix.core/$ macro
   
   I.E.  (! :button {:className \"positive\"} \"Good day\") 

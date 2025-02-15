@@ -6,6 +6,21 @@ your file `dev/docs/intro.md`, and you will find this text there.
 
 **Try changing the text in this file to see updates here.**  
 
+
+File is served using ```shadow-cljs.edn``` and monitored by ```toddler.md/watch-url```
+functional component with default refresh interval of 3 seconds.
+```clojure
+(defnc Intro
+  {:wrap [(router/wrap-rendered ::intro)]}
+  []
+  (let [{:keys [width]} (layout/use-container-dimensions)]
+    ($ ui/row {:align :center}
+       ($ ui/simplebar
+          {:style {:width (min width 500)}}
+          ($ md/watch-url {:url "intro.md"})))))
+```
+
+
 ## SIDEBAR
 
 The left sidebar is populated by components in the `{{project}}.docs` namespace  

@@ -9,25 +9,25 @@
    [helix.children :as c]
    [helix.hooks :as hooks]))
 
-(declare avatar row column form checkbox drawer tab grid
-         button buttons simplebar popup option input clear
-         field wrapper discard dropdown img tag header identity tooltip
-         textarea autosize-input idle-input action checklist card card-action
+(declare avatar row column form checkbox drawer tab tabs grid
+         button buttons simplebar popup popup-area popup-element option input
+         field dropdown img tag header identity tooltip
+         textarea action checklist card card-action
          card-actions calendar-year-dropdown calendar-day calendar-week calendar-month calendar-time
          calendar calendar-period search-field identity-field identity-multiselect-field text-field integer-field
          float-field currency-field input-field dropdown-field multiselect-field timestamp-field
-         timestamp-period-field date-field date-period-field boolean-field checklist-field table
-         table-row table-header-row enum-header currency-header boolean-header text-header
+         timestamp-period-field date-field date-period-field boolean-field checklist-field password-field
+         idle-field copy-field
+         table table-cell table-row table-header-row enum-header currency-header boolean-header text-header
          user-header timestamp-header plain-header boolean-cell integer-cell float-cell
          text-cell enum-cell currency-cell hash-cell uuid-cell identity-cell
-         timestamp-cell expand-cell delete-cell forward-ref)
+         timestamp-cell expand-cell delete-cell forward-ref modal-background modal-dialog)
 
 (def ^js __components__ (create-context))
 
 (def forward-ref ^js react/forwardRef)
 
 (defcomponent avatar :avatar)
-(defcomponent avatar-editor :avatar/editor)
 (defcomponent row :row)
 (defcomponent column :column)
 (defcomponent form :form)
@@ -37,53 +37,36 @@
 (defcomponent simplebar :simplebar)
 (defcomponent popup-area :popup-area)
 (defcomponent popup-element :popup-element)
-(defcomponent option :option)
-(defcomponent input :input)
-(defcomponent clear :clear)
-(defcomponent close :close)
-(defcomponent field :field)
-(defcomponent wrapper :wrapper)
-(defcomponent discard :discard)
+; (defcomponent option :option)
 (defcomponent dropdown :dropdown)
 (defcomponent img :img)
 (defcomponent tag :tag)
 (defcomponent header :header)
 (defcomponent identity :identity)
 (defcomponent tooltip :tooltip)
-(defcomponent idle-input :input/idle)
-(defcomponent autosize-input :input/autosize)
+(defcomponent field :field)
+(defcomponent input :input)
 (defcomponent textarea :textarea)
 (defcomponent action :action)
-(defcomponent checklist :checklist)
-(defcomponent drawer :drawer)
 
-(defcomponent modal-avatar-editor :modal/avatar-editor)
 (defcomponent modal-background :modal/background)
 (defcomponent modal-dialog :modal/dialog)
-(defcomponent modal-pavement :modal/pavement)
-(defcomponent modal-strip :modal/strip)
 
 (defcomponent card :card)
-(defcomponent card-action :card/action)
-(defcomponent card-actions :card/actions)
 
 (defcomponent tabs :tabs)
 (defcomponent tab :tab)
 (defcomponent grid :grid)
-
-;; DEPRECATED
-; (defcomponent calendar-month-dropdown :calendar/month-dropdown)
-; (defcomponent calendar-year-dropdown :calendar/year-dropdown)
 
 (defcomponent calendar-day :calendar/day)
 (defcomponent calendar-month :calendar/month)
 (defcomponent calendar :calendar)
 (defcomponent calendar-period :calendar/period)
 
+;; Fields
 (defcomponent search-field :field/search)
 (defcomponent identity-field :field/identity)
 (defcomponent identity-multiselect-field :field/identity-multiselect)
-
 (defcomponent text-field :field/text)
 (defcomponent integer-field :field/integer)
 (defcomponent float-field :field/float)
@@ -101,6 +84,7 @@
 (defcomponent idle-field :field/idle)
 (defcomponent copy-field :field/copy)
 
+;; Table
 (defcomponent table :table)
 (defcomponent table-row :table/row)
 (defcomponent table-cell :table/cell)
@@ -126,9 +110,6 @@
 (defcomponent timestamp-cell :cell/timestamp)
 (defcomponent expand-cell :cell/expand)
 (defcomponent delete-cell :cell/delete)
-
-(defcomponent md :markdown)
-(defcomponent notification-store :notifications/store)
 
 (defhook use-component [id]
   (get (hooks/use-context __components__) id))

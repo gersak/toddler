@@ -360,15 +360,12 @@
   is rendered, by checking if browser location
   contains component path."
   [id]
-  (let [{original-pathname :pathname
-         hash :hash} (use-location)
+  (let [{original-pathname :pathname} (use-location)
         {:keys [tree]} (hooks/use-context -router-)
         base (hooks/use-context -base-)
         on-path? (hooks/use-memo
                    [tree base original-pathname]
                    (on-path? tree (maybe-remove-base base original-pathname) id))]
-    (when on-path?
-      (.setItem js/sessionStorage last-rendered-key [id original-pathname]))
     on-path?))
 
 (defhook use-component-name
@@ -595,6 +592,17 @@
      ($ Link {:parent parent :links children}
         ($ component {& props})))))
 
+(defn- url->components
+  [tree url]
+  (loop [position (component-tree-zipper tree)
+         result []]
+    (if (zip/end? position) result
+        (let [node (zip/node position)]
+          (cond
+            (nil? node) (recur (zip/next position) result)
+            (on-path? tree url (:id node)) (recur (zip/next position) (conj result (dissoc node :children)))
+            :else (recur (zip/next position) result))))))
+
 (defhook use-url->components
   "Hook will return sequence of rendered components for
   current browser location"
@@ -604,14 +612,7 @@
         base (hooks/use-context -base-)
         url (maybe-remove-base base url)]
     (when tree
-      (loop [position (component-tree-zipper tree)
-             result []]
-        (if (zip/end? position) result
-            (let [node (zip/node position)]
-              (cond
-                (nil? node) (recur (zip/next position) result)
-                (on-path? tree url (:id node)) (recur (zip/next position) (conj result (dissoc node :children)))
-                :else (recur (zip/next position) result))))))))
+      (url->components tree url))))
 
 (defhook use-component-path
   "Hook will return url for `component[id]`"
@@ -652,33 +653,6 @@
       (fn [& _]
         (.error js/console "Couldn't find component: " component)
         (pprint tree)))))
-
-(defhook use-last-rendered
-  "Hook will return id of last rendered component"
-  []
-  (hooks/use-callback
-    :once
-    (fn []
-      (let [[_ url] (edn/read-string (.getItem js/sessionStorage last-rendered-key))]
-        url))))
-
-#_(defhook use-landing
-    "Hook will "
-    []
-    (let [{:keys [tree]} (hooks/use-context -router-)
-          tree (use-delayed tree)
-          base (hooks/use-context -base-)]
-      (loop [position (component-tree-zipper tree)
-             result []]
-        (if (zip/end? position)
-          (let [sorted (sort-by :landing result)
-                {best :id} (last sorted)]
-            (maybe-add-base base (component-path tree best)))
-          (let [{:keys [landing] :as node} (zip/node position)]
-            (cond
-              (nil? node) (recur (zip/next position) result)
-              landing (recur (zip/next position) (conj result (dissoc node :children)))
-              :else (recur (zip/next position) result)))))))
 
 (defnc LandingPage
   "Component that is active when routing location is
@@ -754,15 +728,15 @@
                      (get-landing-candidates))]
         (hooks/use-effect
           [tree (:id best)]
+          (when (and (not-empty (:children tree))
+                     (not= (maybe-remove-base base location) url))
+            (let [rendered-components (url->components tree location)]
+              (when (>= 1 (count rendered-components))
+                (push (maybe-add-base base (component-path tree (:id best)))))))
           (when (= (maybe-remove-base base location) url)
-            (let [; [last-component last-url] (edn/read-string (.getItem js/sessionStorage last-rendered-key))
-                  component (when-some [location (component->location tree last-component)]
-                              (zip/node location))
-                  authorized? (authorized? component)]
-              (cond
-                (and authorized? last-url) (push last-url)
-                (some? best) (push (maybe-add-base base (component-path tree (:id best))))
-                :else nil))))))
+            (cond
+              (some? best) (push (maybe-add-base base (component-path tree (:id best))))
+              :else nil)))))
     (children props)))
 
 (defn wrap-landing
