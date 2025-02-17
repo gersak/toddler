@@ -57,7 +57,6 @@
              {:project project})
     (process "template/dev/index.html" (->file "dev/index.html"))
     (process "template/dev/user.clj.tmp" (->file "dev/user.clj"))
-    (process "template/dev/docs/greeting.md" (->file "dev/docs/greeting.md"))
     (process "template/dev/docs/intro.md"
              (->file "dev/docs/intro.md")
              {:project project})
@@ -70,6 +69,9 @@
                (->file (str "src/" dir "/main.cljs"))
                {:project project
                 :project-folder dir})
+      (process "template/dev/docs/greeting.md"
+               (->file "dev/docs/greeting.md")
+               {:project-folder dir})
       (process "template/src/docs.cljs.tmp"
                (->file (str "src/" dir "/docs.cljs"))
                {:project project})

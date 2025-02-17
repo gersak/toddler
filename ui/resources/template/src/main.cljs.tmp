@@ -97,6 +97,8 @@
              {:align :center
               :className (css
                           ["& .message" {:max-width "300px"}]
+                          ["& hr" :mt-6 :mb-2]
+                          ["& h4" {:margin-top "8px !important"}]
                           ["& h1" :mb-6 {:font-size "32px"}]
                           ["& p" :mt-2 {:font-size "12px"}]
                           ["& a" {:color "var(--link-color)" :font-weight "600"}]

@@ -3,7 +3,9 @@
    [clojure.tools.build.api :as b]
    [deps-deploy.deps-deploy :as dd]))
 
-(def version "0.9.2-SNAPSHOT")
+;; IMPORTANT!!!! - change version in resources/template/deps.edn.tmp
+;; to match this version
+(def version "0.9.6")
 (def target "target/classes")
 
 (defn create-jar []
