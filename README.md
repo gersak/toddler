@@ -30,7 +30,7 @@ GraphQL implementation for generating GraphQL Mutations and Queries with data st
 [Lacinia](https://github.com/walmartlabs/lacinia) project only from client side. Lets say that what Lacinia can parse and output as query data Toddler GraphQL
 can reverse and generate GraphQL query.
 
-At least for `selection`. Not documented yet, but ready to use in production. Docs... TBD
+At least for `selection`. Not documented yet, but ready to use. Docs... TBD
 
 
 ---
@@ -98,7 +98,7 @@ are positioined and content area to display **markdown** docs is **344** lines o
 that can be found [here](https://github.com/gersak/toddler/blob/main/ui/src/toddler/dev.cljs).
 
 It wasn't hard, to implement but **it is missing search and generated static HTML files** to meet minimum
-of industry standard tools like [Docosaurus](https://docusaurus.io/)
+of industry standard tools like [Docusaurus](https://docusaurus.io/)
 
 #### Complete Documentation
 Not all functions, hooks, and components are currently showcased or documented. Expanding and refining the documentation is a key priority.
