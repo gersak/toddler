@@ -112,8 +112,7 @@
    ["& input::placeholder, & textarea::placeholder" :text-normal :font-medium {:user-select "none" :font-style "normal"}]))
 
 (defnc textarea-field
-  [{:keys [onChange on-change disabled placeholder error
-           className class] :as props}]
+  [{:keys [onChange on-change disabled placeholder error] :as props}]
   (let [onChange (hooks/use-memo
                    [onChange on-change]
                    (or onChange on-change identity))
@@ -156,7 +155,9 @@
       (when-not (= _value value)
         (set-local-value! (or value ""))))
     (d/div
-     {:class ["toddler-field" $field (when error "error")]
+     {:class (toddler/conj-prop-classes
+              ["toddler-field" $field (when error "error")]
+              props)
       :style style}
      (d/div
       {:className "content"}
@@ -232,7 +233,7 @@
         ($ (if visible? outlined/visibility outlined/visibility-off))))))))
 
 (defnc idle-field
-  [{:keys [onChange placeholder on-change icon] :as props}]
+  [{:keys [onChange on-change icon] :as props}]
   (let [_input (hooks/use-ref nil)
         onChange (hooks/use-memo
                    [onChange on-change]
@@ -263,7 +264,7 @@
             (let [number (js/parseInt  text)]
               (when-not (js/Number.isNaN number) (int number)))))]
   (defnc integer-field
-    [{:keys [onChange on-change disabled value style className]
+    [{:keys [onChange on-change disabled value]
       :as props}]
     (let [_input (hooks/use-ref nil)
           translate (use-translate)
@@ -289,7 +290,9 @@
         [value]
         (when (not= value local) (set-local! (str value))))
       (d/div
-       {:class ["toddler-field" $field]}
+       {:class (toddler/conj-prop-classes
+                ["toddler-field" $field]
+                props)}
        (d/div
         {:className "content"}
         (when (:name props)

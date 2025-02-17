@@ -1,4 +1,6 @@
 (ns toddler.i18n.number
+  "Include this namespace in you codebase to support
+  number and currency formating through `toddler.18n/translate`"
   (:require
    goog.object
    [clojure.string]
@@ -134,7 +136,7 @@
    :zh_TW         goog.i18n.NumberFormatSymbols_zh_TW
    :zu            goog.i18n.NumberFormatSymbols_zu})
 
-(defn compute-currency-map
+(defn ^:no-doc compute-currency-map
   []
   (reduce
    (fn [cm ^js s]
@@ -146,7 +148,7 @@
    nil
    (vals *symbols*)))
 
-(defn compute-currency-formatters
+(defn ^:no-doc compute-currency-formatters
   []
   (reduce-kv
    (fn [cf currency pattern]
@@ -154,13 +156,13 @@
    nil
    (compute-currency-map)))
 
-(def currency-formatters (compute-currency-formatters))
+(def ^:no-doc currency-formatters (compute-currency-formatters))
 
-(defn refresh-currency-formatters
+(defn ^:no-doc refresh-currency-formatters
   []
   (set! currency-formatters (compute-currency-formatters)))
 
-(defn number-formatter [locale]
+(defn ^:no-doc number-formatter [locale]
   (let [^js symbols (get *symbols* locale (:en *symbols*))
         number-formatter-pattern
         (goog.i18n.NumberFormat.
@@ -170,7 +172,7 @@
          symbols)]
     (fn format-number [x] (.format ^js number-formatter-pattern x))))
 
-(defn format-currency [currency value]
+(defn ^:no-doc format-currency [currency value]
   (when-let [^js f (currency-formatters currency)]
     (.format f value)))
 
@@ -201,7 +203,6 @@
   (i18n/translate 12325.39 "JPY"))
 
 (comment
-  (keys symbols)
   (println #:toddler.i18n {:a 100 :b 200})
   (keys goog.i18n.NumberFormatSymbols)
   (.format (currency-formatters "EGP") 1092)

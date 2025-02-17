@@ -176,6 +176,7 @@
 (defnc calendar-day
   [{:keys [value
            onClick
+           on-click
            class
            className]
     {:keys [day-in-month
@@ -190,27 +191,28 @@
             picked
             selected
             weekend?]} :day}]
-  (d/div
-   {:onClick (when-not disabled onClick)
-    :class (cond-> []
-             (string? className) (conj className)
-             (string? class) (conj class)
-             (sequential? class) (into class)
-             period-start (conj "period-start")
-             period-end (conj "period-end")
-             picked (conj "picked")
-             next-month (conj "next-month")
-             prev-month (conj "prev-month")
-             selected (conj "selected")
-             first-day-in-month? (conj "first-day-in-month")
-             last-day-in-month? (conj "last-day-in-month")
-             disabled (conj "disabled")
-             today (conj "today")
-             weekend? (conj "weekend")
-             (nil? value) (conj "empty"))}
-   (d/div
-    {:class "day"}
-    (d/div (or day-in-month " ")))))
+  (let [on-click (or on-click onClick)]
+    (d/div
+     {:onClick (when-not disabled on-click)
+      :class (cond-> []
+               (string? className) (conj className)
+               (string? class) (conj class)
+               (sequential? class) (into class)
+               period-start (conj "period-start")
+               period-end (conj "period-end")
+               picked (conj "picked")
+               next-month (conj "next-month")
+               prev-month (conj "prev-month")
+               selected (conj "selected")
+               first-day-in-month? (conj "first-day-in-month")
+               last-day-in-month? (conj "last-day-in-month")
+               disabled (conj "disabled")
+               today (conj "today")
+               weekend? (conj "weekend")
+               (nil? value) (conj "empty"))}
+     (d/div
+      {:class "day"}
+      (d/div (or day-in-month " "))))))
 
 (defnc calendar-month
   [{:keys [days on-select disabled read-only]}]

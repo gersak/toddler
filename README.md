@@ -1,10 +1,29 @@
 
 
 [![Clojars Project](https://img.shields.io/clojars/v/dev.gersak/toddler.svg)](https://clojars.org/dev.gersak/toddler)  
+#### Content
+Collection of hooks, functions and reusable components. `CORE` of Toddler project
+
+
 [![Clojars Project](https://img.shields.io/clojars/v/dev.gersak/toddler-ui.svg)](https://clojars.org/dev.gersak/toddler-ui)  
-[![Clojars Project](https://img.shields.io/clojars/v/dev.gersak/toddler-theme.svg)](https://clojars.org/dev.gersak/toddler-theme)  
+#### Content
+Default implementation for **field**, **table**, **layout** components.
+
 [![Clojars Project](https://img.shields.io/clojars/v/dev.gersak/toddler-icons.svg)](https://clojars.org/dev.gersak/toddler-icons)  
+#### Content
+Icons available for:
+
+ * [Material Icons] (https://fonts.google.com/icons)
+ * [FontAwesome] (https://fontawesome.com/icons)
+ * [Ionic] (https://ionic.io/ionicons)
+
 [![Clojars Project](https://img.shields.io/clojars/v/dev.gersak/toddler-graphql.svg)](https://clojars.org/dev.gersak/toddler-graphql)  
+#### Content
+GraphQL implementation for generating GraphQL Mutations and Queries with data structures. It is very compatible with
+[Lacinia]() project only from client side. Lets say that what Lacinia can parse and output as query data Toddler GraphQL
+can reverse and generate GraphQL query.
+
+At least for `selection`. Not documented yet, but ready to use in production. Docs... TBD
 
 
 # About

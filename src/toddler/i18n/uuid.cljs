@@ -1,15 +1,37 @@
 (ns toddler.i18n.uuid
+  "This namespace is used for translating words or paragraphs
+  by replacing UUID that is supplied to `toddler.i18n/translate`
+  with value that is mapped to UUID and locale"
   (:require
    [toddler.i18n :as i18n]
    [toddler.util :refer [deep-merge]]))
 
-(defonce translations (atom nil))
+(defonce ^{:doc "Atom that contains translation mapping"} translations (atom nil))
 
 (defn add-translations
+  "Function that will update [[translations]] and merge
+  input `mapping` with deep merge with current value of
+  [[translations]].
+  
+  Translations should be in form:
+  ```
+  #uuid \"a1b2c3d4-e5f6-7890-1234-567890abcdef\" {:default \"Specific word\"
+                                                  :de \"Bestimmtes Wort\"
+                                                  :fr \"Mot spécifique\"
+                                                  :es \"Palabra específica\"}
+  ```"
   [mapping]
   (swap! translations deep-merge mapping))
 
 (defn add-locale
+  "Same as [[add-translations]] only format is different
+  
+  ```
+  #:default {#uuid \"a1b2c3d4-e5f6-7890-1234-567890abcdef\" \"Specific word\"
+             #uuid \"f8a7b6c5-d4e3-4210-9876-543210fedcba\" \"Other word\"
+             #uuid \"e091f2d3-c4b5-4a89-0123-456789abcdef\" \"Job\"
+             #uuid \"9786a5b4-c3d2-410f-e987-6543210fedcb\" \"Shit\"}
+  ```"
   [mapping]
   (swap! translations deep-merge
          (reduce-kv
@@ -19,6 +41,7 @@
           mapping)))
 
 (defn remove-translations
+  "Will remove translations for uuid and locales"
   [uuid locales]
   (swap! translations update uuid
          (fn [translations]

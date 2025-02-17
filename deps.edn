@@ -38,6 +38,10 @@
                                    toddler.window
                                    toddler.date
                                    toddler.i18n
+                                   toddler.i18n.time
+                                   toddler.i18n.number
+                                   toddler.i18n.keyword
+                                   toddler.i18n.uuid
                                    toddler.router
                                    toddler.popup
                                    toddler.notifications

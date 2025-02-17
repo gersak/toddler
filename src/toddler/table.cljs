@@ -176,7 +176,7 @@
 (defhook use-cell-state
   "Hook that will return vector of
 
-  [value set-value! select-value!
+  `[value set-value! select-value!]`
   
   Value is value pulled from row based on :cursor position
   in column declaration. set-value! and select-value! will

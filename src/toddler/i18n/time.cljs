@@ -1,4 +1,6 @@
 (ns toddler.i18n.time
+  "Include this namespace in you codebase to support
+  date formating through `toddler.i18n/translate`"
   (:require
    goog.object
    [clojure.set]
@@ -133,12 +135,12 @@
    :fa_u_nu_latn goog.i18n.DateTimeSymbols_fa_u_nu_latn
    :ky goog.i18n.DateTimeSymbols_ky})
 
-(defn get-date-symbols
+(defn ^:no-doc get-date-symbols
   "Supported localizations"
   [locale]
   (get *symbols* locale goog.i18n.DateTimeSymbols_en))
 
-(def date-formatter
+(def ^:no-doc date-formatter
   (memoize
    (fn
      ([locale] (date-formatter locale :datetime))

@@ -1,19 +1,41 @@
 (ns toddler.i18n.keyword
+  "This namespace is used for translating words or paragraphs
+  by replacing keyword that is supplied to `toddler.i18n/translate`
+  with value that is mapped to keyword and locale"
   (:require
    [toddler.i18n :as i18n]
    [toddler.i18n.time :as t]
    [toddler.util :refer [deep-merge]]))
 
-(defonce translations (atom nil))
+(defonce ^{:doc "Atom that contains translation mapping"} translations (atom nil))
 
 (comment
   (cljs.pprint/pprint @translations))
 
 (defn add-translations
+  "Function that will update [[translations]] and merge
+  input `mapping` with deep merge with current value of
+  [[translations]].
+  
+  Translations should be in form:
+  ```
+  #:some.specific.word {:default \"Specific word\"
+                        :de \"Bestimmtes Wort\"
+                        :fr \"Mot spécifique\"
+                        :es \"Palabra específica\"}
+  ```"
   [mapping]
   (swap! translations deep-merge mapping))
 
 (defn add-locale
+  "Same as [[add-translations]] only format is different
+  
+  ```
+  #:default {:some.specific.word \"Specific word\"
+             :other.specific.word \"Other word\"
+             :nasty.word \"Job\"
+             :forbidden.word \"Shit\"}
+  ```"
   [mapping]
   (swap! translations deep-merge
          (reduce-kv
@@ -23,6 +45,7 @@
           mapping)))
 
 (defn remove-translations
+  "Will remove translations for key and locales"
   [key locales]
   (swap! translations update key
          (fn [translations]

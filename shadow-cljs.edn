@@ -12,16 +12,4 @@
                      {:entries [toddler.md]
                       :depends-on #{:main}}}
            :output-dir "showcase/dev/js"
-           :output-to "showcase/dev/js/main.js"}
-          :github
-          {:target :browser
-           :entries [toddler.showcase]
-           :module-loader true
-           :modules {:main
-                     {:entries [toddler.showcase]
-                      :init-fn toddler.showcase/start!}
-                     :markdown
-                     {:entries [toddler.md]
-                      :depends-on #{:main}}}
-           :output-dir "showcase/web/js"
-           :output-to "showcase/web/js/main.js"}}}
+           :output-to "showcase/dev/js/main.js"}}}

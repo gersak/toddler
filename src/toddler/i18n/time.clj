@@ -2,8 +2,8 @@
   (:require
    [toddler.i18n]))
 
-(defmacro add-symbols
-  "Macro will change toddler.i18n.time/*symbols* dynamic variable
+(defmacro ^:no-doc add-symbols
+  "EXPERIMENTAL: Macro will change toddler.i18n.time/*symbols* dynamic variable
   and add symbols for listed locales.
   
   If you wan't to add all locales use toddler.i18n/locales
@@ -19,8 +19,8 @@
                                   [(keyword locale) symbol-name]))
                               locales))))))
 
-(defmacro init-all-symbols
-  "Macro will change toddler.i18n.time/*symbols* dynamic variable
+(defmacro ^:no-doc init-all-symbols
+  "EXPERIMENTAL: Macro will change toddler.i18n.time/*symbols* dynamic variable
   and add symbols for listed locales.
   
   If you wan't to add all locales use toddler.i18n/locales
