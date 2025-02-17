@@ -5,7 +5,7 @@
    [toddler.ui :as ui]
    [toddler.layout :as layout]
    [toddler.i18n.time]
-   [toddler.md :as md]
+   [toddler.md.lazy :as md]
    [toddler.dev :as dev]
    [toddler.head :as head]
    [toddler.ui.css :as ui.css]

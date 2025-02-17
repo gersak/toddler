@@ -3,16 +3,20 @@
  :builds {:dev
           {:target :browser
            :entries [{{project}}.main]
-           :modules {:main
-                     {:entries [{{project}}.main]
-                      :init-fn {{project}}.main/start!}}
+           :module-loader true
+           :modules {:main {:entries [{{project}}.main]
+                            :init-fn {{project}}.main/start!}
+                     :markdown {:entries [toddler.md]
+                                :depends-on #{:main}}}
            :output-dir "dev/js"
            :output-to "dev/js/main.js"}
           :production
           {:target :browser
+           :module-loader true
            :entries [{{project}}.main]
-           :modules {:main
-                     {:entries [{{project}}.main]
-                      :init-fn {{project}}.main/start!}}
+           :modules {:main {:entries [{{project}}.main]
+                            :init-fn {{project}}.main/start!}
+                     :markdown {:entries [toddler.md]
+                                :depends-on #{:main}}}
            :output-dir "build/js"
            :output-to "build/js/main.js"}}}

@@ -14,6 +14,29 @@ html {
 }
 
 
+html[data-theme="light"] body {
+  background-color: #f0f0f0;
+  color: #484848;
+}
+
+html[data-theme="light"] input::placeholder,
+textarea::placeholder {
+  color: #232323;
+}
+
+
+html[data-theme="dark"] body {
+  color: #dddddd;
+  background-color: #262626;
+}
+
+
+html[data-theme="dark"] input::placeholder,
+textarea::placeholder {
+  color: #838383;
+}
+
+
 /* ==================== LIGHT ==================== */
 
 html[data-theme="light"] {
@@ -45,11 +68,6 @@ html[data-theme="light"] {
   --color-p1: #1a1a1a;
   --color-p2: #000000;
 
-  /* Background */
-  --bg-focused: #e8e8e8;
-  --bg-hover: #689579;
-  --bg-highlighted: #2F3732;
-  --bg-opaque: #101010cc;
 
   /* Modal */
   --modal-bg: #f2f2f2;
@@ -183,6 +201,7 @@ html[data-theme="light"] {
   --scroll-shadow-modal-bottom: radial-gradient(ellipse 100% 20% at center, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0), transparent);
 }
 
+/* ======================== DARK ======================= */
 
 html[data-theme="dark"] {
   --font-family: 'Montserrat';
@@ -347,31 +366,7 @@ html[data-theme="dark"] {
 }
 
 
-/* ======================== DARK ======================= */
 
-
-
-html[data-theme="light"] body {
-  background-color: #f0f0f0;
-  color: #484848;
-}
-
-html[data-theme="light"] input::placeholder,
-textarea::placeholder {
-  color: #232323;
-}
-
-
-html[data-theme="dark"] body {
-  color: #dddddd;
-  background-color: #262626;
-}
-
-
-html[data-theme="dark"] input::placeholder,
-textarea::placeholder {
-  color: #838383;
-}
 
 html[data-theme="dark"] .tbody .simplebar-scrollbar:before {
   background: #222222;

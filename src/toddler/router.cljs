@@ -728,11 +728,13 @@
                      (get-landing-candidates))]
         (hooks/use-effect
           [tree (:id best)]
-          (when (and (not-empty (:children tree))
-                     (not= (maybe-remove-base base location) url))
-            (let [rendered-components (url->components tree location)]
-              (when (>= 1 (count rendered-components))
-                (push (maybe-add-base base (component-path tree (:id best)))))))
+          (let [relative-location (maybe-remove-base base location)]
+            (when (and (not-empty (:children tree))
+                       (not= relative-location url))
+              (let [rendered-components (url->components tree relative-location)]
+                (when (>= 1 (count rendered-components))
+                  (.error js/console (str "Zero rendered components found. Redirecting to " (pr-str best)))
+                  (push (maybe-add-base base (component-path tree (:id best))))))))
           (when (= (maybe-remove-base base location) url)
             (cond
               (some? best) (push (maybe-add-base base (component-path tree (:id best))))

@@ -17,7 +17,7 @@
    [toddler.ui.components :refer [components]]
    [toddler.ui.css :as ui.css]
    [toddler.notifications :as notifications]
-   [toddler.md :as md]
+   [toddler.md.lazy :as md]
    [toddler.material.outlined :as outlined]
    [toddler.fav6.brands :as brands]
    [toddler.window :refer [wrap-window-provider]]
