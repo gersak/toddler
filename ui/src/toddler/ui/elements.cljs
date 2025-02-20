@@ -357,14 +357,16 @@
          :style style
          :class (toddler/conj-prop-classes
                  [$layout $position "toddler-row"]
-                 props)}
+                 props)
+         & (dissoc props :style :class :className :align :position :label)}
         (c/children props)))
       (d/div
        {:ref _ref
         :style style
         :class (toddler/conj-prop-classes
                 [$layout $position "toddler-row"]
-                props)}
+                props)
+        & (dissoc props :style :class :className :align :position :label)}
        (c/children props)))))
 
 (def $column
@@ -379,43 +381,9 @@
      :text-transform "uppercase"
      :font-size "0.75rem"}]))
 
-#_(defnc column
-    {:wrap [(ui/forward-ref)]}
-    [{:keys [label position className align] :as props} _ref]
-    (let [$layout (css
-                   {:display "flex"
-                    :flex-direction "column"
-                    :flex-grow "1"}
-                   ["& > .label"
-                    {:margin "4px 4px 4px 4px"
-                     :padding-bottom "2px"
-                     :text-transform "uppercase"
-                     :font-size "1em"}])
-          $start (css {:justify-content "flex-start"})
-          $center (css {:justify-content "center"})
-          $end (css {:justify-content "flex-end"})
-          $explode (css {:justify-content "space-between"})
-          $position (case (or position align)
-                      :center $center
-                      :end $end
-                      :explode $explode
-                      $start)]
-      (d/div
-       {:ref _ref
-        :class [$layout
-                $position
-                "toddler-column"
-                className]}
-       (when label
-         (d/div
-          {:className "label"}
-          (d/label label)))
-       (c/children props))))
-
 (defnc column
   {:wrap [(ui/forward-ref)]}
-  [{:keys [label position align] :as props
-    {:keys [width] :as style} :style} _ref]
+  [{:keys [label position align style] :as props} _ref]
   (let [position (or position align)
         $layout (css
                  {:display "flex"
@@ -442,7 +410,8 @@
       :style style
       :class (toddler/conj-prop-classes
               [$layout $position "toddler-column"]
-              props)}
+              props)
+      & (dissoc props :style :class :className :align :position :label)}
      (when label
        (d/div
         {:className "toddler-column-label"}
@@ -670,8 +639,10 @@
         hidden? (use-delayed (not visible?) 300)
         area (hooks/use-ref nil)
         popup (hooks/use-ref nil)
-        _popup (or ref popup)]
-    (if (and (not disabled) (some? message))
+        _popup (or ref popup)
+        {window-width :width} (toddler/use-window-dimensions)
+        mobile? (< window-width 800)]
+    (if (and (not mobile?) (not disabled) (some? message))
       ($ popup/Area
          {:ref area
           :className "tooltip-popup-area"

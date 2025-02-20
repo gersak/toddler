@@ -62,6 +62,7 @@
 
 (def $md
   (css :mt-4 :mb-24 :text-sm
+       :px-4
        ["& .code" :mt-2]
        ["& h1,& h2,& h3,& h4" :uppercase]
        ["& h3" :mt-4]
