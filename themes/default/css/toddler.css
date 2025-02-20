@@ -13,6 +13,15 @@ html {
   height: 100%;
 }
 
+/* iOS fix - on keyboard show without this whole
+* layout would break */
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+  position: fixed;
+}
+
 
 html[data-theme="light"] body {
   background-color: #f0f0f0;
@@ -21,7 +30,7 @@ html[data-theme="light"] body {
 
 html[data-theme="light"] input::placeholder,
 textarea::placeholder {
-  color: #232323;
+  color: #828282;
 }
 
 
@@ -33,7 +42,7 @@ html[data-theme="dark"] body {
 
 html[data-theme="dark"] input::placeholder,
 textarea::placeholder {
-  color: #838383;
+  color: #828282;
 }
 
 
@@ -418,7 +427,7 @@ textarea {
 
 input::placeholder,
 textarea::placeholder {
-  font-weight: 300;
+  font-weight: 400;
   color: var(--placeholder-normal);
 }
 

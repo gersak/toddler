@@ -109,7 +109,7 @@
    ["& input, & textarea" :grow :px-3]
    ["& input[type=\"password\"]" {:font-family "Verdana" :letter-spacing "0.125em"}]
    ["& input:focus, & textarea:focus" {:color "var(--field-text-active)"}]
-   ["& input::placeholder, & textarea::placeholder" :text-normal :font-medium {:user-select "none" :font-style "normal"}]))
+   ["& input::placeholder, & textarea::placeholder" :text-normal {:user-select "none" :font-style "normal"}]))
 
 (defnc textarea-field
   [{:keys [onChange on-change disabled placeholder error] :as props}]

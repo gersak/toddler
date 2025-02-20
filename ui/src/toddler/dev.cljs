@@ -18,6 +18,7 @@
    [toddler.ui.elements :as e]
    [toddler.layout :as layout]
    [toddler.window :as window]
+   ; [toddler.tauri :as window]
    [toddler.popup :as popup]
    [toddler.dropdown :as dropdown]
    [toddler.material.outlined :as outlined]
@@ -71,18 +72,14 @@
   (let [rendered? (router/use-rendered? (:id component))
         level (hooks/use-context -level-)
         path (router/use-go-to (:id component))
-        $component (css :mx-3 :my-2
+        $component (css :px-3 :py-1
                         ["& a" :no-underline :select-none]
-                        ["& .name" :text-sm :font-semibold {:color "var(--color-inactive)"}]
                         ["& .icon" :w-5 :text-transparent :mr-1]
                         ["& .level-1" :pl-2]
                         ["& .level-2" :pl-4]
                         ["& .level-3" :pl-6]
                         ; ["&.selected .icon" :color-hover]
-                        ["& .name" :text-xs {:color "var(--color-inactive)"}]
-                        ["& .name:hover" :text-xs {:color "var(--color-active)"}]
-                        ["& .selected.name" {:color "var(--color-normal)"}]
-                        ["& .name.selected" {:color "var(--color-normal)"}])
+                        )
         translate (toddler/use-translate)
         [_subs {sub-height :height}] (toddler/use-dimensions)]
     (d/div
@@ -109,57 +106,103 @@
   {:wrap [(react/forwardRef)]}
   [_ _ref]
   (let [{links :children} (router/use-component-tree)
-        {:keys [height]} (use-window-dimensions)
-        $navbar (css
-                 :flex
-                 :flex-col
-                 :toddler/menu-link-selected
-                 ["& .title"
-                  :flex
-                  :h-20
-                  :items-center
-                  :text-2xl
-                  :mb-4
-                  :justify-center
-                  :select-none
-                  {:font-family "Caveat Brush, serif"
-                   :font-size "3rem"}]
-                 ["& .component-list"
-                  :ml-3
-                  :mb-20])
-        theme (app/use-theme)]
+        {:keys [height] :as window} (use-window-dimensions)
+        {:keys [width]} (toddler/use-window-dimensions)
+        mobile? (< width 800)
+        [opened? set-opened!] (hooks/use-state false)]
+    (if mobile?
+      ($ ui/row
+         {:align :center
+          :on-click #(set-opened! not)
+          :className (css
+                      :absolute
+                      :top-0 :left-0 :pl-4
+                      {:font-size "28px" :height "50px"}
+                      ["& .title" :ml-4 {:font-family "Caveat Brush, serif"}]
+                      ["& .opened"
+                       {:transition "transform .3s ease-in-out"
+                        :transform "rotate(90deg)"}])}
+         ($ outlined/menu {:className (when opened? "opened")})
+         (d/div
+          {:className "title"}
+          "toddler")
+         (d/div
+          {:class ["drawer" (css
+                             :pl-2
+                             ["& .name" :text-xl :font-semibold {:color "var(--color-inactive)"}]
+                             ["& .name:hover" :text-xl {:color "var(--color-active)"}]
+                             ["& .selected.name" {:color "var(--color-normal)"}]
+                             ["& .name.selected" {:color "var(--color-normal)"}])]
+           :style {:width (if-not opened? 0 width)
+                   :transition "width .3s ease-in-out"
+                   :overflow "hidden"
+                   :background "var(--background)"
+                   :z-index "100"
+                   :position "absolute"
+                   :left 0 :top 50}}
+          ($ ui/simplebar
+             {:style {:height (- height 50)
+                      :width width}
+              :shadow true}
+             (d/div
+              {:className "components-wrapper"}
+              (d/div
+               {:className "component-list"}
+               (provider
+                {:context -level-
+                 :value 0}
+                (map
+                 (fn [c]
+                   ($ component
+                      {:key (:id c)
+                       :component c}))
+                 links)))))))
+      ($ ui/column
+         {:ref _ref
+          :style {:height height}
+          :className (css
+                      :flex
+                      :flex-col
+                      :toddler/menu-link-selected
+                      ["& .title"
+                       :flex
+                       :h-20
+                       :items-center
+                       :text-2xl
+                       :mb-4
+                       :justify-center
+                       :select-none
+                       {:font-family "Caveat Brush, serif"
+                        :font-size "3rem"}]
+                      ["& .component-list"
+                       :ml-3
+                       :mb-20]
+                      ["& .name" :text-xs :font-semibold {:color "var(--color-inactive)"}]
+                      ["& .name:hover" :text-xs {:color "var(--color-active)"}]
+                      ["& .selected.name" {:color "var(--color-normal)"}]
+                      ["& .name.selected" {:color "var(--color-normal)"}])}
+         (d/div
+          {:className "title"}
+          "toddler")
 
-    ($ ui/column
-       {:ref _ref
-        :style {:height height}
-        :className $navbar}
-       (d/div
-        {:className "title"}
-        "toddler")
-       (! :simplebar
-          {:style {:height (- height 120)
-                   :min-width 200
-                   :max-width 400}
-           :shadow false}
-
-          #_(d/img
-             {:className (css :fixed :top-2 :left-2 :h-6)
-              :src (case theme
-                     "dark" "/svg.old/blipkit_dark.svg"
-                     "light" "/svg.old/blipkit.svg")})
-          (d/div
-           {:className "components-wrapper"}
-           (d/div
-            {:className "component-list"}
-            (provider
-             {:context -level-
-              :value 0}
-             (map
-              (fn [c]
-                ($ component
-                   {:key (:id c)
-                    :component c}))
-              links))))))))
+         ($ ui/simplebar
+            {:style {:height (- height 120)
+                     :min-width 200
+                     :max-width 400}
+             :shadow false}
+            (d/div
+             {:className "components-wrapper"}
+             (d/div
+              {:className "component-list"}
+              (provider
+               {:context -level-
+                :value 0}
+               (map
+                (fn [c]
+                  ($ component
+                     {:key (:id c)
+                      :component c}))
+                links)))))))))
 
 (let [popup-preference
       [#{:bottom :center}
@@ -342,17 +385,3 @@
       ($ playground-layout
          {:max-width max-width
           :components components})))))
-
-;; Component wrappers
-
-; (defnc centered-compnoent
-;   [{:keys [className] :as props}]
-;   (let [window (use-window-dimensions)
-;         {:keys [navbar]} (use-layout)]
-;     (d/div
-;       {:className className
-;        :style {:width (- (:width window) (:width navbar))
-;                :minHeight (:height navbar)}}
-;       (d/div
-;         {:className "track"}
-;         (c/children props)))))
