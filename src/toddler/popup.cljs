@@ -444,8 +444,6 @@
        (let [candidates (map
                          #(compute-candidate (assoc props :position %))
                          preference)]
-         ; (println "COMPUTED: " props)
-         ; (println "CANDIDATES: " candidates)
          (when (empty? candidates)
            (throw
             (ex-info
@@ -596,7 +594,7 @@
    :wrap [forward-ref]}
   [{:keys [preference style offset onChange on-change]
     :or {preference default-preference
-         offset 20}
+         offset 5}
     :as props} ref]
   (let [[{:keys [position/top position/left position]
           :as computed
@@ -612,43 +610,26 @@
         target (hooks/use-context *area-element*)
         container-node (hooks/use-context *container*)
         cache (hooks/use-ref {:preference preference :offset offset})]
-    ; (println "OFFSET IS: " offset)
     (letfn [(recalculate []
               (let [{:keys [offset preference]} @cache]
                 (binding [*offset* offset]
-                  (set-state!
-                   (fn [computed]
-                     (let [_computed (compute-container-props target @_el preference)]
-                       (.log js/console "Target: " target)
-                       (.log js/console "TARGET POSITION: " (pr-str (util/get-element-rect target)))
-                       (.log js/console "EL: " @_el)
-                       (if (not= computed _computed)
-                         (do
-                           ; (println "OLD: " computed)
-                           ; (println "NEW: " _computed)
-                           (when (ifn? on-change) (on-change _computed))
-                           computed)
-                         computed)))))))]
+                  (let [_computed (compute-container-props target @_el preference)]
+                    (when (not= computed _computed)
+                      (set-state! _computed)
+                      (when (ifn? on-change) (on-change _computed)))))))]
       (hooks/use-layout-effect
         [offset preference]
-        (when (or
-               (not= offset (:offset @cache))
-               (not= preference (:preference @cache)))
-          (reset! cache {:offset offset :preference preference})
-          (recalculate)))
+        (reset! cache {:offset offset :preference preference})
+        (recalculate))
       (hooks/use-effect
         :always
         (when (and (some? @_el) (not @observer))
           (reset! observer (js/ResizeObserver. recalculate))
           (.observe @observer @_el)
-          (set-state!
-           (fn [computed]
-             (let [_computed (compute-container-props target @_el preference)]
-               (if (not= computed _computed)
-                 (do
-                   (when (ifn? on-change) (on-change _computed))
-                   _computed)
-                 computed))))))
+          (let [_computed (compute-container-props target @_el preference)]
+            (when (not= computed _computed)
+              (set-state! _computed)
+              (when (ifn? on-change) (on-change _computed))))))
       (hooks/use-effect
         :once
         (.addEventListener js/document "wheel" recalculate)
@@ -657,8 +638,6 @@
           (.removeEventListener js/document "wheel" recalculate))))
     (when (nil? container-node)
       (.error js/console "Popup doesn't know where to render. Specify popup container. I.E. instantiate toddler.popup/Container"))
-    ; (println "POPUP: " [top left])
-    ; (println "COMPUTED!!!: " computed)
     (rdom/createPortal
      (provider
       {:context *position*
@@ -675,8 +654,7 @@
                       :zIndex "1000"
                       :visibility (if computed "visible" "hidden")})
                      ;;
-                     (not-any? pos? [top left])
-                     #_(not (pos? (:popup-height computed)))
+                     (not (pos? (:popup-height computed)))
                      (assoc :visibility "hidden"
                             :opacity "0"))]
          (d/div

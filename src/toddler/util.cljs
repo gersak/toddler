@@ -63,12 +63,19 @@
   [node]
   (when node
     (let [rect (.getBoundingClientRect node)
+          ios? (boolean
+                (re-find
+                 #"(?i)iphone|ipad|ipod|safari"
+                 (.-userAgent js/navigator)))
+          scroll-offset-y (if-not ios?
+                            0
+                            (or (.. js/window -visualViewport -offsetTop) 0))
           width (.-width rect)
           height (.-height rect)
-          left (.-left rect)
-          top (.-top rect)
-          bottom (.-bottom rect)
-          right (.-right rect)]
+          left (- (.-left rect) scroll-offset-y)
+          top (+ (.-top rect) scroll-offset-y)
+          bottom (+ (.-bottom rect) scroll-offset-y)
+          right (- (.-right rect) scroll-offset-y)]
       [top left right bottom width height])))
 
 (defn get-css [node]

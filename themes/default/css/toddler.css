@@ -22,6 +22,11 @@ body {
   position: fixed;
 }
 
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
 
 html[data-theme="light"] body {
   background-color: #f0f0f0;
