@@ -79,6 +79,18 @@
   (stop)
   (start))
 
+(defn release [_]
+  ;; first initialize my css
+  (-> (init)
+      (cb/generate '{:ui {:include [toddler.ui*
+                                    toddler.md
+                                    toddler.notifications
+                                    toddler
+                                    toddler.dev
+                                    toddler.showcase
+                                    toddler.showcase*]}})
+      (cb/write-outputs-to (io/file "showcase" "web" "css"))))
+
 ;; DEPRECATED - toddler should have 0 css, use css in toddler.ui
 ; (defn generate-indexes
 ;   ([& _]
