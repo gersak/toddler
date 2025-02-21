@@ -529,9 +529,11 @@
                    :else nil))]
          (async/go
            (async/<! (async/timeout 100))
+           (.addEventListener js/document "touchmove" handle-outside-click)
            (.addEventListener js/document "mousedown" handle-outside-click)
            (.addEventListener js/document "wheel" handle-outside-scroll))
          (fn []
+           (.removeEventListener js/document "touchmove" handle-outside-click)
            (.removeEventListener js/document "mousedown" handle-outside-click)
            (.removeEventListener js/document "wheel" handle-outside-scroll)))))))
 
@@ -632,10 +634,12 @@
               (when (ifn? on-change) (on-change _computed))))))
       (hooks/use-effect
         :once
-        (.addEventListener js/document "wheel" recalculate)
+        (.addEventListener js/document "wheel" recalculate #js {:pasive false})
+        (.addEventListener js/document "touchmove" recalculate #js {:pasive false})
         (fn []
           (when @observer (.disconnect @observer))
-          (.removeEventListener js/document "wheel" recalculate))))
+          (.removeEventListener js/document "wheel" recalculate)
+          (.removeEventListener js/document "touchmove" recalculate))))
     (when (nil? container-node)
       (.error js/console "Popup doesn't know where to render. Specify popup container. I.E. instantiate toddler.popup/Container"))
     (rdom/createPortal
