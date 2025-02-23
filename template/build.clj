@@ -3,16 +3,16 @@
    [clojure.tools.build.api :as b]
    [deps-deploy.deps-deploy :as dd]))
 
-(def version "0.9.2-SNAPSHOT")
+(def version "0.5.0-SNAPSHOT")
 (def target "target/classes")
 
 (defn create-jar []
   (let [basis (b/create-basis {})]
     (b/delete {:path "target"})
-    (b/copy-dir {:src-dirs ["src" "resources"]
+    (b/copy-dir {:src-dirs ["src"]
                  :target-dir target})
     (b/write-pom {:target target
-                  :lib 'dev.gersak/toddler
+                  :lib 'dev.gersak/toddler-template
                   :version version
                   :basis basis})
     (b/jar {:class-dir target

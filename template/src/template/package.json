@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "npx shadow-cljs -A:shadow watch dev",
-    "release": "clj -X:shadow:css && npx shadow-cljs -A:shadow release production"
+    "release": "clj -X:shadow:css && npx shadow-cljs -A:shadow release production",
+    "release-tauri": "clj -X:shadow:showcase:css && npx shadow-cljs -A:shadow:showcase release tauri"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +15,8 @@
     "simplebar-react": "^3.3.0"
   },
   "devDependencies": {
+    "@tauri-apps/api": "^2.2.0",
+    "@tauri-apps/cli": "^2.2.7",
     "highlight.js": "^11.11.1",
     "markdown-it": "^14.1.0",
     "markdown-it-anchor": "^9.2.0",

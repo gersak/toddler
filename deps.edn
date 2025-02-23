@@ -18,7 +18,7 @@
   :showcase
   {:extra-paths ["showcase/src" "ui/src" "themes/default"]}
   :template
-  {:extra-paths ["ui/resources"]}
+  {:extra-paths ["template/src"]}
   :css
   {:extra-paths ["dev"]
    :ns-default compile-css
