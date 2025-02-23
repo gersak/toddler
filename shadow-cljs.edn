@@ -23,4 +23,16 @@
                              {:entries [toddler.md]
                               :depends-on #{:main}}}
                    :output-dir "showcase/web/js"
-                   :output-to "showcase/web/js/main.js"}}}
+                   :output-to "showcase/web/js/main.js"}
+          :tauri {:target :browser
+                  :entries [toddler.showcase.github]
+                  :asset-path "/js"
+                  :module-loader true
+                  :modules {:main
+                            {:entries [toddler.showcase.github]
+                             :init-fn toddler.showcase.github/start!}
+                            :markdown
+                            {:entries [toddler.md]
+                             :depends-on #{:main}}}
+                  :output-dir "showcase/web/js"
+                  :output-to "showcase/web/js/main.js"}}}

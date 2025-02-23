@@ -32,6 +32,7 @@
 (def $field
   (css
    :flex
+   :overflow-hidden
    {:flex "100 0 auto"
     :width "100px"}
    ["& > .content" :w-full]
@@ -623,7 +624,7 @@
 
 (def $timestamp-field
   (css
-   :flex :flex-col
+   :flex :flex-col :overflow-hidden
    ["& .row"
     :flex :text-sm
     {:gap "0.25rem"
@@ -634,7 +635,7 @@
      :border-color "var(--field-border)"}]
    ["& .row .date" {:width "13.5rem"}]
    ["& .row .date.no-time" {:width "18.75rem"}]
-   ["& .row .time" {:width "5rem"}]
+   ["& .row .time" :overflow-hidden {:width "5rem"}]
    ["& .row .date, & .row .time"
     :flex :items-center
     :relative :transition :grow :h-10
@@ -771,7 +772,7 @@
    ["& .inputs.no-time input" {:max-width "134px"}]
    ; ["& .inputs:not(.no-time) input" {:max-width "6rem"}]
    ["& .inputs .date" {:width "13.5rem"}]
-   ["& .inputs .time" {:width "5rem"}]
+   ["& .inputs .time" :overflow-hidden {:width "5rem"}]
    ["& .calendar" :mt-1]
    #_["& .inputs .date"]))
 

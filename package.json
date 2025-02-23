@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "npx shadow-cljs -A:shadow:showcase watch dev",
     "icons": "npx shadow-cljs -A:shadow:cider:icons watch icons",
-    "release": "clj -X:shadow:showcase:css && npx shadow-cljs -A:shadow:showcase release github"
+    "release": "clj -X:shadow:showcase:css && npx shadow-cljs -A:shadow:showcase release github",
+    "release-tauri": "clj -X:shadow:showcase:css && npx shadow-cljs -A:shadow:showcase release tauri"
   },
   "author": "Robert Gersak",
   "license": "ISC",
