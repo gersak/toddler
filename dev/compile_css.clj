@@ -17,7 +17,7 @@
                                            toddler.md
                                            toddler.notifications
                                            toddler
-                                           toddler.dev
+                                           toddler.docs
                                            toddler.showcase
                                            toddler.showcase*]}})
              (cb/write-outputs-to (io/file "showcase" "dev" "css")))]
@@ -86,7 +86,7 @@
                                     toddler.md
                                     toddler.notifications
                                     toddler
-                                    toddler.dev
+                                    toddler.docs
                                     toddler.showcase
                                     toddler.showcase*]}})
       (cb/write-outputs-to (io/file "showcase" "web" "css"))))

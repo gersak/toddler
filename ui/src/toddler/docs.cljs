@@ -1,4 +1,4 @@
-(ns toddler.dev
+(ns toddler.docs
   (:require
    [clojure.core.async :as async]
    [helix.core
@@ -9,22 +9,15 @@
    [toddler.router :as router]
    [toddler.core
     :as toddler
-    :refer [use-user
-            use-window-dimensions
+    :refer [use-window-dimensions
             use-dimensions]]
    [toddler.i18n.default]
    [toddler.app :as app]
    [toddler.ui :as ui :refer [!]]
-   [toddler.ui.elements :as e]
    [toddler.layout :as layout]
-   [toddler.window :as window]
-   ; [toddler.tauri :as window]
-   [toddler.popup :as popup]
-   [toddler.dropdown :as dropdown]
    [toddler.material.outlined :as outlined]
    [toddler.fav6.brands :as brands]
    ["react" :as react]
-   [toddler.i18n :as i18n]
    [shadow.css :refer [css]]))
 
 (def -level- (create-context))
@@ -78,14 +71,13 @@
                         ["& .level-1" :pl-2]
                         ["& .level-2" :pl-4]
                         ["& .level-3" :pl-6])
-        translate (toddler/use-translate)
         [_subs {sub-height :height}] (toddler/use-dimensions)]
     (d/div
      {:class [$component]}
      (d/a
       {:class ["name" (when rendered? "selected")]
        :onClick #(path)}
-      (str (translate (:name component))))
+      (str (:name component)))
      (provider
       {:context -level-
        :value (inc level)}
@@ -102,15 +94,12 @@
 
 (defnc navbar
   {:wrap [(react/forwardRef)]}
-  [{:keys [render/logo
-           render/actions]} _ref]
+  [{:keys [render/logo]} _ref]
   (let [{links :children} (router/use-component-tree)
         {:keys [height] :as window} (use-window-dimensions)
         {:keys [width]} (toddler/use-window-dimensions)
         mobile? (< width 1000)
         [opened? set-opened!] (hooks/use-state false)
-        theme (hooks/use-context app/theme)
-        logo (str "https://raw.githubusercontent.com/gersak/toddler/refs/heads/main/ui/assets/toddler_" theme ".png")
         [_logo {logo-height :height}] (toddler/use-dimensions)]
     (if mobile?
       ($ ui/row
@@ -126,9 +115,7 @@
                        {:transition "transform .3s ease-in-out"
                         :transform "rotate(90deg)"}])}
          ($ outlined/menu {:class ["menu" (when opened? "opened")]})
-         (d/img
-          {:src logo
-           :className "logo"})
+         (when logo ($ logo {:mobile mobile?}))
          (d/div
           {:class ["drawer" (css
                              :pl-2
@@ -179,9 +166,7 @@
          (d/div
           {:ref _logo
            :className "logo-wrapper"}
-          (d/img
-           {:src logo
-            :className "logo"}))
+          (when logo ($ logo {:mobile? mobile?})))
 
          ($ ui/simplebar
             {:style {:height (- height logo-height)
@@ -204,7 +189,7 @@
 
 (defnc header
   {:wrap [(react/forwardRef)]}
-  [{:keys [style theme on-theme-change]} _ref]
+  [{:keys [style theme on-theme-change] :as props} _ref]
   (d/div
    {:className (css
                 :flex
@@ -219,32 +204,7 @@
                 ["& .tooltip-popup-area:hover" :color-normal])
     :ref _ref
     :style style}
-   (d/div
-    {:className "wrapper"}
-    (! :tooltip {:message "Change theme"}
-       (d/div
-        {:on-click (fn []
-                     (on-theme-change
-                      (case theme
-                        ("dark" 'dark) "light"
-                        ("light" 'light) "dark"
-                        "light")))}
-        (if (= "dark" theme)
-          ($ outlined/light-mode)
-          ($ outlined/dark-mode)))))
-   (d/div
-    {:className "wrapper"}
-    (! :tooltip {:message "Open Github project"}
-       (d/a
-        {:href "https://github.com/gersak/toddler"}
-        ($ brands/github))))
-   (d/div
-    {:className "wrapper"}
-    (! :tooltip {:message "API Docs"}
-       (d/a
-        {:href "https://gersak.github.io/toddler/codox/index.html"
-         :className (css :text-base :font-bold :no-underline :select-none)}
-        "API")))))
+   (children props)))
 
 (defnc empty-content
   []
@@ -274,8 +234,48 @@
        :class [$content "render-zone"]}
       (children props)))))
 
-(defnc docs
-  [{:keys [components max-width]}]
+(defnc toddler-logo
+  []
+  (let [theme (hooks/use-context app/theme)
+        logo (str "https://raw.githubusercontent.com/gersak/toddler/refs/heads/main/ui/assets/toddler_" theme ".png")]
+    (d/img
+     {:src logo
+      :className "logo"})))
+
+(defnc toddler-actions
+  [{:keys [theme on-theme-change]}]
+  (<>
+   (d/div
+    {:className "wrapper"}
+    ($ ui/tooltip {:message "Change theme"}
+       (d/div
+        {:on-click (fn []
+                     (on-theme-change
+                      (case theme
+                        ("dark" 'dark) "light"
+                        ("light" 'light) "dark"
+                        "light")))}
+        (if (= "dark" theme)
+          ($ outlined/light-mode)
+          ($ outlined/dark-mode)))))
+   (d/div
+    {:className "wrapper"}
+    ($ ui/tooltip {:message "Open Github project"}
+       (d/a
+        {:href "https://github.com/gersak/toddler"}
+        ($ brands/github))))
+   (d/div
+    {:className "wrapper"}
+    ($ ui/tooltip {:message "API Docs"}
+       (d/a
+        {:href "https://gersak.github.io/toddler/codox/index.html"
+         :className (css :text-base :font-bold :no-underline :select-none)}
+        "API")))))
+
+(defnc page
+  [{:keys [components max-width render/logo render/actions]
+    :or {logo toddler-logo
+         actions toddler-actions}}]
   (let [window (use-window-dimensions)
         [_navbar {navigation-width :width}] (use-dimensions)
         [_header] (use-dimensions)
@@ -310,14 +310,16 @@
         ($ ui/row
            {:key ::wrapper
             :style {:max-width (+ content-width navigation-width)}}
-           ($ navbar {:ref _navbar})
+           ($ navbar {:ref _navbar :render/logo logo})
            ($ ui/column {:className "content"}
               ($ header
                  {:ref _header
-                  :theme theme
-                  :on-theme-change set-theme!
                   :style {:width header-width
-                          :height header-height}})
+                          :height header-height}}
+                 (when actions
+                   ($ actions
+                      {:theme theme
+                       :on-theme-change set-theme!})))
               ($ content
                  {:ref _content
                   :style {:height content-height
@@ -327,20 +329,3 @@
                     (when render
                       ($ render {:key id})))
                   components))))))))
-
-(defnc playground
-  {:wrap [(window/wrap-window-provider)]}
-  [{:keys [components max-width]}]
-  (let [[{{locale :locale
-           :or {locale :en}} :settings :as user} set-user!]
-        (hooks/use-state {:settings {:locale i18n/*locale*}})]
-    (router/use-link ::router/ROOT components)
-    (provider
-     {:context app/user
-      :value [user set-user!]}
-     (provider
-      {:context app/locale
-       :value locale}
-      ($ docs
-         {:max-width max-width
-          :components components})))))
