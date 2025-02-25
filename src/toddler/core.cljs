@@ -545,6 +545,12 @@
                                      (set-dimensions! dimensions))))))]
      (hooks/use-effect
        :always
+       ;; If node isn't present
+       (when (nil? @node)
+         (set-dimensions! nil)
+         (when @observer (.disconnect @observer)))
+       ;; When node shows up and dimensions are nil
+       ;; then add resize observer
        (when (and (some? @node) (nil? dimensions))
          (letfn [(reset [[entry]]
                    (async/put! @resize-idle-service entry))]

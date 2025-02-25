@@ -72,14 +72,12 @@
   (let [rendered? (router/use-rendered? (:id component))
         level (hooks/use-context -level-)
         path (router/use-go-to (:id component))
-        $component (css :px-3 :py-1
+        $component (css :px-3 :pt-1
                         ["& a" :no-underline :select-none]
                         ["& .icon" :w-5 :text-transparent :mr-1]
                         ["& .level-1" :pl-2]
                         ["& .level-2" :pl-4]
-                        ["& .level-3" :pl-6]
-                        ; ["&.selected .icon" :color-hover]
-                        )
+                        ["& .level-3" :pl-6])
         translate (toddler/use-translate)
         [_subs {sub-height :height}] (toddler/use-dimensions)]
     (d/div
@@ -104,12 +102,16 @@
 
 (defnc navbar
   {:wrap [(react/forwardRef)]}
-  [_ _ref]
+  [{:keys [render/logo
+           render/actions]} _ref]
   (let [{links :children} (router/use-component-tree)
         {:keys [height] :as window} (use-window-dimensions)
         {:keys [width]} (toddler/use-window-dimensions)
-        mobile? (< width 800)
-        [opened? set-opened!] (hooks/use-state false)]
+        mobile? (< width 1000)
+        [opened? set-opened!] (hooks/use-state false)
+        theme (hooks/use-context app/theme)
+        logo (str "https://raw.githubusercontent.com/gersak/toddler/refs/heads/main/ui/assets/toddler_" theme ".png")
+        [_logo {logo-height :height}] (toddler/use-dimensions)]
     (if mobile?
       ($ ui/row
          {:align :center
@@ -117,15 +119,16 @@
           :className (css
                       :absolute
                       :top-0 :left-0 :pl-4
-                      {:font-size "28px" :height "50px"}
-                      ["& .title" :ml-4 {:font-family "Caveat Brush, serif"}]
+                      {:font-size "20px" :height "50px"}
+                      ["& .logo" :ml-4 {:max-height "24px"}]
+                      ["& .menu" {:font-size "28px"}]
                       ["& .opened"
                        {:transition "transform .3s ease-in-out"
                         :transform "rotate(90deg)"}])}
-         ($ outlined/menu {:className (when opened? "opened")})
-         (d/div
-          {:className "title"}
-          "toddler")
+         ($ outlined/menu {:class ["menu" (when opened? "opened")]})
+         (d/img
+          {:src logo
+           :className "logo"})
          (d/div
           {:class ["drawer" (css
                              :pl-2
@@ -164,29 +167,24 @@
                       :flex
                       :flex-col
                       :toddler/menu-link-selected
-                      ["& .title"
-                       :flex
-                       :h-20
-                       :items-center
-                       :text-2xl
-                       :mb-4
-                       :justify-center
-                       :select-none
-                       {:font-family "Caveat Brush, serif"
-                        :font-size "3rem"}]
+                      ["& .logo" {:max-height "40px"}]
                       ["& .component-list"
                        :ml-3
                        :mb-20]
+                      ["& .logo-wrapper" :flex :items-center :justify-center {:min-height "150px"}]
                       ["& .name" :text-xs :font-semibold {:color "var(--color-inactive)"}]
                       ["& .name:hover" :text-xs {:color "var(--color-active)"}]
                       ["& .selected.name" {:color "var(--color-normal)"}]
                       ["& .name.selected" {:color "var(--color-normal)"}])}
          (d/div
-          {:className "title"}
-          "toddler")
+          {:ref _logo
+           :className "logo-wrapper"}
+          (d/img
+           {:src logo
+            :className "logo"}))
 
          ($ ui/simplebar
-            {:style {:height (- height 120)
+            {:style {:height (- height logo-height)
                      :min-width 200
                      :max-width 400}
              :shadow false}
@@ -203,45 +201,6 @@
                      {:key (:id c)
                       :component c}))
                 links)))))))))
-
-(let [popup-preference
-      [#{:bottom :center}
-       #{:bottom :right}]]
-  (defnc LocaleDropdown
-    []
-    (let [[{{locale :locale
-             :or {locale :en}} :settings} set-user!] (use-user)
-          ;;
-          translate (toddler/use-translate)
-          ;;
-          {:keys [toggle! opened area] :as dropdown}
-          (dropdown/use-dropdown
-           {:value locale
-            :options [:en :es :de :fr :hr]
-            :search-fn #(i18n/translate :locale %)
-            :area-position #{:bottom :center}
-            :onChange (fn [v]
-                        (set-user! assoc-in [:settings :locale] v))})]
-      ;;
-      (provider
-       {:context dropdown/*dropdown*
-        :value dropdown}
-       ($ popup/Area
-          {:ref area :class (css :flex :items-center :font-bold)}
-          (d/button
-           {:onClick toggle!
-            :class [(css
-                     :toddler/menu-link
-                     :items-center
-                     ["&:hover" :toddler/menu-link-selected])
-                    (when opened (css :toddler/menu-link-selected))]}
-           (translate :locale))
-          ($ dropdown/Popup
-             {:className "dropdown-popup"
-              :preference popup-preference}
-             ($ e/dropdown-wrapper
-                ($ dropdown/Options
-                   {:render e/dropdown-option}))))))))
 
 (defnc header
   {:wrap [(react/forwardRef)]}
@@ -315,7 +274,7 @@
        :class [$content "render-zone"]}
       (children props)))))
 
-(defnc playground-layout
+(defnc docs
   [{:keys [components max-width]}]
   (let [window (use-window-dimensions)
         [_navbar {navigation-width :width}] (use-dimensions)
@@ -344,15 +303,15 @@
     (provider
      {:context app/theme
       :value theme}
-     (! :row {:key ::center
-              :& (cond->
-                  {:align :center
-                   :style {:flex-grow "1"}})}
-        (! :row
+     ($ ui/row {:key ::center
+                :& (cond->
+                    {:align :center
+                     :style {:flex-grow "1"}})}
+        ($ ui/row
            {:key ::wrapper
             :style {:max-width (+ content-width navigation-width)}}
            ($ navbar {:ref _navbar})
-           (! :column {:className "content"}
+           ($ ui/column {:className "content"}
               ($ header
                  {:ref _header
                   :theme theme
@@ -382,6 +341,6 @@
      (provider
       {:context app/locale
        :value locale}
-      ($ playground-layout
+      ($ docs
          {:max-width max-width
           :components components})))))
