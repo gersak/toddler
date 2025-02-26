@@ -109,13 +109,12 @@
                       :absolute
                       :top-0 :left-0 :pl-4
                       {:font-size "20px" :height "50px"}
-                      ["& .logo" :ml-4 {:max-height "24px"}]
                       ["& .menu" {:font-size "28px"}]
                       ["& .opened"
                        {:transition "transform .3s ease-in-out"
                         :transform "rotate(90deg)"}])}
          ($ outlined/menu {:class ["menu" (when opened? "opened")]})
-         (when logo ($ logo {:mobile mobile?}))
+         (when logo ($ logo {:mobile? mobile?}))
          (d/div
           {:class ["drawer" (css
                              :pl-2
@@ -234,14 +233,17 @@
       (children props)))))
 
 (defnc toddler-logo
-  []
+  [{:keys [mobile?]}]
   (let [theme (hooks/use-context app/theme)
-        logo (str "https://raw.githubusercontent.com/gersak/toddler/refs/heads/main/ui/assets/toddler_" theme ".png")]
+        logo (str "https://raw.githubusercontent.com/gersak/toddler/refs/heads/main/ui/assets/toddler_" theme ".png")
+        $desktop (css :flex :items-center :justify-center :grow {:min-height "150px"}
+                      ["& .logo" {:max-height "40px"}])
+        $mobile (css :flex :items-ecnter :ml-2 ["& .logo" {:max-height "24px"}])]
     (d/div
-     {:className (css :flex :items-center :justify-center :grow {:min-height "150px"})}
+     {:className (if mobile? $mobile $desktop)}
      (d/img
       {:src logo
-       :className (css {:max-height "40px"})}))))
+       :class "logo"}))))
 
 (defnc toddler-actions
   [{:keys [theme on-theme-change]}]
