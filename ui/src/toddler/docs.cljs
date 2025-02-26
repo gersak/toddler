@@ -154,11 +154,10 @@
                       :flex
                       :flex-col
                       :toddler/menu-link-selected
-                      ["& .logo" {:max-height "40px"}]
                       ["& .component-list"
                        :ml-3
                        :mb-20]
-                      ["& .logo-wrapper" :flex :items-center :justify-center {:min-height "150px"}]
+                      ["& .logo-wrapper" :flex]
                       ["& .name" :text-xs :font-semibold {:color "var(--color-inactive)"}]
                       ["& .name:hover" :text-xs {:color "var(--color-active)"}]
                       ["& .selected.name" {:color "var(--color-normal)"}]
@@ -189,7 +188,7 @@
 
 (defnc header
   {:wrap [(react/forwardRef)]}
-  [{:keys [style theme on-theme-change] :as props} _ref]
+  [{:keys [style] :as props} _ref]
   (d/div
    {:className (css
                 :flex
@@ -238,9 +237,11 @@
   []
   (let [theme (hooks/use-context app/theme)
         logo (str "https://raw.githubusercontent.com/gersak/toddler/refs/heads/main/ui/assets/toddler_" theme ".png")]
-    (d/img
-     {:src logo
-      :className "logo"})))
+    (d/div
+     {:className (css :flex :items-center :justify-center :grow {:min-height "150px"})}
+     (d/img
+      {:src logo
+       :className (css {:max-height "40px"})}))))
 
 (defnc toddler-actions
   [{:keys [theme on-theme-change]}]
