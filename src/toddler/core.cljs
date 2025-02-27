@@ -22,8 +22,6 @@
    [toddler.graphql :as graphql]
    [toddler.graphql.transport :refer [send-query]]))
 
-(.log js/console "Loading toddler.core")
-
 (defn ml
   "Multiline function. Joins input lines"
   [& lines]
@@ -85,6 +83,16 @@
   "Returns application root URL"
   []
   (hooks/use-context app/url))
+
+(defhook use-layout
+  "Returns value of application layout context"
+  []
+  (hooks/use-context app/layout))
+
+(defhook use-theme
+  "Returns theme context value"
+  []
+  (hooks/use-context app/theme))
 
 (defhook use-graphql-url
   "Returns GraphQL endpoint URL"
@@ -266,9 +274,13 @@
 ;     [_avatar refresh]))
 
 (defhook use-theme-state
-  "Hook will provide state and state setter
+  "Hook will provide theme state and state setter
   similar to helix.hooks/use-state. Except this
-  state will be stored in localStorage"
+  state will be stored in localStorage.
+  
+  When value of theme changes, it will store that value
+  to local storage and check if `<html>` attribute `data-theme`
+  has the same value as theme state"
   ([] (use-theme-state "light"))
   ([default]
    (let [[theme set-theme!] (use-local-storage ::theme str)]
@@ -485,6 +497,28 @@
   should be instantiated in app/*window* context"
   []
   (hooks/use-context app/window))
+
+(defhook use-window-width
+  "Returns visible window width size"
+  []
+  (let [{:keys [width]} (hooks/use-context app/window)]
+    width))
+
+(defhook use-window-height
+  "Returns visible window height size"
+  []
+  (let [{:keys [height]} (hooks/use-context app/window)]
+    height))
+
+(defhook use-window-width-test
+  "Test window width with predicate. Should be used like
+  
+  `(use-window-width-test < 400)`
+
+  to test if window width is less than 400px"
+  [pred size]
+  (let [{:keys [width]} (hooks/use-context app/window)]
+    (pred width size)))
 
 (defhook use-resize-observer
   "Hook returns ref that should be attached to component and

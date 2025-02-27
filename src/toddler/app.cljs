@@ -19,22 +19,6 @@
 ; (def avatars (create-context))
 (def ^{:doc "GraphQL endpoint URL"} graphql-url (create-context))
 
-(defhook use-window
-  "Hook will return window dimensions. If window is resized,
-  this context will be recomputed and propagated."
-  []
-  (hooks/use-context window))
-
-; (defhook use-currency-options
-;   "Returns currency context"
-;   []
-;   (hooks/use-context currency))
-
-(defhook use-theme
-  "Returns theme context value"
-  []
-  (hooks/use-context theme))
-
 (defonce
  ^{:doc "Signal channel is channel that can be used to
          publish global app events. It is used by

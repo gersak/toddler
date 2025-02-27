@@ -1,15 +1,20 @@
 (ns {{project}}.docs
   (:require
-   [helix.core :refer [$ defnc]]
+   [helix.core :refer [$ defnc <>]]
+   [helix.dom :as d]
    [helix.hooks :as hooks]
+   [toddler.app :as app]
    [toddler.ui :as ui]
    [toddler.layout :as layout]
    [toddler.i18n.time]
    [toddler.md.lazy :as md]
-   [toddler.dev :as dev]
+   [toddler.docs :as docs]
    [toddler.head :as head]
+   [toddler.core :as toddler]
    [toddler.ui.css :as ui.css]
-   [toddler.router :as router]))
+   [toddler.material.outlined :as outlined]
+   [toddler.router :as router]
+   [shadow.css :refer [css]]))
 
 (defn change-highligh-js
   [theme]
@@ -53,6 +58,55 @@
     :name "Intro"
     :render Intro}])
 
+(defnc actions
+  [{:keys [theme on-theme-change]}]
+  (let [{go-to :go} (router/use-navigate)]
+    (<>
+     (d/div
+      {:className "wrapper"}
+      ($ ui/tooltip {:message "Change theme"}
+         (d/div
+          {:on-click (fn []
+                       (on-theme-change
+                        (case theme
+                          ("dark" 'dark) "light"
+                          ("light" 'light) "dark"
+                          "light")))}
+          (if (= "dark" theme)
+            ($ outlined/light-mode)
+            ($ outlined/dark-mode)))))
+     (d/div
+      {:className "wrapper"}
+      ($ ui/tooltip {:message "Back to app"}
+         (d/div
+          {:on-click (fn [] (go-to "/greeting"))}
+          ($ outlined/arrow-back)))))))
+
+(defnc logo
+  []
+  (let [theme (hooks/use-context app/theme)
+        logo (str "https://raw.githubusercontent.com/gersak/toddler/refs/heads/main/template/assets/your_logo_" theme ".png")
+        desktop (css :flex :grow :justify-center :items-center {:min-height "100px"})
+        layout (toddler/use-layout)
+        mobile (css :ml-2 :flex :items-center {:max-height "16px"})]
+    (d/div
+     {:class (case layout
+               :mobile mobile
+               :desktop desktop
+               nil)}
+     (d/img
+      {:src logo
+       :className (css {:max-height "16px"})}))))
+
+(defnc _Docs
+  []
+  (router/use-link ::router/ROOT components)
+  ($ docs/page
+     {:max-width 1000
+      :components components
+      :render/logo logo
+      :render/actions actions}))
+
 (defnc Docs
   {:wrap [(md/wrap-show {:className ui.css/$md
                          :on-theme-change change-highligh-js})
@@ -70,6 +124,4 @@
       (when (#{"/docs" "/docs/"} pathname)
         (go-to "/docs/intro")))
     ($ router/Provider {:base "docs"}
-       ($ dev/playground
-          {:max-width 1000
-           :components components}))))
+       ($ _Docs))))

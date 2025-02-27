@@ -121,7 +121,9 @@
     (assert (some? project) "Specify project name")
     (init-files project)
     (install-js project)
-    (init-tauri project)
+    (try
+      (init-tauri project)
+      (catch Throwable _ nil))
     (System/exit 0)))
 
 (comment

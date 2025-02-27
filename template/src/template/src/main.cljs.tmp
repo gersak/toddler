@@ -36,44 +36,40 @@
                   src width height)}}))
 
 (defnc actions
-  [{:keys [theme on-theme-change]}]
-  (d/div
-   {:className (css :absolute :top-1 :right-1 :flex
-                    :h-10
-                    :flex-row-reverse
-                    :pr-1
-                    :box-border
-                    ["& .wrapper"
-                     :items-center :flex :items-center {:font-size "24px"} :mr-4
-                     :cursor-pointer :color-inactive]
-                    ["& .wrapper:first-child" :mr-0]
-                    ["& .tooltip-popup-area:hover" :color-normal])}
-   (d/div
-    {:className "wrapper"}
-    ($ ui/tooltip {:message "Change theme"}
-       (d/div
-        {:on-click (fn []
-                     (on-theme-change
-                      (case theme
-                        ("dark" 'dark) "light"
-                        ("light" 'light) "dark"
-                        "light")))}
-        (if (= "dark" theme)
-          ($ outlined/light-mode)
-          ($ outlined/dark-mode)))))
-   (d/div
-    {:className "wrapper"}
-    ($ ui/tooltip {:message "Open Github project"}
-       (d/a
-        {:href "https://github.com/gersak/toddler"}
-        ($ brands/github))))
-   (d/div
-    {:className "wrapper"}
-    ($ ui/tooltip {:message "API Docs"}
-       (d/a
-        {:href "https://gersak.github.io/toddler/codox/index.html"
-         :className (css :text-base :font-bold :no-underline :select-none)}
-        "API")))))
+  {:wrap [(ui/forward-ref)]}
+  [{:keys [theme on-theme-change]} _ref]
+  (let [{go-to :go} (router/use-navigate)]
+    (d/div
+     {:className (css :flex
+                      :items-center
+                      :h-10
+                      :flex-row-reverse
+                      :pr-1
+                      :box-border
+                      ["& .wrapper"
+                       :items-center :flex :items-center {:font-size "24px"} :mr-4
+                       :cursor-pointer :color-inactive]
+                      ["& .wrapper:first-child" :mr-0]
+                      ["& .tooltip-popup-area:hover" :color-normal])}
+     (d/div
+      {:className "wrapper"}
+      ($ ui/tooltip {:message "Change theme"}
+         (d/div
+          {:on-click (fn []
+                       (on-theme-change
+                        (case theme
+                          ("dark" 'dark) "light"
+                          ("light" 'light) "dark"
+                          "light")))}
+          (if (= "dark" theme)
+            ($ outlined/light-mode)
+            ($ outlined/dark-mode)))))
+     (d/div
+      {:className "wrapper"}
+      ($ ui/tooltip {:message "API Docs"}
+         ($ outlined/info
+            {:on-click (fn []
+                         (go-to "/docs/"))}))))))
 
 (defnc Greeting
   {:wrap [(router/wrap-rendered ::greeting)
@@ -84,37 +80,86 @@
              :landing 10}])]}
   []
   (let [[theme set-theme!] (toddler/use-theme-state)
-        scale 0.7]
-    ($ ui/row {:align :center
-               :className (css :w-full :h-full)}
-       ($ ui/column
-          {:style {:max-width 400}
-           :className (css :p-8 :border :border-normal
-                           :rounded-lg :relative :bg-normal+)
-           :align :center}
-          ($ actions {:on-theme-change set-theme! :theme theme})
-          ($ ui/row
-             {:align :center
-              :className (css
-                          ["& .message" {:max-width "300px"}]
-                          ["& hr" :mt-6 :mb-2]
-                          ["& h4" {:margin-top "8px !important"}]
-                          ["& h1" :mb-6 {:font-size "32px"}]
-                          ["& p" :mt-2 {:font-size "12px"}]
-                          ["& a" {:color "var(--link-color)" :font-weight "600"}]
-                          ["& .toddler-markdown" :my-6 #_{:margin-bottom "8px !important"}])}
-             (d/div
-              {:className "message"}
-              (d/h1 "Toddler")
-              ($ md/watch-url {:url "docs/greeting.md"})))
+        {window-width :width
+         window-height :height} (toddler/use-window-dimensions)
+        [_greeting {greeting-height :height greeting-width :width}] (toddler/use-dimensions)
+        scale 0.7
+        layout (toddler/use-layout)]
+    (case layout
+      :mobile
+      ($ ui/column
+         {:align :center}
+         ($ ui/row
+            {:align :explode
+             :className (css :pl-4 :pr-2 {:height "50px"})}
+            (d/h1 "Toddler")
+            ($ actions
+               {:on-theme-change set-theme!
+                :theme theme}))
+         ($ ui/simplebar
+            {:style {:width window-width
+                     :height (- window-height 80)}}
+            ($ ui/row
+               {:align :center
+                :className (css
+                            ["& .message" {:max-width "300px"}]
+                            ["& hr" :mt-6 :mb-2]
+                            ["& h4" {:margin-top "8px !important"}]
+                            ["& h1" :mb-6 {:font-size "32px"}]
+                            ["& p" :mt-2 {:font-size "12px"}]
+                            ["& a" {:color "var(--link-color)" :font-weight "600"}]
+                            ["& .toddler-markdown" :my-6 #_{:margin-bottom "8px !important"}])}
+               (d/div
+                {:className "message"}
 
+                ($ md/watch-url {:url "docs/greeting.md"})))
+            ($ ui/row
+               {:align :center}
+               (d/div
+                {:className (css :border :border-normal :rounded-lg :overflow-hidden)}
+                ($ GiphyEmbed {:src goku
+                               :width (* 265 scale)
+                               :height (* scale 200)})))))
+      ;;
+      ($ ui/row
+         {:align :center
+          :className (css :items-center :w-full :h-full)}
+         (d/div
+          {:ref #(reset! _greeting %)
+           :style {:width (min window-width 400)
+                   :height (min (- window-height 100) 650)}
+           :className (css :border :border-normal
+                           :rounded-lg :relative :bg-normal+)}
           ($ ui/row
-             {:align :center}
-             (d/div
-              {:className (css :border :border-normal :rounded-lg :overflow-hidden)}
-              ($ GiphyEmbed {:src goku
-                             :width (* 265 scale)
-                             :height (* scale 200)})))))))
+             {:align :explode
+              :className (css :pt-8 :px-8 :pb-2)}
+             (d/h1 "Toddler")
+             ($ actions
+                {:on-theme-change set-theme!
+                 :theme theme}))
+          ($ ui/simplebar
+             {:style {:width greeting-width
+                      :height (- greeting-height 88)}}
+             ($ ui/row
+                {:align :center
+                 :className (css
+                             ["& .message" {:max-width "300px"}]
+                             ["& hr" :mt-6 :mb-2]
+                             ["& h4" {:margin-top "8px !important"}]
+                             ["& h1" :mb-6 {:font-size "32px"}]
+                             ["& p" :mt-2 {:font-size "12px"}]
+                             ["& a" {:color "var(--link-color)" :font-weight "600"}]
+                             ["& .toddler-markdown" :my-6 #_{:margin-bottom "8px !important"}])}
+                (d/div
+                 {:className "message"}
+                 ($ md/watch-url {:url "docs/greeting.md"})))
+             ($ ui/row
+                {:align :center}
+                (d/div
+                 {:className (css :border :border-normal :rounded-lg :overflow-hidden :mb-8)}
+                 ($ GiphyEmbed {:src goku
+                                :width (* 265 scale)
+                                :height (* scale 200)})))))))))
 
 (defnc App
   {:wrap [(router/wrap-landing "/" false)
@@ -126,15 +171,19 @@
           (ui/wrap-ui components)]}
   []
   (let [[locale set-locale!] (hooks/use-state :hr)
-        [theme set-theme!] (toddler/use-theme-state)]
+        [theme set-theme!] (toddler/use-theme-state)
+        mobile? (toddler/use-window-width-test < 600)]
     (provider
      {:context app/locale
       :value locale}
      (provider
       {:context app/theme
        :value theme}
-      ($ Greeting)
-      ($ Docs)))))
+      (provider
+       {:context app/layout
+        :value (if mobile? :mobile :desktop)}
+       ($ Greeting)
+       ($ Docs))))))
 
 (defn ^:dev/after-load start! []
   (let [target ^js (.getElementById js/document "app")]

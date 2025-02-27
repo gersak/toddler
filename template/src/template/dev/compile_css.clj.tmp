@@ -17,7 +17,7 @@
              (cb/generate '{:toddler {:include [{{project}}.main
                                                 {{project}}*
                                                 toddler.ui*
-                                                toddler.dev]}})
+                                                toddler.docs]}})
              (cb/write-outputs-to (io/file dir "css")))]
      (prn :CSS-GENERATED)
      (doseq [mod (:outputs result)

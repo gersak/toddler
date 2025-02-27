@@ -7,17 +7,13 @@
    [helix.dom :as d]
    [helix.children :refer [children]]
    [toddler.router :as router]
-   [toddler.core
-    :as toddler
-    :refer [use-window-dimensions
-            use-dimensions]]
+   [toddler.core :as toddler]
    [toddler.i18n.default]
    [toddler.app :as app]
    [toddler.ui :as ui :refer [!]]
    [toddler.layout :as layout]
    [toddler.material.outlined :as outlined]
    [toddler.fav6.brands :as brands]
-   ["react" :as react]
    [shadow.css :refer [css]]))
 
 (def -level- (create-context))
@@ -57,7 +53,7 @@
          name))
        (map
         (fn [{:keys [id] :as props}]
-          ($ subcomponent {& props}))
+          ($ subcomponent {:key id & props}))
         children)))))
 
 (defnc component
@@ -93,15 +89,15 @@
          (:children component))))))))
 
 (defnc navbar
-  {:wrap [(react/forwardRef)]}
+  {:wrap [(ui/forward-ref)]}
   [{:keys [render/logo]} _ref]
   (let [{links :children} (router/use-component-tree)
-        {:keys [height] :as window} (use-window-dimensions)
-        {:keys [width]} (toddler/use-window-dimensions)
-        mobile? (< width 1000)
+        {:keys [height width]} (toddler/use-window-dimensions)
+        layout (toddler/use-layout)
         [opened? set-opened!] (hooks/use-state false)
         [_logo {logo-height :height}] (toddler/use-dimensions)]
-    (if mobile?
+    (case layout
+      :mobile
       ($ ui/row
          {:align :center
           :on-click #(set-opened! not)
@@ -114,19 +110,20 @@
                        {:transition "transform .3s ease-in-out"
                         :transform "rotate(90deg)"}])}
          ($ outlined/menu {:class ["menu" (when opened? "opened")]})
-         (when logo ($ logo {:mobile? mobile?}))
+         (when logo ($ logo))
          (d/div
           {:class ["drawer" (css
                              :pl-2
-                             ["& .name" :text-xl :font-semibold {:color "var(--color-inactive)"}]
-                             ["& .name:hover" :text-xl {:color "var(--color-active)"}]
+                             ["& .name" :text-lg :font-semibold {:color "var(--color-inactive)"}]
+                             ["& .name:hover" {:color "var(--color-active)"}]
                              ["& .selected.name" {:color "var(--color-normal)"}]
-                             ["& .name.selected" {:color "var(--color-normal)"}])]
+                             ["& .name.selected" {:color "var(--color-normal)"}]
+                             ["& .subcomponent .name" :text-base])]
            :style {:width (if-not opened? 0 width)
                    :transition "width .3s ease-in-out"
                    :overflow "hidden"
                    :background "var(--background)"
-                   :z-index "100"
+                   :z-index "101"
                    :position "absolute"
                    :left 0 :top 50}}
           ($ ui/simplebar
@@ -146,6 +143,7 @@
                       {:key (:id c)
                        :component c}))
                  links)))))))
+      :desktop
       ($ ui/column
          {:ref _ref
           :style {:height height}
@@ -164,7 +162,7 @@
          (d/div
           {:ref _logo
            :className "logo-wrapper"}
-          (when logo ($ logo {:mobile? mobile?})))
+          (when logo ($ logo)))
 
          ($ ui/simplebar
             {:style {:height (- height logo-height)
@@ -183,10 +181,11 @@
                   ($ component
                      {:key (:id c)
                       :component c}))
-                links)))))))))
+                links))))))
+      nil)))
 
 (defnc header
-  {:wrap [(react/forwardRef)]}
+  {:wrap [(ui/forward-ref)]}
   [{:keys [style] :as props} _ref]
   (d/div
    {:className (css
@@ -206,7 +205,7 @@
 
 (defnc empty-content
   []
-  (let [window (use-window-dimensions)
+  (let [window (toddler/use-window-dimensions)
         $empty (css :flex
                     :justify-center
                     :items-center)]
@@ -219,7 +218,7 @@
           "Select a component from the list"))))
 
 (defnc content
-  {:wrap [(react/forwardRef)]}
+  {:wrap [(ui/forward-ref)]}
   [{:keys [style] :as props}]
   (let [$content (css
                   :background-normal
@@ -233,14 +232,17 @@
       (children props)))))
 
 (defnc toddler-logo
-  [{:keys [mobile?]}]
-  (let [theme (hooks/use-context app/theme)
+  []
+  (let [theme (toddler/use-theme)
         logo (str "https://raw.githubusercontent.com/gersak/toddler/refs/heads/main/ui/assets/toddler_" theme ".png")
         $desktop (css :flex :items-center :justify-center :grow {:min-height "150px"}
                       ["& .logo" {:max-height "40px"}])
-        $mobile (css :flex :items-ecnter :ml-2 ["& .logo" {:max-height "24px"}])]
+        $mobile (css :flex :items-ecnter :ml-2 ["& .logo" {:max-height "24px"}])
+        layout (toddler/use-layout)]
     (d/div
-     {:className (if mobile? $mobile $desktop)}
+     {:className (case layout
+                   :mobile $mobile
+                   :desktop $desktop)}
      (d/img
       {:src logo
        :class "logo"}))))
@@ -279,10 +281,10 @@
   [{:keys [components max-width render/logo render/actions]
     :or {logo toddler-logo
          actions toddler-actions}}]
-  (let [window (use-window-dimensions)
-        [_navbar {navigation-width :width}] (use-dimensions)
-        [_header] (use-dimensions)
-        [_content {content-height :height}] (use-dimensions)
+  (let [window (toddler/use-window-dimensions)
+        [_navbar {navigation-width :width}] (toddler/use-dimensions)
+        [_header] (toddler/use-dimensions)
+        [_content] (toddler/use-dimensions)
         header-height 50
         right-width (min
                      (- (or max-width (:width window)) navigation-width)
@@ -290,7 +292,8 @@
         header-width right-width
         content-height (- (:height window) header-height)
         content-width right-width
-        [theme set-theme!] (toddler/use-local-storage ::theme str)]
+        [theme set-theme!] (toddler/use-local-storage ::theme str)
+        mobile? (toddler/use-window-width-test < 1000)]
     (hooks/use-effect
       [theme]
       (if (empty? theme)
@@ -306,29 +309,32 @@
     (provider
      {:context app/theme
       :value theme}
-     ($ ui/row {:key ::center
-                :& (cond->
-                    {:align :center
-                     :style {:flex-grow "1"}})}
-        ($ ui/row
-           {:key ::wrapper
-            :style {:max-width (+ content-width navigation-width)}}
-           ($ navbar {:ref _navbar :render/logo logo})
-           ($ ui/column {:className "content"}
-              ($ header
-                 {:ref _header
-                  :style {:width header-width
-                          :height header-height}}
-                 (when actions
-                   ($ actions
-                      {:theme theme
-                       :on-theme-change set-theme!})))
-              ($ content
-                 {:ref _content
-                  :style {:height content-height
-                          :width content-width}}
-                 (map
-                  (fn [{:keys [id render]}]
-                    (when render
-                      ($ render {:key id})))
-                  components))))))))
+     (provider
+      {:context app/layout
+       :value (if mobile? :mobile :desktop)}
+      ($ ui/row {:key ::center
+                 :& (cond->
+                     {:align :center
+                      :style {:flex-grow "1"}})}
+         ($ ui/row
+            {:key ::wrapper
+             :style {:max-width (+ content-width navigation-width)}}
+            ($ navbar {:ref _navbar :render/logo logo})
+            ($ ui/column {:className "content"}
+               ($ header
+                  {:ref _header
+                   :style {:width header-width
+                           :height header-height}}
+                  (when actions
+                    ($ actions
+                       {:theme theme
+                        :on-theme-change set-theme!})))
+               ($ content
+                  {:ref _content
+                   :style {:height content-height
+                           :width content-width}}
+                  (map
+                   (fn [{:keys [id render]}]
+                     (when render
+                       ($ render {:key id})))
+                   components)))))))))

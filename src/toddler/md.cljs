@@ -6,7 +6,7 @@
    [helix.core :refer [defnc $ memo provider fnc]]
    [helix.dom :as d]
    [helix.hooks :as hooks]
-   [toddler.core :refer [fetch]]
+   [toddler.core :as toddler :refer [fetch]]
    [toddler.util :as util]
    [toddler.router :as router]
    [toddler.head :as head]
@@ -83,7 +83,7 @@
                  (.render md content)))
         {:keys [hash]} (router/use-location)
         scroll (hooks/use-ref nil)
-        theme (app/use-theme)
+        theme (toddler/use-theme)
         {:keys [on-theme-change class className]} (hooks/use-context md.context/show)]
     (hooks/use-effect
       [theme]
