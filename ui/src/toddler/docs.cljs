@@ -248,34 +248,36 @@
        :class "logo"}))))
 
 (defnc toddler-actions
-  [{:keys [theme on-theme-change]}]
-  (<>
-   (d/div
-    {:className "wrapper"}
-    ($ ui/tooltip {:message "Change theme"}
-       (d/div
-        {:on-click (fn []
-                     (on-theme-change
-                      (case theme
-                        ("dark" 'dark) "light"
-                        ("light" 'light) "dark"
-                        "light")))}
-        (if (= "dark" theme)
-          ($ outlined/light-mode)
-          ($ outlined/dark-mode)))))
-   (d/div
-    {:className "wrapper"}
-    ($ ui/tooltip {:message "Open Github project"}
-       (d/a
-        {:href "https://github.com/gersak/toddler"}
-        ($ brands/github))))
-   (d/div
-    {:className "wrapper"}
-    ($ ui/tooltip {:message "API Docs"}
-       (d/a
-        {:href "https://gersak.github.io/toddler/codox/index.html"
-         :className (css :text-base :font-bold :no-underline :select-none)}
-        "API")))))
+  []
+  (let [theme (toddler/use-theme)
+        on-theme-change (toddler/use-theme-change)]
+    (<>
+     (d/div
+      {:className "wrapper"}
+      ($ ui/tooltip {:message "Change theme"}
+         (d/div
+          {:on-click (fn []
+                       (on-theme-change
+                        (case theme
+                          ("dark" 'dark) "light"
+                          ("light" 'light) "dark"
+                          "light")))}
+          (if (= "dark" theme)
+            ($ outlined/light-mode)
+            ($ outlined/dark-mode)))))
+     (d/div
+      {:className "wrapper"}
+      ($ ui/tooltip {:message "Open Github project"}
+         (d/a
+          {:href "https://github.com/gersak/toddler"}
+          ($ brands/github))))
+     (d/div
+      {:className "wrapper"}
+      ($ ui/tooltip {:message "API Docs"}
+         (d/a
+          {:href "https://gersak.github.io/toddler/codox/index.html"
+           :className (css :text-base :font-bold :no-underline :select-none)}
+          "API"))))))
 
 (defnc page
   [{:keys [components max-width render/logo render/actions]
@@ -291,50 +293,28 @@
                      (- (:width window) navigation-width))
         header-width right-width
         content-height (- (:height window) header-height)
-        content-width right-width
-        [theme set-theme!] (toddler/use-local-storage ::theme str)
-        mobile? (toddler/use-window-width-test < 1000)]
-    (hooks/use-effect
-      [theme]
-      (if (empty? theme)
-        (set-theme! "light")
-        (async/go
-          (loop []
-            (if-some [html (.querySelector js/document "html")]
-              (when-not (= (.getAttribute html "data-theme") theme)
-                (.setAttribute html "data-theme" theme))
-              (do
-                (async/<! (async/timeout 100))
-                (recur)))))))
-    (provider
-     {:context app/theme
-      :value theme}
-     (provider
-      {:context app/layout
-       :value (if mobile? :mobile :desktop)}
-      ($ ui/row {:key ::center
-                 :& (cond->
-                     {:align :center
-                      :style {:flex-grow "1"}})}
-         ($ ui/row
-            {:key ::wrapper
-             :style {:max-width (+ content-width navigation-width)}}
-            ($ navbar {:ref _navbar :render/logo logo})
-            ($ ui/column {:className "content"}
-               ($ header
-                  {:ref _header
-                   :style {:width header-width
-                           :height header-height}}
-                  (when actions
-                    ($ actions
-                       {:theme theme
-                        :on-theme-change set-theme!})))
-               ($ content
-                  {:ref _content
-                   :style {:height content-height
-                           :width content-width}}
-                  (map
-                   (fn [{:keys [id render]}]
-                     (when render
-                       ($ render {:key id})))
-                   components)))))))))
+        content-width right-width]
+    ($ ui/row {:key ::center
+               :& (cond->
+                   {:align :center
+                    :style {:flex-grow "1"}})}
+       ($ ui/row
+          {:key ::wrapper
+           :style {:max-width (+ content-width navigation-width)}}
+          ($ navbar {:ref _navbar :render/logo logo})
+          ($ ui/column {:className "content"}
+             ($ header
+                {:ref _header
+                 :style {:width header-width
+                         :height header-height}}
+                (when actions
+                  ($ actions)))
+             ($ content
+                {:ref _content
+                 :style {:height content-height
+                         :width content-width}}
+                (map
+                 (fn [{:keys [id render]}]
+                   (when render
+                     ($ render {:key id})))
+                 components)))))))

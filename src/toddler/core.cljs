@@ -10,7 +10,7 @@
    [goog.string :as gstr]
    [goog.string.format]
    [clojure.core.async :as async :refer-macros [go-loop]]
-   [helix.core :refer-macros [defnc defhook]]
+   [helix.core :refer-macros [defnc defhook fnc $ provider]]
    [helix.hooks :as hooks]
    [helix.children :refer [children]]
    [toddler.app :as app]
@@ -79,40 +79,6 @@
      (string? className) (conj className)
      (sequential? class) (into class))))
 
-(defhook use-url
-  "Returns application root URL"
-  []
-  (hooks/use-context app/url))
-
-(defhook use-layout
-  "Returns value of application layout context"
-  []
-  (hooks/use-context app/layout))
-
-(defhook use-theme
-  "Returns theme context value"
-  []
-  (hooks/use-context app/theme))
-
-(defhook use-graphql-url
-  "Returns GraphQL endpoint URL"
-  []
-  (let [root (use-url)
-        from-context (hooks/use-context app/graphql-url)]
-    (hooks/use-memo
-      [root from-context]
-      (or from-context (str root "/graphql")))))
-
-(defhook use-user
-  "Returns value in app/*user* context"
-  []
-  (hooks/use-context app/user))
-
-(defhook use-token
-  "Returns current app token if any."
-  []
-  (hooks/use-context app/token))
-
 (letfn [(target [location]
           (if-some [_ns (try (namespace location) (catch js/Error _ nil))]
             (str _ns \/ (name location))
@@ -137,6 +103,88 @@
            (.setItem js/localStorage target local)
            (.removeItem js/localStorage target)))
        [local set-local!]))))
+
+(defhook use-url
+  "Returns application root URL"
+  []
+  (hooks/use-context app/url))
+
+(defhook use-layout
+  "Returns value of application layout context"
+  []
+  (hooks/use-context app/layout))
+
+(defhook use-theme
+  "Returns theme context value"
+  []
+  (hooks/use-context app/theme))
+
+(defhook use-theme-change
+  "Returns theme change function that will set theme state."
+  []
+  (hooks/use-context app/change-theme))
+
+(defhook use-theme-state
+  "Hook will provide theme state and state setter
+  similar to helix.hooks/use-state. Except this
+  state will be stored in localStorage.
+  
+  When value of theme changes, it will store that value
+  to local storage and check if `<html>` attribute `data-theme`
+  has the same value as theme state"
+  ([] (use-theme-state ::theme))
+  ([localstorage-key] (use-theme-state localstorage-key "light"))
+  ([localstorage-key default]
+   (let [[theme set-theme!] (use-local-storage localstorage-key str)]
+     (hooks/use-effect
+       [theme]
+       (if (empty? theme)
+         (set-theme! default)
+         (async/go
+           (loop []
+             (if-some [html (.querySelector js/document "html")]
+               (when-not (= (.getAttribute html "data-theme") theme)
+                 (.setAttribute html "data-theme" theme))
+               (do
+                 (async/<! (async/timeout 100))
+                 (recur)))))))
+     [theme set-theme!])))
+
+(defn wrap-theme
+  "Function will wrap component with provided `toddler.app/theme` and
+  `toddler.app/change-theme` context. Theme state will be stored in
+  localstorage under `toddler.core/theme` key"
+  ([component] (wrap-theme component ::theme))
+  ([component key] (wrap-theme component key "light"))
+  ([component key default]
+   (fnc Theme [props]
+     (let [[theme set-theme!] (use-theme-state key default)]
+       (provider
+        {:context app/theme
+         :value theme}
+        (provider
+         {:context app/change-theme
+          :value set-theme!}
+         ($ component {& props})))))))
+
+(defhook use-graphql-url
+  "Returns GraphQL endpoint URL"
+  []
+  (let [root (use-url)
+        from-context (hooks/use-context app/graphql-url)]
+    (hooks/use-memo
+      [root from-context]
+      (or from-context (str root "/graphql")))))
+
+(defhook use-user
+  "Returns value in app/*user* context"
+  []
+  (hooks/use-context app/user))
+
+(defhook use-token
+  "Returns current app token if any."
+  []
+  (hooks/use-context app/token))
 
 (letfn [(target [location]
           (if-some [_ns (try (namespace location) (catch js/Error _ nil))]
@@ -272,31 +320,6 @@
 ;         (fn []
 ;           (when avatars (remove-watch avatars uuid)))))
 ;     [_avatar refresh]))
-
-(defhook use-theme-state
-  "Hook will provide theme state and state setter
-  similar to helix.hooks/use-state. Except this
-  state will be stored in localStorage.
-  
-  When value of theme changes, it will store that value
-  to local storage and check if `<html>` attribute `data-theme`
-  has the same value as theme state"
-  ([] (use-theme-state "light"))
-  ([default]
-   (let [[theme set-theme!] (use-local-storage ::theme str)]
-     (hooks/use-effect
-       [theme]
-       (if (empty? theme)
-         (set-theme! default)
-         (async/go
-           (loop []
-             (if-some [html (.querySelector js/document "html")]
-               (when-not (= (.getAttribute html "data-theme") theme)
-                 (.setAttribute html "data-theme" theme))
-               (do
-                 (async/<! (async/timeout 100))
-                 (recur)))))))
-     [theme set-theme!])))
 
 (defhook use-current-locale
   []

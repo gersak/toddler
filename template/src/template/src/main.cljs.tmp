@@ -5,7 +5,7 @@
    ["react-dom/client" :refer [createRoot]]
    [goog.string :refer [format]]
    [shadow.css :refer [css]]
-   [helix.core :refer [$ defnc provider]]
+   [helix.core :refer [$ defnc provider <>]]
    [helix.dom :as d]
    [helix.hooks :as hooks]
    [toddler.app :as app]
@@ -37,8 +37,10 @@
 
 (defnc actions
   {:wrap [(ui/forward-ref)]}
-  [{:keys [theme on-theme-change]} _ref]
-  (let [{go-to :go} (router/use-navigate)]
+  [_ _ref]
+  (let [{go-to :go} (router/use-navigate)
+        theme (toddler/use-theme)
+        on-theme-change (toddler/use-theme-change)]
     (d/div
      {:className (css :flex
                       :items-center
@@ -79,8 +81,7 @@
              :segment "greeting"
              :landing 10}])]}
   []
-  (let [[theme set-theme!] (toddler/use-theme-state)
-        {window-width :width
+  (let [{window-width :width
          window-height :height} (toddler/use-window-dimensions)
         [_greeting {greeting-height :height greeting-width :width}] (toddler/use-dimensions)
         scale 0.7
@@ -93,9 +94,7 @@
             {:align :explode
              :className (css :pl-4 :pr-2 {:height "50px"})}
             (d/h1 "Toddler")
-            ($ actions
-               {:on-theme-change set-theme!
-                :theme theme}))
+            ($ actions))
          ($ ui/simplebar
             {:style {:width window-width
                      :height (- window-height 80)}}
@@ -134,9 +133,7 @@
              {:align :explode
               :className (css :pt-8 :px-8 :pb-2)}
              (d/h1 "Toddler")
-             ($ actions
-                {:on-theme-change set-theme!
-                 :theme theme}))
+             ($ actions))
           ($ ui/simplebar
              {:style {:width greeting-width
                       :height (- greeting-height 88)}}
@@ -165,24 +162,26 @@
   {:wrap [(router/wrap-landing "/" false)
           (router/wrap-router)
           (popup/wrap-container)
+          (toddler/wrap-theme ::theme)
           (md/wrap-show {:className ui.css/$md})
           (notifications/wrap-store {:class ui.css/$store})
           (wrap-window-provider)
           (ui/wrap-ui components)]}
   []
-  (let [[locale set-locale!] (hooks/use-state :hr)
-        [theme set-theme!] (toddler/use-theme-state)
-        mobile? (toddler/use-window-width-test < 600)]
+  (let [[locale set-locale!] (hooks/use-state :en)
+        app-mobile (toddler/use-window-width-test < 600)
+        docs-mobile (toddler/use-window-width-test < 1000)]
     (provider
      {:context app/locale
       :value locale}
-     (provider
-      {:context app/theme
-       :value theme}
+     (<>
       (provider
        {:context app/layout
-        :value (if mobile? :mobile :desktop)}
-       ($ Greeting)
+        :value (if app-mobile :mobile :desktop)}
+       ($ Greeting))
+      (provider
+       {:context app/layout
+        :value (if docs-mobile :mobile :desktop)}
        ($ Docs))))))
 
 (defn ^:dev/after-load start! []

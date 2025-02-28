@@ -8,6 +8,7 @@
 (def ^{:doc "Root URL of application"} url (create-context))
 (def ^{:doc "User locale keyword :en, :en_US, de, zh_CN, :es ..."} locale (create-context))
 (def ^{:doc "Theme name. Should be string"} theme (create-context))
+(def ^{:doc "Context holds function that will store theme state"} change-theme (create-context))
 (def ^{:doc "Context that will hold user information.
             Like first name, last name, roles, permissions"}
   user (create-context))

@@ -59,8 +59,10 @@
     :render Intro}])
 
 (defnc actions
-  [{:keys [theme on-theme-change]}]
-  (let [{go-to :go} (router/use-navigate)]
+  []
+  (let [{go-to :go} (router/use-navigate)
+        on-theme-change (toddler/use-theme-change)
+        theme (toddler/use-theme)]
     (<>
      (d/div
       {:className "wrapper"}

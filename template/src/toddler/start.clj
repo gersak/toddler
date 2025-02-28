@@ -78,30 +78,6 @@
                {:project project})
       (process "template/src/main.css" (->file (str "src/" dir "/main.css"))))))
 
-; (defn init-tauri
-;   [project]
-;   (letfn [(->file
-;             [path]
-;             (str project "/" path))]
-;     (process "template/src-tauri/capabilities/default.json" (->file "src-tauri/capabilities/default.json"))
-;     (letfn [(process-icon [x]
-;               (process (str "template/src-tauri/icons/" x) (->file (str "src-tauri/icons/" x))))]
-;       (let [icons ["128x128.png" "128x128@2x.png"
-;                    "32x32.png" "icon.icns" "icon.ico"
-;                    "icon.png" "Square107x107Logo.png" "Square142x142Logo.png"
-;                    "Square150x150Logo.png" "Square284x284Logo.png" "Square30x30Logo.png"
-;                    "Square310x310Logo.png" "Square44x44Logo.png" "Square71x71Logo.png"
-;                    "Square89x89Logo.png" "StoreLogo.png"]]
-;         (doseq [icon icons]
-;           (process-icon icon))))
-;     (process "template/src-tauri/src/lib.rs" (->file "src-tauri/src/lib.rs"))
-;     (process "template/src-tauri/src/main.rs" (->file "src-tauri/src/main.rs"))
-;     (process "template/src-tauri/build.rs" (->file "src-tauri/build.rs"))
-;     (process "template/src-tauri/Cargo.toml" (->file "src-tauri/Cargo.toml"))
-;     (process "template/src-tauri/tauri.conf.json"
-;              (->file "src-tauri/tauri.conf.json")
-;              {:project project})))
-
 (defn init-tauri
   [project]
   (sh "npx" "tauri" "init" "-A" project "-W" project
