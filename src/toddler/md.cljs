@@ -30,12 +30,11 @@
                                  (catch js/Error ex
                                    (.error js/console ex)
                                    (str ""))))})
-            ; (.use anchor)
             (.use emoji))]
     (set! (.. md -renderer -rules -heading_open)
           (fn [tokens idx _ _ _]
             (let [level (.-tag (get tokens idx))]
-              (if (#{"h2" "h1"} level)
+              (if (#{"h2" "h1" "h3" "h4"} level)
                 (let [id (when-some [_id (get tokens (inc idx))]
                            (some-> (not-empty (.-content _id))
                                    (str/lower-case)

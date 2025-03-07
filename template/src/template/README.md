@@ -5,6 +5,13 @@ npm run dev
 
 
 # TAURI
+```
+cargo install tauri-cli
+cargo install tauri-mobile
+
+
+cargo tauri init
+```
 
 ## DESKTOP
 ```
