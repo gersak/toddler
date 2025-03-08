@@ -90,7 +90,7 @@
                    :items-center
                    {:animation "fade-in .4s ease-in-out"})])
 
-         & (dissoc props :class :className)}
+         & (dissoc props :style :class :className)}
         (d/div
          {:onMouseEnter (fn [] (enable-close! false))
           :onMouseLeave (fn [] (enable-close! true))

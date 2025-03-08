@@ -1,6 +1,7 @@
 (ns toddler.docs
   (:require
    [clojure.core.async :as async]
+   [clojure.string :as str]
    [helix.core
     :refer [defnc $ provider create-context <>]]
    [helix.hooks :as hooks]
@@ -14,6 +15,8 @@
    [toddler.layout :as layout]
    [toddler.material.outlined :as outlined]
    [toddler.fav6.brands :as brands]
+   [toddler.search :as search]
+   [toddler.md.context :as md.context]
    [shadow.css :refer [css]]))
 
 (def -level- (create-context))
@@ -247,10 +250,137 @@
       {:src logo
        :class "logo"}))))
 
+(defnc search-result-row
+  [{:keys [route short/doc title topic on-search-select]}]
+  (let [$md (css :text-xs :px-4
+                 ["& .code" :mt-2]
+                 ["& h1,& h2,& h3,& h4" :uppercase :text-sm]
+                 ["& b, & strong" :font-semibold]
+                 ["& br" {:height "2px"}]
+                 ["& ul" :mt-2 :ml-4 :border {:list-style-type "disc" :border "none"}]
+                 ["& ul li" :text-xs]
+                 ["& .hljs" :bg-normal+])]
+    ($ ui/row
+       {:className (css :px-4 :py-2 :border-b :border-normal :box-border
+                        ["&:hover" :bg-normal :cursor-pointer]
+                        ["& h3" :text-xs :font-semibold]
+                        ["& .breadcrumb svg" {:font-size "14px"}])}
+       ($ ui/column
+          {:on-click #(on-search-select route)
+           :on-touch-start #(on-search-select route)}
+          ($ ui/row
+             {:className "breadcrumb"}
+             (d/h3
+              {:className "topic"}
+              topic)
+             (when title
+               (<>
+                ($ outlined/chevron-right)
+                (d/div
+                 {:className "title"}
+                 (d/h3
+                  (str/replace title #"#+\s*" ""))))))
+          (d/div
+           {:className "doc"}
+           ($ ui/markdown {:content doc :className $md}))))))
+
+(defnc search-modal
+  [{:keys [on-search-cancel]}]
+  (let [{window-width :width
+         window-height :height} (toddler/use-window-dimensions)
+        layout (toddler/use-layout)
+        width (if (= :mobile layout)
+                (- window-width 40)
+                (min (- window-width 400) 600))
+        height (if (= :mobile layout)
+                 (- window-height 80)
+                 (min (- window-height 200) 600))
+        search-height 60
+        [{:keys [search]} set-query!] (router/use-query)
+        results (search/use-results {:value search})
+        _input (hooks/use-ref nil)
+        {go-to :go} (router/use-navigate)
+        on-search-select (hooks/use-callback
+                           :once
+                           (fn [url]
+                             (go-to url)))]
+    (hooks/use-layout-effect
+      :once
+      (when @_input (.focus @_input)))
+    ($ ui/modal-dialog
+       {:on-close on-search-cancel
+        :style {:max-width width
+                :height height
+                :margin-top (case layout
+                              :mobile 20
+                              100)}
+        :className (css :self-start :bg-normal++ :rounded-lg
+                        :border :border-normal :box-border
+                        ["& .search-bar" :border-b :border-normal :px-4]
+                        ["& input" :text-base {:flex "1 0 auto"}]
+                        ["& .icon" :mr-2 {:font-size "24px"}])}
+       ($ ui/row
+          {:className "search-bar"
+           :style {:max-height search-height}}
+          ($ outlined/search {:className "icon"})
+          (d/input
+           {:ref _input
+            :placeholder "Search documentation..."
+            :autoComplete "off"
+            :autoCorrect "off"
+            :spellCheck "false"
+            :autoCapitalize "false"
+            :on-change (fn [e] (set-query! {:search (.. e -target -value)}))
+            :value search}))
+       ($ ui/simplebar
+          {:style {:width (- width 2)
+                   :height (- height search-height)}}
+          (map-indexed
+           (fn [idx {:keys [route] :as data}]
+             ($ search-result-row
+                {:key idx
+                 :on-search-select on-search-select
+                 & data}))
+           results)))))
+
+(defnc search-docs
+  []
+  (let [[{:keys [search]} set-query!] (router/use-query)]
+    (hooks/use-effect
+      :once
+      (letfn [(open [event]
+                (when (and
+                       (or (.-ctrlKey event)
+                           (.-metaKey event))
+                       (= (.-key event) "k"))
+                  (set-query! {:search ""})))]
+        (.addEventListener js/window "keydown" open)
+        (fn []
+          (.removeEventListener js/window "keydown" open))))
+    (<>
+     (when (some? search)
+       ($ search-modal
+          {:on-search-cancel #(set-query! nil)}))
+     (d/div
+      {:className (css :border :rounded-md :border-normal :flex
+                       :flex :items-center
+                       :text-xs :font-semibold :pr-2 :py-1 {:padding-left "4px"} :mr-1
+                       {:transition "color .4s ease-in-out, border .4s ease-in-out"
+                        :min-width "120px"}
+                       ["& .icon" :mr-1 :flex :justify-center :items-center
+                        {:font-size "20px"}]
+                       ["&:hover" :border-normal+ :color+])
+       :on-click #(set-query! {:search ""})}
+      (d/div
+       {:className "icon"}
+       ($ outlined/search))
+      "Search"))))
+
 (defnc toddler-actions
   []
   (let [theme (toddler/use-theme)
-        on-theme-change (toddler/use-theme-change)]
+        on-theme-change (toddler/use-theme-change)
+        index (hooks/use-context search/-index-)]
     (<>
      (d/div
       {:className "wrapper"}
@@ -277,7 +407,11 @@
          (d/a
           {:href "https://gersak.github.io/toddler/codox/index.html"
            :className (css :text-base :font-bold :no-underline :select-none)}
-          "API"))))))
+          "API")))
+     (when (not-empty index)
+       (d/div
+        {:className "wrapper"}
+        ($ search-docs))))))
 
 (defnc page
   [{:keys [components max-width render/logo render/actions]

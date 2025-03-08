@@ -74,7 +74,9 @@
 
 (defnc show
   {:wrap [(memo check-diff)]}
-  [{:keys [content]}]
+  [{:keys [content]
+    p-className :className
+    p-class :class}]
   (let [editor (hooks/use-ref nil)
         text (hooks/use-memo
                [content]
@@ -83,7 +85,9 @@
         {:keys [hash]} (router/use-location)
         scroll (hooks/use-ref nil)
         theme (toddler/use-theme)
-        {:keys [on-theme-change class className]} (hooks/use-context md.context/show)]
+        {:keys [on-theme-change class className]} (hooks/use-context md.context/show)
+        class (or p-class class)
+        className (or p-className className)]
     (hooks/use-effect
       [theme]
       (when (ifn? on-theme-change)

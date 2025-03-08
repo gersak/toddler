@@ -59,6 +59,7 @@ html[data-theme="light"] {
   /* Background */
   --background: #f0f0f0;
   --background-p1: #f5f6f8;
+  --background-p2: #fbfbfb;
   --background-m1: #cccccc;
   --background-neutral: #f0f0f0;
   --background-positive: #e8f8f1;
@@ -223,6 +224,7 @@ html[data-theme="dark"] {
   /* Background */
   --background: #262626;
   --background-p1: #202020;
+  --background-p2: #000000;
   --background-m1: #474747;
   --background-neutral: #262626;
   --background-positive: #253d33;

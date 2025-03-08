@@ -10,7 +10,7 @@
    [helix.hooks :as hooks]))
 
 (declare avatar row column form checkbox drawer tab tabs grid
-         button buttons simplebar tooltip action tag ; card card-action card-actions
+         button buttons simplebar tooltip action tag markdown ; card card-action card-actions
          ;; Calendar
          calendar-day calendar-month calendar calendar-period
 
@@ -34,6 +34,10 @@
   (create-context))
 
 (def forward-ref ^js react/forwardRef)
+
+(defcomponent markdown :markdown
+              "Comopnent will render markdown string if provided
+  through ```:content``` prop")
 
 (defcomponent avatar :avatar
               "Component will render avatar image in form of <img> DOM element.

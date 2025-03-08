@@ -21,6 +21,7 @@
    :bg-warn {:background-color "var(--background-warn)"}
    :bg-normal {:background-color "var(--background)"}
    :bg-normal+ {:background "var(--background-p1)"}
+   :bg-normal++ {:background "var(--background-p2)"}
    :bg-normal- {:background "var(--background-m1)"}
 
    ;; Buttons

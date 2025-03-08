@@ -249,14 +249,15 @@
   ([action]
    (let [{:keys [search] :as location} (use-location)
          qp (js/URLSearchParams. search)
-         base (hooks/use-context -base-)
          {push-url :push
           replace-url :replace} (use-navigate)
          setter (hooks/use-memo
                   [location]
                   (fn [params]
-                    (let [query (clj->query params)
-                          updated (str (:pathname location) (when query (str \? query)))]
+                    (let [updated (if (nil? params)
+                                    (str/replace (:pathname location) #"\?.*" "")
+                                    (str (:pathname location) (let [query (clj->query params)]
+                                                                (str \? query))))]
                       (case action
                         :replace (replace-url updated)
                         :push (push-url updated)))))]
