@@ -502,43 +502,41 @@
          super? (contains? user-roles super-role)]
      (hooks/use-memo
        [user-roles super-role]
-       (cond
+       (or
+        super?
+        (cond
          ;;
-         (nil? id) super?
+          (and (empty? user-roles) (empty? user-permissions))
+          (do
+            (t/log! :warn (format "[%s] Trying to use-authorized? when neither -permissions- or -roles context is not set. Check out your Protected component." id))
+            false)
          ;;
-         (and (empty? user-roles) (empty? user-permissions))
-         (do
-           (t/log! :warn (format "[%s] Trying to use-authorized? when neither -permissions- or -roles context is not set. Check out your Protected component." id))
-           false)
+          (and (some? user-permissions) (not (set? user-permissions)))
+          (do
+            (t/log! :error (format "Trying to use-authorized? with -permissions- context set to %s. Instead it should be clojure set. Check out your Protected component." user-permissions))
+            false)
          ;;
-         (and (some? user-permissions) (not (set? user-permissions)))
-         (do
-           (t/log! :error (format "Trying to use-authorized? with -permissions- context set to %s. Instead it should be clojure set. Check out your Protected component." user-permissions))
-           false)
+          (and (some? user-roles) (not (set? user-roles)))
+          (do
+            (t/log! :error (format "Trying to use-authorized? with -roles- context set to %s. Instead it should be clojure set. Check out your Protected component." user-roles))
+            false)
          ;;
-         (and (some? user-roles) (not (set? user-roles)))
-         (do
-           (t/log! :error (format "Trying to use-authorized? with -roles- context set to %s. Instead it should be clojure set. Check out your Protected component." user-roles))
-           false)
+          (nil? component)
+          (do
+            (t/log! :debug (format "[%s] Couldn't find component!" id))
+            false)
          ;;
-         (nil? component)
-         (do
-           (t/log! :debug (format "[%s] Couldn't find component!" id))
-           false)
+          (and (empty? roles) (empty? permissions))
+          (do
+            (t/log! :warn (format "[%s] Component has no role or permission protection" id))
+            true)
          ;;
-         (and (empty? roles) (empty? permissions))
-         (do
-           (t/log! :warn (format "[%s] Component has no role or permission protection" id))
-           true)
-         ;;
-         super? true
-         ;;
-         :else
-         (do
-           (t/log! :debug (format "[%s] Checking component access for: %s" id user-roles))
-           (or
-            (not-empty (set/intersection roles user-roles))
-            (not-empty (set/intersection permissions user-permissions)))))))))
+          :else
+          (do
+            (t/log! :debug (format "[%s] Checking component access for: %s" id user-roles))
+            (or
+             (not-empty (set/intersection roles user-roles))
+             (not-empty (set/intersection permissions user-permissions))))))))))
 
 (defnc Authorized
   "Wrapper component that will render children if user is authorized to
