@@ -9,7 +9,7 @@
    [helix.children :as c]
    [helix.hooks :as hooks]))
 
-(declare avatar row column form checkbox drawer tab tabs grid
+(declare ! avatar row column form checkbox drawer tab tabs grid
          button buttons simplebar tooltip action tag markdown ; card card-action card-actions
          ;; Calendar
          calendar-day calendar-month calendar calendar-period

@@ -14,6 +14,7 @@
    (let [result
          (-> @css-ref
              (cb/generate '{:ui {:include [toddler.ui*
+                                           toddler.ui.tables
                                            toddler.md
                                            toddler.notifications
                                            toddler
@@ -112,7 +113,7 @@
 (comment
   (-> css-ref deref keys)
   (-> css-ref deref :colors)
-  (-> css-ref deref)
+  (-> css-ref deref :namespaces (get 'toddler.ui.tables))
   (-> css-ref deref :namespaces keys)
   (-> css-ref deref :aliases :button-disabled)
   (spit "aliases.edn" (-> css-ref deref :aliases :text-sm))

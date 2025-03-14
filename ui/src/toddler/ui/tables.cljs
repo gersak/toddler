@@ -254,7 +254,7 @@
               (when-not (js/Number.isNaN number) (int number)))))]
   (defnc integer-cell
     []
-    (let [{:keys [placeholder read-only disabled label] :as column} (table/use-column)
+    (let [{:keys [placeholder read-only disabled label element/width] :as column} (table/use-column)
           [value set-value!] (table/use-cell-state column)
           translate (use-translate)
           [focused? set-focused!] (hooks/use-state false)
@@ -279,6 +279,7 @@
                     input
                     (translate value))
                   "")
+         :style (when width {:max-width width})
          :class [$input]
          :placeholder (or placeholder label)
          :read-only read-only
@@ -302,16 +303,19 @@
               (when-not (js/Number.isNaN number) (float number)))))]
   (defnc float-cell
     []
-    (let [{:keys [placeholder read-only disabled label] :as column} (table/use-column)
+    (let [{:keys [placeholder read-only disabled label element/width] :as column} (table/use-column)
           [value set-value!] (table/use-cell-state column)
           translate (use-translate)
           [input set-input!] (hooks/use-state (when value (translate value)))
           [focused? set-focused!] (hooks/use-state false)
           $float (css
-                  :border-0
-                  :outline-0
-                  :text-xs
-                  :py-2)]
+                  :flex
+                  ["& input"
+                   :border-0
+                   :outline-0
+                   :text-xs
+                   :py-2
+                   {:flex "1 0 auto"}])]
       (hooks/use-effect
         [focused?]
         (set-input! (str value)))
@@ -320,14 +324,15 @@
         (when-not (= (text->number input) value)
           (set-input! (when value (translate value)))))
       (d/div
+       {:className $float}
        (d/input
-        {:className $float
-         :value (if value
+        {:value (if value
                   (if focused?
                     input
                     (translate value))
                   "")
          :placeholder (or placeholder label)
+         :style (when width {:max-width width})
          :read-only read-only
          :disabled disabled
          :onFocus #(set-focused! true)
@@ -720,15 +725,16 @@
         (provider
          {:context layout/*container-dimensions*
           :value header-style}
-         ($ table/Header
-            {:ref (fn [el] (reset! header el))
-             :className (css :flex
-                             :p-3
-                             :border-1
-                             :border-transparent
-                             ["& .simplebar-scrollbar:before"
-                              {:visibility "hidden"}]
-                             ["& .trow" :items-start :flex])}))
+         (let [$style (css :flex
+                           :p-3
+                           :border-1
+                           :border-transparent
+                           ["& .simplebar-scrollbar:before"
+                            {:visibility "hidden"}]
+                           ["& .trow" :items-start :flex])]
+           ($ table/Header
+              {:ref (fn [el] (reset! header el))
+               :className $style})))
         (when body-style
           (provider
            {:context layout/*container-dimensions*

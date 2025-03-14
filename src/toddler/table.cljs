@@ -332,7 +332,14 @@
                        (assoc column :header ui/plain-header)))
                  columns)
         components (hooks/use-context ui/__components__)
-        simplebar (ui/use-component :simplebar)]
+        simplebar (ui/use-component :simplebar)
+        dispatch (use-dispatch)
+        column-refs (hooks/use-ref {})]
+    (hooks/use-effect
+      [container-width]
+      (dispatch
+       {:type :table/resized
+        :width container-width}))
     (when (some :header columns)
       ($ simplebar
          {:key :thead/simplebar
@@ -366,7 +373,13 @@
                       (get column :width)
                       (get style :width 100))]
                (d/div
-                {:key idx
+                {:ref (fn [target]
+                        (when target
+                          (dispatch
+                           {:type :table.column/element
+                            :column column
+                            :value target})))
+                 :key idx
                  :style (merge style
                                {:display "flex"
                                 :flex (str w  \space 0 \space "auto")
@@ -380,6 +393,29 @@
                       :className "th"
                       :column column})))))
            (remove :hidden columns)))))))
+
+(defmulti reducer (fn [_ {t :type}] t))
+
+(defmethod reducer :default
+  [_ event]
+  (.error js/console "Unknown event: " (pr-str event)))
+
+(defmethod reducer :table.column/element
+  [state {:keys [value]
+          {cidx :idx} :column}]
+  (let [current (get-in state [:columns cidx :element])]
+    (if (not= current value)
+      (assoc-in state [:columns cidx :element] value)
+      state)))
+
+(defmethod reducer :table/resized
+  [state _]
+  (update state :columns
+          (fn [columns]
+            (mapv
+             (fn [{:keys [element] :as column}]
+               (assoc column :element/width (.-width (.getBoundingClientRect element))))
+             columns))))
 
 (defnc Body
   "Reusable component that will render table rows by using component
