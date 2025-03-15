@@ -11,10 +11,14 @@
   {:wrap [(ui/forward-ref)]}
   [{:keys [config]} _ref]
   (let [_local (hooks/use-ref nil)
-        _canvas (or _ref _local)]
+        _canvas (or _ref _local)
+        _instance (hooks/use-ref nil)]
     (hooks/use-effect
-      :once
-      (when @_canvas
-        (chart/Chart. @_canvas (->js config))))
+      [config]
+      (when (and @_canvas config)
+        (reset! _instance (chart/Chart. @_canvas (->js config))))
+      (fn []
+        (when-let [chart @_instance]
+          (.destroy chart))))
     (d/canvas
      {:ref #(reset! _canvas %)})))

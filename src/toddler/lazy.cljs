@@ -6,13 +6,11 @@
    [goog.object]
    [helix.core :refer [defnc defhook]]
    [helix.hooks :as hooks]
-   [shadow.loader]
-   [shadow.lazy :as lazy]
-   [shadow.cljs.modern :refer [js-await]]))
+   [shadow.loader]))
 
 (defonce _loaded (js/Date.now))
 
-(defonce tank (atom nil))
+(def tank (atom nil))
 
 (defn load*
   [file mapping]

@@ -394,7 +394,7 @@
 (def $dropdown-popup (css :shadow-md :rounded-lg))
 
 (defnc dropdown-field
-  [{:keys [disabled] :as props}]
+  [{:keys [disabled style] :as props}]
   (let [{:keys [input area toggle!] :as dropdown}
         (use-dropdown
          (->
@@ -405,7 +405,8 @@
      {:context dropdown/*dropdown*
       :value dropdown}
      (d/div
-      {:class ["toddler-field" $field]}
+      {:class ["toddler-field" $field]
+       :style style}
       (d/div
        {:className "content"}
        (when (:name props)

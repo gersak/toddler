@@ -37,15 +37,16 @@
   (let [[target set-target!] (hooks/use-state nil)
         now (.now js/Date)]
     (hooks/use-effect
-      :once
-      (async/go-loop
-       []
-        (if-some [target (locator)]
-          (set-target! target)
-          (when (< (- (.now js/Date) now) timeout)
-            (do
-              (async/<! (async/timeout 40))
-              (recur))))))
+      [target]
+      (when-not
+       (async/go-loop
+        []
+         (if-some [target (locator)]
+           (set-target! target)
+           (when (< (- (.now js/Date) now) timeout)
+             (do
+               (async/<! (async/timeout 40))
+               (recur)))))))
     (when target
       (rdom/createPortal (children props) target))))
 
