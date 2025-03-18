@@ -38,7 +38,7 @@
    [clojure.edn :as edn]
    [clojure.pprint :refer [pprint]]
    [clojure.string :as str]
-   [taoensso.telemere :as t]
+   ; [taoensso.telemere :as t]
    [cljs.reader :refer [read-string]]
    [helix.core
     :refer [defhook
@@ -118,11 +118,13 @@
   [{:keys [base] :as props}]
   (let [[router dispatch] (hooks/use-reducer
                            reducer
-                           {:location (location->map js/window.location)
-                            :tree {:id ::ROOT
-                                   :segment ""
-                                   :name nil
-                                   :children []}})
+                           (merge
+                            {:location (location->map js/window.location)
+                             :tree {:id ::ROOT
+                                    :segment ""
+                                    :name nil
+                                    :children []}}
+                            (select-keys props [:id])))
         navigation (hooks/use-memo
                      :once
                      {:go (fn go
@@ -144,7 +146,6 @@
                       :forward (fn []
                                  (.forward (.-history js/window))
                                  (.dispatchEvent js/window (js/PopStateEvent. "popstate" {:state nil})))})]
-
     (hooks/use-effect
       :once
       (letfn [(handle-change [_]
@@ -302,7 +303,7 @@
   [tree {:keys [id parent] :as component}]
   (if (component->location tree id)
     (do
-      (t/log! :warn (format "Component %s already set in component tree" id))
+      ; (t/log! :warn (format "Component %s already set in component tree" id))
       tree)
     (if-let [location (component->location tree parent)]
       (->
@@ -405,7 +406,7 @@
                (try
                   ; (log/debugf "Trying to add component %s to parent %s " component parent)
                  (let [tree' (set-component tree component)]
-                   (t/log! :debug (format "Adding component %s to parent %s" component parent))
+                   ; (t/log! :debug (format "Adding component %s to parent %s" component parent))
                    (->
                     state
                     (assoc :tree tree')
@@ -416,14 +417,13 @@
                              (vec
                               (distinct
                                ((fnil conj []) components component)))))))))
-           {:tree tree
-            :unknown unknown}
+           state
            to-register)
           state'' (reduce
                    (fn [{:keys [tree] :as state} component]
                      (try
                        (let [tree' (set-component tree component)]
-                         (t/log! :debug (format "Adding component %s to parent %s" component parent))
+                         ; (t/log! :debug (format "Adding component %s to parent %s" component parent))
                          (->
                           state
                           (assoc :tree tree')
@@ -436,9 +436,10 @@
                                     (distinct
                                      ((fnil conj []) components component))))))))
                    state'
-                   (:unknown state'))]
+                   (:unknown state'))
+          new-state (merge state state'')]
       ; (log/debugf "New Tree:\n%s" (with-out-str (pprint tree')))
-      (merge state state''))
+      new-state)
     state))
 
 (defhook use-link
@@ -468,7 +469,7 @@
   (let [dispatch (hooks/use-context -dispatch-)]
     (when (nil? dispatch)
       (.error js/console "Router provider not initialized. Use Provider from this namespace and instantiate it in one of parent components!"))
-    (hooks/use-layout-effect
+    (hooks/use-effect
       :once
       (dispatch
        {:type ::add-components
@@ -508,32 +509,32 @@
          ;;
           (and (empty? user-roles) (empty? user-permissions))
           (do
-            (t/log! :warn (format "[%s] Trying to use-authorized? when neither -permissions- or -roles context is not set. Check out your Protected component." id))
+            ; (t/log! :warn (format "[%s] Trying to use-authorized? when neither -permissions- or -roles context is not set. Check out your Protected component." id))
             false)
          ;;
           (and (some? user-permissions) (not (set? user-permissions)))
           (do
-            (t/log! :error (format "Trying to use-authorized? with -permissions- context set to %s. Instead it should be clojure set. Check out your Protected component." user-permissions))
+            ; (t/log! :error (format "Trying to use-authorized? with -permissions- context set to %s. Instead it should be clojure set. Check out your Protected component." user-permissions))
             false)
          ;;
           (and (some? user-roles) (not (set? user-roles)))
           (do
-            (t/log! :error (format "Trying to use-authorized? with -roles- context set to %s. Instead it should be clojure set. Check out your Protected component." user-roles))
+            ; (t/log! :error (format "Trying to use-authorized? with -roles- context set to %s. Instead it should be clojure set. Check out your Protected component." user-roles))
             false)
          ;;
           (nil? component)
           (do
-            (t/log! :debug (format "[%s] Couldn't find component!" id))
+            ; (t/log! :debug (format "[%s] Couldn't find component!" id))
             false)
          ;;
           (and (empty? roles) (empty? permissions))
           (do
-            (t/log! :warn (format "[%s] Component has no role or permission protection" id))
+            ; (t/log! :warn (format "[%s] Component has no role or permission protection" id))
             true)
          ;;
           :else
           (do
-            (t/log! :debug (format "[%s] Checking component access for: %s" id user-roles))
+            ; (t/log! :debug (format "[%s] Checking component access for: %s" id user-roles))
             (or
              (not-empty (set/intersection roles user-roles))
              (not-empty (set/intersection permissions user-permissions))))))))))
@@ -678,34 +679,34 @@
                   ;;
                   (and (empty? user-roles) (empty? user-permissions))
                   (do
-                    (t/log! :warn (format "[%s] Trying to use-authorized? when neither -permissions- or -roles context is not set. Check out your Protected component." id))
+                    ; (t/log! :warn (format "[%s] Trying to use-authorized? when neither -permissions- or -roles context is not set. Check out your Protected component." id))
                     false)
                   ;;
                   (and (some? user-permissions) (not (set? user-permissions)))
                   (do
-                    (t/log! :error (format "Trying to use-authorized? with -permissions- context set to %s. Instead it should be clojure set. Check out your Protected component." user-permissions))
+                    ; (t/log! :error (format "Trying to use-authorized? with -permissions- context set to %s. Instead it should be clojure set. Check out your Protected component." user-permissions))
                     false)
                   ;;
                   (and (some? user-roles) (not (set? user-roles)))
                   (do
-                    (t/log! :error (format "Trying to use-authorized? with -roles- context set to %s. Instead it should be clojure set. Check out your Protected component." user-roles))
+                    ; (t/log! :error (format "Trying to use-authorized? with -roles- context set to %s. Instead it should be clojure set. Check out your Protected component." user-roles))
                     false)
                   ;;
                   (nil? component)
                   (do
-                    (t/log! :debug (format "[%s] Couldn't find component!" id))
+                    ; (t/log! :debug (format "[%s] Couldn't find component!" id))
                     false)
                   ;;
                   (and (empty? roles) (empty? permissions))
                   (do
-                    (t/log! :warn (format "[%s] Component has no role or permission protection" id))
+                    ; (t/log! :warn (format "[%s] Component has no role or permission protection" id))
                     true)
                   ;;
                   (contains? user-roles super-role) true
                   ;;
                   :else
                   (do
-                    (t/log! :debug (format "[%s] Checking component access for: %s" id user-roles))
+                    ; (t/log! :debug (format "[%s] Checking component access for: %s" id user-roles))
                     (or
                      (not-empty (set/intersection roles user-roles))
                      (not-empty (set/intersection permissions user-permissions)))))))

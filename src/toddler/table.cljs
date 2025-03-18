@@ -337,9 +337,10 @@
         column-refs (hooks/use-ref {})]
     (hooks/use-effect
       [container-width]
-      (dispatch
-       {:type :table/resized
-        :width container-width}))
+      (when (fn? dispatch)
+        (dispatch
+         {:type :table/resized
+          :width container-width})))
     (when (some :header columns)
       ($ simplebar
          {:key :thead/simplebar
@@ -374,7 +375,7 @@
                       (get style :width 100))]
                (d/div
                 {:ref (fn [target]
-                        (when target
+                        (when (and target (fn? dispatch))
                           (dispatch
                            {:type :table.column/element
                             :column column

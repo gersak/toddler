@@ -297,7 +297,7 @@
                    :dispatch dispatch
                    :& (cond-> notification
                         opened? (assoc
-                                         ; :hideable? false
+                                 ; :hideable? false
                                  :visible? true))})))
            notifications))))
        (children props))))))

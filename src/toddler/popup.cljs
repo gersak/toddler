@@ -39,7 +39,7 @@
   (:require
    clojure.string
    [clojure.core.async :as async]
-   [taoensso.telemere :as t]
+   ; [taoensso.telemere :as t]
    ["react" :as react]
    ["react-dom" :as rdom]
    [helix.core
@@ -502,12 +502,12 @@
                    ;; Else call outside action handler
                    (and (some? area) (some? @area) (some? popup) (some? @popup))
                    (do
-                     (t/log!
-                      {:id ::outside-click
-                       :level :debug
-                       :data {:element e
-                              :area @area
-                              :popup @popup}})
+                     #_(t/log!
+                        {:id ::outside-click
+                         :level :debug
+                         :data {:element e
+                                :area @area
+                                :popup @popup}})
                      (handler e))
                    ;;
                    :else nil))
@@ -518,12 +518,12 @@
                    ;; Else call outside action handler
                    (and (some? popup) (some? @popup))
                    (do
-                     (t/log!
-                      {:id ::outside-scroll
-                       :level :debug
-                       :data {:element e
-                              :area @area
-                              :popup @popup}})
+                     #_(t/log!
+                        {:id ::outside-scroll
+                         :level :debug
+                         :data {:element e
+                                :area @area
+                                :popup @popup}})
                      (handler e))
                    ;;
                    :else nil))]
