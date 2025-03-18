@@ -1,9 +1,7 @@
 (ns toddler.chart-js.lazy
   (:require
-   [helix.core :refer [defnc $]]
-   [helix.hooks :as hooks]
    [toddler.lazy :as lazy]))
 
-(lazy/load
+(lazy/load-components
  "chartjs"
  ::Chart toddler.chart-js/Chart)

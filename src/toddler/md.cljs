@@ -87,7 +87,8 @@
         theme (toddler/use-theme)
         {:keys [on-theme-change class className]} (hooks/use-context md.context/show)
         class (or p-class class)
-        className (or p-className className)]
+        className (or p-className className)
+        publish (toddler/use-toddler-publisher)]
     (hooks/use-effect
       [theme]
       (when (ifn? on-theme-change)
@@ -151,6 +152,7 @@
                             (.contains (:scroll-element @scroll) el))
                           (.querySelectorAll js/document "section"))]
             (swap! scroll assoc :sections sections)))))
+    (publish {:topic :react/dangerously-rendered})
     (d/div
      {:ref #(reset! editor %)
       :dangerouslySetInnerHTML #js {:__html text}

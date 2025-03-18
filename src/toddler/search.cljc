@@ -6,6 +6,7 @@
         [helix.hooks :as hooks]
         [helix.core :refer [$ defnc fnc create-context provider defhook]]
         [helix.children :refer [children]]
+        [toddler.search.context :as search.context]
         [clojure.core.async :as async]
         [clojure.edn :as edn]])))
 
@@ -208,11 +209,13 @@
 #?(:cljs
    (defnc Provider
      [{:keys [path] :as props}]
-     (let [[index set-index!] (hooks/use-state nil)]
+     (let [[index set-index!] (hooks/use-state nil)
+           base (hooks/use-context search.context/base)]
        (hooks/use-effect
          :once
          (async/go
-           (let [index (async/<! (load-index path))]
+           (let [full-path (str (or base "") path)
+                 index (async/<! (load-index full-path))]
              (when (not= :nil index)
                (set-index! index)))))
        (provider
@@ -222,9 +225,9 @@
 
 #?(:cljs
    (defn wrap-index
-     [component path]
-     (fnc [props]
-       ($ Provider {:path path} ($ component {& props})))))
+     ([component path]
+      (fnc [props]
+        ($ Provider {:path path} ($ component {& props}))))))
 
 #?(:cljs
    (defhook use-results

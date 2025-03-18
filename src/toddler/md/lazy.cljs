@@ -5,7 +5,7 @@
    [toddler.lazy :as lazy]
    [toddler.md.context :as md.context]))
 
-(lazy/load
+(lazy/load-components
  "markdown"
  ::show toddler.md/show
  ::from-url toddler.md/from-url

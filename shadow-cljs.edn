@@ -12,6 +12,9 @@
                            :depends-on #{:main}}
                           :chartjs
                           {:entries [toddler.chart-js]
+                           :depends-on #{:main}}
+                          :three
+                          {:entries [toddler.showcase.three]
                            :depends-on #{:main}}}
                 ; :closure-defines {shadow.cljs.devtools.client.env.server_host "192.168.5.67"}
                 ; :devtools {:use-document-host false}

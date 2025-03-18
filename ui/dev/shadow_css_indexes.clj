@@ -26,7 +26,7 @@
     (cb/generate '{:ui {:include [toddler.ui
                                   toddler.ui*
                                   toddler.docs]}})
-    (cb/write-index-to (io/file "src" "shadow-css-index.edn")))))
+    (cb/write-index-to (io/file "resources" "shadow-css-index.edn")))))
 
 (defn release
   [& _]

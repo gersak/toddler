@@ -27,29 +27,6 @@
   [& lines]
   (clojure.string/join "\n" lines))
 
-(defnc portal
-  "Use when you wan't to mount react component on some
-  DOM element that can be found by locator function.
-  
-  portal will try to locate element. If it is not found inside
-  timeout period, portal will give up"
-  [{:keys [timeout locator] :or {timeout 2000} :as props}]
-  (let [[target set-target!] (hooks/use-state nil)
-        now (.now js/Date)]
-    (hooks/use-effect
-      [target]
-      (when-not
-       (async/go-loop
-        []
-         (if-some [target (locator)]
-           (set-target! target)
-           (when (< (- (.now js/Date) now) timeout)
-             (do
-               (async/<! (async/timeout 40))
-               (recur)))))))
-    (when target
-      (rdom/createPortal (children props) target))))
-
 (defn fetch
   "Function will fetch content from URL and return string
   representation"
@@ -818,6 +795,34 @@
                     (fn [data]
                       (async/put! app/signal-channel data)))]
     publisher))
+
+(defnc portal
+  "Use when you wan't to mount react component on some
+  DOM element that can be found by locator function.
+  
+  portal will try to locate element. If it is not found inside
+  timeout period, portal will give up"
+  [{:keys [timeout locator] :or {timeout 2000} :as props}]
+  (let [[target set-target!] (hooks/use-state nil)
+        now (.now js/Date)]
+    (use-toddler-listener
+     :react/dangerously-rendered
+     (fn []
+       (when-some [target (locator)]
+         (set-target! target))))
+    (hooks/use-effect
+      [target]
+      (when-not
+       (async/go-loop
+        []
+         (if-some [target (locator)]
+           (set-target! target)
+           (when (< (- (.now js/Date) now) timeout)
+             (do
+               (async/<! (async/timeout 40))
+               (recur)))))))
+    (when target
+      (rdom/createPortal (children props) target))))
 
 (defhook use-query
   "Hook will return function that when called

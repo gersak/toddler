@@ -1,5 +1,5 @@
 (ns toddler.lazy
-  (:require-macros [toddler.lazy :refer [load]])
+  (:require-macros [toddler.lazy :refer [load-components]])
   (:require
    ["react" :as react]
    [clojure.core.async :as async]
@@ -34,7 +34,7 @@
 
 (defnc not-found [])
 
-(defhook use-component
+(defhook use-lazy
   [k]
   (let [[f f!] (hooks/use-state (get @tank k))]
     (hooks/use-effect

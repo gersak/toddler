@@ -3,7 +3,7 @@
    ["chart.js/auto" :as chart]
    [cljs-bean.core :refer [->js]]
    [toddler.ui :as ui]
-   [helix.core :refer [defnc defhook $ create-context provider]]
+   [helix.core :refer [defnc]]
    [helix.hooks :as hooks]
    [helix.dom :as d]))
 
