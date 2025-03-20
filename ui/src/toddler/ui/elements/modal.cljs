@@ -75,7 +75,20 @@
   [{:keys [class className on-close style] :as props}]
   (let [{modal-width :width} (layout/use-container-dimensions)
         width (:width props (min 400 modal-width))
-        [can-close? enable-close!] (hooks/use-state (some? on-close))]
+        [can-close? enable-close!] (hooks/use-state (some? on-close))
+        _dialog (hooks/use-ref nil)]
+    (hooks/use-effect
+      :once
+      (when @_dialog
+        (let [rect (.getBoundingClientRect @_dialog)
+              {mouse-x :x
+               mouse-y :y} (toddler/get-mouse-position)]
+          (when (and
+                 (<= mouse-x (.-right rect))
+                 (>= mouse-x (.-left rect))
+                 (<= mouse-y (.-bottom rect))
+                 (>= mouse-y (.-top rect)))
+            (enable-close! false)))))
     ($ modal-background
        {:class (css :flex :justify-center)
         :can-close? can-close?
@@ -92,7 +105,8 @@
 
          & (dissoc props :style :class :className)}
         (d/div
-         {:onMouseEnter (fn [] (enable-close! false))
+         {:ref #(reset! _dialog %)
+          :onMouseEnter (fn [] (enable-close! false))
           :onMouseLeave (fn [] (enable-close! true))
           :style style
           :class (cond->

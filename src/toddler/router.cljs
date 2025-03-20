@@ -178,6 +178,7 @@
      ($ Provider ($ component {& props}))))
   ([component base]
    (fnc Authorized [props]
+     (.log js/console "Wrapping Router with base '" base "'")
      ($ Provider {:base base} ($ component {& props})))))
 
 (defhook use-location

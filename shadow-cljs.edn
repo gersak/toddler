@@ -1,37 +1,27 @@
 {:deps true
  :nrepl {:port 7312}
  :dev-http {8000 ["showcase/docs" "showcase/dev"]}
- :builds {:dev {:target :browser
-                :entries [toddler.showcase.dev]
-                :module-loader true
-                :modules {:main
-                          {:entries [toddler.showcase.dev]
-                           :init-fn toddler.showcase.dev/start!}
-                          :markdown
-                          {:entries [toddler.md]
-                           :depends-on #{:main}}
-                          :chartjs
-                          {:entries [toddler.chart-js]
-                           :depends-on #{:main}}
-                          :three
-                          {:entries [toddler.showcase.three]
-                           :depends-on #{:main}}}
+ :builds {:main {:target :browser
+                 :module-loader true
+                 :modules  {:main {:entries [toddler.showcase.main
+                                             toddler.notifications]
+                                   :init-fn toddler.showcase.main/start!}
+                            :ui {:entries [toddler.ui.components]
+                                 :depends-on #{:main}}
+                            :markdown {:entries [toddler.md]
+                                       :depends-on #{:ui}}
+                            :showcase {:entries [toddler.showcase]
+                                       :depends-on #{:markdown}}
+                            :icons {:entries [toddler.showcase.icons]
+                                    :depends-on #{:showcase :ui :markdown}}
+                            :chartjs {:entries [toddler.chart-js]
+                                      :depends-on #{:showcase :ui :markdown}}
+                            :three {:entries [toddler.showcase.three]
+                                    :depends-on #{:showcase :ui :markdown}}}
                 ; :closure-defines {shadow.cljs.devtools.client.env.server_host "192.168.5.67"}
                 ; :devtools {:use-document-host false}
-                :output-dir "showcase/dev/js"
-                :output-to "showcase/dev/js/main.js"}
-          :github {:target :browser
-                   :entries [toddler.showcase.github]
-                   :asset-path "/toddler-showcase/js"
-                   :module-loader true
-                   :modules {:main
-                             {:entries [toddler.showcase.github]
-                              :init-fn toddler.showcase.github/start!}
-                             :markdown
-                             {:entries [toddler.md]
-                              :depends-on #{:main}}}
-                   :output-dir "showcase/web/js"
-                   :output-to "showcase/web/js/main.js"}
+                 :output-dir "showcase/dev/js"
+                 :output-to "showcase/dev/js/main.js"}
           :tauri {:target :browser
                   :entries [toddler.showcase.github]
                   :asset-path "/js"

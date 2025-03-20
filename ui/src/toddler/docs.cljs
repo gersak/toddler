@@ -162,10 +162,11 @@
                       ["& .name:hover" :text-xs {:color "var(--color-active)"}]
                       ["& .selected.name" {:color "var(--color-normal)"}]
                       ["& .name.selected" {:color "var(--color-normal)"}])}
-         (d/div
-          {:ref _logo
-           :className "logo-wrapper"}
-          (when logo ($ logo)))
+         (when logo
+           (d/div
+            {:ref _logo
+             :className "logo-wrapper"}
+            (when logo ($ logo))))
 
          ($ ui/simplebar
             {:style {:height (- height logo-height)
@@ -245,7 +246,7 @@
     (d/div
      {:className (case layout
                    :mobile $mobile
-                   :desktop $desktop)}
+                   $desktop)}
      (d/img
       {:src logo
        :class "logo"}))))
@@ -387,11 +388,12 @@
       ($ ui/tooltip {:message "Change theme"}
          (d/div
           {:on-click (fn []
-                       (on-theme-change
-                        (case theme
-                          ("dark" 'dark) "light"
-                          ("light" 'light) "dark"
-                          "light")))}
+                       (when (ifn? on-theme-change)
+                         (on-theme-change
+                          (case theme
+                            ("dark" 'dark) "light"
+                            ("light" 'light) "dark"
+                            "light"))))}
           (if (= "dark" theme)
             ($ outlined/light-mode)
             ($ outlined/dark-mode)))))

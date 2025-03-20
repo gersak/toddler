@@ -22,6 +22,8 @@
    [toddler.graphql :as graphql]
    [toddler.graphql.transport :refer [send-query]]))
 
+(defonce mouse-position (atom nil))
+
 (defn ml
   "Multiline function. Joins input lines"
   [& lines]
@@ -38,11 +40,14 @@
            (if (.-ok response)
              (-> (.text response)
                  (.then (fn [text] (async/put! result text)))
-                 (.catch (fn [err] (async/put! result err))))
-             (.error js/console (js/Error (str "Failed to fetch: " url))))))
+                 (.catch (fn [_] (async/close! result))))
+             (do
+               (.error js/console (js/Error (str "Failed to fetch: " url)))
+               (async/close! result)))))
         (.catch
          (fn [err]
-           (.error js/console (str "Failed fetching file: " (pr-str url)) err))))
+           (.error js/console (str "Failed fetching file: " (pr-str url)) err)
+           (async/close! result))))
     result))
 
 (defn conj-prop-classes
@@ -81,6 +86,37 @@
            (.setItem js/localStorage target local)
            (.removeItem js/localStorage target)))
        [local set-local!]))))
+
+(defhook use-mouse-tracker
+  "Hook will add mousemove event on js/window and
+  store updates in toddler.core/mouse-position atom."
+  []
+  (hooks/use-effect
+    :once
+    (letfn [(track [e]
+              (reset! mouse-position
+                      {:x (.-clientX e)
+                       :y (.-clientY e)}))]
+      (.addEventListener js/window "mousemove" track)
+      (fn [] (.removeEventListener js/window "mousemove" track)))))
+
+(defn get-mouse-position
+  "Returns current mouse position."
+  []
+  (deref mouse-position))
+
+(defhook use-mouse-position
+  "Hook will return mouse position. If mouse position is changed
+  it will change state and cause re-render!"
+  []
+  (let [[state set-state!] (hooks/use-state nil)
+        k (str (gensym "mouse_position_"))]
+    (hooks/use-effect
+      :once
+      (add-watch mouse-position k
+                 (fn [_ _ _ s]
+                   (set-state! s))))
+    state))
 
 (defhook use-url
   "Returns application root URL"
@@ -802,7 +838,7 @@
   
   portal will try to locate element. If it is not found inside
   timeout period, portal will give up"
-  [{:keys [timeout locator] :or {timeout 2000} :as props}]
+  [{:keys [timeout locator] :or {timeout 15000} :as props}]
   (let [[target set-target!] (hooks/use-state nil)
         now (.now js/Date)]
     (use-toddler-listener

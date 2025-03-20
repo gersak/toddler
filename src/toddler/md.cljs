@@ -50,12 +50,14 @@
 (defn wrap-base [component base]
   (fnc MD [props]
     (provider
+     (.debug js/console "Wrapping MD base: " base)
      {:context md.context/base
       :value base}
      ($ component {& props}))))
 
 (defn wrap-refresh [component period]
   (fnc MD [props]
+    (.debug js/console "Wrapping MD refresh: " period)
     (provider
      {:context md.context/refresh-period
       :value period}
@@ -192,7 +194,7 @@
                 (set-content! _content)))
             (async/alt!
               close
-              ([_] #_(.log js/console (str "Removing watch for URL: " url)))
+              ([_] #_(.debug js/console (str "Removing watch for URL: " url)))
                            ;;
               (async/timeout interval)
               ([_] (when (pos? interval) (recur)))))

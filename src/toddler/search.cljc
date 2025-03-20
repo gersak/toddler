@@ -203,7 +203,15 @@
      [path]
      (async/go
        (if-let [index (async/<! (toddler/fetch path))]
-         (clojure.edn/read-string index)
+         (try
+           (let [result (clojure.edn/read-string index)]
+             (if (map? result) result
+                 (do
+                   (.error js/console (str "Couldn't load index from: " path))
+                   :nil)))
+           (catch js/Error _
+             (.error js/console (str "Couldn't load index from: " path))
+             :nil))
          :nil))))
 
 #?(:cljs
