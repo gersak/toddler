@@ -129,8 +129,7 @@
 
 (defn b25-score
   [tf idf doc-length doc-avg]
-  (let [;doc-length (get-in documents [id field :wc] 0)
-        denominator (+ tf (* k (+ 1 (- b) (* b (/ doc-length doc-avg)))))]
+  (let [denominator (+ tf (* k (+ 1 (- b) (* b (/ doc-length doc-avg)))))]
     (* idf (/ (* tf (+ 1 k)) denominator))))
 
 (defn search

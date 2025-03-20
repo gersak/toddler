@@ -8,7 +8,7 @@
     "icons": "npx shadow-cljs -A:shadow:cider:icons watch icons",
     "test-release": "clj -X:shadow:showcase:css && npx shadow-cljs -A:shadow:showcase release main --config-merge '{:output-dir \"showcase/dev/js\" :asset-path \"/js\" :closure-defines {toddler.showcase/MD_BASE \"https://raw.githubusercontent.com/gersak/toddler-showcase/refs/heads/main/docs\" toddler.showcase/MD_REFRESH_PERIOD 0 toddler.showcase/ROUTER_BASE \"\"} :compiler-options {:optimizations :advanced :source-map true}}'",
     "release": "clj -X:shadow:showcase:css && npx shadow-cljs -A:shadow:showcase release main --config-merge '{:output-dir \"showcase/web/js\" :asset-path \"/toddler-showcase/js\" :closure-defines {toddler.showcase/MD_BASE \"https://raw.githubusercontent.com/gersak/toddler-showcase/refs/heads/main/docs\" toddler.showcase/MD_REFRESH_PERIOD 0 toddler.showcase/ROUTER_BASE \"toddler\"} :compiler-options {:optimizations :advanced :source-map true}}'",
-    "dev-tauri": "clj -X:shadow:showcase:css && npx shadow-cljs -A:shadow:showcase watch main --config-merge '{:closure-defines {shadow.cljs.devtools.client.env.server_host \"x.x.x.x\"} :devtools {:use-document-host false}}'"
+    "dev-tauri": "clj -X:shadow:showcase:css && npx shadow-cljs -A:shadow:showcase release main --config-merge '{:output-dir \"showcase/web/js\" :asset-path \"/js\" :closure-defines {shadow.cljs.devtools.client.env.server_host \"x.x.x.x\"} :devtools {:use-document-host false}}'"
   },
   "author": "Robert Gersak",
   "license": "ISC",

@@ -21,16 +21,4 @@
                 ; :closure-defines {shadow.cljs.devtools.client.env.server_host "192.168.5.67"}
                 ; :devtools {:use-document-host false}
                  :output-dir "showcase/dev/js"
-                 :output-to "showcase/dev/js/main.js"}
-          :tauri {:target :browser
-                  :entries [toddler.showcase.github]
-                  :asset-path "/js"
-                  :module-loader true
-                  :modules {:main
-                            {:entries [toddler.showcase.github]
-                             :init-fn toddler.showcase.github/start!}
-                            :markdown
-                            {:entries [toddler.md]
-                             :depends-on #{:main}}}
-                  :output-dir "showcase/web/js"
-                  :output-to "showcase/web/js/main.js"}}}
+                 :output-to "showcase/dev/js/main.js"}}}
