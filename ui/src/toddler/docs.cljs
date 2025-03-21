@@ -307,7 +307,13 @@
                              (go-to url)))]
     (hooks/use-layout-effect
       :once
-      (when @_input (.focus @_input)))
+      (when @_input (.focus @_input))
+      (letfn [(handler [e]
+                (when (= (.-key e) "Escape")
+                  (on-search-cancel)))]
+        (.addEventListener js/window "keydown" handler)
+        (fn []
+          (.removeEventListener js/window "keydown" handler))))
     ($ ui/modal-dialog
        {:on-close on-search-cancel
         :style {:max-width width

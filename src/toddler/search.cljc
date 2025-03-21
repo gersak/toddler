@@ -14,32 +14,33 @@
 (def ^:dynamic *stem* en/stem)
 (def ^:dynamic *record* nil)
 (def ^:dynamic *field* nil)
-(def ^:dynamic *index* nil)
+(defonce ^:dynamic *index* nil)
 (def ^:dynamic *weights* nil)
 
 (comment
   (contains? en/stop-words ""))
 
 (defn levenshtein
-  "Compute the Levenshtein distance between two strings."
-  [s1 s2]
-  (let [len1 (count s1)
-        len2 (count s2)
-        matrix (vec (map vec (repeat (inc len1) (range (inc len2)))))]
-
-    (loop [i 1 matrix matrix]
-      (if (> i len1)
-        (get-in matrix [len1 len2])
-        (recur (inc i)
-               (loop [j 1 m matrix]
-                 (if (> j len2)
-                   m
-                   (recur (inc j)
-                          (assoc-in m [i j]
-                                    (min (inc (get-in m [(dec i) j]))   ;; Deletion
-                                         (inc (get-in m [i (dec j)]))   ;; Insertion
-                                         (+ (get-in m [(dec i) (dec j)])
-                                            (if (= (nth s1 (dec i)) (nth s2 (dec j))) 0 1))))))))))))
+  "Compute the levenshtein distance between two [sequences]."
+  [sequence1 sequence2]
+  (letfn [(next-row
+            [previous current other-seq]
+            (reduce
+             (fn [row [diagonal above other]]
+               (let [update-val (if (= other current)
+                                  diagonal
+                                  (inc (min diagonal above (peek row))))]
+                 (conj row update-val)))
+             [(inc (first previous))]
+             (map vector previous (next previous) other-seq)))]
+    (cond
+      (and (empty? sequence1) (empty? sequence2)) 0
+      (empty? sequence1) (count sequence2)
+      (empty? sequence2) (count sequence1)
+      :else (peek
+             (reduce (fn [previous current] (next-row previous current sequence2))
+                     (map #(identity %2) (cons nil sequence2) (range))
+                     sequence1)))))
 
 (defn tokenize
   [source]
@@ -137,29 +138,46 @@
   ([query {{avg-fields ::wc-avg :as documents} :document :as index}]
    (letfn [(find-word-index [word]
              (get-in index [:word word]))
-           (rank-word [word-index]
-             (if (nil? word-index) nil
-                 (let [{:keys [df]} word-index
-                       process-documents (dissoc word-index :df)
-                       idf (Math/log (+ 1 (/ (- (::count documents 0) df) (+ df 0.5))))
-                       results  (reduce-kv
-                                 (fn [ratings id {fields ::index}]
-                                   (reduce-kv
-                                    (fn [ratings field {:keys [tf]}]
-                                      (let [doc-length (get-in documents [id ::index field :wc] 0)
-                                            doc-avg (get avg-fields field)
-                                            score (b25-score tf idf doc-length doc-avg)]
-                                        (assoc ratings [id field] score)))
-                                    ratings
-                                    fields))
-                                 nil
-                                 process-documents)]
-                   results)))
+           (rank-word [word]
+             (letfn [(rank-index [word-index]
+                       (let [{:keys [df]} word-index
+                             process-documents (dissoc word-index :df)
+                             idf (Math/log (+ 1 (/ (- (::count documents 0) df) (+ df 0.5))))
+                             results  (reduce-kv
+                                       (fn [ratings id {fields ::index}]
+                                         (reduce-kv
+                                          (fn [ratings field {:keys [tf]}]
+                                            (let [doc-length (get-in documents [id ::index field :wc] 0)
+                                                  doc-avg (get avg-fields field)
+                                                  score (b25-score tf idf doc-length doc-avg)]
+                                              (assoc ratings [id field] score)))
+                                          ratings
+                                          fields))
+                                       nil
+                                       process-documents)]
+                         results))]
+               (let [exact (find-word-index (*stem* word))]
+                 (cond
+                   (nil? word) nil
+                   exact (rank-index exact)
+                   :else
+                   (let [stemmed (*stem* word)
+                         similar-words (keep
+                                        (fn [_word]
+                                          (let [distance (levenshtein stemmed _word)]
+                                            (when (< distance 3)
+                                              _word)))
+                                        (keys (:word index)))]
+                     (reduce-kv
+                      (fn [result _ word-index]
+                        (merge-with + result (rank-index word-index)))
+                      nil
+                      (select-keys (:word index) similar-words)))))))
            (rank-words [words]
              (map
               (fn [word]
                 {:word word
-                 :ranking (rank-word (find-word-index (*stem* word)))})
+                 :ranking (rank-word word)})
               words))
            (apply-weights
              [ranking]
@@ -255,7 +273,7 @@
   (*stem* "notify")
   (*stem* "notification")
   (*stem* "notifications")
-  (def index (time (toddler.search.docs/build-index toddler.search.docs/config)))
+  (def index (toddler.search.docs/build-index (toddler.search.docs/make-config "")))
   (binding [*weights* {:content 0.7 :title 1.8}]
     (time (search "toddler route" index)))
   (get-in index [:word "hook"])
@@ -264,9 +282,12 @@
   (build-index *1)
   (alter-var-root
    #'*index*
-   (fn [_] (build-index config)))
+   (fn [_] index))
   (keys (:word index))
   (-> config :mds prepare-index)
+  (search "calendar")
+  (search "caluddar")
+  (time (search "calend"))
   (contains? *stop-words* "")
   (count (keys index))
   (-> index :document :count)
