@@ -832,6 +832,10 @@
                       (async/put! app/signal-channel data)))]
     publisher))
 
+(defn random-string
+  []
+  (subs (.toString (.random js/Math) 36) 2))
+
 (defnc portal
   "Use when you wan't to mount react component on some
   DOM element that can be found by locator function.
@@ -840,23 +844,35 @@
   timeout period, portal will give up"
   [{:keys [timeout locator] :or {timeout 15000} :as props}]
   (let [[target set-target!] (hooks/use-state nil)
+        _state (hooks/use-ref nil)
         now (.now js/Date)]
-    (use-toddler-listener
-     :react/dangerously-rendered
-     (fn []
-       (when-some [target (locator)]
-         (set-target! target))))
-    (hooks/use-effect
-      [target]
-      (when-not
-       (async/go-loop
-        []
-         (if-some [target (locator)]
-           (set-target! target)
-           (when (< (- (.now js/Date) now) timeout)
-             (do
-               (async/<! (async/timeout 40))
-               (recur)))))))
+    (letfn [(safe-update
+              [^js target]
+              (let [state (.getAttribute target "portal-state")
+                    new-state (random-string)]
+                (when (or (nil? @_state) (not= state @_state))
+                  (reset! _state new-state)
+                  (.setAttribute target "portal-state" new-state)
+                  (.log js/console "NEW TARGET: " target)
+                  (set-target! target))))]
+      (when-some [target (locator)]
+        (safe-update target))
+      (use-toddler-listener
+       :react/dangerously-rendered
+       (fn []
+         (when-some [target (locator)]
+           (safe-update target))))
+      (hooks/use-effect
+        [target]
+        (when-not
+         (async/go-loop
+          []
+           (if-some [target (locator)]
+             (safe-update target)
+             (when (< (- (.now js/Date) now) timeout)
+               (do
+                 (async/<! (async/timeout 40))
+                 (recur))))))))
     (when target
       (rdom/createPortal (children props) target))))
 

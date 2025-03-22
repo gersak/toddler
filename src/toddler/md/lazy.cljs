@@ -1,7 +1,6 @@
 (ns toddler.md.lazy
   (:require
-   [helix.core :refer [defnc $ provider fnc]]
-   [helix.hooks :as hooks]
+   [helix.core :refer [$ provider fnc]]
    [toddler.lazy :as lazy]
    [toddler.md.context :as md.context]))
 

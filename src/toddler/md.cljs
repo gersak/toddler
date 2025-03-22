@@ -6,10 +6,10 @@
    [helix.core :refer [defnc $ memo provider fnc]]
    [helix.dom :as d]
    [helix.hooks :as hooks]
+   [toddler.ui :as ui]
    [toddler.core :as toddler :refer [fetch]]
    [toddler.util :as util]
    [toddler.router :as router]
-   [toddler.head :as head]
    [toddler.md.context :as md.context]
    ["markdown-it" :as markdownit]
    ["markdown-it-emoji"
@@ -74,8 +74,18 @@
   [a b]
   (= (:content a) (:content b)))
 
+(defnc ^{:private true} show*
+  {:wrap [(ui/forward-ref)
+          (memo check-diff)]}
+  [{:keys [class content]} editor]
+  (let [publish (toddler/use-toddler-publisher)]
+    (publish {:topic :react/dangerously-rendered})
+    (d/div
+     {:ref #(reset! editor %)
+      :dangerouslySetInnerHTML #js {:__html content}
+      :class class})))
+
 (defnc show
-  {:wrap [(memo check-diff)]}
   [{:keys [content]
     p-className :className
     p-class :class}]
@@ -89,8 +99,7 @@
         theme (toddler/use-theme)
         {:keys [on-theme-change class className]} (hooks/use-context md.context/show)
         class (or p-class class)
-        className (or p-className className)
-        publish (toddler/use-toddler-publisher)]
+        className (or p-className className)]
     (hooks/use-effect
       [theme]
       (when (ifn? on-theme-change)
@@ -154,14 +163,13 @@
                             (.contains (:scroll-element @scroll) el))
                           (.querySelectorAll js/document "section"))]
             (swap! scroll assoc :sections sections)))))
-    (publish {:topic :react/dangerously-rendered})
-    (d/div
-     {:ref #(reset! editor %)
-      :dangerouslySetInnerHTML #js {:__html text}
-      :class (cond-> ["toddler-markdown"]
-               (string? className) (conj className)
-               (string? class) (conj class)
-               (sequential? class) (into class))})))
+    ($ show*
+       {:content text
+        :ref editor
+        :class (cond-> ["toddler-markdown"]
+                 (string? className) (conj className)
+                 (string? class) (conj class)
+                 (sequential? class) (into class))})))
 
 (defnc from-url
   [{:keys [url] :as props}]
