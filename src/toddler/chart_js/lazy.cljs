@@ -3,5 +3,4 @@
    [toddler.lazy :as lazy]))
 
 (lazy/load-components
- "chartjs"
  ::Chart toddler.chart-js/Chart)

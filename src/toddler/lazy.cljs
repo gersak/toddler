@@ -6,7 +6,9 @@
    [goog.object]
    [helix.core :refer [defnc defhook]]
    [helix.hooks :as hooks]
-   [shadow.loader]))
+   [shadow.loader]
+   [shadow.lazy]
+   [shadow.cljs.modern]))
 
 (defonce _loaded (js/Date.now))
 
@@ -42,8 +44,18 @@
       (when-not f
         (let [w (gensym "lazy_")]
           (add-watch tank w
-                     (fn [_ _ _ {_f k}]
+                     (fn [_ _ _ {_f k :as data}]
                        (when-not (= f _f)
-                         (f! _f))))
+                         (.log js/console "Registerd new component: " k _f)
+                         (f! _f)
+                         (.log js/console "AT THAT THING"))))
           (fn [] (remove-watch tank w)))))
-    (or f not-found)))
+    (when-not f (.warn js/console (str "[toddler.lazy] Component not loaded " k)))
+    (if f
+      (do
+        (.log js/console "USING LAZY COMPONENT: " f)
+        #_f
+        not-found)
+      (do
+        (.warn js/console (str "[toddler.lazy] Component not loaded " k))
+        not-found))))

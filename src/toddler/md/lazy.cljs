@@ -6,7 +6,6 @@
    [toddler.md.context :as md.context]))
 
 (lazy/load-components
- "markdown"
  ::show toddler.md/show
  ::from-url toddler.md/from-url
  ::watch-url toddler.md/watch-url

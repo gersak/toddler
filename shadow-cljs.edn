@@ -3,8 +3,7 @@
  :dev-http {8000 ["showcase/docs" "showcase/dev"]}
  :builds {:main {:target :browser
                  :module-loader true
-                 :modules  {:main {:entries [toddler.showcase.main
-                                             toddler.notifications]
+                 :modules  {:main {:entries [toddler.showcase.main]
                                    :init-fn toddler.showcase.main/start!}
                             :ui {:entries [toddler.ui.components]
                                  :depends-on #{:main}}
