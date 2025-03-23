@@ -425,7 +425,6 @@
      ;; When some change happend
      (async/go
        (loop [v (async/<! idle-channel)]
-         ; (.trace js/console "Iddling: " )
          (if (nil? v)
            :IDLED
            ;; If not nil new value received and now idle handling should begin
@@ -853,7 +852,6 @@
                 (when (or (nil? @_state) (not= state @_state))
                   (reset! _state new-state)
                   (.setAttribute target "portal-state" new-state)
-                  (.log js/console "NEW TARGET: " target)
                   (set-target! target))))]
       (when-some [target (locator)]
         (safe-update target))

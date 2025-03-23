@@ -19,11 +19,14 @@
   :showcase
   {:extra-paths ["showcase/src" "ui/src" "themes/default"]}
   :template
-  {:extra-paths ["template/src"]}
+  {:extra-paths ["template/src" "build"]}
   :css
   {:extra-paths ["dev"]
    :ns-default compile-css
    :exec-fn compile-css/release}
+  :index
+  {:ns-default toddler.search.docs
+   :exec-fn toddler.search.docs/generate}
   :icons
   {:extra-paths ["icons"]
    :extra-deps {babashka/fs {:mvn/version "0.2.16"}}}

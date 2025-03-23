@@ -1,23 +1,25 @@
 {:deps true
  :nrepl {:port 7312}
  :dev-http {8000 ["showcase/docs" "showcase/dev"]}
- :builds {:main {:target :browser
-                 :module-loader true
-                 :modules  {:main {:entries [toddler.showcase.main]
-                                   :init-fn toddler.showcase.main/start!}
-                            :ui {:entries [toddler.ui.components]
-                                 :depends-on #{:main}}
-                            :markdown {:entries [toddler.md]
-                                       :depends-on #{:ui}}
-                            :showcase {:entries [toddler.showcase]
-                                       :depends-on #{:markdown}}
-                            :icons {:entries [toddler.showcase.icons]
-                                    :depends-on #{:showcase :ui :markdown}}
-                            :chartjs {:entries [toddler.chart-js]
-                                      :depends-on #{:showcase :ui :markdown}}
-                            :three {:entries [toddler.showcase.three]
-                                    :depends-on #{:showcase :ui :markdown}}}
+ :builds {:dev {:target :browser
+                :module-loader true
+                :modules  {:main {:entries [toddler.showcase.main]
+                                  :init-fn toddler.showcase.main/start!}
+                           :ui {:entries [toddler.ui.components]
+                                :depends-on #{:main}}
+                           :markdown {:entries [toddler.md]
+                                      :depends-on #{:ui}}
+                           :showcase {:entries [toddler.showcase]
+                                      :depends-on #{:markdown}}
+                           :icons {:entries [toddler.showcase.icons]
+                                   :depends-on #{:showcase :ui :markdown}}
+                           :chartjs {:entries [toddler.chart-js]
+                                     :depends-on #{:showcase :ui :markdown}}
+                           :three {:entries [toddler.showcase.three]
+                                   :depends-on #{:showcase :ui :markdown}}}
                 ; :closure-defines {shadow.cljs.devtools.client.env.server_host "192.168.5.67"}
                 ; :devtools {:use-document-host false}
-                 :output-dir "showcase/dev/js"
-                 :output-to "showcase/dev/js/main.js"}}}
+                :output-dir "showcase/dev/js"}
+          :release {:target :browser
+                    :module-loader true
+                    :output-dir "showcase/web/js"}}}

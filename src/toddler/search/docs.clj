@@ -198,11 +198,18 @@
             :path "showcase/docs/tables.md"}
            {:route (->link "/tauri")
             :topic "Tauri"
-            :path "showcase/docs/tauri.md"}]}))
+            :path "showcase/docs/tauri.md"}
+           {:route (->link "/lazy")
+            :topic "Lazy"
+            :path "showcase/docs/lazy.md"}]}))
 
 (defn build-index
   ([{:keys [mds]}]
    (search/build-index (prepare-index mds))))
+
+(defn generate
+  [{:keys [mds output] :as data}]
+  (spit (str output) (search/build-index (prepare-index mds))))
 
 (comment
   (spit "showcase/docs/docs.index.edn" (build-index (make-config "")))

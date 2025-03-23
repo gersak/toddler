@@ -27,6 +27,7 @@
             `(do
                (def ~lazy-sym (shadow.lazy/loadable ~target))
                (helix.core/defnc ~(symbol (name k))
+                 {:wrap [(toddler.ui/forward-ref)]}
                  [props# _ref#]
                  (let [[loaded# load#] (helix.hooks/use-state (true? (get (deref ~'toddler.lazy/tank) ~k false)))
                        component# (helix.hooks/use-memo

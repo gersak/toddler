@@ -80,17 +80,21 @@
   (stop)
   (start))
 
-(defn release [_]
+(defn release [{release 'release}]
   ;; first initialize my css
-  (-> (init)
-      (cb/generate '{:ui {:include [toddler.ui*
-                                    toddler.md
-                                    toddler.notifications
-                                    toddler
-                                    toddler.docs
-                                    toddler.showcase
-                                    toddler.showcase*]}})
-      (cb/write-outputs-to (io/file "showcase" "web" "css"))))
+  (let [release-key (if release
+                      (keyword (str "ui." release))
+                      :ui)]
+    (-> (init)
+        (cb/generate {release-key
+                      {:include '[toddler.ui*
+                                  toddler.md
+                                  toddler.notifications
+                                  toddler
+                                  toddler.docs
+                                  toddler.showcase
+                                  toddler.showcase*]}})
+        (cb/write-outputs-to (io/file "showcase" "web" "css")))))
 
 ;; DEPRECATED - toddler should have 0 css, use css in toddler.ui
 ; (defn generate-indexes

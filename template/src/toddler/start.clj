@@ -2,7 +2,8 @@
   (:require
    [clojure.java.io :as io]
    [clojure.string :as str]
-   [clojure.java.shell :refer [sh]]))
+   [clojure.java.shell :refer [sh]]
+   [toddler.template :refer [process]]))
 
 (defn exists?
   [project]
@@ -13,31 +14,6 @@
   (assert (not (exists? project)) "Project is already active")
   (io/make-parents (str project "/src/" project "/main.cljs"))
   (io/make-parents (str project "/dev/")))
-
-(defn process
-  ([file target] (process file target nil))
-  ([file target variables]
-   ; (def file "template/package.json")
-   ; (def variables {:project project})
-   (let [content (io/resource file)]
-     (assert (some? content) "File doesn't exist!")
-     (let [content (slurp content)
-           _variables (re-seq #"(?<=\{\{).*(?=\}\})" content)
-           new-content (reduce
-                        (fn [result variable]
-                          ; (println "Replacing {{" variable "}} in " file)
-                          (str/replace result
-                                       (re-pattern (str "\\{\\{" variable "\\}\\}"))
-                                       (get variables (keyword variable))))
-                        content
-                        _variables)]
-       (io/make-parents target)
-       (when (.exists (io/file target))
-         (throw
-          (ex-info "File already exists"
-                   {:template file
-                    :target target})))
-       (spit target new-content)))))
 
 (defn init-files
   [project]
