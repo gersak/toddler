@@ -112,7 +112,7 @@
             :path "showcase/docs/lazy.md"}]}))
 
 (defn github-release
-  []
+  [_]
   ;; BUILD CSS
   (b/delete {:path "showcase/web/"})
   (b/process
@@ -124,11 +124,13 @@
       :err :capture}))
   (template/process
    "index.html.tmp" "showcase/web/index.html" {:salt salt :root ""})
+  (b/delete {:path "docs/index.html"})
   (template/process
    "index.html.tmp" "docs/index.html" {:salt salt :root "/toddler-showcase"})
+  (b/delete {:path "docs/404.html"})
   (template/process
    "index.html.tmp" "docs/404.html" {:salt salt :root "/toddler-showcase"})
-  (let [{:keys [mds output]} (search-index-config "")]
+  (let [{:keys [mds output]} (search-index-config "/toddler")]
     (b/process
      {:command-args ["clj" "-X:index" ":mds" (str mds) ":output" (str output)]
       :out :capture
