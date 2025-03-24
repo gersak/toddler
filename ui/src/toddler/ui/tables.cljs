@@ -663,10 +663,11 @@
    :border
    :border-solid
    :rounded-md
-   :shadow-lg
+
    {:background-color "var(--table-bg)"
     :border-color "var(--table-border)"
     :color "var(--table-text)"}
+   ["&:not([flavor=\"flat\"])" :shadow-lg]
    ["& .tcell" :overflow-hidden]
    ["& .trow"
     :my-1
@@ -741,6 +742,7 @@
             :value body-style}
            ($ table/Body
               {:ref (fn [el] (reset! body el))
+               :flavor (:flavor props)
                :className $table})))))))
 
 (def components

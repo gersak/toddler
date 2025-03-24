@@ -429,7 +429,7 @@
   You can style or add classes using :class or :className props that
   will be propagated to simplebar-content-wrapper div."
   {:wrap [(ui/forward-ref)]}
-  [{:keys [class className]} _ref]
+  [{:keys [class className] :as props} _ref]
   (let [{container-width :width
          container-height :height} (layout/use-container-dimensions)
         rows (use-rows)
@@ -449,7 +449,8 @@
           :ref _ref
           :className className
           :style {:width container-width
-                  :maxHeight container-height}}
+                  :maxHeight container-height}
+          & (select-keys props [:flavor])}
          (d/div
           {:key :tbody
            :style style}
