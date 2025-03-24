@@ -60,7 +60,8 @@
                                toddler.showcase/SEARCH_INDEX ~(str "/toddler-showcase" index-file)
                                ; toddler.showcase/ROUTER_BASE ""
                                ; toddler.showcase/SEARCH_INDEX ~index-file
-                               toddler.showcase/MD_REFRESH_PERIOD 0}))))
+                               toddler.showcase/MD_REFRESH_PERIOD 0}
+            :asset-path "/toddler-showcase/js"))))
 
 (defn search-index-config
   [root]
@@ -122,9 +123,11 @@
       :out :capture
       :err :capture}))
   (template/process
-   "index.html.tmp" "showcase/web/index.html" {:salt salt})
+   "index.html.tmp" "showcase/web/index.html" {:salt salt :root ""})
   (template/process
    "index.html.tmp" "docs/index.html" {:salt salt :root "/toddler-showcase"})
+  (template/process
+   "index.html.tmp" "docs/404.html" {:salt salt :root "/toddler-showcase"})
   (let [{:keys [mds output]} (search-index-config "")]
     (b/process
      {:command-args ["clj" "-X:index" ":mds" (str mds) ":output" (str output)]
