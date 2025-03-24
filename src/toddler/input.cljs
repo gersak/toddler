@@ -8,6 +8,7 @@
    [helix.core :refer [defnc <>]]
    [helix.hooks :as hooks]
    [helix.dom :as d]
+   [toddler.core :as toddler]
    [toddler.util :as util]))
 
 (defnc IdleInput
@@ -139,7 +140,8 @@
         [dummy-style set-dummy-style!] (hooks/use-state nil)
         ; [{:keys [height style]} update-state!] (hooks/use-state nil)
         _input (hooks/use-ref nil)
-        [value set-value!] (hooks/use-state (or upstream-value ""))
+        ; [value set-value!] (hooks/use-state (or upstream-value ""))
+        value (hooks/use-ref (or upstream-value ""))
         input (or _ref _input)
         dummy (hooks/use-ref nil)
         ;;
@@ -154,62 +156,71 @@
               (:padding-bottom dummy-style)
               (:padding-left dummy-style)])))
         [initialized? set-initialized!] (hooks/use-state false)
-        focused? (and @input (= @input (.-activeElement js/document)))]
-    (hooks/use-effect
-      :always
-      (when (and @input @dummy)
-        (let [th (.-clientHeight @input)
-              dh (.-scrollHeight @dummy)
-              dw (.-scrollWidth @dummy)]
-          (when-not (< -5 (- th dh) 5)
-            (set! (.. @input -style -height) (str dh "px"))))))
-    (hooks/use-effect
-      :once
-      (when @input
-        (set-dummy-style!
-         (merge
-          (util/get-font-style @input)
-          (util/css-attributes @input
-                               :padding :margin
-                               :padding-left :padding-top :line-height
-                               :padding-right :padding-bottom)))))
-    (hooks/use-effect
-      [value]
-      (when (and (not= value upstream-value)
-                 (ifn? on-change))
-        (on-change (not-empty value))))
-    (hooks/use-effect
-      [upstream-value]
-      (when (not= upstream-value value)
-        (set-initialized! false)
-        (set-value! upstream-value)))
-    (<>
-     (d/textarea
-      {:className className
-       :onChange (fn [e] (set-value! (when e (.. e -target -value))))
-       :value (or value "")
-       :ref #(reset! input %)
-       & (->
-          props
-          (dissoc :style :value :className :ref :onChange :on-change)
-          (update :style merge {:overflow "hidden"}))})
-     (when (or
-            true
-            (not initialized?)
-            focused?)
-       (d/pre
-        {:ref #(do
-                 (when-not initialized? (set-initialized! true))
-                 (reset! dummy %))
-         :key :dummy
-         :className className
-         :style (merge
-                 dummy-style
-                 (cond-> {:position "fixed"
-                          :top 0 :left 0
-                          :visibility "hidden"
-                          :white-space "pre-wrap"
-                          :word-break "break-word"
-                          :font-family "inherit"}
-                   @input (assoc :width (- (.-scrollWidth @input) pl pr))))}
-        (str (if (not-empty value) value  placeholder) \space))))))
+        [focused? set-focused!] (hooks/use-state false)
+        ; focused? (and @input (= @input (.-activeElement js/document)))
+        delayed-focused? (toddler/use-delayed focused?)
+        delayed-initialized? (toddler/use-delayed initialized?)
+        show-dummy? (or
+                     (not initialized?)
+                     (not delayed-initialized?)
+                     focused?
+                     delayed-focused?)]
+    (letfn [(refresh [dummy target]
+              (when (and dummy target)
+                (let [th (.-clientHeight target)
+                      dh (.-scrollHeight dummy)
+                      dw (.-scrollWidth dummy)]
+                  (when-not (< -5 (- th dh) 5)
+                    (set! (.. target -style -height) (str dh "px"))))))]
+      (hooks/use-effect
+        :once
+        (when @input
+          (set-dummy-style!
+           (merge
+            (util/get-font-style @input)
+            (util/css-attributes @input
+                                 :padding :margin
+                                 :padding-left :padding-top :line-height
+                                 :padding-right :padding-bottom)))))
+      (hooks/use-effect
+        [upstream-value]
+        (when (not= upstream-value @value)
+          (set-initialized! false)
+          (reset! value upstream-value)))
+      (<>
+       (d/textarea
+        {:className className
+         :on-focus (fn [_] (set-focused! true))
+         :on-blur (fn [_] (set-focused! false))
+         :on-change (fn [e]
+                      (let [_value (when e (not-empty (.. e -target -value)))]
+                        (reset! value _value)
+                        (on-change _value)))
+         :value (or upstream-value "")
+         :ref #(reset! input %)
+         & (->
+            props
+            (dissoc :style :value :className :ref :onChange :on-change)
+            (update :style merge {:overflow "hidden"}))})
+       (when show-dummy?
+         (d/pre
+          {:ref (fn [el]
+                  (do
+                    (reset! dummy el)
+                    (when (and
+                           (not initialized?)
+                           (not focused?))
+                      (set-initialized! true))
+                    (refresh el @input)))
+           :key :dummy
+           :className className
+           :style (merge
+                   dummy-style
+                   (cond-> {:position "fixed"
+                            :top 0 :left 0
+                            :visibility "hidden"
+                            :white-space "pre-wrap"
+                            :word-break "break-word"
+                            :font-family "inherit"}
+                     @input (assoc :width (- (.-scrollWidth @input) pl pr))))}
+          (str (if (not-empty upstream-value) upstream-value  placeholder) \space)))))))
