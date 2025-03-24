@@ -138,9 +138,7 @@
     :as props} _ref]
   (let [on-change (or on-change onChange)
         [dummy-style set-dummy-style!] (hooks/use-state nil)
-        ; [{:keys [height style]} update-state!] (hooks/use-state nil)
         _input (hooks/use-ref nil)
-        ; [value set-value!] (hooks/use-state (or upstream-value ""))
         value (hooks/use-ref (or upstream-value ""))
         input (or _ref _input)
         dummy (hooks/use-ref nil)
@@ -157,7 +155,6 @@
               (:padding-left dummy-style)])))
         [initialized? set-initialized!] (hooks/use-state false)
         [focused? set-focused!] (hooks/use-state false)
-        ; focused? (and @input (= @input (.-activeElement js/document)))
         delayed-focused? (toddler/use-delayed focused?)
         delayed-initialized? (toddler/use-delayed initialized?)
         show-dummy? (or
