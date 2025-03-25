@@ -65,7 +65,7 @@ You can add custom HTML in this file as well. If you include HTML elements
 with an `id` or another attribute that identifies a DOM element, you can use
 React Portal to mount custom components to that element.
 
-Or you can just use  
+Or you can just use
 [toddler.core/portal](https://github.com/gersak/toddler/blob/054d2fbef85ebf434ee699905e3a6cdfc968fe25/src/toddler/core.cljs#L32).
 
 <div id="example-component-here" style="margin-top:20px;">

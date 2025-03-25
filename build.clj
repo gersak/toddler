@@ -8,7 +8,7 @@
 (def version "0.9.7-SNAPSHOT")
 (def target "target/classes")
 
-(defonce salt (template/random-string))
+(defonce salt (str "b_" (template/random-string)))
 (defonce index-file (format "/docs.index.%s.edn" salt))
 
 (defn create-jar []
@@ -134,12 +134,14 @@
   (b/delete {:path "docs/404.html"})
   (template/process
    "index.html.tmp" "docs/404.html" {:salt salt :root "/toddler-showcase"})
-  (let [{:keys [mds output]} (search-index-config "/toddler")]
-    (println "Refreshing index file at " (str output))
-    (b/process
-     {:command-args ["clj" "-X:index" ":mds" (str mds) ":output" (str output)]
-      :out :capture
-      :err :capture})))
+  (let [{:keys [mds output]} (search-index-config "/toddler")
+        _ (println "Refreshing index file at " (str output))
+        {:keys [err]} (b/process
+                       {:command-args ["clj" "-X:index" ":mds" (str mds) ":output" (str output)]
+                        :out :capture
+                        :err :capture})]
+    (when (not-empty err)
+      (println "[ERROR] " err))))
 
 (defn release
   ([] (release nil))

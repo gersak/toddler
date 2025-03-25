@@ -26,7 +26,7 @@
    :exec-fn compile-css/release}
   :index
   {:ns-default toddler.search.docs
-   :exec-fn toddler.search.docs/generate}
+   :exec-fn toddler.search.docs/build-index}
   :icons
   {:extra-paths ["icons"]
    :extra-deps {babashka/fs {:mvn/version "0.2.16"}}}
