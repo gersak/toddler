@@ -5,7 +5,7 @@
    [deps-deploy.deps-deploy :as dd]
    [toddler.template :as template]))
 
-(def version "0.9.7-SNAPSHOT")
+(def version "0.9.7")
 (def target "target/classes")
 
 (defonce salt (str "b_" (template/random-string)))

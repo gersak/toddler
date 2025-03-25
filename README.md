@@ -2,7 +2,8 @@
 # About
 Toddler is a library containing a collection of [Helix](https://github.com/lilactown/helix.git) hooks,
 components and functions that I found useful throughout my career.
-On top of this reusable code, I've built UI components that you can test in the **[SHOWCASE](https://gersak.github.io/toddler)**.
+On top of this reusable code, UI components are built. You can test default components
+in the **[SHOWCASE](https://gersak.github.io/toddler)**.
 
 The **[showcase](https://github.com/gersak/toddler-showcase.git)** is a Git submodule within this repository,
 used for testing, development, and documentation of Toddler UI components.
@@ -42,7 +43,7 @@ Toddler includes a built-in template to create a new project. In the following c
 we refer to the project as `new.project`. Feel free to replace it with your preferred name.
 
 ```sh
-clj -Sdeps '{:deps {dev.gersak/toddler-ui {:mvn/version "0.9.6"}}}' -M -m toddler.start new.project
+clj -Sdeps '{:deps {dev.gersak/toddler-ui {:mvn/version "0.5.0"}}}' -M -m toddler.start new.project
 cd new.project
 npm run dev
 # Navigate to http://localhost:8000

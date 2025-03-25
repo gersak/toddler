@@ -4,9 +4,10 @@
   "description": "UI elements based on helix library",
   "main": "index.js",
   "scripts": {
-    "dev": "npx shadow-cljs -A:shadow:showcase:template watch dev",
+    "dev": "npx shadow-cljs -A:shadow:showcase watch dev",
     "icons": "npx shadow-cljs -A:shadow:cider:icons watch icons",
-    "release": "clj -T:build:release github-release",
+    "release": "clj -T:build:release release",
+    "github-docs": "clj -T:build:release github-release",
     "dev-tauri": "clj -X:shadow:showcase:css && npx shadow-cljs -A:shadow:showcase release main --config-merge '{:output-dir \"showcase/web/js\" :asset-path \"/js\" :closure-defines {shadow.cljs.devtools.client.env.server_host \"x.x.x.x\"} :devtools {:use-document-host false}}'"
   },
   "author": "Robert Gersak",

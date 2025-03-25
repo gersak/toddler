@@ -5,7 +5,8 @@
 
 ;; IMPORTANT!!!! - change version in resources/template/deps.edn.tmp
 ;; to match this version
-(def version "0.9.7-SNAPSHOT")
+
+(def version "0.9.7")
 (def target "target/classes")
 
 (defn create-jar []
