@@ -1,2 +1,2 @@
 {:lint-as {toddler.ui/defcomponent clojure.core/def
-           shadow.cljs.modern/js-await clojure.core/def}}
+           shadow.cljs.modern/js-await clojure.core/let}}

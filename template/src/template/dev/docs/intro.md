@@ -69,7 +69,7 @@ Or you can just use
 [toddler.core/portal](https://github.com/gersak/toddler/blob/054d2fbef85ebf434ee699905e3a6cdfc968fe25/src/toddler/core.cljs#L32).
 
 <div id="example-component-here" style="margin-top:20px;">
-  Check me out... I'm right here in the `intro.md` file.
+  Check me out... I'm right here in the <strong>/dev/docs/intro.md</strong> file.
 </div>
 
 <iframe src="https://giphy.com/embed/h8n8aJWronkmvRTB0y"  

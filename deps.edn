@@ -18,7 +18,7 @@
    :extra-paths ["dev"]}
   :showcase
   {:extra-paths ["showcase/src" "ui/src" "themes/default"]}
-  :template
+  :release
   {:extra-paths ["template/src" "build"]}
   :css
   {:extra-paths ["dev"]
@@ -51,6 +51,7 @@
                                    toddler.notifications
                                    toddler.table
                                    toddler.dropdown
-                                   toddler.multiselect]
+                                   toddler.multiselect
+                                   toddler.lazy]
                       :language :clojurescript
                       :metadata {:doc/format :markdown}}}}}

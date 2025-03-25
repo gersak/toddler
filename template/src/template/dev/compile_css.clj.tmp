@@ -73,12 +73,20 @@
   (stop)
   (start))
 
-(defn release [_]
-  ;; first initialize my css
-  (reset! css-ref (init))
 
-  ;; then build it once
-  (generate-css "build"))
+
+(defn release [{salt 'salt}]
+  ;; first initialize my css
+  (let [release-key (if salt
+                      (keyword (str "toddler." salt))
+                      :ui)]
+    (-> (init)
+        (cb/generate {release-key
+                      {:include '[{{project}}.main
+                                  {{project}}*
+                                  toddler.ui*
+                                  toddler.docs]}})
+        (cb/write-outputs-to (io/file "target" "css")))))
 
 (comment
   (-> @css-ref)

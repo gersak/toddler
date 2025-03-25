@@ -203,11 +203,11 @@
             :topic "Lazy"
             :path "showcase/docs/lazy.md"}]}))
 
-(defn build-index
-  ([{:keys [mds]}]
-   (search/build-index (prepare-index mds))))
+#_(defn build-index
+    ([{:keys [mds]}]
+     (search/build-index (prepare-index mds))))
 
-(defn generate
+(defn build-index
   [{:keys [mds output] :as data}]
   (spit (str output) (search/build-index (prepare-index mds))))
 

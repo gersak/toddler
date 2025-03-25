@@ -1,6 +1,12 @@
 dev/css/
 dev/js/
+dev/docs.index.edn
 build/css/
 build/js/
+
+.clj-kondo/
+.cpcache/
+.lsp/
+.shadow-cljs/
 
 package-lock.json

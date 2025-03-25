@@ -14,6 +14,7 @@
    [toddler.ui.css :as ui.css]
    [toddler.material.outlined :as outlined]
    [toddler.router :as router]
+   [toddler.search :as search]
    [shadow.css :refer [css]]))
 
 (defn change-highligh-js
@@ -50,7 +51,7 @@
     ($ ui/row {:align :center}
        ($ ui/simplebar
           {:style {:width (min width 500) :height height}}
-          ($ md/watch-url {:url "intro.md"})))))
+          ($ md/watch-url {:url "/docs/intro.md"})))))
 
 (def components
   [{:id ::intro
@@ -62,7 +63,8 @@
   []
   (let [{go-to :go} (router/use-navigate)
         on-theme-change (toddler/use-theme-change)
-        theme (toddler/use-theme)]
+        theme (toddler/use-theme)
+        index (hooks/use-context search/-index-)]
     (<>
      (d/div
       {:className "wrapper"}
@@ -82,7 +84,11 @@
       ($ ui/tooltip {:message "Back to app"}
          (d/div
           {:on-click (fn [] (go-to "/greeting"))}
-          ($ outlined/arrow-back)))))))
+          ($ outlined/arrow-back))))
+     (when (not-empty index)
+       (d/div
+        {:className "wrapper"}
+        ($ docs/search))))))
 
 (defnc logo
   []
@@ -109,9 +115,12 @@
       :render/logo logo
       :render/actions actions}))
 
+(goog-define SEARCH_INDEX "/docs.index.edn")
+
 (defnc Docs
   {:wrap [(md/wrap-show {:className ui.css/$md
                          :on-theme-change change-highligh-js})
+          (search/wrap-index SEARCH_INDEX)
           (router/wrap-rendered ::docs)
           (router/wrap-link
            ::router/ROOT

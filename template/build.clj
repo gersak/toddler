@@ -14,7 +14,12 @@
     (b/write-pom {:target target
                   :lib 'dev.gersak/toddler-template
                   :version version
-                  :basis basis})
+                  :basis basis
+                  :pom-data [[:licenses
+                              [:license
+                               [:name "MIT"]
+                               [:url "https://opensource.org/licenses/MIT"]
+                               [:distribution "repo"]]]]})
     (b/jar {:class-dir target
             :jar-file (format "target/toddler-%s.jar" version)})))
 

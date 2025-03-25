@@ -350,7 +350,7 @@
                  & data}))
            results)))))
 
-(defnc search-docs
+(defnc search
   []
   (let [[{:keys [search]} set-query!] (router/use-query)]
     (hooks/use-effect
@@ -419,7 +419,7 @@
      (when (not-empty index)
        (d/div
         {:className "wrapper"}
-        ($ search-docs))))))
+        ($ search))))))
 
 (defnc page
   [{:keys [components max-width render/logo render/actions]

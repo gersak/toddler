@@ -149,7 +149,7 @@
                              ["& .toddler-markdown" :my-6 #_{:margin-bottom "8px !important"}])}
                 (d/div
                  {:className "message"}
-                 ($ md/watch-url {:url "docs/greeting.md"})))
+                 ($ md/watch-url {:url "/docs/greeting.md"})))
              ($ ui/row
                 {:align :center}
                 (d/div
@@ -158,15 +158,21 @@
                                 :width (* 265 scale)
                                 :height (* scale 200)})))))))))
 
+(goog-define MD_BASE "")
+(goog-define MD_REFRESH_PERIOD 3000)
+(goog-define ROUTER_BASE "")
+
 (defnc App
   {:wrap [(router/wrap-landing "/" false)
-          (router/wrap-router)
-          (popup/wrap-container)
           (toddler/wrap-theme ::theme)
           (md/wrap-show {:className ui.css/$md})
+          (md/wrap-base MD_BASE)
+          (md/wrap-refresh MD_REFRESH_PERIOD)
           (notifications/wrap-store {:class ui.css/$store})
+          (popup/wrap-container)
           (wrap-window-provider)
-          (ui/wrap-ui components)]}
+          (ui/wrap-ui components)
+          (router/wrap-router ROUTER_BASE)]}
   []
   (let [[locale set-locale!] (hooks/use-state :en)
         app-mobile (toddler/use-window-width-test < 600)

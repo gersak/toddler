@@ -9,6 +9,19 @@
    (let [chars "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"]
      (apply str (repeatedly length #(rand-nth chars))))))
 
+(defn copy
+  ([file target]
+   (let [content (io/resource file)]
+     (assert (some? content) (str file " file doesn't exist!"))
+     (let [content (slurp content)]
+       (io/make-parents target)
+       (when (.exists (io/file target))
+         (throw
+          (ex-info "File already exists"
+                   {:template file
+                    :target target})))
+       (spit target content)))))
+
 (defn process
   "Function will take source file and target file and
   repace all {{variable}} with provided variable
@@ -17,10 +30,16 @@
   ([file target variables]
    ; (def file "template/package.json")
    ; (def variables {:project project})
+   (comment
+     (def file "template/src/main.cljs.tmp")
+     (def target "src/sddsd/main.cljs")
+     (def variables {:project "toddler.tauri"
+                     :project-folder "toddler.tauri"})
+     (def content (slurp (io/resource file))))
    (let [content (io/resource file)]
-     (assert (some? content) "File doesn't exist!")
+     (assert (some? content) (str file " file doesn't exist!"))
      (let [content (slurp content)
-           _variables (distinct (re-seq #"(?<=\{\{)\w+(?=\}\})" content))
+           _variables (distinct (re-seq #"(?<=\{\{)\w+[\w\d\-\_]*(?=\}\})" content))
            new-content (reduce
                         (fn [result variable]
                           ; (println "Replacing {{" variable "}} in " file)
@@ -29,6 +48,7 @@
                                        (get variables (keyword variable))))
                         content
                         _variables)]
+       (println (format "Processing %s -> %s" file target))
        (io/make-parents target)
        (when (.exists (io/file target))
          (throw

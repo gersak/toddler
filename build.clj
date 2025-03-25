@@ -114,23 +114,28 @@
 (defn github-release
   [_]
   ;; BUILD CSS
+  (println "Cleaining showcase/web")
   (b/delete {:path "showcase/web/"})
   (b/process
-   {:command-args ["clj" "-X:shadow:showcase:css" "release" salt]})
+   {:command-args ["clj" "-X:shadow:showcase:css" "salt" salt]})
   (let [command ["npx" "shadow-cljs" "-A:shadow:showcase" "--config-merge" (str (frontend-config)) "release" "release"]]
     (b/process
      {:command-args command
       :out :capture
       :err :capture}))
+  (println "Creating showcase/web/index.html file")
   (template/process
    "index.html.tmp" "showcase/web/index.html" {:salt salt :root ""})
+  (println "Refreshing docs/index.html")
   (b/delete {:path "docs/index.html"})
   (template/process
    "index.html.tmp" "docs/index.html" {:salt salt :root "/toddler-showcase"})
+  (println "Refreshing docs/404.html")
   (b/delete {:path "docs/404.html"})
   (template/process
    "index.html.tmp" "docs/404.html" {:salt salt :root "/toddler-showcase"})
   (let [{:keys [mds output]} (search-index-config "/toddler")]
+    (println "Refreshing index file at " (str output))
     (b/process
      {:command-args ["clj" "-X:index" ":mds" (str mds) ":output" (str output)]
       :out :capture

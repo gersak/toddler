@@ -3,7 +3,7 @@
    [clojure.java.io :as io]
    [clojure.string :as str]
    [clojure.java.shell :refer [sh]]
-   [toddler.template :refer [process]]))
+   [toddler.template :refer [process copy]]))
 
 (defn exists?
   [project]
@@ -13,7 +13,8 @@
   [project]
   (assert (not (exists? project)) "Project is already active")
   (io/make-parents (str project "/src/" project "/main.cljs"))
-  (io/make-parents (str project "/dev/")))
+  (io/make-parents (str project "/dev/"))
+  (io/make-parents (str project "/build/")))
 
 (defn init-files
   [project]
@@ -21,7 +22,7 @@
             [path]
             (str project "/" path))]
     (process "template/README.md" (->file "README.md"))
-    (process "template/package.json"
+    (process "template/package.json.tmp"
              (->file "package.json")
              {:project project})
     (process "template/shadow-cljs.edn.tmp"
@@ -36,6 +37,11 @@
     (process "template/dev/user.clj.tmp" (->file "dev/user.clj"))
     (process "template/dev/docs/intro.md"
              (->file "dev/docs/intro.md")
+             {:project project})
+    (copy "template/build/index.html.tmp"
+          (->file "build/index.html.tmp"))
+    (process "template/build.clj.tmp"
+             (->file "build.clj")
              {:project project})
     (let [dir (->
                project
@@ -81,5 +87,5 @@
 (comment
   (def project "test-project")
   (init-tauri project)
-  (process "template/package.json" (str project "/package.json") {:project project})
+  (process "template/package.json.tmp" (str project "/package.json") {:project project})
   (-main [project]))

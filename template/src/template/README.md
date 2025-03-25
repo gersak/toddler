@@ -1,6 +1,12 @@
 # WEB
 ```
+# To start development
 npm run dev
+
+# To start build process
+# Build will be available in /target folder
+
+npm run release
 ```
 
 

@@ -80,10 +80,10 @@
   (stop)
   (start))
 
-(defn release [{release 'release}]
+(defn release [{salt 'salt}]
   ;; first initialize my css
-  (let [release-key (if release
-                      (keyword (str "ui." release))
+  (let [release-key (if salt
+                      (keyword (str "ui." salt))
                       :ui)]
     (-> (init)
         (cb/generate {release-key
