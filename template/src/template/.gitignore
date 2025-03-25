@@ -3,6 +3,7 @@ dev/js/
 dev/docs.index.edn
 build/css/
 build/js/
+node_modules/
 
 .clj-kondo/
 .cpcache/
@@ -10,3 +11,4 @@ build/js/
 .shadow-cljs/
 
 package-lock.json
+src-tauri/

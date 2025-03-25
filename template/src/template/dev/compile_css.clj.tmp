@@ -14,7 +14,7 @@
   ([dir]
    (let [result
          (-> @css-ref
-             (cb/generate '{:toddler {:include [{{project}}.main
+             (cb/generate '{:main {:include [{{project}}.main
                                                 {{project}}*
                                                 toddler.ui*
                                                 toddler.docs]}})
@@ -78,8 +78,8 @@
 (defn release [{salt 'salt}]
   ;; first initialize my css
   (let [release-key (if salt
-                      (keyword (str "toddler." salt))
-                      :ui)]
+                      (keyword (str "main." salt))
+                      :main)]
     (-> (init)
         (cb/generate {release-key
                       {:include '[{{project}}.main
