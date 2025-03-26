@@ -3,7 +3,7 @@
    [clojure.tools.build.api :as b]
    [deps-deploy.deps-deploy :as dd]))
 
-(def version "0.5.0")
+(def version "0.5.1")
 (def target "target/classes")
 
 (defn create-jar []
@@ -21,23 +21,20 @@
                                [:url "https://opensource.org/licenses/MIT"]
                                [:distribution "repo"]]]]})
     (b/jar {:class-dir target
-            :jar-file (format "target/toddler-%s.jar" version)})))
-
-(defn deploy
-  []
-  (let [jar-file (format "target/toddler-%s.jar" version)
-        pom-file (str target "/pom.xml")]
-    (println "Deploying JAR:" jar-file)
-    (dd/deploy {:installer :remote
-                :sign-releases? false
-                :artifact jar-file
-                :pom-file pom-file})))
+            :jar-file (format "target/template-%s.jar" version)})))
 
 (defn release
   ([] (release nil))
-  ([& _]
+  ([{t :test}]
    (create-jar)
-   (deploy)))
+   (let [jar-file (format "target/template-%s.jar" version)
+         pom-file (str target "/pom.xml")
+         installer (if t :local :remote)]
+     (println "Installing JAR " (name installer))
+     (dd/deploy {:installer installer
+                 :sign-releases? false
+                 :artifact jar-file
+                 :pom-file pom-file}))))
 
 (comment
   (release))

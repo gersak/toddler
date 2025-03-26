@@ -33,6 +33,16 @@
                 :artifact jar-file
                 :pom-file pom-file})))
 
+(defn test-deploy
+  []
+  (let [jar-file (format "target/toddler-%s.jar" version)
+        pom-file (str target "/pom.xml")]
+    (println "Deploying JAR:" jar-file)
+    (dd/deploy {:installer :local
+                :sign-releases? false
+                :artifact jar-file
+                :pom-file pom-file})))
+
 (defn frontend-config
   []
   (let [config (edn/read-string (slurp "shadow-cljs.edn"))

@@ -9,49 +9,22 @@
    [toddler.i18n.time]
    [toddler.md.lazy :as md]
    [toddler.docs :as docs]
-   [toddler.head :as head]
    [toddler.core :as toddler]
-   [toddler.ui.css :as ui.css]
    [toddler.material.outlined :as outlined]
    [toddler.router :as router]
    [toddler.search :as search]
    [shadow.css :refer [css]]))
 
-(defn change-highligh-js
-  [theme]
-  (let [dark-url "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/base16/tomorrow-night.min.css"
-        light-url "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/base16/atelier-lakeside-light.min.css"]
-    (letfn [(fetch-dark []
-              (head/remove
-               :link
-               {:href light-url
-                :rel "stylesheet"})
-              (head/add
-               :link
-               {:href dark-url
-                :rel "stylesheet"}))
-            (fetch-light []
-              (head/remove
-               :link
-               {:href dark-url
-                :rel "stylesheet"})
-              (head/add
-               :link
-               {:href light-url
-                :rel "stylesheet"}))]
-      (case theme
-        "light" (fetch-light)
-        "dark" (fetch-dark)
-        nil))))
-
 (defnc Intro
   {:wrap [(router/wrap-rendered ::intro)]}
   []
   (let [{:keys [width height]} (layout/use-container-dimensions)]
-    ($ ui/row {:align :center}
-       ($ ui/simplebar
-          {:style {:width (min width 500) :height height}}
-          ($ md/watch-url {:url "/docs/intro.md"})))))
+    ($ ui/simplebar
+       {:style {:height height}}
+       ($ ui/row {:align :center}
+          ($ ui/row
+             {:style {:max-width (min width 500)}}
+             ($ md/watch-url {:url "/docs/intro.md"}))))))
 
 (def components
   [{:id ::intro
@@ -114,25 +87,3 @@
       :components components
       :render/logo logo
       :render/actions actions}))
-
-(goog-define SEARCH_INDEX "/docs.index.edn")
-
-(defnc Docs
-  {:wrap [(md/wrap-show {:className ui.css/$md
-                         :on-theme-change change-highligh-js})
-          (search/wrap-index SEARCH_INDEX)
-          (router/wrap-rendered ::docs)
-          (router/wrap-link
-           ::router/ROOT
-           [{:id ::docs
-             :segment "docs"
-             :landing 5}])]}
-  []
-  (let [{:keys [pathname]} (router/use-location)
-        {go-to :go} (router/use-navigate)]
-    (hooks/use-effect
-      [pathname]
-      (when (#{"/docs" "/docs/"} pathname)
-        (go-to "/docs/intro")))
-    ($ router/Provider {:base "docs"}
-       ($ _Docs))))

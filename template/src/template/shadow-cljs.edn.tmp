@@ -6,9 +6,10 @@
                 :modules {:main {:entries [{{project}}.main]
                                  :init-fn {{project}}.main/start!}
                           :markdown {:entries [toddler.md]
-                                     :depends-on #{:main}}}
-                :output-dir "dev/js"
-                :output-to "dev/js/main.js"}
+                                     :depends-on #{:main}}
+                          :docs {:entries [{{project}}.docs]
+                                 :depends-on #{:main}}}
+                :output-dir "dev/js"}
           :release {:target :browser
                     :module-loader true
                     :output-dir "target/js"}}}

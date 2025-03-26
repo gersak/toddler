@@ -58,6 +58,9 @@
       (process "template/src/docs.cljs.tmp"
                (->file (str "src/" dir "/docs.cljs"))
                {:project project})
+      (process "template/src/docs/lazy.cljs.tmp"
+               (->file (str "src/" dir "/docs/lazy.cljs"))
+               {:project project})
       (process "template/src/main.css" (->file (str "src/" dir "/main.css"))))))
 
 (defn init-tauri
@@ -76,7 +79,7 @@
 (defn -main
   [& args]
   (let [[project] args]
-    (assert (some? project) "Specify project name")
+    (assert (some? project) "Specify project name. I.E. 'new.project'")
     (init-files project)
     (install-js project)
     (try

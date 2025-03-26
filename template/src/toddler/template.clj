@@ -3,6 +3,8 @@
    [clojure.java.io :as io]
    [clojure.string :as str]))
 
+(def ^:dynamic *level* nil)
+
 (defn random-string
   ([] (random-string 5))
   ([length]
@@ -28,14 +30,6 @@
   definitions."
   ([file target] (process file target nil))
   ([file target variables]
-   ; (def file "template/package.json")
-   ; (def variables {:project project})
-   (comment
-     (def file "template/src/main.cljs.tmp")
-     (def target "src/sddsd/main.cljs")
-     (def variables {:project "toddler.tauri"
-                     :project-folder "toddler.tauri"})
-     (def content (slurp (io/resource file))))
    (let [content (io/resource file)]
      (assert (some? content) (str file " file doesn't exist!"))
      (let [content (slurp content)

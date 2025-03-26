@@ -29,10 +29,10 @@
                          nil
                          current)))
      (dissoc :output-to :output-dir)
-     (assoc :closure-defines `{toddler.tauri.main/MD_BASE ""
-                               toddler.tauri.main/MD_REFRESH_PERIOD 0
-                               toddler.tauri.main/ROUTER_BASE ""
-                               toddler.tauri.docs/SEARCH_INDEX ~(str "/docs.index." salt ".edn")}
+     (assoc :closure-defines `{{{project}}.docs.main/ROUTER_BASE ""
+                               {{project}}.docs.lazy/MD_BASE ""
+                               {{project}}.docs.lazy/MD_REFRESH_PERIOD 0
+                               {{project}}.docs.lazy/SEARCH_INDEX ~(str "/docs.index." salt ".edn")}
             :asset-path "/js"))))
 
 (defn build-index

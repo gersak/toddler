@@ -22,7 +22,7 @@
    [toddler.fav6.brands :as brands]
    [toddler.window :refer [wrap-window-provider]]
    [toddler.router :as router]
-   [{{project}}.docs :refer [Docs]]))
+   [{{project}}.docs.lazy :refer [Docs]]))
 
 (defonce root (atom nil))
 
@@ -73,6 +73,29 @@
             {:on-click (fn []
                          (go-to "/docs/"))}))))))
 
+(defnc GreetingText
+  []
+  (d/div
+   {:className ui.css/$md
+    :style {:margin-bottom 24}}
+   (d/p "Template project setup complete! You're ready to code.")
+   (d/p "Check out the "
+        (d/a {:href "https://gersak.github.io/toddler/rationale"} "SHOWCASE")
+        " page to see what Toddler can do.")
+   (d/hr)
+   (d/section
+    {:id "document"}
+    (d/h4 "Document App")
+    (d/p "If you wan't to see how to document your app click "
+         (d/a {:href "/docs"} "here") "."))
+   (d/hr)
+   (d/section
+    {:id "theme"}
+    (d/h4 "Theme")
+    (d/p "If you wan't to style this project, open "
+         (d/code "{{project-folder}}/main.css")
+         " file and change variables!"))))
+
 (defnc Greeting
   {:wrap [(router/wrap-rendered ::greeting)
           (router/wrap-link
@@ -110,8 +133,7 @@
                             ["& .toddler-markdown" :my-6 #_{:margin-bottom "8px !important"}])}
                (d/div
                 {:className "message"}
-
-                ($ md/watch-url {:url "docs/greeting.md"})))
+                ($ GreetingText)))
             ($ ui/row
                {:align :center}
                (d/div
@@ -149,7 +171,7 @@
                              ["& .toddler-markdown" :my-6 #_{:margin-bottom "8px !important"}])}
                 (d/div
                  {:className "message"}
-                 ($ md/watch-url {:url "/docs/greeting.md"})))
+                 ($ GreetingText)))
              ($ ui/row
                 {:align :center}
                 (d/div
@@ -158,16 +180,11 @@
                                 :width (* 265 scale)
                                 :height (* scale 200)})))))))))
 
-(goog-define MD_BASE "")
-(goog-define MD_REFRESH_PERIOD 3000)
 (goog-define ROUTER_BASE "")
 
 (defnc App
   {:wrap [(router/wrap-landing "/" false)
           (toddler/wrap-theme ::theme)
-          (md/wrap-show {:className ui.css/$md})
-          (md/wrap-base MD_BASE)
-          (md/wrap-refresh MD_REFRESH_PERIOD)
           (notifications/wrap-store {:class ui.css/$store})
           (popup/wrap-container)
           (wrap-window-provider)
