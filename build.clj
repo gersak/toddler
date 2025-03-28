@@ -5,7 +5,7 @@
    [deps-deploy.deps-deploy :as dd]
    [toddler.template :as template]))
 
-(def version "0.9.7")
+(def version "0.9.8-SNAPSHOT")
 (def target "target/classes")
 
 (defonce salt (str "b_" (template/random-string)))
@@ -22,26 +22,6 @@
                   :basis basis})
     (b/jar {:class-dir target
             :jar-file (format "target/toddler-%s.jar" version)})))
-
-(defn deploy
-  []
-  (let [jar-file (format "target/toddler-%s.jar" version)
-        pom-file (str target "/pom.xml")]
-    (println "Deploying JAR:" jar-file)
-    (dd/deploy {:installer :remote
-                :sign-releases? false
-                :artifact jar-file
-                :pom-file pom-file})))
-
-(defn test-deploy
-  []
-  (let [jar-file (format "target/toddler-%s.jar" version)
-        pom-file (str target "/pom.xml")]
-    (println "Deploying JAR:" jar-file)
-    (dd/deploy {:installer :local
-                :sign-releases? false
-                :artifact jar-file
-                :pom-file pom-file})))
 
 (defn frontend-config
   []
@@ -155,12 +135,19 @@
 
 (defn release
   ([] (release nil))
-  ([& _]
+  ([{t :test}]
    (create-jar)
-   (deploy)))
+   (let [jar-file (format "target/toddler-%s.jar" version)
+         pom-file (str target "/pom.xml")
+         installer (if t :local :remote)]
+     (println "Deploying JAR:" jar-file)
+     (dd/deploy {:installer installer
+                 :sign-releases? false
+                 :artifact jar-file
+                 :pom-file pom-file}))))
 
 (comment
   (def config-file "shadow-cljs.prod.edn")
   (template/random-string)
-  (github-release)
+  (github-release nil)
   (release))

@@ -2,14 +2,9 @@
   (:require
    ["react" :as react]
    [clojure.set :as set]
-   [clojure.core.async :as async]
    [clojure.string :as str]
    [shadow.css :refer [css]]
-   #_[toddler.avatar
-      :refer [avatar]
-      :as avatar]
-   [toddler.ui :as ui :refer [!]]
-   [toddler.util :as util]
+   [toddler.ui :as ui]
    [helix.core
     :refer [$ defnc <> provider create-context]]
    [helix.hooks :as hooks]
@@ -22,12 +17,10 @@
    [toddler.material.outlined :as outlined]
    [toddler.core :refer [use-delayed] :as toddler]
    [toddler.dropdown :as dropdown]
-   [toddler.multiselect :as multiselect]
    [toddler.scroll :as scroll]
    [toddler.ionic :as ionic]
    [toddler.popup :as popup]
-   [toddler.layout :as layout]
-   [toddler.ui.elements.calendar :refer [calendar period-calendar]]))
+   [toddler.layout :as layout]))
 
 (defnc simplebar
   {:wrap [(ui/forward-ref)]}
@@ -862,8 +855,7 @@
           marker-height :height
           marker-width :width} :tab/marker
          tab-content-dimensions :tab/dimensions
-         {:keys [selected select!] :as context} :tabs/context
-         :as from-tabs}
+         {:keys [selected select!] :as context} :tabs/context}
         (layout/use-tabs _ref)
         ;;
         translate (toddler/use-translate)]
@@ -956,7 +948,7 @@
 
 (defnc identity-option
   {:wrap [(ui/forward-ref)]}
-  [{:keys [name type selected? on-click] :as option} _ref]
+  [{:keys [name type selected? on-click]} _ref]
   (d/div
    {:class ["option"
             (when type (clojure.core/name type))
@@ -1052,7 +1044,7 @@
        {:placeholder (translate :search)
         :onChange #(set-search! (.. % -target -value))
         :value (or search "")}))
-     (! :simplebar
+     ($ ui/simplebar
         {:style {:max-height options-height
                  :min-height "10rem"}}
         (d/div

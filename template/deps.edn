@@ -1,1 +1,2 @@
-{:paths ["src"]}
+{:paths ["src"]
+ :deps {dev.gersak/toddler-ui {:mvn/version "0.9.8"}}}

@@ -3,7 +3,7 @@
    [clojure.java.io :as io]
    [shadow.css.build :as cb]
    [shadow.cljs.devtools.server.fs-watch :as fs-watch]
-   [toddler.css :as css])
+   [toddler.ui.css :as css])
   (:import java.util.zip.ZipInputStream))
 
 (defonce css-ref (atom nil))

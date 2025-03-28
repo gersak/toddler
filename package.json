@@ -7,6 +7,9 @@
     "dev": "npx shadow-cljs -A:shadow:showcase watch dev",
     "icons": "npx shadow-cljs -A:shadow:cider:icons watch icons",
     "release": "clj -T:build:release release",
+    "release-test": "clj -T:build:release release :test true",
+    "release-ui": "cd ui && clj -T:build release :test true",
+    "release-ui-test": "cd ui && clj -T:build release :test true",
     "github-docs": "clj -T:build:release github-release",
     "dev-tauri": "clj -X:shadow:showcase:css && npx shadow-cljs -A:shadow:showcase release main --config-merge '{:output-dir \"showcase/web/js\" :asset-path \"/js\" :closure-defines {shadow.cljs.devtools.client.env.server_host \"x.x.x.x\"} :devtools {:use-document-host false}}'"
   },

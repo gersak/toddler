@@ -9,6 +9,7 @@
 (def ^{:doc "User locale keyword :en, :en_US, de, zh_CN, :es ..."} locale (create-context))
 (def ^{:doc "Theme name. Should be string"} theme (create-context))
 (def ^{:doc "Context holds function that will store theme state"} change-theme (create-context))
+(def ^{:doc "Context holds function that will store locale"} change-locale (create-context))
 (def ^{:doc "Context that will hold user information.
             Like first name, last name, roles, permissions"}
   user (create-context))
@@ -21,18 +22,18 @@
 (def ^{:doc "GraphQL endpoint URL"} graphql-url (create-context))
 
 (defonce
- ^{:doc "Signal channel is channel that can be used to
+  ^{:doc "Signal channel is channel that can be used to
          publish global app events. It is used by
          `toddler.core/use-toddler-publisher` hook to
          put events to signal-channel"}
- signal-channel (async/chan 100))
+  signal-channel (async/chan 100))
 
 (defonce
- ^{:doc "Publisher channel is channel that can be used to
+  ^{:doc "Publisher channel is channel that can be used to
          listen global app events. It is used by
          `toddler.core/use-toddler-listener` hook to
          register to some topic and handle that events"}
- signal-publisher
+  signal-publisher
   (async/pub signal-channel :topic))
 
 (defn listen-to-signal

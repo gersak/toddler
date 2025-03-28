@@ -6,7 +6,7 @@
 ;; IMPORTANT!!!! - change version in resources/template/deps.edn.tmp
 ;; to match this version
 
-(def version "0.9.8")
+(def version "0.9.9-SNAPSHOT")
 (def target "target/classes")
 
 (defn create-jar []
@@ -35,7 +35,7 @@
 (defn release
   ([] (release nil))
   ([{t :test}]
-   (generate-shadow-indexes)
+   ; (generate-shadow-indexes)
    (create-jar)
    (let [jar-file (format "target/ui-%s.jar" version)
          pom-file (str target "/pom.xml")

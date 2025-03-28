@@ -181,6 +181,51 @@
           :value set-theme!}
          ($ component {& props})))))))
 
+(defhook use-locale
+  "Returns theme context value"
+  []
+  (hooks/use-context app/locale))
+
+(defhook use-locale-change
+  "Returns locale change function that will set theme state."
+  []
+  (hooks/use-context app/change-locale))
+
+(defhook use-locale-state
+  "Hook will provide theme state and state setter
+  similar to helix.hooks/use-state. Except this
+  state will be stored in localStorage.
+  
+  When value of theme changes, it will store that value
+  to local storage and check if `<html>` attribute `data-theme`
+  has the same value as theme state"
+  ([] (use-theme-state ::locale))
+  ([localstorage-key] (use-theme-state localstorage-key nil))
+  ([localstorage-key default]
+   (let [[locale set-locale!] (use-local-storage
+                               localstorage-key
+                               (fn [v]
+                                 (when v
+                                   (keyword (str/lower-case v)))))]
+     [locale set-locale!])))
+
+(defn wrap-locale
+  "Function will wrap component with provided `toddler.app/locale` and
+  `toddler.app/change-locale` context. Locale state will be stored in
+  localstorage under `toddler.core/locale` key"
+  ([component] (wrap-locale component ::locale))
+  ([component key] (wrap-locale component key :default))
+  ([component key default]
+   (fnc Locale [props]
+     (let [[locale set-locale!] (use-locale-state key default)]
+       (provider
+        {:context app/locale
+         :value locale}
+        (provider
+         {:context app/change-locale
+          :value set-locale!}
+         ($ component {& props})))))))
+
 (defhook use-graphql-url
   "Returns GraphQL endpoint URL"
   []

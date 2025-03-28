@@ -26,7 +26,7 @@
     :refer [use-dropdown]]
    [toddler.multiselect
     :refer [use-multiselect]]
-   [toddler.ui :as ui :refer [!]]
+   [toddler.ui :as ui]
    [toddler.popup :as popup]))
 
 (def $field
@@ -490,7 +490,7 @@
 
 (defnc multiselect-option
   {:wrap [(ui/forward-ref)]}
-  [{:keys [value class className selected on-remove onRemove] :as props} _ref]
+  [{:keys [value selected on-remove onRemove] :as props} _ref]
   (let [on-remove (some #(when (fn? %) %) [on-remove onRemove])
         {:keys [search-fn context-fn]
          :or {search-fn identity}} (hooks/use-context dropdown/*dropdown*)]
@@ -513,7 +513,7 @@
      (when (ifn? on-remove)
        ($ outlined/close
           {:className "remove"
-           :onClick (fn [e]
+           :onClick (fn [_]
                       (when (ifn? on-remove) (on-remove value)))})))))
 
 (defnc multiselect-field
@@ -1055,7 +1055,7 @@
                    {:render e/identity-dropdown-option})))
           (d/div
            {:className "avatar"}
-           (! :avatar {:size 18 :& value}))
+           ($ ui/avatar {:size 18 :& value}))
           ($ dropdown/Input
              {:className (css :flex :grow)
               :autoComplete "off"
@@ -1071,17 +1071,15 @@
   ($ multiselect-option
      {:ref _ref
       & props}
-     (! :avatar {:size 18
-                 :className "avatar"
-                 :& option})
+     ($ ui/avatar {:size 18
+                   :className "avatar"
+                   :& option})
      (d/div {:className "name"} name)))
 
 (defnc identity-multiselect-field
-  [{:keys [search-fn disabled on-change onChange placeholder
-           options-not-available-message]
+  [{:keys [search-fn disabled on-change onChange placeholder]
     render-option :render/option
     :or {search-fn str
-         options-not-available-message "Options not available"
          render-option IdentityMultiselectOption}
     :as props}]
   (let [{:keys [open!
@@ -1095,7 +1093,6 @@
         on-change (or onChange on-change)
         ;;
         width (get-width area)
-        translate (toddler/use-translate)
         [focused? focused!] (hooks/use-state false)
         [_focused? toggle-focused!] (toddler/use-idle
                                      focused?
@@ -1165,14 +1162,14 @@
                  :placeholder placeholder}))
            ($ outlined/keyboard-arrow-down {:className "decorator"}))))))))
 
-(defnc currency-field
-  [{:keys [disabled onChange value name
-           onFocus on-focus className
-           read-only]
-    :or {onChange identity}}])
+#_(defnc currency-field
+    [{:keys [disabled onChange value name
+             onFocus on-focus className
+             read-only]
+      :or {onChange identity}}])
 
 (defnc search-field
-  [{:keys [onChange on-change disabled placeholder value] :as props}]
+  [{:keys [onChange on-change disabled value] :as props}]
   (let [_input (hooks/use-ref nil)
         [_value set-local-value!] (hooks/use-state (or value ""))
         onChange (hooks/use-memo
@@ -1221,7 +1218,7 @@
            :password password-field
            :integer integer-field
            :float float-field
-           :currency currency-field
+           ; :currency currency-field
            :dropdown dropdown-field
            :multiselect multiselect-field
            :timestamp timestamp-field

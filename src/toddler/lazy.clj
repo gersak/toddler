@@ -9,7 +9,7 @@
   components inside of target module. I.E.
   
   ```clojure
-  (lazy/load
+  (lazy/load-components
    \"chartjs\"
    ::Chart toddler.chart-js/Chart
    ::John  toddler.dummy/john

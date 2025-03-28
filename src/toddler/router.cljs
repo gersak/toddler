@@ -277,7 +277,7 @@
 (defonce ^{:dynamic true
            :doc "Component tree cache. This is where toddler router adds
                 components and looks for routing information."}
- *component-tree*
+  *component-tree*
   (atom
    {:id ::ROOT
     :segment ""
@@ -301,7 +301,7 @@
   "Function used to add component to component tree.
   For given component tree add component by specifying
   component id and component parent."
-  [tree {:keys [id parent] :as component}]
+  [tree {:keys [id parent children] :as component}]
   (if (component->location tree id)
     (do
       ; (t/log! :warn (format "Component %s already set in component tree" id))
@@ -313,6 +313,7 @@
                           component
                           (dissoc :parent)
                           (assoc :children [])))
+
        (zip/root))
       (throw
        (ex-info "Couldn't find parent"
@@ -400,47 +401,57 @@
     :or {known #{}}
     :as state} {:keys [components parent]}]
   (if-let [to-register (not-empty (remove (comp known :id) components))]
-    (let [state'
-          (reduce
-           (fn [{:keys [tree] :as state} component]
-             (let [component (assoc component :parent parent)]
-               (try
-                  ; (log/debugf "Trying to add component %s to parent %s " component parent)
-                 (let [tree' (set-component tree component)]
-                   ; (t/log! :debug (format "Adding component %s to parent %s" component parent))
-                   (->
-                    state
-                    (assoc :tree tree')
-                    (update :known (fnil conj #{}) (:id component))))
-                 (catch js/Error _
-                   (update state :unknown
-                           (fn [components]
-                             (vec
-                              (distinct
-                               ((fnil conj []) components component)))))))))
-           state
-           to-register)
-          state'' (reduce
-                   (fn [{:keys [tree] :as state} component]
-                     (try
-                       (let [tree' (set-component tree component)]
-                         ; (t/log! :debug (format "Adding component %s to parent %s" component parent))
-                         (->
+    (as-> state _state
+      (reduce
+       (fn [{:keys [tree] :as state} {:keys [id children] :as component}]
+         (let [component (assoc component :parent parent)]
+           (try
+              ; (log/debugf "Trying to add component %s to parent %s " component parent)
+             (let [tree' (set-component tree component)
+                   vanilla (->
+                            state
+                            (assoc :tree tree')
+                            (update :known (fnil conj #{}) (:id component)))]
+               (if (empty? children)
+                 vanilla
+                 (reducer
+                  vanilla
+                  {:type ::add-components
+                   :parent id
+                   :components children})))
+             (catch js/Error _
+               (update state :unknown
+                       (fn [components]
+                         (vec
+                          (distinct
+                           ((fnil conj []) components component)))))))))
+       _state
+       to-register)
+      (reduce
+       (fn [{:keys [tree] :as state} {:keys [id children] :as component}]
+         (try
+           (let [tree' (set-component tree component)
+                 vanilla (->
                           state
                           (assoc :tree tree')
                           (update :unknown (fn [components] (vec (remove #{component} components))))
-                          (update :known (fnil conj #{}) (:id component))))
-                       (catch js/Error _
-                         (update state :unknown
-                                 (fn [components]
-                                   (vec
-                                    (distinct
-                                     ((fnil conj []) components component))))))))
-                   state'
-                   (:unknown state'))
-          new-state (merge state state'')]
-      ; (log/debugf "New Tree:\n%s" (with-out-str (pprint tree')))
-      new-state)
+                          (update :known (fnil conj #{}) (:id component)))]
+             (if (empty? children)
+               vanilla
+               (reducer
+                vanilla
+                {:type ::add-components
+                 :parent id
+                 :components children})))
+           (catch js/Error _
+             (update state :unknown
+                     (fn [components]
+                       (vec
+                        (distinct
+                         ((fnil conj []) components component))))))))
+       _state
+       (:unknown state))
+      (merge state _state))
     state))
 
 (defhook use-link

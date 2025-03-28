@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "npx shadow-cljs -A:shadow watch dev",
+    "import-components": "clj -X toddler.ui.import/components :ns {{project}} :dir src",
     "release": "clj -T:build release",
     "release-tauri": "clj -X:shadow:css && npx shadow-cljs -A:shadow release tauri"
   },

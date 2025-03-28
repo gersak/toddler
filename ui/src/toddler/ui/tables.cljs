@@ -4,7 +4,7 @@
    [clojure.string :as str]
    [helix.dom :as d]
    [helix.core
-    :refer [defnc $ provider defhook]]
+    :refer [defnc $ provider]]
    [helix.hooks :as hooks]
    [helix.children :as c]
    [shadow.css :refer [css]]
@@ -13,14 +13,14 @@
                          use-dimensions]]
    [toddler.ui.fields :refer [$dropdown-popup]]
    [toddler.material.outlined :as outlined]
-   [toddler.fav6.solid :refer [barcode]]
+   [toddler.fav6.solid :as solid]
    [toddler.table :as table]
    [toddler.popup :as popup]
    [toddler.layout :as layout]
    [toddler.dropdown :as dropdown]
    [toddler.input :refer [TextAreaElement AutosizeInput]]
    [toddler.ui.elements :as e]
-   [toddler.ui :as ui :refer [!]]
+   [toddler.ui :as ui]
    [toddler.i18n :as i18n]))
 
 (defnc NotImplemented
@@ -90,7 +90,7 @@
                     (when-not copied?
                       (.writeText js/navigator.clipboard (str value))
                       (set-copied! true)))}
-        ($ barcode))
+        ($ solid/barcode))
        (when visible?
          ($ popup/Element
             {:ref popup
@@ -361,7 +361,7 @@
         ;;
         [area-position set-area-position!] (hooks/use-state nil)
         ;;
-        {:keys [input area toggle!] :as dropdown}
+        {:keys [input area toggle!]}
         (dropdown/use-dropdown
          (->
           (hash-map
@@ -494,7 +494,6 @@
   []
   (let [{:keys [placeholder] :as column} (table/use-column)
         [value set-value!] (table/use-cell-state column)
-        [area-position set-area-position!] (hooks/use-state nil)
         ;;
         {:keys [input
                 search
@@ -534,7 +533,7 @@
                         :position "absolute"
                         :right "0px"}]
                       ["&:hover .decorator" :text-gray-400])}
-         (! :avatar
+         ($ ui/avatar
             {:className (css
                          :border
                          :border-solid
@@ -581,9 +580,9 @@
                   :padding-top "0.7em"})]
     (d/div
      {:class [$expand]}
-     #_(if value
-         ($ icon/expanded {:onClick #(set-value! (not value))})
-         ($ icon/expand {:onClick #(set-value! (not value))})))))
+     (if value
+       ($ solid/arrow-right {:onClick #(set-value! (not value))})
+       ($ solid/arrow-down {:onClick #(set-value! (not value))})))))
 
 ;; Styled headers
 (def $header
@@ -614,7 +613,7 @@
          {:className "sort-marker hidden"})))
 
 (defnc plain-header
-  [{:keys [className column] :as props}]
+  [{:keys [className] :as props}]
   (d/div
    {:class [$header className]}
    (d/div
