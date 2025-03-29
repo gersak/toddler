@@ -11,28 +11,26 @@ used for testing, development, and documentation of Toddler UI components.
 If you want to see the full API documentation, visit the [API Docs](https://gersak.github.io/toddler/codox/index.html).
 
 ---
+# IN SHORT
+<p style="display=flex;justify-content=center" align="center">
+  <img src="/docs/images/ISANOT.png" width="400"/>
+</p>
+
+# Architecture
+<p style="display=flex;justify-content=center" align="center">
+  <img src="/docs/images/Architecture.png" max-width="800"/>
+</p>
+
+---
 
 [![Clojars Project](https://img.shields.io/clojars/v/dev.gersak/toddler.svg)](https://clojars.org/dev.gersak/toddler)  
-Collection of hooks, functions and reusable components. `CORE` of Toddler project
 
 
 [![Clojars Project](https://img.shields.io/clojars/v/dev.gersak/toddler-ui.svg)](https://clojars.org/dev.gersak/toddler-ui)  
-Default implementation for **field**, **table**, **layout** components.
 
 [![Clojars Project](https://img.shields.io/clojars/v/dev.gersak/toddler-icons.svg)](https://clojars.org/dev.gersak/toddler-icons)  
-Icons available for:
-
- * [Material Icons](https://fonts.google.com/icons)
- * [FontAwesome](https://fontawesome.com/icons)
- * [Ionic](https://ionic.io/ionicons)
 
 [![Clojars Project](https://img.shields.io/clojars/v/dev.gersak/toddler-graphql.svg)](https://clojars.org/dev.gersak/toddler-graphql)  
-GraphQL implementation for generating GraphQL Mutations and Queries with data structures. It is very compatible with
-[Lacinia](https://github.com/walmartlabs/lacinia) project only from client side. Lets say that what Lacinia can parse and output as query data Toddler GraphQL
-can reverse and generate GraphQL query.
-
-At least for `selection`. Not documented yet, but ready to use. Docs... TBD
-
 
 ---
 
