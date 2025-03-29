@@ -1,8 +1,7 @@
 
 # About
 Toddler is a library containing a collection of [Helix](https://github.com/lilactown/helix.git) hooks,
-components and functions that I found useful throughout my career.
-On top of this reusable code, UI components are built. You can test default components
+components and functions. On top of this reusable code, UI components are built. You can test default components
 in the **[SHOWCASE](https://gersak.github.io/toddler)**.
 
 The **[showcase](https://github.com/gersak/toddler-showcase.git)** is a Git submodule within this repository,
