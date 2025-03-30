@@ -7,7 +7,7 @@
     "dev": "npx shadow-cljs -A:shadow:showcase watch dev",
     "icons": "npx shadow-cljs -A:shadow:cider:icons watch icons",
     "release": "clj -T:build:release release",
-    "release-test": "clj -T:build:release release :test true",
+    "release-test": "clj -T:build:release release",
     "release-ui": "cd ui && clj -T:build release :test true",
     "release-ui-test": "cd ui && clj -T:build release :test true",
     "github-docs": "clj -T:build:release github-release",

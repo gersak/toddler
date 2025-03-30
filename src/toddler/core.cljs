@@ -108,15 +108,19 @@
 (defhook use-mouse-position
   "Hook will return mouse position. If mouse position is changed
   it will change state and cause re-render!"
-  []
-  (let [[state set-state!] (hooks/use-state nil)
-        k (str (gensym "mouse_position_"))]
-    (hooks/use-effect
-      :once
-      (add-watch mouse-position k
-                 (fn [_ _ _ s]
-                   (set-state! s))))
-    state))
+  ([] (use-mouse-position true))
+  ([track?]
+   (let [[state set-state!] (hooks/use-state nil)
+         k (str (gensym "mouse_position_"))]
+     (hooks/use-effect
+       [track?]
+       (when track?
+         (add-watch mouse-position k
+                    (fn [_ _ _ s]
+                      (set-state! s))))
+       (fn []
+         (remove-watch mouse-position k)))
+     state)))
 
 (defhook use-url
   "Returns application root URL"
@@ -276,7 +280,7 @@
           (if-some [_ns (try (namespace location) (catch js/Error _ nil))]
             (str _ns \/ (name location))
             (name location)))]
-  (defhook use-session-cache
+  (defhook ^{:deprecated true} use-session-cache
     "Hook that will store variable value in browser session storage when ever
     value changes. If init-fn is provided it will be called on last recorded
     value for given variable that is found under location key in browser session
@@ -601,7 +605,7 @@
   (let [{:keys [width]} (hooks/use-context app/window)]
     (pred width size)))
 
-(defhook use-resize-observer
+(defhook ^{:deprecated true} use-resize-observer
   "Hook returns ref that should be attached to component and
   second argument is handler that will be called when
   resize is observed with bounding client rect arguments"

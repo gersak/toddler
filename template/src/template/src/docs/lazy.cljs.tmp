@@ -54,6 +54,7 @@
           (router/wrap-link
            ::router/ROOT
            [{:id ::docs
+             :name "Docs
              :segment "docs"
              :landing 5}])]}
   []

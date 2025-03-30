@@ -336,13 +336,13 @@
 
   (println
    (queries
-    {:query :searchUser
-     :alias "users"
-     :selection {:euuid nil
-                 :name nil
-                 :groups [{:selection
+    [{:query :searchUser
+      :alias "users"
+      :selection {:euuid nil
+                  :name nil
+                  :groups [{:selection
+                            {:euuid nil
+                             :name nil}}]
+                  :roles [{:selections
                            {:euuid nil
-                            :name nil}}]
-                 :roles [{:selections
-                          {:euuid nil
-                           :name nil}}]}})))
+                            :name nil}}]}}])))
