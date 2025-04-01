@@ -1,4 +1,4 @@
-{:deps true
+{:deps {:aliases [:shadow]}
  :dev-http {8000 ["dev"]}
  :builds {:dev {:target :browser
                 :entries [{{project}}.main]
