@@ -203,14 +203,17 @@
   When value of theme changes, it will store that value
   to local storage and check if `<html>` attribute `data-theme`
   has the same value as theme state"
-  ([] (use-theme-state ::locale))
-  ([localstorage-key] (use-theme-state localstorage-key nil))
+  ([] (use-locale-state ::locale))
+  ([localstorage-key] (use-locale-state localstorage-key nil))
   ([localstorage-key default]
    (let [[locale set-locale!] (use-local-storage
                                localstorage-key
                                (fn [v]
                                  (when v
-                                   (keyword (str/lower-case v)))))]
+                                   (try
+                                     (keyword (str/lower-case (name (edn/read-string v))))
+                                     (catch js/Error _
+                                       (.error js/console "Couldn't read locale: " v))))))]
      [locale set-locale!])))
 
 (defn wrap-locale
@@ -280,7 +283,7 @@
           (if-some [_ns (try (namespace location) (catch js/Error _ nil))]
             (str _ns \/ (name location))
             (name location)))]
-  (defhook ^{:deprecated true} use-session-cache
+  (defhook use-session-cache
     "Hook that will store variable value in browser session storage when ever
     value changes. If init-fn is provided it will be called on last recorded
     value for given variable that is found under location key in browser session
@@ -318,84 +321,13 @@
          (reset! initialized? true))
        _ref))))
 
-;; DEPRECATED
-; (defhook use-avatar
-;   [{:keys [name avatar path cached?]
-;     :or {cached? true}}]
-;   (let [avatars (hooks/use-context app/avatars)
-;         [_avatar set-avatar!] (hooks/use-state (get @avatars avatar))
-;         [token] (hooks/use-context app/token)
-;         refresh (hooks/use-callback
-;                   [_avatar avatar path]
-;                   (fn []
-;                     (when avatar
-;                       (if (str/starts-with? avatar "data:image")
-;                         (set-avatar! (str/replace avatar #"data:.*base64," ""))
-;                         (let [xhr (new js/XMLHttpRequest)]
-;                           (.open xhr "GET" path true)
-;                           (when token (.setRequestHeader xhr "Authorization" (str "Bearer " token)))
-;                           (.setRequestHeader xhr "Accept" "application/octet-stream")
-;                           (when-not cached? (.setRequestHeader xhr "Cache-Control" "no-cache"))
-;                           (.addEventListener
-;                            xhr "load"
-;                            (fn [evt]
-;                              (let [status (.. evt -target -status)
-;                                    avatar' (.. evt -currentTarget -responseText)]
-;                                (case status
-;                                  200
-;                                  (cond
-;                                     ;; if avatar has changed than swap avatars
-;                                     ;; this should trigger updates for all hooks
-;                                     ;; with target avatar
-;                                    (not= avatar' (get @avatars avatar))
-;                                    (when (not-empty avatar')
-;                                      (swap! avatars assoc avatar avatar'))
-;                                     ;; Otherwise if avatar is cached properly, but
-;                                     ;; current _avatar doesn't match current state
-;                                     ;; update current _avatar
-;                                    (not= _avatar avatar')
-;                                    (set-avatar! (not-empty avatar')))
-;                                   ;; otherwise
-;                                  (async/put! app/signal-channel
-;                                              {:type :toddler.notifications/error
-;                                               :message (str "Couldn't fetch avatar for user " name)
-;                                               :visible? true
-;                                               :hideable? true
-;                                               :adding? true
-;                                               :autohide true})))))
-;                           (.send xhr))))))]
-;     (hooks/use-effect
-;       [avatar]
-;       (when (some? avatar)
-;         (if-let [cached (get @avatars avatar)]
-;           (set-avatar! cached)
-;           (refresh))))
-;     (hooks/use-effect
-;       [avatar]
-;       (let [uuid (random-uuid)]
-;         (when (and avatars avatar)
-;           (add-watch avatars uuid
-;                      (fn [_ _ o n]
-;                        (let [old (get o avatar)
-;                              new (get n avatar)]
-;                          (when (not= old new)
-;                            (set-avatar! new))))))
-;         (fn []
-;           (when avatars (remove-watch avatars uuid)))))
-;     [_avatar refresh]))
-
-(defhook use-current-locale
-  []
-  "Returns value for app/locale context"
-  (hooks/use-context app/locale))
-
 (defhook use-translate
   "Hook will return function that when called will based
   on toddler.app/locale context translate input value.
   
   Supported translation values are number,Date,keyword and UUID"
   []
-  (let [locale (use-current-locale)
+  (let [locale (use-locale)
         translate (hooks/use-memo
                     [locale]
                     (fn
@@ -412,7 +344,7 @@
 
   Supported translation values are number,Date,keyword and UUID"
   []
-  (let [locale (use-current-locale)
+  (let [locale (use-locale)
         translate (hooks/use-memo
                     [locale]
                     (fn
@@ -456,7 +388,7 @@
      * :weekends
      * :weekdays/first"
   [key]
-  (let [locale (use-current-locale)]
+  (let [locale (use-locale)]
     (hooks/use-memo
       [locale]
       (i18n/locale locale key))))
@@ -605,7 +537,7 @@
   (let [{:keys [width]} (hooks/use-context app/window)]
     (pred width size)))
 
-(defhook ^{:deprecated true} use-resize-observer
+(defhook use-resize-observer
   "Hook returns ref that should be attached to component and
   second argument is handler that will be called when
   resize is observed with bounding client rect arguments"
@@ -629,7 +561,10 @@
 
 (defhook use-dimensions
   "Hook returns ref that should be attached to component and
-  second result dimensions of bounding client rect"
+  second result dimensions of bounding client rect.
+  
+  You can specify if you wan't to track border box sizing with
+  ':box' value or contentRect with 'content' sizing value"
   ([]
    (use-dimensions (hooks/use-ref nil)))
   ([node]
@@ -770,7 +705,7 @@
   [_ref]
   (util/dom-parent _ref))
 
-(defhook use-on-parent-resized
+(defhook ^{:deprecated true} use-on-parent-resized
   "Hook will track parent of _ref and when it is
   resized it will call handler"
   [_ref handler]
@@ -881,8 +816,8 @@
     publisher))
 
 (defn random-string
-  []
-  (subs (.toString (.random js/Math) 36) 2))
+  ([]
+   (subs (.toString (.random js/Math) 36) 2)))
 
 (defnc portal
   "Use when you wan't to mount react component on some

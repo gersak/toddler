@@ -12,7 +12,7 @@
 (lazy/load-components
  ::_Docs {{project}}.docs/_Docs)
 
-(defn change-highligh-js
+(defn change-highlight-js
   [theme]
   (let [dark-url "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/base16/tomorrow-night.min.css"
         light-url "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/base16/atelier-lakeside-light.min.css"]
@@ -45,7 +45,7 @@
 
 (defnc Docs
   {:wrap [(md/wrap-show {:className ui.css/$md
-                         :on-theme-change change-highligh-js})
+                         :on-theme-change change-highlight-js})
           (md/wrap-show {:className ui.css/$md})
           (md/wrap-base MD_BASE)
           (md/wrap-refresh MD_REFRESH_PERIOD)
@@ -54,7 +54,7 @@
           (router/wrap-link
            ::router/ROOT
            [{:id ::docs
-             :name "Docs
+             :name "Docs"
              :segment "docs"
              :landing 5}])]}
   []

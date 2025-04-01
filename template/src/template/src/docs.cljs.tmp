@@ -56,7 +56,7 @@
       {:className "wrapper"}
       ($ ui/tooltip {:message "Back to app"}
          (d/div
-          {:on-click (fn [] (go-to "/greeting"))}
+          {:on-click (fn [] (go-to "/"))}
           ($ outlined/arrow-back))))
      (when (not-empty index)
        (d/div

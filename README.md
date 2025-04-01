@@ -40,7 +40,7 @@ Toddler includes a built-in template to create a new project. In the following c
 we refer to the project as `new.project`. Feel free to replace it with your preferred name.
 
 ```sh
-clj -Sdeps '{:deps {dev.gersak/toddler-template {:mvn/version "0.5.1"}}}' -M -m toddler.start new.project
+clj -Sdeps '{:deps {dev.gersak/toddler-template {:mvn/version "0.5.2"}}}' -M -m toddler.start new.project
 cd new.project
 npm run dev
 # Navigate to http://localhost:8000

@@ -72,7 +72,7 @@
                 result (= before after)]
             result))]
   (defnc Container
-    "Function that will render div and track its dimensions.
+    "Component that will render div and track its dimensions.
     Try to use fixed size container, with known both width and
     height."
     [props]

@@ -336,15 +336,17 @@
     with id and when found will return all URL for that
     component."
     [tree id]
-    (let [location (component->location tree id)
-          parents (when location (zip/path location))]
-      (when location
-        (let [{:keys [segment hash]} (zip/node location)
-              path (str/join "/" (cond-> (mapv :segment parents)
-                                   (not-empty segment) (conj segment)
-                                   (not-empty hash) (conj (str "#" hash))))]
-          (swap! cache assoc :id path)
-          path)))))
+    (if-let [path (get @cache id)]
+      path
+      (let [location (component->location tree id)
+            parents (when location (zip/path location))]
+        (when location
+          (let [{:keys [segment hash]} (zip/node location)
+                path (str/join "/" (cond-> (mapv :segment parents)
+                                     (not-empty segment) (conj segment)
+                                     (not-empty hash) (conj (str "#" hash))))]
+            (swap! cache assoc :id path)
+            path))))))
 
 (defn on-path?
   "For given path and component id function will get
@@ -397,7 +399,7 @@
       :else "")))
 
 (defmethod reducer ::add-components
-  [{:keys [tree unknown known]
+  [{:keys [known]
     :or {known #{}}
     :as state} {:keys [components parent]}]
   (if-let [to-register (not-empty (remove (comp known :id) components))]
@@ -478,7 +480,8 @@
   Linking should start with parent :toddler.router/ROOT component, as this
   component is parent to all other components"
   [parent children]
-  (let [dispatch (hooks/use-context -dispatch-)]
+  (let [dispatch (hooks/use-context -dispatch-)
+        children (if (map? children) [children] children)]
     (when (nil? dispatch)
       (.error js/console "Router provider not initialized. Use Provider from this namespace and instantiate it in one of parent components!"))
     (hooks/use-effect
@@ -723,7 +726,7 @@
                      (not-empty (set/intersection roles user-roles))
                      (not-empty (set/intersection permissions user-permissions)))))))
             (get-landing-candidates
-              []
+              [tree]
               (loop [position (component-tree-zipper tree)
                      result []]
                 (if (zip/end? position)
@@ -737,19 +740,21 @@
             {:keys [push]} (use-navigate)
             [best] (hooks/use-memo
                      [user-permissions user-roles super-role tree base]
-                     (get-landing-candidates))]
+                     (get-landing-candidates tree))]
         (hooks/use-effect
-          [tree (:id best)]
+          [tree (:id best) location]
           (let [relative-location (maybe-remove-base base location)]
-            (when (and (not-empty (:children tree))
-                       (not= relative-location url))
+            (cond
+              (and (= (maybe-remove-base base location) url)
+                   (some? best))
+              (push (maybe-add-base base (component-path tree (:id best))))
+              ;;
+              (and (not-empty (:children tree))
+                   (not= relative-location url))
               (let [rendered-components (url->components tree relative-location)]
                 (when (>= 1 (count rendered-components))
                   (.error js/console (str "Zero rendered components found. Redirecting to " (pr-str best)))
-                  (push (maybe-add-base base (component-path tree (:id best))))))))
-          (when (= (maybe-remove-base base location) url)
-            (cond
-              (some? best) (push (maybe-add-base base (component-path tree (:id best))))
+                  (push (maybe-add-base base (component-path tree (:id best))))))
               :else nil)))))
     (children props)))
 

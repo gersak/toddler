@@ -181,30 +181,57 @@
 
 (goog-define ROUTER_BASE "")
 
+
 (defnc App
-  {:wrap [(router/wrap-landing "/" false)
+  {:wrap [;; Wraps landing page at root URL. It takes into
+          ;; account ROUTER_BASE so don't duplicate that value
+          ;; Landing will redirect if exact target URL is loaded
+          ;; in browser ("/") or if browser is loading URL that
+          ;; is not available in ROUTING tree
+          (router/wrap-landing "/" false)
+          ;; Add theme context. Theme is cached in browser
+          ;; localstorage and when application is mounted it
+          ;; will be initialized by that value. In this case
+          ;; under ::theme key 
           (toddler/wrap-theme ::theme)
+          ;; Add locale context. Locale is cached in browser
+          ;; localstorage and when application is mounted it
+          ;; will be initialized by that value. In this case
+          ;; under ::locale key 
+          (toddler/wrap-locale ::locale)
+          ;; Add notifications store component to DOM
+          ;; Toddler will use store component to render
+          ;; notifications
           (notifications/wrap-store {:class ui.css/$store})
+          ;; Add popup container to DOM so toddler
+          ;; can use portal to mount popup components
           (popup/wrap-container)
+          ;; Window provider will track window resizing events
+          ;; and provide window size value through 
+          ;; toddler.app/window context
           (wrap-window-provider)
+          ;; This will wrap default toddler components and
+          ;; provide those components as toddler.ui/__commponents__
+          ;; context
           (ui/wrap-ui components)
+          ;; Wraps toddler router relative to ROUTER_BASE
+          ;; If you are serving assets at some URL different
+          ;; from "/" than you should specify ROUTER_BASE
+          ;; I.E. for https://meetup.com/toddler.demo/
+          ;; ROUTER_BASE = 'toddler.demo'
           (router/wrap-router ROUTER_BASE)]}
   []
-  (let [[locale set-locale!] (hooks/use-state :en)
-        app-mobile (toddler/use-window-width-test < 600)
+  (let [app-mobile (toddler/use-window-width-test < 600)
         docs-mobile (toddler/use-window-width-test < 1000)]
-    (provider
-     {:context app/locale
-      :value locale}
-     (<>
-      (provider
-       {:context app/layout
-        :value (if app-mobile :mobile :desktop)}
-       ($ Greeting))
-      (provider
-       {:context app/layout
-        :value (if docs-mobile :mobile :desktop)}
-       ($ Docs))))))
+    (<>
+     (provider
+      {:context app/layout
+       :value (if app-mobile :mobile :desktop)}
+      ($ Greeting))
+     (provider
+      {:context app/layout
+       :value (if docs-mobile :mobile :desktop)}
+      ($ Docs)))))
 
 (defn ^:dev/after-load start! []
   (let [target ^js (.getElementById js/document "app")]
