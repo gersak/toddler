@@ -9,6 +9,10 @@ used for testing, development, and documentation of Toddler UI components.
 
 If you want to see the full API documentation, visit the [API Docs](https://gersak.github.io/toddler/codox/index.html).
 
+For anyone looking for [mystic gist](https://gist.github.com/gersak/32b7079918e753e52012455710ae1ef2)
+from london-clojurians meetup...
+
+
 ---
 # IN SHORT
 <p style="display=flex;justify-content=center" align="center">
