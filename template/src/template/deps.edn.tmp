@@ -13,6 +13,6 @@
             :exec-fn toddler.search.docs/build-index}
            :build
            {:extra-paths ["build"]
-            :extra-deps {dev.gersak/toddler-template {:mvn/version "0.5.3-SNAPSHOT"}
+            :extra-deps {dev.gersak/toddler-template {:mvn/version "0.5.4"}
                          io.github.clojure/tools.build {:mvn/version "0.10.7"}}
             :ns-default build}}}

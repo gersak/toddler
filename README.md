@@ -46,12 +46,12 @@ we refer to the project as `new.project`. Feel free to replace it with your pref
 
 #### Windows
 ```pwsh
-clj -Sdeps '{:deps {dev.gersak/toddler-template {:mvn/version \"0.5.3\"}}}' -M -m toddler.start new.project
+clj -Sdeps '{:deps {dev.gersak/toddler-template {:mvn/version \"0.5.4\"}}}' -M -m toddler.start new.project
 ```
 
 #### Linux/OSx
 ```sh
-clj -Sdeps '{:deps {dev.gersak/toddler-template {:mvn/version "0.5.3"}}}' -M -m toddler.start new.project
+clj -Sdeps '{:deps {dev.gersak/toddler-template {:mvn/version "0.5.4"}}}' -M -m toddler.start new.project
 ```
 
 ```sh
