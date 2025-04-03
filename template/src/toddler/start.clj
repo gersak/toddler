@@ -72,9 +72,13 @@
       "--before-build-command" "npm run release"
       :dir project))
 
+(def windows? (boolean (re-find #"(?i)windows" (System/getProperty "os.name"))))
+
 (defn install-js
   [project]
-  (sh "npm" "install" :dir project))
+  (if windows?
+    (sh "npm.cmd" "install" :dir project)
+    (sh "npm" "install" :dir project)))
 
 (defn -main
   [& args]

@@ -10,6 +10,6 @@
                           :docs {:entries [{{project}}.docs]
                                  :depends-on #{:main}}}
                 :output-dir "dev/js"}
-          :release {:target :browser
-                    :module-loader true
-                    :output-dir "target/js"}}}
+          :production {:target :browser
+                       :module-loader true
+                       :output-dir "target/js"}}}

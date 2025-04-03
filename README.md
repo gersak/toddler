@@ -43,8 +43,18 @@ from london-clojurians meetup...
 Toddler includes a built-in template to create a new project. In the following commands,
 we refer to the project as `new.project`. Feel free to replace it with your preferred name.
 
+
+#### Windows
+```pwsh
+clj -Sdeps '{:deps {dev.gersak/toddler-template {:mvn/version \"0.5.3\"}}}' -M -m toddler.start new.project
+```
+
+#### Linux/OSx
 ```sh
-clj -Sdeps '{:deps {dev.gersak/toddler-template {:mvn/version "0.5.2"}}}' -M -m toddler.start new.project
+clj -Sdeps '{:deps {dev.gersak/toddler-template {:mvn/version "0.5.3"}}}' -M -m toddler.start new.project
+```
+
+```sh
 cd new.project
 npm run dev
 # Navigate to http://localhost:8000

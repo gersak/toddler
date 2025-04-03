@@ -5,7 +5,7 @@
     "dev": "npx shadow-cljs watch dev",
     "import-components": "clj -X toddler.ui.import/components :ns {{project}} :dir src",
     "release": "clj -T:build release",
-    "release-tauri": "clj -X:shadow:css && npx shadow-cljs -A:shadow release tauri"
+    "release-tauri": "clj -X:shadow:css && npx shadow-cljs release tauri"
   },
   "author": "",
   "license": "ISC",

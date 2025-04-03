@@ -3,7 +3,7 @@
    [clojure.tools.build.api :as b]
    [deps-deploy.deps-deploy :as dd]))
 
-(def version "0.5.2")
+(def version "0.5.3")
 (def target "target/classes")
 
 (defn create-jar []
@@ -38,3 +38,35 @@
 
 (comment
   (release))
+
+; (letfn [(->link [route]
+;           (str "/docs" route))]
+;   (def mds
+;     [{:route (->link "/intro")
+;       :topic "Rationale"
+;       :path "dev/docs/intro.md"}]))
+;
+; (defn release
+;   [_]
+;   ;; BUILD CSS
+;   (b/delete {:path "target"})
+;   (comment
+;     (template/run-script (str "clj -X:shadow:css salt " salt)))
+;   ;; Working
+;   (b/process {:command-args ["powershell" "-NoProfile" "-Command" (str "clj -X:shadow:css salt " salt)]})
+;   (b/process {:command-args ["Invoke-Clojure" "-X:shadow:css" "salt" salt]})
+;   (let [{:keys [err]} (template/run-script
+;                        (str "clj -X:shadow:css salt " salt)
+;                        (str "npx shadow-cljs --config-merge "
+;                             (template/escape-data (frontend-config))
+;                             " release release")
+;                        (str "clj -X:index :mds " (template/escape-data mds) :output (str "target/" index-file)))])
+;   (b/copy-dir
+;    {:src-dirs ["dev/docs"]
+;     :target-dir "target/docs"})
+;   (b/delete {:path "target/index.html"})
+;   (b/delete {:path "target/404.html"})
+;   (template/process
+;    "index.html.tmp" "target/index.html" {:salt salt :root ""})
+;   (template/process
+;    "index.html.tmp" "target/404.html" {:salt salt :root ""}))

@@ -1,9 +1,16 @@
 (ns toddler.template
   (:require
    [clojure.java.io :as io]
-   [clojure.string :as str]))
+   [clojure.string :as str]
+   [clojure.java.shell :refer [sh]]))
 
 (def ^:dynamic *level* nil)
+
+(def os
+  (condp re-find (System/getProperty "os.name")
+    #"(?i)^mac" :macos
+    #"(?i)^win" :windows
+    #"(?i)^linux" :linux))
 
 (defn random-string
   ([] (random-string 5))
@@ -50,3 +57,28 @@
                    {:template file
                     :target target})))
        (spit target new-content)))))
+
+(defn escape-data
+  [data]
+  (case os
+    :windows (str \' (str/replace (str data) #"\"" "\\\\\"") \')
+    (str \' (pr-str data) \')))
+
+(defn run-script
+  [& lines]
+  (let [salt (random-string)
+        file (str "toddler." salt (case os
+                                    :windows ".ps1"
+                                    ".sh"))]
+    (try
+      (spit file
+            (str
+             (case os
+               :windows nil
+               "#!/bin/bash\n")
+             (str/join "\n" lines)))
+      (case os
+        :windows (sh "powershell" "-NoProfile" "-ExecutionPolicy" "Bypass" "-File" file)
+        (sh "sh" file))
+      (finally
+        (io/delete-file file)))))
