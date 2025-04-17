@@ -982,7 +982,7 @@
               (when value "selected")]}
      (d/div
       {:className "toddler-checkbox-wrapper"
-       :onClick (fn [] (on-change not))}
+       :onClick (fn [] (on-change (not value)))}
       (d/div
        {:className "figurative"}
        ($ (case value

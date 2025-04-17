@@ -86,7 +86,11 @@
 
 (def components
   {:transition-normal {:transition "color .3s ease-in-out, border-color .3s ease-in-out, background-color .3s ease-in-out"}
-   :border-normal- {:border-color "var(--border-normal-m1)"} ;; not used
+   :border-normal- {:border-color "var(--border-normal-m1)"}
+   :border-normal-- {:border-color "var(--border-normal-m2)"}
+   :border-normal--- {:border-color "var(--border-normal-m3)"}
+   :border-normal+++ {:border-color "var(--border-normal-p3)"}
+   :border-normal++ {:border-color "var(--border-normal-p2)"}
    :border-normal+ {:border-color "var(--border-normal-p1)"}
    :border-normal {:border-color "var(--border-normal)"}
    :border-positive {:border-color "var(--border-positive)"}
@@ -105,6 +109,9 @@
    :bg-normal {:background-color "var(--background)"}
    :bg-normal+ {:background "var(--background-p1)"}
    :bg-normal++ {:background "var(--background-p2)"}
+   :bg-normal+++ {:background "var(--background-p3)"}
+   :bg-normal--- {:background "var(--background-m3)"}
+   :bg-normal-- {:background "var(--background-m2)"}
    :bg-normal- {:background "var(--background-m1)"}
 
    ;; Buttons
@@ -139,11 +146,13 @@
    :modal-warn {:background-color "var(--background-warn)"}
 
    ;; Colors
+   :color--- {:color "var(--color-m3)"}
    :color-- {:color "var(--color-m2)"}
    :color- {:color "var(--color-m1)"}
    :color {:color "var(--color)"}
    :color+ {:color "var(--color-p1)"}
    :color++ {:color "var(--color-p2)"}
+   :color+++ {:color "var(--color-p3)"}
    :color-hover {:color "var(--color-hover)"}
    :color-click {:color "var(--color-click)"}
    :color-positive {:color "var(--color-positive)"}
@@ -202,7 +211,7 @@
    ; :text-click {:color "var(--text-click)"}
    ; :text-selected {:color "var(--text-selected)" :text-decoration "none"}
    ; :text-normal {:text-decoration "none" :color "var(--text-normal)"}
-   :text-inactive {:color "var(--text-inactive)" :text-decoration "none"}
+   :text-inactive {:color "var(--color-inactive)" :text-decoration "none"}
    ; :text-highlight {:text-decoration "none" :color "var(--text-highlight)"}
    ;; TEXT SPACING
    :body-text {:font-size "14px" :font-weight "400" :line-height "24px"}

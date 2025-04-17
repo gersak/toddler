@@ -494,7 +494,6 @@
      [opened]
      (when opened
        (letfn [(handle-outside-click [e]
-
                  (cond
                    (and (some? area) (some? @area) (.contains @area (.-target e))) nil
                    ;; When clicke on popup do nothing
@@ -608,7 +607,11 @@
         ;;
         el (hooks/use-ref nil)
         _el (or ref el)
-        observer (hooks/use-ref nil)
+        resize-observer (hooks/use-ref nil)
+        mutation-observer (hooks/use-ref nil)
+        animation-frame-id (hooks/use-ref nil)
+        target-position (hooks/use-ref nil)
+        mounted? (hooks/use-ref true)
         target (hooks/use-context *area-element*)
         container-node (hooks/use-context *container*)
         cache (hooks/use-ref {:preference preference :offset offset})]
@@ -619,25 +622,54 @@
                     (when (not= computed _computed)
                       (set-state! _computed)
                       (when (ifn? on-change) (on-change _computed)))))))]
+      ;; When offset or preference change... call recalcualte
       (hooks/use-layout-effect
         [offset preference]
         (reset! cache {:offset offset :preference preference})
         (recalculate))
+      ;; Keep track of target
+      (letfn [(on-target-change []
+                (let [current (util/window-element-position target)]
+                  (when (not= current @target-position)
+                    (reset! target-position current)
+                    (recalculate)))
+                (when @mounted?
+                  (js/requestAnimationFrame on-target-change)))]
+        (hooks/use-effect
+          :always
+          (when (and (some? @_el) (not @animation-frame-id))
+            (let [af (js/requestAnimationFrame on-target-change)]
+              (reset! animation-frame-id af)))))
+      ;; Keep track of popup element resizing
       (hooks/use-effect
         :always
-        (when (and (some? @_el) (not @observer))
-          (reset! observer (js/ResizeObserver. recalculate))
-          (.observe @observer @_el)
+        (when (and (some? @_el) (not @resize-observer))
+          (reset! resize-observer (js/ResizeObserver. recalculate))
+          (.observe @resize-observer @_el)
           (let [_computed (compute-container-props target @_el preference)]
             (when (not= computed _computed)
               (set-state! _computed)
-              (when (ifn? on-change) (on-change _computed))))))
+              (when (ifn? on-change) (on-change _computed)))))
+        (when (and (some? target)
+                   (some? @_el)
+                   (not @mutation-observer))
+          (reset! mutation-observer (js/MutationObserver. recalculate))
+          (.observe @mutation-observer
+                    target
+                    #js {:childList true
+                         :attributes true
+                         :subtree true
+                         :attributeFilter #js ["class" "style"]})))
+      ;; Track user move events
       (hooks/use-effect
         :once
         (.addEventListener js/document "wheel" recalculate #js {:pasive false})
         (.addEventListener js/document "touchmove" recalculate #js {:pasive false})
+        ;; Cleanup
         (fn []
-          (when @observer (.disconnect @observer))
+          (when @resize-observer (.disconnect @resize-observer))
+          (when @mutation-observer (.disconnect @resize-observer))
+          (reset! mounted? false)
           (.removeEventListener js/document "wheel" recalculate)
           (.removeEventListener js/document "touchmove" recalculate))))
     (when (nil? container-node)

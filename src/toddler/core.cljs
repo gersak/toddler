@@ -227,7 +227,7 @@
      (let [[locale set-locale!] (use-locale-state key default)]
        (provider
         {:context app/locale
-         :value locale}
+         :value (or locale :default)}
         (provider
          {:context app/change-locale
           :value set-locale!}
@@ -304,7 +304,9 @@
     ([location transform value init-fn]
      (let [target (target location)
            initialized? (hooks/use-ref false)
-           _ref (hooks/use-ref (transform (.getItem js/sessionStorage target)))]
+           _ref (hooks/use-ref
+                 (when-let [data (.getItem js/sessionStorage target)]
+                   (transform data)))]
        (hooks/use-effect
          [value]
          (when @initialized?
@@ -315,9 +317,9 @@
        (hooks/use-effect
          :once
          (when (ifn? init-fn)
-           (init-fn
-            (transform
-             (.getItem js/sessionStorage target))))
+           (if-let [data (.getItem js/sessionStorage target)]
+             (init-fn (transform data))
+             (init-fn nil)))
          (reset! initialized? true))
        _ref))))
 
@@ -877,36 +879,36 @@
      alias :alias
      args :args
      :keys [on-load on-error]}]
-   (let [[token] (use-token)
-         url (use-graphql-url)]
+   (let [url (use-graphql-url)
+         [token] (use-token)]
      (hooks/use-memo
-       [(name query-name) args selection]
+       [(name query-name) args selection token]
        (fn send
-         []
-         (let [query-name (name query-name)
-               query-key (keyword query-name)
-               query (graphql/wrap-queries
-                      (graphql/->graphql
-                       (graphql/->GraphQLQuery
-                        query-name alias selection args)))]
-           (async/go
-             (let [{:keys [errors]
-                    {data query-key} :data
-                    :as response}
-                   (async/<!
-                    (send-query
-                     query
-                     :url url
-                     :token token
-                     :on-load on-load
-                     :on-error on-error))]
-               (if (some? errors)
-                 (ex-info "Remote query failed"
-                          {:query query
-                           :args args
-                           :selection selection
-                           :response response})
-                 data)))))))))
+         ([]
+          (let [query-name (name query-name)
+                query-key (keyword query-name)
+                query (graphql/wrap-queries
+                       (graphql/->graphql
+                        (graphql/->GraphQLQuery
+                         query-name alias selection args)))]
+            (async/go
+              (let [{:keys [errors]
+                     {data query-key} :data
+                     :as response}
+                    (async/<!
+                     (send-query
+                      query
+                      :url url
+                      :token token
+                      :on-load on-load
+                      :on-error on-error))]
+                (if (some? errors)
+                  (ex-info "Remote query failed"
+                           {:query query
+                            :args args
+                            :selection selection
+                            :response response})
+                  data))))))))))
 
 (defhook use-queries
   "Hook will return function that when called
@@ -917,29 +919,29 @@
   [[use-query]]"
   ([queries] (use-queries queries nil))
   ([queries {:keys [on-load on-error]}]
-   (let [[token] (use-token)
-         url (use-graphql-url)]
+   (let [url (use-graphql-url)
+         [token] (use-token)]
      (hooks/use-memo
-       [queries]
+       [queries token]
        (fn send
-         []
-         (let [query (graphql/queries queries)]
-           (async/go
-             (let [{:keys [errors]
-                    data :data
-                    :as response}
-                   (async/<!
-                    (send-query
-                     query
-                     :url url
-                     :token token
-                     :on-load on-load
-                     :on-error on-error))]
-               (if (some? errors)
-                 (ex-info "Remote query failed"
-                          {:queries queries
-                           :response response})
-                 data)))))))))
+         ([]
+          (let [query (graphql/queries queries)]
+            (async/go
+              (let [{:keys [errors]
+                     data :data
+                     :as response}
+                    (async/<!
+                     (send-query
+                      query
+                      :url url
+                      :token token
+                      :on-load on-load
+                      :on-error on-error))]
+                (if (some? errors)
+                  (ex-info "Remote query failed"
+                           {:queries queries
+                            :response response})
+                  data))))))))))
 
 (defhook use-mutation
   "Hook will return function that will send GraphQL
@@ -947,49 +949,50 @@
   
   Returns async/chan"
   ([{:keys [mutation selection types alias args on-load on-error]}]
-   (let [[token] (use-token)
-          ;;
-         url (use-graphql-url)]
+   (println "")
+   (let [url (use-graphql-url)
+         [token] (use-token)]
       ; (when (ifn? on-load) (on-load "109"))
      (hooks/use-callback
-       [mutation selection types args]
-       (fn [data]
-         (async/go
-           (let [{:keys [query variables]}
-                 (graphql/mutations [{:mutation mutation
-                                      :selection selection
-                                      :alias alias
-                                      :args args
-                                      :variables data
-                                      :types types}])
+       [mutation selection types token args]
+       (fn mutate
+         ([data]
+          (async/go
+            (let [{:keys [query variables]}
+                  (graphql/mutations [{:mutation mutation
+                                       :selection selection
+                                       :alias alias
+                                       :args args
+                                       :variables data
+                                       :types types}])
                   ;;
-                 {:keys [errors]
-                  {data mutation} :data}
-                 (async/<!
-                  (send-query
-                   query
-                   :url url
-                   :token token
-                   :variables variables
-                   :on-load on-load
-                   :on-error on-error))]
-             (if (some? errors)
-               (ex-info
-                (str "Mutation " mutation " failed")
-                {:query query
-                 :variables variables
-                 :errors errors})
-               data))))))))
+                  {:keys [errors]
+                   {data mutation} :data}
+                  (async/<!
+                   (send-query
+                    query
+                    :url url
+                    :token token
+                    :variables variables
+                    :on-load on-load
+                    :on-error on-error))]
+              (if (some? errors)
+                (ex-info
+                 (str "Mutation " mutation " failed")
+                 {:query query
+                  :variables variables
+                  :errors errors})
+                data)))))))))
 
 (defhook use-mutations
   "Wraps multiple mutation into single GraphQL
   query and returns function that will send mutation
   to backend based on input parameters"
   ([{:keys [mutations on-load on-error]}]
-   (let [[token] (use-token)
-         url (use-graphql-url)]
+   (let [url (use-graphql-url)
+         [token] (use-token)]
      (hooks/use-callback
-       [mutations]
+       [mutations token]
        (fn []
          (async/go
            (let [{:keys [query variables]} (graphql/mutations mutations)

@@ -47,8 +47,9 @@
    (let [estimated-size (vura/round-number container-width (+ column-width padding-x) :floor)
          column-count (hooks/use-memo
                         [column-width container-width]
-                        (min (quot estimated-size column-width)
-                             max-columns))]
+                        (min
+                         (max (quot estimated-size column-width) 1)
+                         max-columns))]
      (assoc props
        :estimated-width estimated-size
        :column-count column-count))))
@@ -219,7 +220,7 @@
       (register id tab position)
       (when focus?
         (async/go
-          (async/<! (async/timeout 1000))
+          (async/<! (async/timeout 100))
           (select! id)))
       (fn []
         (unregister id)))

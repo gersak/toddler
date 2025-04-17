@@ -1,14 +1,12 @@
 {;; REPL
  :paths ["src" "gen/src" "resources"]
  :deps
- {dev.gersak/toddler-graphql                 {:mvn/version "1.0.0"}
+ {dev.gersak/toddler-graphql                 {:mvn/version "1.0.1"}
   org.clojure/clojurescript                  {:mvn/version "1.11.54"}
   org.clojure/core.async                     {:mvn/version "1.5.648"}
   cljs-bean/cljs-bean                        {:mvn/version "1.7.0"}
-  ; com.taoensso/telemere                      {:mvn/version "1.0.0-RC2"}
   camel-snake-kebab/camel-snake-kebab        {:mvn/version "0.4.3"}
   com.github.gersak/vura                     {:mvn/version "0.5.8"}
-  ; lilactown/helix                            {:mvn/version "0.2.1"}
   lilactown/helix                            {:mvn/version "0.1.11"}}
  :aliases
  {:shadow

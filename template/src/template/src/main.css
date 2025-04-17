@@ -162,6 +162,7 @@ html[data-theme="light"] {
 
 
   /* Notifications */
+  --notification-text: #161616;
   --notification-positive: #e8f8f1;
   --notification-negative: #f0d4d4;
   --notification-warn: #ffdcc6;
@@ -325,6 +326,7 @@ html[data-theme="dark"] {
 
 
   /* Notifications */
+  --notification-text: #161616;
   --notification-positive: #3b6a57;
   --notification-negative: #7c3333;
   --notification-warn: #943e25;

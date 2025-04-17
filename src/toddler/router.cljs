@@ -53,6 +53,7 @@
    [toddler.core :refer [use-translate use-delayed]]))
 
 (def ^:no-doc -dispatch- (create-context))
+(def ^:no-doc -landing- (create-context))
 (def ^:no-doc -router- (create-context))
 (def ^:no-doc -navigation- (create-context))
 (def ^:no-doc -history- (create-context))
@@ -756,7 +757,10 @@
                   (.error js/console (str "Zero rendered components found. Redirecting to " (pr-str best)))
                   (push (maybe-add-base base (component-path tree (:id best))))))
               :else nil)))))
-    (children props)))
+    (provider
+     {:context -landing-
+      :value url}
+     (children props))))
 
 (defn wrap-landing
   "Wrapper that will use LandingPage component to
@@ -767,6 +771,10 @@
    (fnc Authorized [props]
      ($ LandingPage {:url url :enforce-access? enforce-access?}
         ($ component {& props})))))
+
+(defhook use-landing
+  []
+  (hooks/use-context -landing-))
 
 (defnc Protect
   "Component will set protection contexts. Contexts like

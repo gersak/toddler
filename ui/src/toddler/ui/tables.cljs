@@ -8,7 +8,8 @@
    [helix.hooks :as hooks]
    [helix.children :as c]
    [shadow.css :refer [css]]
-   [toddler.core :refer [use-delayed
+   [toddler.core :refer [conj-prop-classes
+                         use-delayed
                          use-translate
                          use-dimensions]]
    [toddler.ui.fields :refer [$dropdown-popup]]
@@ -721,7 +722,8 @@
        {& props}
        (d/div
         {:style {:display "flex"
-                 :flex-direction "column"}}
+                 :flex-direction "column"}
+         :class (conj-prop-classes props)}
         (provider
          {:context layout/*container-dimensions*
           :value header-style}
