@@ -76,22 +76,26 @@
   (let [{modal-width :width} (layout/use-container-dimensions)
         width (:width props (min 400 modal-width))
         [can-close? enable-close!] (hooks/use-state (some? on-close))
-        _dialog (hooks/use-ref nil)]
+        _dialog (hooks/use-ref nil)
+        touch? (toddler/use-is-touch?)]
     (hooks/use-effect
       :once
       (when @_dialog
-        (let [rect (.getBoundingClientRect @_dialog)
-              {mouse-x :x
-               mouse-y :y} (toddler/get-mouse-position)]
-          (when (and
-                 (<= mouse-x (.-right rect))
-                 (>= mouse-x (.-left rect))
-                 (<= mouse-y (.-bottom rect))
-                 (>= mouse-y (.-top rect)))
-            (enable-close! false)))))
+        (if touch?
+          true
+          (let [rect (.getBoundingClientRect @_dialog)
+                {mouse-x :x
+                 mouse-y :y} (toddler/get-mouse-position)]
+            (when (and
+                   (ifn? on-close)
+                   (<= mouse-x (.-right rect))
+                   (>= mouse-x (.-left rect))
+                   (<= mouse-y (.-bottom rect))
+                   (>= mouse-y (.-top rect)))
+              (enable-close! false))))))
     ($ modal-background
        {:class (css :flex :justify-center)
-        :can-close? can-close?
+        :can-close? (or can-close? touch?)
         :on-close on-close}
        (d/div
         {:style {:min-width width}
@@ -106,15 +110,17 @@
          & (dissoc props :style :class :className)}
         (d/div
          {:ref #(reset! _dialog %)
-          :onMouseEnter (fn [] (enable-close! false))
-          :onMouseLeave (fn [] (enable-close! true))
+          :onMouseEnter (fn [] (when (and (ifn? on-close) (not touch?))
+                                 (enable-close! false)))
+          :onMouseLeave (fn [] (when (and (ifn? on-close) (not touch?))
+                                 (enable-close! true)))
           :style style
           :class (cond->
                   ["modal-dialog" $modal-dialog]
                    (some? className) (conj className)
                    (string? class) (conj class)
                    (sequential? class) (concat class))}
-         (when can-close?
+         (when (or can-close? touch?)
            ($ outlined/close
               {:className
                (css :w-6 :h-6
@@ -155,8 +161,8 @@
                  style
                  {:width width
                   :height modal-height})
-         :onMouseEnter (fn [] (enable-close! false))
-         :onMouseLeave (fn [] (enable-close! true))
+         :onMouseEnter (fn [] (when on-close (enable-close! false)))
+         :onMouseLeave (fn [] (when on-close (enable-close! true)))
          :class (cond-> [$strip]
                   (string? class) (conj class)
                   (sequential? class) (concat class))

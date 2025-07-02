@@ -107,101 +107,58 @@
              {:ref _ref
               :meta {:route (str route "/#" id)
                      :topic topic
-                     :title heading
-                     :short/doc (str (subs content 0 (min 80 (count content))) "...")}
+                     :title heading}
               :index {:title heading
                       :content content}}))
          sections)))
     mds)))
 
-(comment
-  (def config
-    {:mds [{:route "/rationale"
-            :topic "Rationale"
-            :path "showcase/docs/rationale.md"}
-           {:route "/calendar"
-            :topic "Calendar"
-            :path "showcase/docs/calendar.md"}
-           {:route "/i18n"
-            :topic "i18n"
-            :path "showcase/docs/i18n.md"}
-           {:route "/icons"
-            :topic "Icons"
-            :path "showcase/docs/icons.md"}
-           {:route "/inputs"
-            :topic "Inputs"
-            :path "showcase/docs/inputs.md"}
-           {:route "/layout"
-            :topic "Layout"
-            :path "showcase/docs/layout.md"}
-           {:route "/modal"
-            :topic "Modal"
-            :path "showcase/docs/modal.md"}
-           {:route "/notifications"
-            :topic "Notifications"
-            :path "showcase/docs/notifications.md"}
-           {:route "/popup"
-            :topic "Popup"
-            :path "showcase/docs/popup.md"}
-           {:route "/rationale"
-            :topic "Rationale"
-            :path "showcase/docs/rationale.md"}
-           {:route "/routing"
-            :topic "Routing"
-            :path "showcase/docs/routing.md"}
-           {:route "/tables"
-            :topic "Tables"
-            :path "showcase/docs/tables.md"}
-           {:route "/tauri"
-            :topic "Tauri"
-            :path "showcase/docs/tauri.md"}]}))
-
 (defn make-config
   [root]
   (letfn [(->link [route]
             (str root route))]
-    {:mds [{:route (->link "/rationale")
-            :topic "Rationale"
-            :path "showcase/docs/rationale.md"}
-           {:route (->link "/calendar")
-            :topic "Calendar"
-            :path "showcase/docs/calendar.md"}
-           {:route (->link "/i18n")
-            :topic "i18n"
-            :path "showcase/docs/i18n.md"}
-           {:route (->link "/icons")
-            :topic "Icons"
-            :path "showcase/docs/icons.md"}
-           {:route (->link "/inputs")
-            :topic "Inputs"
-            :path "showcase/docs/inputs.md"}
-           {:route (->link "/layout")
-            :topic "Layout"
-            :path "showcase/docs/layout.md"}
-           {:route (->link "/modal")
-            :topic "Modal"
-            :path "showcase/docs/modal.md"}
-           {:route (->link "/notifications")
-            :topic "Notifications"
-            :path "showcase/docs/notifications.md"}
-           {:route (->link "/popup")
-            :topic "Popup"
-            :path "showcase/docs/popup.md"}
-           {:route (->link "/rationale")
-            :topic "Rationale"
-            :path "showcase/docs/rationale.md"}
-           {:route (->link "/routing")
-            :topic "Routing"
-            :path "showcase/docs/routing.md"}
-           {:route (->link "/tables")
-            :topic "Tables"
-            :path "showcase/docs/tables.md"}
-           {:route (->link "/tauri")
-            :topic "Tauri"
-            :path "showcase/docs/tauri.md"}
-           {:route (->link "/lazy")
-            :topic "Lazy"
-            :path "showcase/docs/lazy.md"}]}))
+    [{:route (->link "/rationale")
+      :topic "Rationale"
+      :path "showcase/docs/rationale.md"}
+     {:route (->link "/calendar")
+      :topic "Calendar"
+      :path "showcase/docs/calendar.md"}
+     {:route (->link "/i18n")
+      :topic "i18n"
+      :path "showcase/docs/i18n.md"}
+     {:route (->link "/icons")
+      :topic "Icons"
+      :path "showcase/docs/icons.md"}
+     {:route (->link "/inputs")
+      :topic "Inputs"
+      :path "showcase/docs/inputs.md"}
+     {:route (->link "/layout")
+      :topic "Layout"
+      :path "showcase/docs/layout.md"}
+     {:route (->link "/modal")
+      :topic "Modal"
+      :path "showcase/docs/modal.md"}
+     {:route (->link "/notifications")
+      :topic "Notifications"
+      :path "showcase/docs/notifications.md"}
+     {:route (->link "/popup")
+      :topic "Popup"
+      :path "showcase/docs/popup.md"}
+     {:route (->link "/rationale")
+      :topic "Rationale"
+      :path "showcase/docs/rationale.md"}
+     {:route (->link "/routing")
+      :topic "Routing"
+      :path "showcase/docs/routing.md"}
+     {:route (->link "/tables")
+      :topic "Tables"
+      :path "showcase/docs/tables.md"}
+     {:route (->link "/tauri")
+      :topic "Tauri"
+      :path "showcase/docs/tauri.md"}
+     {:route (->link "/lazy")
+      :topic "Lazy"
+      :path "showcase/docs/lazy.md"}]))
 
 #_(defn build-index
     ([{:keys [mds]}]
@@ -213,4 +170,9 @@
 
 (comment
   (spit "showcase/docs/docs.index.edn" (build-index (make-config "")))
-  (spit "showcase/web/docs.index.edn" (build-index (make-config "/toddler"))))
+  (build-index
+   {:output "showcase/docs/docs.index.edn"
+    :mds (make-config "")})
+  (build-index
+   {:output "showcase/web/docs.index.edn"
+    :mds (make-config "/toddler")}))

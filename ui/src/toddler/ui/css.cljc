@@ -63,6 +63,9 @@
 (def $md
   (css :mt-4 :mb-24 :text-sm
        :px-4
+       ["& .code-wrapper" :relative :pt-2]
+       ["& .code-wrapper .copy-button" :absolute :right-2 :top-1 :color-]
+       ["& .code-wrapper .copy-button:hover" :color++]
        ["& .code" :mt-2]
        ["& h1,& h2,& h3,& h4" :uppercase]
        ["& h3" :mt-4]
@@ -81,7 +84,7 @@
        ["& table tr" :h-6 :text-xxs]
        ["& a" {:color "var(--link-color)" :font-weight "600"}]
        ["& .hljs" :bg-normal+]
-        ; ["& table thead tr"]
+       ; ["& table thead tr"]
        ["& table tbody" :mt-2 :p-1]))
 
 (def components
@@ -127,7 +130,7 @@
                            :color "var(--button-negative-hover-color)"
                            :background-color "var(--button-negative-hover-bg)"}
    :button-neutral {:color "var(--button-neutral-color)"
-                    ; :border-color "var(--button-neutral-border)"
+                    :border-color "var(--button-neutral-border)"
                     :background-color "var(--button-neutral-bg)"}
    :button-neutral-hover {:border-color "var(--button-neutral-hover-border)"
                           :background-color "var(--button-neutral-hover-bg)"

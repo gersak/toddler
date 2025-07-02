@@ -139,7 +139,14 @@
   (let [on-change (or on-change onChange)
         [dummy-style set-dummy-style!] (hooks/use-state nil)
         _input (hooks/use-ref nil)
-        value (hooks/use-ref (or upstream-value ""))
+        [value set-value!] (toddler/use-idle
+                            (or upstream-value "")
+                            (fn [v]
+                              (if (= v :NULL)
+                                (on-change nil)
+                                (on-change v)))
+                            {:timeout 600
+                             :initialized? true})
         input (or _ref _input)
         dummy (hooks/use-ref nil)
         ;;
@@ -179,11 +186,19 @@
                                  :padding :margin
                                  :padding-left :padding-top :line-height
                                  :padding-right :padding-bottom)))))
+      ;; TODO - think of some way to receive changes from
+      ;; upstream. Two states are in conflict... local state
+      ;; and upstream state. Which one is correct?
+      ;; Local state currently chosen
       (hooks/use-effect
         [upstream-value]
-        (when (not= upstream-value @value)
+        (when (not= upstream-value value)
           (set-initialized! false)
-          (reset! value upstream-value)))
+          (set-value! upstream-value)))
+      (hooks/use-effect
+        [value]
+        (when show-dummy?
+          (refresh @dummy @input)))
       (<>
        (d/textarea
         {:className className
@@ -191,9 +206,8 @@
          :on-blur (fn [_] (set-focused! false))
          :on-change (fn [e]
                       (let [_value (when e (not-empty (.. e -target -value)))]
-                        (reset! value _value)
-                        (on-change _value)))
-         :value (or upstream-value "")
+                        (set-value! _value)))
+         :value (or value "")
          :ref #(reset! input %)
          & (->
             props
@@ -220,4 +234,4 @@
                             :word-break "break-word"
                             :font-family "inherit"}
                      @input (assoc :width (- (.-scrollWidth @input) pl pr))))}
-          (str (if (not-empty upstream-value) upstream-value  placeholder) \space)))))))
+          (str (if (not-empty value) value placeholder) \space)))))))

@@ -258,8 +258,9 @@
   ignore-select will stop propagation of mouse-down event. Should
   be true if you don't want popup to close, or false if you wan't
   to close popup on multiselect option select."
-  [{:keys [render context-fn ignore-select]
+  [{:keys [render context-fn ignore-select all?]
     :or {ignore-select true
+         all? false
          render Option}}]
   (let [{:keys [options
                 search-fn
@@ -272,7 +273,9 @@
         is-selected? (hooks/use-memo
                        [value]
                        (set value))
-        not-selected (remove is-selected? options)]
+        visible (if all?
+                  options
+                  (remove is-selected? options))]
     (map
      (fn [option]
        (let [selected (is-selected? option)]
@@ -291,5 +294,5 @@
                  (nil? option) (assoc :style #js {:color "transparent"}))}
             (if (nil? option) "nil" (search-fn option)))))
      (if (:top popup-position)
-       (reverse not-selected)
-       not-selected))))
+       (reverse visible)
+       visible))))

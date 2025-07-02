@@ -100,6 +100,11 @@
       (.addEventListener js/window "mousemove" track)
       (fn [] (.removeEventListener js/window "mousemove" track)))))
 
+(defhook use-is-touch? []
+  (hooks/use-memo
+    :once
+    (.-matches (.matchMedia js/window "(pointer: coarse)"))))
+
 (defn get-mouse-position
   "Returns current mouse position."
   []
@@ -848,15 +853,14 @@
            (safe-update target))))
       (hooks/use-effect
         [target]
-        (when-not
-         (async/go-loop
-          []
-           (if-some [target (locator)]
-             (safe-update target)
-             (when (< (- (.now js/Date) now) timeout)
-               (do
-                 (async/<! (async/timeout 40))
-                 (recur))))))))
+        (async/go-loop
+         []
+          (if-some [target (locator)]
+            (safe-update target)
+            (when (< (- (.now js/Date) now) timeout)
+              (do
+                (async/<! (async/timeout 40))
+                (recur)))))))
     (when target
       (rdom/createPortal (children props) target))))
 
@@ -949,7 +953,6 @@
   
   Returns async/chan"
   ([{:keys [mutation selection types alias args on-load on-error]}]
-   (println "")
    (let [url (use-graphql-url)
          [token] (use-token)]
       ; (when (ifn? on-load) (on-load "109"))

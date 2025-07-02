@@ -176,11 +176,11 @@
   encapsulate component"
   ([component]
    (fnc Router [props]
-     ($ Provider ($ component {& props}))))
+        ($ Provider ($ component {& props}))))
   ([component base]
    (fnc Authorized [props]
-     (.log js/console "Wrapping Router with base '" base "'")
-     ($ Provider {:base base} ($ component {& props})))))
+        (.log js/console "Wrapping Router with base '" base "'")
+        ($ Provider {:base base} ($ component {& props})))))
 
 (defhook use-location
   "Hook will return location from -router- context. Location
@@ -230,6 +230,10 @@
     (if (str/ends-with? base "/") (apply str base (rest url))
         (str "/" base url))))
 
+(defhook use-with-base [url]
+  (let [base (hooks/use-context -base-)]
+    (maybe-add-base base url)))
+
 (defn maybe-remove-base
   "For given base and url will return URL without
   base. If base is nil function will return URL
@@ -278,7 +282,7 @@
 (defonce ^{:dynamic true
            :doc "Component tree cache. This is where toddler router adds
                 components and looks for routing information."}
-  *component-tree*
+ *component-tree*
   (atom
    {:id ::ROOT
     :segment ""
@@ -344,8 +348,13 @@
         (when location
           (let [{:keys [segment hash]} (zip/node location)
                 path (str/join "/" (cond-> (mapv :segment parents)
+                                     ;;
                                      (not-empty segment) (conj segment)
-                                     (not-empty hash) (conj (str "#" hash))))]
+                                     ;;
+                                     ))
+                path (if (not-empty hash)
+                       (str path "#" hash)
+                       path)]
             (swap! cache assoc :id path)
             path))))))
 
@@ -360,20 +369,27 @@
     (when-some [cp (component-path tree id)]
       (str/starts-with? path (first (str/split cp #"\#"))))))
 
+(defn exact-match?
+  [tree path id]
+  (when (some? path)
+    (when-some [cp (component-path tree id)]
+      (= path (first (str/split cp #"\#"))))))
+
 (def ^:no-doc last-rendered-key "toddler.router/last-rendered")
 
 (defhook use-rendered?
   "Hook will return true if component with id
   is rendered, by checking if browser location
   contains component path."
-  [id]
-  (let [{original-pathname :pathname} (use-location)
-        {:keys [tree]} (hooks/use-context -router-)
-        base (hooks/use-context -base-)
-        on-path? (hooks/use-memo
-                   [tree base original-pathname]
-                   (on-path? tree (maybe-remove-base base original-pathname) id))]
-    on-path?))
+  ([id] (use-rendered? id false))
+  ([id exact?]
+   (let [{original-pathname :pathname} (use-location)
+         {:keys [tree]} (hooks/use-context -router-)
+         base (hooks/use-context -base-)
+         on-path? (hooks/use-memo
+                    [tree base original-pathname]
+                    ((if exact? exact-match? on-path?) tree (maybe-remove-base base original-pathname) id))]
+     on-path?)))
 
 (defhook use-component-name
   "For given component id, hook will return
@@ -399,8 +415,17 @@
       (some? location) (translate id)
       :else "")))
 
+(defhook use-component-data
+  "For given component id, hook will return
+  component node data from render tree."
+  [id]
+  (let [{:keys [tree]} (hooks/use-context -router-)
+        translate (use-translate)]
+    (when-some [location (component->location tree id)]
+      (zip/node location))))
+
 (defmethod reducer ::add-components
-  [{:keys [known]
+  [{:keys [known unknown]
     :or {known #{}}
     :as state} {:keys [components parent]}]
   (if-let [to-register (not-empty (remove (comp known :id) components))]
@@ -430,30 +455,38 @@
                            ((fnil conj []) components component)))))))))
        _state
        to-register)
-      (reduce
-       (fn [{:keys [tree] :as state} {:keys [id children] :as component}]
-         (try
-           (let [tree' (set-component tree component)
-                 vanilla (->
-                          state
-                          (assoc :tree tree')
-                          (update :unknown (fn [components] (vec (remove #{component} components))))
-                          (update :known (fnil conj #{}) (:id component)))]
-             (if (empty? children)
-               vanilla
-               (reducer
-                vanilla
-                {:type ::add-components
-                 :parent id
-                 :components children})))
-           (catch js/Error _
-             (update state :unknown
-                     (fn [components]
-                       (vec
-                        (distinct
-                         ((fnil conj []) components component))))))))
-       _state
-       (:unknown state))
+      ;; Link unkowns... When all uknown nodes are
+      ;; linked continue
+      (loop [_state _state
+             unknowns (:unknown _state)]
+        (let [{_unknowns :unknown :as new-state}
+              (reduce
+               (fn [{:keys [tree] :as state} {:keys [id children] :as component}]
+                 (try
+                   (let [tree' (set-component tree component)
+                         vanilla (->
+                                  state
+                                  (assoc :tree tree')
+                                  (update :unknown (fn [components] (vec (remove #{component} components))))
+                                  (update :known (fnil conj #{}) (:id component)))]
+                     (if (empty? children)
+                       vanilla
+                       (reducer
+                        vanilla
+                        {:type ::add-components
+                         :parent id
+                         :components children})))
+                   (catch js/Error _
+                     (update state :unknown
+                             (fn [components]
+                               (vec
+                                (distinct
+                                 ((fnil conj []) components component))))))))
+               _state
+               (:unknown state))]
+          (if (= unknowns _unknowns)
+            new-state
+            (recur new-state _unknowns))))
       (merge state _state))
     state))
 
@@ -518,7 +551,7 @@
            (zip/node location))
          super? (contains? user-roles super-role)]
      (hooks/use-memo
-       [user-roles super-role]
+       [id roles permissions user-roles super-role]
        (or
         super?
         (cond
@@ -568,16 +601,16 @@
   render children if user is authorized"
   ([component]
    (fnc Authorized [props]
-     ($ Authorized ($ component {& props}))))
+        ($ Authorized ($ component {& props}))))
   ([component id]
    (fnc Authorized [props]
-     ($ Authorized {:id id} ($ component {& props})))))
+        ($ Authorized {:id id} ($ component {& props})))))
 
 (defnc Rendered
   "Component will render children if compnoent with :id
   from props is active (is contained in current URL)"
-  [{:keys [id] :as props}]
-  (let [rendered? (use-rendered? id)]
+  [{:keys [id exact?] :as props}]
+  (let [rendered? (use-rendered? id exact?)]
     (when rendered?
       (children props))))
 
@@ -587,10 +620,11 @@
   with id"
   ([component]
    (fnc Rendered [props]
-     ($ Rendered ($ component {& props}))))
-  ([component id]
+        ($ Rendered ($ component {& props}))))
+  ([component id] (wrap-rendered component id false))
+  ([component id exact?]
    (fnc Rendered [props]
-     ($ Rendered {:id id} ($ component {& props})))))
+        ($ Rendered {:id id :exact? exact?} ($ component {& props})))))
 
 (defnc Link
   "Component will link parrent with id and children
@@ -605,8 +639,8 @@
   Will use [[Link]]."
   ([component parent children]
    (fnc Linked [props]
-     ($ Link {:parent parent :links children}
-        ($ component {& props})))))
+        ($ Link {:parent parent :links children}
+           ($ component {& props})))))
 
 (defn- url->components
   [tree url]
@@ -769,8 +803,8 @@
    (wrap-landing component url true))
   ([component url enforce-access?]
    (fnc Authorized [props]
-     ($ LandingPage {:url url :enforce-access? enforce-access?}
-        ($ component {& props})))))
+        ($ LandingPage {:url url :enforce-access? enforce-access?}
+           ($ component {& props})))))
 
 (defhook use-landing
   []

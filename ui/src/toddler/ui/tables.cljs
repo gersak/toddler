@@ -675,9 +675,9 @@
     :border-transparent
     {:min-height "2em"
      :transition "all .5s ease-in-out"}]
-   ["& .trow:hover, & .trow:focus-within" :border-b
-    {:border-color "var(--table-hover-border)"
-     :background-color "var(--table-hover-bg)"}]))
+   #_["& .trow:hover, & .trow:focus-within" :border-b
+      {:border-color "var(--table-hover-border)"
+       :background-color "var(--table-hover-bg)"}]))
 
 (defnc table
   [props]

@@ -7,12 +7,12 @@
   cljs-bean/cljs-bean                        {:mvn/version "1.7.0"}
   camel-snake-kebab/camel-snake-kebab        {:mvn/version "0.4.3"}
   com.github.gersak/vura                     {:mvn/version "0.5.8"}
-  lilactown/helix                            {:mvn/version "0.1.11"}}
+  lilactown/helix                            {:mvn/version "0.1.11"}
+  thheller/shadow-cljs                       {:mvn/version "2.28.21"}
+  com.thheller/shadow-css                    {:mvn/version "0.6.1"}}
  :aliases
  {:shadow
-  {:extra-deps {thheller/shadow-cljs         {:mvn/version "2.28.21"}
-                com.thheller/shadow-css {:mvn/version "0.6.1"}}
-   :extra-paths ["dev"]}
+  {:extra-paths ["dev"]}
   :showcase
   {:extra-paths ["showcase/src" "ui/src" "themes/default"]}
   :release
@@ -27,6 +27,11 @@
   :icons
   {:extra-paths ["icons"]
    :extra-deps {babashka/fs {:mvn/version "0.2.16"}}}
+  :nrepl {:extra-paths ["test"]
+          :extra-deps {nrepl/nrepl {:mvn/version "1.3.1"}
+                       ch.qos.logback/logback-classic {:mvn/version "1.4.14"}}
+          :jvm-opts ["-Djdk.attach.allowAttachSelf"]
+          :main-opts ["-m" "nrepl.cmdline" "--port" "7888"]}
   :codox {:extra-deps {codox/codox {:mvn/version "0.10.8"}}
           :exec-fn codox.main/generate-docs
           :exec-args {:source-paths ["src"]

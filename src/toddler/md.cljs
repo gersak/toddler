@@ -15,22 +15,50 @@
    ["markdown-it-emoji"
     :refer [full]
     :rename {full emoji}]
+   ["markdown-it-container" :as container]
    ["highlight.js" :as hljs]))
 
+(defn prepare-containers
+  [md]
+  (letfn [(render [tokens idx _ _]
+            (let [token (aget tokens idx)
+                  nesting? (.-nesting token)
+                  info (.-info token)
+                  [_ type title] (re-matches #"^(\w+)\s*(.*)$" info)
+                  type (when type (str/lower-case type))]
+              (if (= nesting? 1)
+                (str "<div class=\"container-block " type " \">"
+                     (when-not (empty? title)
+                       (str "<div class=\"container-block-title\"><span class=\"icon\"></span>" title "</div>\n")))
+                (str "</div>"))))]
+    (reduce
+     (fn [md word]
+       (.use md container word #js {:render render})
+       md)
+     md
+     ["tip" "info" "note" "warning" "danger"])))
+
+(defn _highlight
+  [text lang]
+  (try
+    (str
+     "<div class=\"code-wrapper\">"
+     "<button class=\"copy-button\">Copy</button>"
+     "<pre><code class=hljs>"
+     (.-value (.highlight hljs lang text))
+     "</code></pre>"
+     "</div>")
+    (catch js/Error ex
+      (.error js/console ex)
+      (str ""))))
+
 (def md
-  (let [md (->
-            (markdownit
-             #js {:html true
-                  :highlight (fn [text lang]
-                               (try
-                                 (str
-                                  "<pre><code class=hljs>"
-                                  (.-value (.highlight hljs lang text))
-                                  "</code></pre>")
-                                 (catch js/Error ex
-                                   (.error js/console ex)
-                                   (str ""))))})
-            (.use emoji))]
+  (let [^js md (cond->
+                (markdownit
+                 #js {:html true
+                      :highlight _highlight})
+                 emoji (.use emoji)
+                 container prepare-containers)]
     (set! (.. md -renderer -rules -heading_open)
           (fn [tokens idx _ _ _]
             (let [level (.-tag (get tokens idx))]
@@ -45,6 +73,7 @@
           (fn [tokens idx _ _ _]
             (let [level (.-tag (get tokens idx))]
               (str "</" level ">"))))
+
     md))
 
 (defn wrap-base [component base]
@@ -72,22 +101,42 @@
 
 (defn check-diff
   [a b]
-  (= (:content a) (:content b)))
+  (and
+   (= (:content a) (:content b))
+   (= (:style a) (:style b))))
 
 (defnc ^{:private true} show*
   {:wrap [(ui/forward-ref)
           (memo check-diff)]}
-  [{:keys [class content]} editor]
+  [{:keys [class content style]} editor]
   (let [publish (toddler/use-toddler-publisher)]
     (publish {:topic :react/dangerously-rendered})
+    (hooks/use-effect
+      [content]
+      (let [els (.querySelectorAll js/document ".copy-button")]
+        (doseq [el els]
+          (set! (.-innerHTML el) "Copy")
+          (set! (.-onclick el)
+                (fn []
+                  (let [wrapper (.-parentElement el)
+                        code-el (.querySelector wrapper "code")
+                        code-text (.-innerText code-el)]
+                    (.then (.writeText (.-clipboard js/navigator) code-text)
+                           (fn []
+                             (set! (.-innerHTML el) "Copied")
+                             (js/setTimeout
+                              #(set! (.-innerHTML el) "Copy")
+                              2000)))))))))
     (d/div
      {:ref #(reset! editor %)
+      :style style
       :dangerouslySetInnerHTML #js {:__html content}
       :class class})))
 
 (defnc show
   [{:keys [content]
     p-className :className
+    p-style :style
     p-class :class}]
   (let [editor (hooks/use-ref nil)
         text (hooks/use-memo
@@ -166,6 +215,7 @@
     ($ show*
        {:content text
         :ref editor
+        :style p-style
         :class (cond-> ["toddler-markdown"]
                  (string? className) (conj className)
                  (string? class) (conj class)
@@ -183,7 +233,8 @@
     ($ show {:content content & (dissoc props :url)})))
 
 (defnc watch-url
-  {:wrap [(memo #(= (:url %1) (:url %2)))]}
+  {:wrap [(memo #(and (= (:url %1) (:url %2))
+                      (= (:style %1) (:style %2))))]}
   [{:keys [url]
     :as props}]
   (let [[content set-content!] (hooks/use-state nil)

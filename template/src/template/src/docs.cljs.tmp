@@ -18,13 +18,14 @@
 (defnc Intro
   {:wrap [(router/wrap-rendered ::intro)]}
   []
-  (let [{:keys [width height]} (layout/use-container-dimensions)]
+  (let [{:keys [width height]} (layout/use-container-dimensions)
+        docs-url (router/use-with-base "/intro.md")]]
     ($ ui/simplebar
        {:style {:height height}}
        ($ ui/row {:align :center}
           ($ ui/row
              {:style {:max-width (min width 500)}}
-             ($ md/watch-url {:url "/docs/intro.md"}))))))
+             ($ md/watch-url {:url docs-url}))))))
 
 (def components
   [{:id ::intro
@@ -66,7 +67,7 @@
 (defnc logo
   []
   (let [theme (hooks/use-context app/theme)
-        logo (str "https://raw.githubusercontent.com/gersak/toddler/refs/heads/main/template/assets/your_logo_" theme ".png")
+        logo (router/use-with-base (str "/../img/eywa_" theme ".svg"))
         desktop (css :flex :grow :justify-center :items-center {:min-height "100px"})
         layout (toddler/use-layout)
         mobile (css :ml-2 :flex :items-center {:max-height "16px"})]

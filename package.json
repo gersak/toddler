@@ -25,6 +25,7 @@
     "highlight.js": "^11.11.1",
     "markdown-it": "^14.1.0",
     "markdown-it-anchor": "^9.2.0",
+    "markdown-it-container": "^4.0.0",
     "markdown-it-emoji": "^3.0.0",
     "shadow-cljs": "^2.28.21",
     "three": "^0.174.0"

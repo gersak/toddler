@@ -17,14 +17,13 @@
    [toddler.fav6.brands :as brands]
    [toddler.search :as search]
    [toddler.md.context :as md.context]
+   [toddler.md.lazy :as md]
    [shadow.css :refer [css]]))
 
-(def -level- (create-context))
-
 (defnc subcomponent
-  [{:keys [id name children hash rendered?]}]
-  (let [level (hooks/use-context -level-)
-        on-click (router/use-go-to id)
+  [{:keys [id name children hash level]}]
+  (let [on-click (router/use-go-to id)
+        rendered? (router/use-rendered? id)
         [visible? set-visible!] (hooks/use-state false)]
     (hooks/use-effect
       [rendered?]
@@ -48,48 +47,51 @@
     (when name
       (<>
        (d/div
-        {:class ["subcomponent" (str "level-" level) (when rendered? "fade-in")]}
+        {:class ["subcomponent"
+                 (str "level-" level)
+                 (when (and (empty? children) rendered?) "fade-in")]}
         (d/a
          {:class ["name"
-                  (when (and rendered? visible?) "selected")]
+                  (when (or
+                         (and hash rendered? visible?)
+                         (and (not hash) rendered?))
+                    "selected")]
           :on-click #(on-click)}
          name))
-       (map
-        (fn [{:keys [id] :as props}]
-          ($ subcomponent {:key id & props}))
-        children)))))
+       (when rendered?
+         (map
+          (fn [{:keys [id] :as props}]
+            ($ subcomponent {:key id :level (inc level) & props}))
+          children))))))
 
 (defnc component
-  [{:keys [component]}]
+  [{:keys [component level]}]
   (let [rendered? (router/use-rendered? (:id component))
-        level (hooks/use-context -level-)
         path (router/use-go-to (:id component))
         $component (css :px-3 :pt-1
                         ["& a" :no-underline :select-none]
                         ["& .icon" :w-5 :text-transparent :mr-1]
                         ["& .level-1" :pl-2]
                         ["& .level-2" :pl-4]
+                        ["& .level-3" :pl-6]
                         ["& .level-3" :pl-6])
         [_subs {sub-height :height}] (toddler/use-dimensions)]
     (d/div
-     {:class [$component]}
+     {:class ["component" $component]}
      (d/a
       {:class ["name" (when rendered? "selected")]
        :onClick #(path)}
       (str (:name component)))
-     (provider
-      {:context -level-
-       :value (inc level)}
+     (d/div
+      {:style {:overflow "hidden"
+               :transition "height .3s ease-in-out"
+               :height (if rendered? sub-height 0)}}
       (d/div
-       {:style {:overflow "hidden"
-                :transition "height .3s ease-in-out"
-                :height (if rendered? sub-height 0)}}
-       (d/div
-        {:ref #(reset! _subs %)}
-        (map
-         (fn [{:keys [id] :as props}]
-           ($ subcomponent {:key id :rendered? rendered? & props}))
-         (:children component))))))))
+       {:ref #(reset! _subs %)}
+       (map
+        (fn [{:keys [id] :as props}]
+          ($ subcomponent {:key id :level (inc level) & props}))
+        (:children component)))))))
 
 (defnc navbar
   {:wrap [(ui/forward-ref)]}
@@ -105,6 +107,7 @@
          {:align :center
           :on-click #(set-opened! not)
           :className (css
+                      "menu"
                       :absolute
                       :top-0 :left-0 :pl-4
                       {:font-size "20px" :height "50px"}
@@ -121,7 +124,7 @@
                              ["& .name:hover" {:color "var(--color-active)"}]
                              ["& .selected.name" {:color "var(--color-normal)"}]
                              ["& .name.selected" {:color "var(--color-normal)"}]
-                             ["& .subcomponent .name" :text-base])]
+                             ["& .subcomponent a.name" :text-base])]
            :style {:width (if-not opened? 0 width)
                    :transition "width .3s ease-in-out"
                    :overflow "hidden"
@@ -137,20 +140,19 @@
               {:className "components-wrapper"}
               (d/div
                {:className "component-list"}
-               (provider
-                {:context -level-
-                 :value 0}
-                (map
-                 (fn [c]
-                   ($ component
-                      {:key (:id c)
-                       :component c}))
-                 links)))))))
+               (map
+                (fn [c]
+                  ($ component
+                     {:key (:id c)
+                      :level 0
+                      :component c}))
+                links))))))
       :desktop
       ($ ui/column
          {:ref _ref
           :style {:height height}
           :className (css
+                      "menu"
                       :flex
                       :flex-col
                       :toddler/menu-link-selected
@@ -177,15 +179,13 @@
              {:className "components-wrapper"}
              (d/div
               {:className "component-list"}
-              (provider
-               {:context -level-
-                :value 0}
-               (map
-                (fn [c]
-                  ($ component
-                     {:key (:id c)
-                      :component c}))
-                links))))))
+              (map
+               (fn [c]
+                 ($ component
+                    {:key (:id c)
+                     :level 0
+                     :component c}))
+               links)))))
       nil)))
 
 (defnc header
@@ -232,7 +232,7 @@
       :value style}
      (d/div
       {:style style
-       :class [$content "render-zone"]}
+       :class (toddler/conj-prop-classes [$content "render-zone"] props)}
       (children props)))))
 
 (defnc toddler-logo
@@ -252,7 +252,7 @@
        :class "logo"}))))
 
 (defnc search-result-row
-  [{:keys [route short/doc title topic on-search-select]}]
+  [{:keys [route title topic on-search-select] :as data}]
   (let [$md (css :text-xs :px-4
                  ["& .code" :mt-2]
                  ["& h1,& h2,& h3,& h4" :uppercase :text-sm]
@@ -283,7 +283,7 @@
                   (str/replace title #"#+\s*" ""))))))
           (d/div
            {:className "doc"}
-           ($ ui/markdown {:content doc :className $md}))))))
+           ($ ui/markdown {:content (:snippet data) :className $md}))))))
 
 (defnc search-modal
   [{:keys [on-search-cancel]}]
@@ -421,10 +421,24 @@
         {:className "wrapper"}
         ($ search))))))
 
+(defnc section
+  [{:keys [id url max-width]
+    :or {max-width 1000}}]
+  (let [{:keys [width height]} (layout/use-container-dimensions)
+        rendered? (router/use-rendered? id)]
+    (when rendered?
+      ($ ui/simplebar
+         {:style {:height height}}
+         ($ ui/row {:align :center}
+            ($ ui/row
+               {:style {:max-width (min width max-width)}}
+               ($ md/watch-url {:url url})))))))
+
 (defnc page
   [{:keys [components max-width render/logo render/actions]
     :or {logo toddler-logo
-         actions toddler-actions}}]
+         actions toddler-actions}
+    :as props}]
   (let [window (toddler/use-window-dimensions)
         [_navbar {navigation-width :width}] (toddler/use-dimensions)
         [_header] (toddler/use-dimensions)
@@ -442,7 +456,8 @@
                     :style {:flex-grow "1"}})}
        ($ ui/row
           {:key ::wrapper
-           :style {:max-width (+ content-width navigation-width)}}
+           :style {:max-width (+ content-width navigation-width)}
+           & (select-keys props [:class :className])}
           ($ navbar {:ref _navbar :render/logo logo})
           ($ ui/column {:className "content"}
              ($ header
@@ -456,7 +471,9 @@
                  :style {:height content-height
                          :width content-width}}
                 (map
-                 (fn [{:keys [id render]}]
+                 (fn [{:keys [id render]
+                       :or {render section}
+                       :as props}]
                    (when render
-                     ($ render {:key id})))
+                     ($ render {:key id & (dissoc props :render)})))
                  components)))))))
